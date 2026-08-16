@@ -246,13 +246,28 @@ export default function Pricing() {
 
       <VerificationDialog open={verifyOpen} onOpenChange={setVerifyOpen} />
 
-      {/* Localized pricing is a nice-to-have: when Paddle can't be reached we
-          quietly fall back to the standard USD catalog instead of blanking. */}
-      {pricesError && (
-        <p className="text-center text-sm text-muted-foreground">
-          Showing standard USD pricing — localized prices are unavailable right now.
-          You'll see your exact local total at checkout.
-        </p>
+      {/* Two distinct stories: a transient lookup problem still shows the
+          standard USD catalog, while a missing provider catalog means checkout
+          genuinely cannot start — say so plainly instead of failing silently. */}
+      {priceFailure && (
+        <div
+          role="status"
+          aria-live="polite"
+          className="mx-auto flex max-w-xl flex-col items-center gap-2 rounded-xl border border-border bg-card/60 p-4 text-center"
+        >
+          <div className="flex items-center gap-2 text-sm font-medium text-foreground">
+            <AlertTriangle className="h-4 w-4 text-primary" />
+            {checkoutBlocked ? "Prices unavailable" : "Localized prices unavailable"}
+          </div>
+          <p className="text-sm text-muted-foreground">
+            {checkoutBlocked
+              ? "We can't load live prices right now, so checkout is temporarily paused. Plan details below are accurate — please try again shortly."
+              : "Showing standard USD pricing. You'll see your exact local total at checkout."}
+          </p>
+          <Button variant="outline" size="sm" onClick={() => setReloadKey((k) => k + 1)}>
+            <RefreshCw className="mr-2 h-3.5 w-3.5" /> Retry
+          </Button>
+        </div>
       )}
 
 
