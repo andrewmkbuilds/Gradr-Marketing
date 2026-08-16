@@ -1,4 +1,4 @@
-import { Check, Sparkles, Rocket, Zap, Crown, Loader2, BadgePercent, ShieldCheck } from "lucide-react";
+import { Check, Sparkles, Rocket, Zap, Crown, Loader2, BadgePercent, ShieldCheck, AlertTriangle, RefreshCw } from "lucide-react";
 import { trackSignupCta, trackUpgradeCta } from "@/lib/telemetry/events";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -19,7 +19,13 @@ import {
   planPriceLabel,
   type PlanId,
 } from "@/config/pricing";
-import { formatMinorAmount, previewPrices, type PreviewedPrice } from "@/lib/paddle";
+import {
+  formatMinorAmount,
+  previewPrices,
+  PriceLookupError,
+  type PriceLookupCode,
+  type PreviewedPrice,
+} from "@/lib/paddle";
 import type { PlanKey } from "@/lib/billing";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
@@ -48,7 +54,8 @@ export default function Pricing() {
 
   const [prices, setPrices] = useState<Record<string, PreviewedPrice>>({});
   const [pricesLoading, setPricesLoading] = useState(true);
-  const [pricesError, setPricesError] = useState<string | null>(null);
+  const [priceFailure, setPriceFailure] = useState<PriceLookupCode | null>(null);
+  const [reloadKey, setReloadKey] = useState(0);
 
   // Localized prices come straight from Paddle — no client-side math, no
   // re-formatting of the strings Paddle returns.
@@ -63,18 +70,20 @@ export default function Pricing() {
       .then((result) => {
         if (cancelled) return;
         setPrices(result);
-        setPricesError(null);
+        setPriceFailure(null);
       })
       .catch((err) => {
         if (cancelled) return;
-        setPricesError(err instanceof Error ? err.message : "Couldn't load prices");
+        setPriceFailure(err instanceof PriceLookupError ? err.code : "unavailable");
       })
       .finally(() => !cancelled && setPricesLoading(false));
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [reloadKey]);
 
+  /** Catalog is genuinely missing → checkout cannot start, so it is disabled. */
+  const checkoutBlocked = priceFailure === "catalog_missing";
   const priceFor = (id: string) => prices[id]?.formattedTotal;
 
   const handleSelect = (tier: Tier | null) => {
@@ -243,13 +252,28 @@ export default function Pricing() {
 
       <VerificationDialog open={verifyOpen} onOpenChange={setVerifyOpen} />
 
-      {/* Localized pricing is a nice-to-have: when Paddle can't be reached we
-          quietly fall back to the standard USD catalog instead of blanking. */}
-      {pricesError && (
-        <p className="text-center text-sm text-muted-foreground">
-          Showing standard USD pricing — localized prices are unavailable right now.
-          You'll see your exact local total at checkout.
-        </p>
+      {/* Two distinct stories: a transient lookup problem still shows the
+          standard USD catalog, while a missing provider catalog means checkout
+          genuinely cannot start — say so plainly instead of failing silently. */}
+      {priceFailure && (
+        <div
+          role="status"
+          aria-live="polite"
+          className="mx-auto flex max-w-xl flex-col items-center gap-2 rounded-xl border border-border bg-card/60 p-4 text-center"
+        >
+          <div className="flex items-center gap-2 text-sm font-medium text-foreground">
+            <AlertTriangle className="h-4 w-4 text-primary" />
+            {checkoutBlocked ? "Prices unavailable" : "Localized prices unavailable"}
+          </div>
+          <p className="text-sm text-muted-foreground">
+            {checkoutBlocked
+              ? "We can't load live prices right now, so checkout is temporarily paused. Plan details below are accurate — please try again shortly."
+              : "Showing standard USD pricing. You'll see your exact local total at checkout."}
+          </p>
+          <Button variant="outline" size="sm" onClick={() => setReloadKey((k) => k + 1)}>
+            <RefreshCw className="mr-2 h-3.5 w-3.5" /> Retry
+          </Button>
+        </div>
       )}
 
 
@@ -359,7 +383,7 @@ export default function Pricing() {
                     onClick={() => (current ? navigate("/billing") : handleSelect(tier))}
                     variant={tier.highlighted ? "default" : "outline"}
                     className="w-full"
-                    disabled={pending === pendingKey}
+                    disabled={pending === pendingKey || (!current && checkoutBlocked)}
                   >
                     {current ? (
                       "Current plan"
@@ -392,7 +416,8 @@ export default function Pricing() {
                   <Skeleton className="h-8 w-24" />
                 ) : (
                   <span className="type-h1 text-foreground">
-                    {priceFor(pack.priceId) ?? "Price shown at checkout"}
+                    {priceFor(pack.priceId) ??
+                      (checkoutBlocked ? "Price unavailable" : "Price shown at checkout")}
                   </span>
                 )}
               </div>
@@ -400,9 +425,13 @@ export default function Pricing() {
                 variant="outline"
                 className="w-full"
                 onClick={() => handlePack(pack.priceId)}
-                disabled={pending === pack.priceId}
+                disabled={pending === pack.priceId || checkoutBlocked}
               >
-                {pending === pack.priceId ? "Opening checkout…" : "Buy pack"}
+                {pending === pack.priceId
+                  ? "Opening checkout…"
+                  : checkoutBlocked
+                    ? "Unavailable"
+                    : "Buy pack"}
               </Button>
             </Card>
             </SpatialCard>

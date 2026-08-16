@@ -1,6 +1,7 @@
 import { initializePaddle as loadPaddle, type Paddle } from "@paddle/paddle-js";
 import { supabase } from "@/integrations/supabase/client";
 import { currentPaymentsDiagnostics } from "@/lib/paymentsConfig";
+import { reportApiFailure } from "@/lib/monitoring/reliability";
 
 /**
  * Paddle client bootstrap.
@@ -152,10 +153,46 @@ async function withRetry<T>(fn: () => Promise<T>, attempts = 3): Promise<T> {
   throw lastError;
 }
 
+/**
+ * Why a price could not be resolved.
+ * - `catalog_missing`: the provider has no price with that external id, so
+ *   checkout genuinely cannot start (the catalog needs publishing).
+ * - `unavailable`: transport / server error — usually transient.
+ */
+export type PriceLookupCode = "catalog_missing" | "unavailable";
+
+export class PriceLookupError extends Error {
+  readonly code: PriceLookupCode;
+  readonly priceId: string;
+  readonly status?: number;
+
+  constructor(code: PriceLookupCode, priceId: string, status?: number, message?: string) {
+    super(message ?? `Failed to resolve price: ${priceId}`);
+    this.name = "PriceLookupError";
+    this.code = code;
+    this.priceId = priceId;
+    this.status = status;
+  }
+}
+
 export async function previewPrices(
   priceIds: string[],
 ): Promise<Record<string, PreviewedPrice>> {
-  return withRetry(() => previewPricesOnce(priceIds));
+  try {
+    return await withRetry(() => previewPricesOnce(priceIds));
+  } catch (error) {
+    const code = error instanceof PriceLookupError ? error.code : "unavailable";
+    reportApiFailure("paddle-price-preview", error, {
+      code,
+      status: error instanceof PriceLookupError ? (error.status ?? null) : null,
+      context: {
+        environment: getPaddleEnvironment(),
+        priceCount: priceIds.length,
+        priceId: error instanceof PriceLookupError ? error.priceId : undefined,
+      },
+    });
+    throw error;
+  }
 }
 
 async function previewPricesOnce(
@@ -199,7 +236,17 @@ export async function getPaddlePriceId(priceId: string): Promise<string> {
   const { data, error } = await supabase.functions.invoke("get-paddle-price", {
     body: { priceId, environment: getPaddleEnvironment() },
   });
-  if (error || !data?.paddleId) throw new Error(`Failed to resolve price: ${priceId}`);
+
+  if (error || !data?.paddleId) {
+    // `FunctionsHttpError` carries the response; 404 means the catalog simply
+    // does not have this price yet, which is a different UI story to a 5xx.
+    const status =
+      (error as { context?: { status?: number } } | null)?.context?.status ??
+      (data?.error === "Price not found" ? 404 : undefined);
+    const code: PriceLookupCode = status === 404 ? "catalog_missing" : "unavailable";
+    throw new PriceLookupError(code, priceId, status, error?.message);
+  }
+
   priceCache.set(priceId, data.paddleId);
   return data.paddleId as string;
 }

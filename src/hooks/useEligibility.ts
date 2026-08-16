@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { getPaddleEnvironment } from "@/lib/paddle";
+import { reportApiFailure } from "@/lib/monitoring/reliability";
 import type { VerificationStatus } from "@/config/eligibility";
 
 export interface EligibilityCategory {
@@ -83,7 +84,22 @@ export function useMyEligibility() {
     staleTime: 30_000,
     queryFn: async (): Promise<EligibilityState> => {
       const { data, error } = await supabase.rpc("my_eligibility_state");
-      if (error) throw error;
+      if (error) {
+        // Denials here silently strip a user's discount, so record the exact
+        // Postgres error alongside who hit it before rethrowing.
+        reportApiFailure("rpc:my_eligibility_state", error, {
+          code: error.code || undefined,
+          message: error.message,
+          context: {
+            userId: user?.id ?? null,
+            pgCode: error.code ?? null,
+            details: error.details ?? null,
+            hint: error.hint ?? null,
+            authenticated: Boolean(user),
+          },
+        });
+        throw error;
+      }
       const raw = (data ?? {}) as Partial<EligibilityState>;
       return {
         verifications: (raw.verifications ?? []) as MyVerification[],
