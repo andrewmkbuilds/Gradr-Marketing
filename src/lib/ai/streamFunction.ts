@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import { reportLlmFailure } from "@/lib/monitoring/reliability";
 
 /**
  * Client half of the streamed-generation protocol implemented in
@@ -48,7 +49,10 @@ export async function streamEdgeFunction<TResult>(
 ): Promise<TResult> {
   const { data: sessionData } = await supabase.auth.getSession();
   const token = sessionData.session?.access_token;
-  if (!token) throw new AiStreamError("Please sign in to use this feature", 401);
+  if (!token) {
+    reportLlmFailure(fn, new Error("missing session token"), { status: 401, code: "unauthorized" });
+    throw new AiStreamError("Please sign in to use this feature", 401);
+  }
 
   const response = await fetch(`${FUNCTIONS_BASE}/${fn}`, {
     method: "POST",
@@ -72,6 +76,7 @@ export async function streamEdgeFunction<TResult>(
     } catch {
       /* keep the default */
     }
+    reportLlmFailure(fn, new Error(message), { status: response.status });
     throw new AiStreamError(message, response.status);
   }
 
@@ -141,7 +146,17 @@ export async function streamEdgeFunction<TResult>(
   }
   if (buffer.trim()) flush(buffer);
 
-  if (failure) throw failure;
-  if (result === null) throw new AiStreamError("The stream ended before a result arrived. Please retry.", 502);
+  if (failure) {
+    reportLlmFailure(fn, failure, { status: (failure as AiStreamError).status, code: "stream_error" });
+    throw failure;
+  }
+  if (result === null) {
+    reportLlmFailure(fn, new Error("stream ended without a result"), {
+      status: 502,
+      code: "stream_truncated",
+      context: { received_chars: accumulated.length },
+    });
+    throw new AiStreamError("The stream ended before a result arrived. Please retry.", 502);
+  }
   return result;
 }

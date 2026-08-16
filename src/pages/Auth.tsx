@@ -17,6 +17,7 @@ import {
 import { EXPECTED_CALLBACK_URL, recordOAuthHop } from "@/lib/oauth/forensics";
 import { OAuthHostMismatchNotice } from "@/components/auth/OAuthHostMismatchNotice";
 import { toast } from "sonner";
+import { reportAuthFailure } from "@/lib/monitoring/reliability";
 import { z } from "zod";
 import { emailSchema, friendlyAuthError } from "@/lib/authErrors";
 
@@ -148,6 +149,7 @@ export default function Auth() {
       setResendIn(60);
     } catch (error: unknown) {
       const raw = error instanceof Error ? error.message : "Could not resend the email.";
+      reportAuthFailure("resend_confirmation", error, { message: raw });
       toast.error(friendlyAuthError(raw));
       setResendIn(30);
     } finally {
@@ -199,6 +201,7 @@ export default function Auth() {
       }
     } catch (error: unknown) {
       const raw = error instanceof Error ? error.message : "Something went wrong. Please try again.";
+      reportAuthFailure(isSignUp ? "sign_up" : "sign_in", error, { message: raw });
       setFormError(friendlyAuthError(raw));
     } finally {
       setLoading(false);
@@ -244,6 +247,7 @@ export default function Auth() {
         deviationType: "provider_error",
         note: "provider sign-in request failed",
       });
+      reportAuthFailure("oauth_sign_in", error, { context: { provider } });
       toast.error(`${provider} sign-in failed`);
     }
   };
@@ -259,6 +263,7 @@ export default function Auth() {
 
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "Guest sign-in failed";
+      reportAuthFailure("guest_sign_in", error, { message });
       toast.error(message);
     } finally {
       setLoading(false);
