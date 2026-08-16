@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { appPricingHref, isCrossOrigin } from "@/lib/appLinks";
 import { Loader2 } from "lucide-react";
 
@@ -11,7 +12,9 @@ import { Loader2 } from "lucide-react";
  * still reachable if the automatic navigation is blocked.
  */
 export function AppPricingRedirect() {
-  const href = appPricingHref();
+  // Keep UTM / attribution params from the marketing link on the hand-off.
+  const { search } = useLocation();
+  const href = `${appPricingHref()}${search}`;
 
   useEffect(() => {
     if (!isCrossOrigin(href)) return;
