@@ -632,6 +632,18 @@ Deno.serve(async (req) => {
         await updateSubscription({ ...event.data, status: "canceled" }, env);
         // deno-lint-ignore no-explicit-any
         const canceled = planFromItems(event.data as any);
+        if (eventUserId) {
+          await sendCancellationEmail(
+            eventUserId,
+            env,
+            canceled.plan?.tier ?? null,
+            canceled.plan?.interval ?? null,
+            // deno-lint-ignore no-explicit-any
+            (event.data as any)?.currentBillingPeriod?.endsAt ?? null,
+            // deno-lint-ignore no-explicit-any
+            String((event.data as any)?.id ?? ""),
+          );
+        }
         await phCapture("subscription_cancelled", eventUserId, {
           plan: canceled.plan?.tier ?? "unknown",
           billing_period: canceled.plan?.interval ?? "unknown",
