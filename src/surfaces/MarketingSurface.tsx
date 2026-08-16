@@ -14,7 +14,8 @@ import {
   Users,
 } from "lucide-react";
 
-const Pricing = lazy(() => import("@/pages/Pricing"));
+// Checkout never runs on the marketing surface — /pricing hands off to the app.
+import { AppPricingRedirect } from "@/components/surface/AppPricingRedirect";
 
 const FEATURES = [
   {
@@ -334,7 +335,7 @@ export default function MarketingSurface() {
           <Route path="" element={<Overview />} />
           <Route path="features" element={<Features />} />
           <Route path="use-cases" element={<UseCases />} />
-          <Route path="pricing" element={<Pricing />} />
+          <Route path="pricing" element={<AppPricingRedirect />} />
           <Route path="testimonials" element={<Testimonials />} />
           <Route path="demos" element={<Demos />} />
           <Route path="about" element={<About />} />
