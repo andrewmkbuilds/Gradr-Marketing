@@ -38,6 +38,7 @@ import { HexFloatFx, ParticleScrollFx } from "@/components/canvasui/CanvasFx";
 import { CanvasFxFrame } from "@/components/canvasui/CanvasFxFrame";
 import { ResumeTransform } from "@/components/landing/ResumeTransform";
 import { trackSignupCta, trackUpgradeCta, type CtaLocation } from "@/lib/telemetry/events";
+import { appHref, appPricingHref, goToApp } from "@/lib/appLinks";
 import { DepthShowcase } from "@/components/landing/DepthShowcase";
 import {
   ApplicationVisual, AssistantVisual,
@@ -816,7 +817,7 @@ export default function Landing() {
                 <ArrowRight className="ml-2 h-4 w-4" aria-hidden />
               </Button>
             </SpatialCta>
-            <Button size="lg" variant="outline" className="h-12 px-6" onClick={() => navigate("/pricing")}>
+            <Button size="lg" variant="outline" className="h-12 px-6" onClick={() => goToApp(appPricingHref(), navigate)}>
               See interview plans
             </Button>
           </Reveal>
@@ -1110,7 +1111,7 @@ export default function Landing() {
                         plan: p.name.toLowerCase(),
                         billingPeriod: "annual",
                       });
-                      navigate(user ? "/pricing" : "/auth?next=/pricing");
+                      goToApp(user ? appPricingHref() : appHref("/auth?next=%2Fpricing"), navigate);
                     }}
                   >
                     {p.cta}
