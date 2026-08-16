@@ -578,7 +578,9 @@ async function grantPackCredits(data: any, env: PaddleEnv) {
   }
 }
 
-Deno.serve(async (req) => {
+Deno.serve((req) => runWithWriteLog(() => handleRequest(req)));
+
+async function handleRequest(req: Request): Promise<Response> {
   if (req.method !== "POST") return new Response("Method not allowed", { status: 405 });
 
   const env = (new URL(req.url).searchParams.get("env") || "sandbox") as PaddleEnv;
@@ -602,6 +604,7 @@ Deno.serve(async (req) => {
           environment: env,
           signature_verified: true,
           state: "processing",
+          user_id: eventUserId,
           payload: event.data as unknown as Record<string, unknown>,
           updated_at: new Date().toISOString(),
         },
@@ -731,10 +734,13 @@ Deno.serve(async (req) => {
     });
 
     if (deliveryEventId) {
+      const writes = getWriteLog();
       await db().from("webhook_deliveries").update({
-        state: "processed",
+        state: writes.some((w) => !w.ok && w.op !== "email.skipped") ? "processed_with_errors" : "processed",
         processed_at: new Date().toISOString(),
         last_error: null,
+        user_id: eventUserId,
+        write_results: writes,
         updated_at: new Date().toISOString(),
       }).eq("event_id", deliveryEventId);
     }
@@ -763,6 +769,7 @@ Deno.serve(async (req) => {
         .maybeSingle();
       await db().from("webhook_deliveries").update({
         state: "failed",
+        write_results: getWriteLog(),
         last_error: message.slice(0, 500),
         attempts: Number(row?.attempts ?? 0) + 1,
         updated_at: new Date().toISOString(),
@@ -771,5 +778,4 @@ Deno.serve(async (req) => {
     // Non-2xx makes Paddle retry the delivery on its own schedule.
     return new Response("Webhook error", { status: 400 });
   }
-
-});
+}
