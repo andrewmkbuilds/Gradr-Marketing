@@ -4141,6 +4141,8 @@ export type Database = {
           signature_verified: boolean | null
           state: string
           updated_at: string
+          user_id: string | null
+          write_results: Json
         }
         Insert: {
           attempts?: number
@@ -4158,6 +4160,8 @@ export type Database = {
           signature_verified?: boolean | null
           state?: string
           updated_at?: string
+          user_id?: string | null
+          write_results?: Json
         }
         Update: {
           attempts?: number
@@ -4175,6 +4179,8 @@ export type Database = {
           signature_verified?: boolean | null
           state?: string
           updated_at?: string
+          user_id?: string | null
+          write_results?: Json
         }
         Relationships: [
           {

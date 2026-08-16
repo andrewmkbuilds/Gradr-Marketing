@@ -9,6 +9,7 @@ import {
 import { logSecurityEvent } from "../_shared/securityAudit.ts";
 import { capture as phCapture, setPerson as phSetPerson } from "../_shared/posthog.ts";
 import { formatDate, formatMoney, sendTransactionalEmail } from "../_shared/sendTransactional.ts";
+import { getWriteLog, noteWrite, runWithWriteLog, tracked } from "../_shared/writeLog.ts";
 
 let _supabase: ReturnType<typeof createClient> | null = null;
 function db() {
@@ -42,13 +43,17 @@ async function billingEmail(
   idempotencyKey: string,
   templateData: Record<string, unknown>,
 ) {
-  if (!recipient || recipient === "unknown@gradr.local") return;
-  await sendTransactionalEmail({
+  if (!recipient || recipient === "unknown@gradr.local") {
+    noteWrite({ op: "email.skipped", table: "transactional_email", ok: false, detail: { template }, error: "no recipient email" });
+    return;
+  }
+  const sent = await sendTransactionalEmail({
     templateName: template,
     recipientEmail: recipient,
     idempotencyKey,
     templateData,
   });
+  noteWrite({ op: "email.sent", table: "transactional_email", ok: sent, detail: { template, idempotencyKey } });
 }
 
 function planLabel(tier?: string | null, interval?: string | null): string {
@@ -112,7 +117,10 @@ async function mirrorSubscription(data: any, env: PaddleEnv) {
   };
   if (userId) patch.user_id = userId;
 
-  await db().from("paddle_subscriptions").upsert(patch, { onConflict: "subscription_id" });
+  await tracked(
+    { op: "subscription.mirror", table: "paddle_subscriptions", user_id: userId, detail: { subscription_id: data.id, status: patch.status } },
+    () => db().from("paddle_subscriptions").upsert(patch, { onConflict: "subscription_id" }),
+  );
 }
 
 /**
@@ -158,7 +166,14 @@ async function upsertSubscription(data: any, env: PaddleEnv) {
   const periodEnd = data.currentBillingPeriod?.endsAt ?? null;
   const entitled = isEntitled(status, periodEnd);
 
-  await db().from("subscribers").upsert(
+  await tracked(
+    {
+      op: "entitlement.upsert",
+      table: "subscribers",
+      user_id: userId,
+      detail: { tier: plan?.tier ?? null, interval: plan?.interval ?? null, status, entitled, price_id: externalPriceId },
+    },
+    () => db().from("subscribers").upsert(
     {
       user_id: userId,
       email: await emailFor(userId, env),
@@ -177,6 +192,7 @@ async function upsertSubscription(data: any, env: PaddleEnv) {
       cancel_at_period_end: data.scheduledChange?.action === "cancel",
     },
     { onConflict: "user_id,environment" },
+  ),
   );
 
   if (entitled) {
@@ -222,12 +238,20 @@ async function updateSubscription(data: any, env: PaddleEnv) {
   }
   if (patch.subscription_tier === undefined) delete patch.subscription_tier;
 
-  const { data: updated } = await db()
-    .from("subscribers")
-    .update(patch)
-    .eq("stripe_subscription_id", data.id)
-    .eq("environment", env)
-    .select("user_id");
+  const { data: updated } = await tracked(
+    {
+      op: "entitlement.update",
+      table: "subscribers",
+      user_id: (before?.user_id as string | undefined) ?? data?.customData?.userId ?? null,
+      detail: { subscription_id: data.id, status, entitled, tier: plan?.tier ?? null },
+    },
+    () => db()
+      .from("subscribers")
+      .update(patch)
+      .eq("stripe_subscription_id", data.id)
+      .eq("environment", env)
+      .select("user_id"),
+  );
 
   // Out-of-order delivery: an update can arrive before the created event.
   // Rebuild the row from the event rather than dropping the entitlement.
@@ -327,6 +351,33 @@ async function handlePaymentFailed(data: any, env: PaddleEnv) {
     amount: formatMoney(data?.details?.totals?.total, data?.currencyCode ?? "USD"),
     failedAt: formatDate(data?.updatedAt ?? new Date().toISOString()),
     updatePaymentUrl: "https://app.gradr.me/billing",
+  });
+}
+
+/** Receipt for a subscription payment (first charge or renewal). */
+// deno-lint-ignore no-explicit-any
+async function sendSubscriptionReceipt(data: any, env: PaddleEnv) {
+  const subscriptionId = data?.subscriptionId ?? null;
+  if (!subscriptionId) return;
+  const { data: row } = await db()
+    .from("subscribers")
+    .select("user_id, subscription_tier, billing_interval, current_period_end")
+    .eq("stripe_subscription_id", subscriptionId)
+    .eq("environment", env)
+    .maybeSingle();
+  const userId = (row?.user_id as string | undefined) ?? data?.customData?.userId;
+  if (!userId) return;
+
+  await billingEmail("payment-successful", await emailFor(userId, env), `txn-paid-${data.id}`, {
+    amount: formatMoney(
+      data?.details?.totals?.grandTotal ?? data?.details?.totals?.total,
+      (data?.currencyCode ?? "USD").toUpperCase(),
+    ),
+    planName: planLabel(row?.subscription_tier as string | null, row?.billing_interval as string | null),
+    interval: (row?.billing_interval as string | null) ?? undefined,
+    paidAt: formatDate(data?.billedAt ?? new Date().toISOString()),
+    nextBillingDate: formatDate(row?.current_period_end ?? null),
+    invoiceUrl: "https://app.gradr.me/billing",
   });
 }
 
@@ -506,7 +557,9 @@ async function grantPackCredits(data: any, env: PaddleEnv) {
     const quantity = Number(item?.quantity ?? 1) || 1;
     const credits = pack.credits * quantity;
 
-    await db().from("purchases").insert({
+    await tracked(
+      { op: "purchase.record", table: "purchases", user_id: userId, detail: { pack: priceId, credits, transaction_id: data.id } },
+      () => db().from("purchases").insert({
       user_id: userId,
       stripe_session_id: data.id,
       environment: env,
@@ -517,7 +570,8 @@ async function grantPackCredits(data: any, env: PaddleEnv) {
       amount_total: Number(data.details?.totals?.total ?? 0),
       currency: (data.currencyCode ?? "usd").toLowerCase(),
       status: "paid",
-    });
+      }),
+    );
 
     const { data: current } = await db()
       .from("usage_credits")
@@ -526,7 +580,9 @@ async function grantPackCredits(data: any, env: PaddleEnv) {
       .eq("environment", env)
       .maybeSingle();
 
-    await db().from("usage_credits").upsert(
+    await tracked(
+      { op: "credits.grant", table: "usage_credits", user_id: userId, detail: { kind: pack.kind, credits } },
+      () => db().from("usage_credits").upsert(
       {
         user_id: userId,
         environment: env,
@@ -536,11 +592,22 @@ async function grantPackCredits(data: any, env: PaddleEnv) {
           (pack.kind === "interview" ? credits : 0),
       },
       { onConflict: "user_id,environment" },
+      ),
     );
+
+    await billingEmail("payment-successful", await emailFor(userId, env), `pack-paid-${data.id}-${priceId}`, {
+      amount: formatMoney(data.details?.totals?.total, (data.currencyCode ?? "USD").toUpperCase()),
+      planName: pack.label,
+      interval: "one-off",
+      paidAt: formatDate(data.billedAt ?? new Date().toISOString()),
+      invoiceUrl: "https://app.gradr.me/billing",
+    });
   }
 }
 
-Deno.serve(async (req) => {
+Deno.serve((req) => runWithWriteLog(() => handleRequest(req)));
+
+async function handleRequest(req: Request): Promise<Response> {
   if (req.method !== "POST") return new Response("Method not allowed", { status: 405 });
 
   const env = (new URL(req.url).searchParams.get("env") || "sandbox") as PaddleEnv;
@@ -564,6 +631,7 @@ Deno.serve(async (req) => {
           environment: env,
           signature_verified: true,
           state: "processing",
+          user_id: eventUserId,
           payload: event.data as unknown as Record<string, unknown>,
           updated_at: new Date().toISOString(),
         },
@@ -659,6 +727,7 @@ Deno.serve(async (req) => {
       case EventName.TransactionCompleted:
         await clearPaymentIssue(event.data, env);
         await grantPackCredits(event.data, env);
+        await sendSubscriptionReceipt(event.data, env);
         await recordDiscountUse(event.data, env);
         await recordAffiliateCommission(event.data, env);
         await phCapture("payment_completed", eventUserId, {
@@ -693,10 +762,13 @@ Deno.serve(async (req) => {
     });
 
     if (deliveryEventId) {
+      const writes = getWriteLog();
       await db().from("webhook_deliveries").update({
-        state: "processed",
+        state: writes.some((w) => !w.ok && w.op !== "email.skipped") ? "processed_with_errors" : "processed",
         processed_at: new Date().toISOString(),
         last_error: null,
+        user_id: eventUserId,
+        write_results: writes,
         updated_at: new Date().toISOString(),
       }).eq("event_id", deliveryEventId);
     }
@@ -725,6 +797,7 @@ Deno.serve(async (req) => {
         .maybeSingle();
       await db().from("webhook_deliveries").update({
         state: "failed",
+        write_results: getWriteLog(),
         last_error: message.slice(0, 500),
         attempts: Number(row?.attempts ?? 0) + 1,
         updated_at: new Date().toISOString(),
@@ -733,5 +806,4 @@ Deno.serve(async (req) => {
     // Non-2xx makes Paddle retry the delivery on its own schedule.
     return new Response("Webhook error", { status: 400 });
   }
-
-});
+}

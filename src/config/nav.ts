@@ -107,6 +107,7 @@ export const navGroups: NavGroup[] = [
     items: [
       { title: "Profile & Settings", url: "/settings", icon: Settings },
       { title: "Billing & Subscription", url: "/billing", icon: CreditCard },
+      { title: "Credits", url: "/credits", icon: Wallet },
       { title: "Pricing & Plans", url: "/pricing", icon: Sparkles },
     ],
   },

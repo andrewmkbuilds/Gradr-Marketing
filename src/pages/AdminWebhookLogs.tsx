@@ -44,6 +44,31 @@ interface DeliveryLog {
   created_at: string;
 }
 
+interface WriteResult {
+  op: string;
+  table: string;
+  ok: boolean;
+  user_id?: string | null;
+  detail?: Record<string, unknown> | null;
+  error?: string | null;
+  at?: string;
+}
+
+interface DeliveryEvent {
+  id: string;
+  provider: string;
+  environment: string | null;
+  event_id: string;
+  event_type: string | null;
+  state: string;
+  attempts: number;
+  user_id: string | null;
+  last_error: string | null;
+  write_results: WriteResult[] | null;
+  processed_at: string | null;
+  created_at: string;
+}
+
 const COLUMNS: (keyof DeliveryLog)[] = [
   "created_at", "provider", "environment", "event_type", "event_id", "source",
   "signature_present", "signature_valid", "verification_error", "status",
@@ -76,6 +101,22 @@ export default function AdminWebhookLogs() {
   const [signature, setSignature] = useState("");
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<Record<string, unknown> | null>(null);
+
+  const [expanded, setExpanded] = useState<string | null>(null);
+
+  const events_ = useQuery({
+    queryKey: ["admin-webhook-events"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("webhook_deliveries")
+        .select("id, provider, environment, event_id, event_type, state, attempts, user_id, last_error, write_results, processed_at, created_at")
+        .order("created_at", { ascending: false })
+        .limit(200);
+      if (error) throw error;
+      return (data ?? []) as unknown as DeliveryEvent[];
+    },
+    refetchInterval: 30_000,
+  });
 
   const { data, isLoading, isFetching, refetch } = useQuery({
     queryKey: ["admin-webhook-logs"],
@@ -195,6 +236,107 @@ export default function AdminWebhookLogs() {
           </Card>
         ))}
       </div>
+
+      <Card className="p-4">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h2 className="text-sm font-semibold">Event processing &amp; write results</h2>
+            <p className="mt-1 text-xs text-muted-foreground">
+              What each provider event actually wrote — entitlement upserts, credit grants, purchase rows and
+              lifecycle emails — with the error text when a write failed.
+            </p>
+          </div>
+          <Button variant="outline" size="sm" className="gap-2" onClick={() => void events_.refetch()}>
+            <RefreshCw className={cn("h-4 w-4", events_.isFetching && "animate-spin")} aria-hidden="true" />
+            Refresh
+          </Button>
+        </div>
+
+        {events_.isLoading ? (
+          <div className="mt-4 space-y-2">
+            {[0, 1, 2].map((i) => <Skeleton key={i} className="h-10 w-full" />)}
+          </div>
+        ) : (events_.data ?? []).length === 0 ? (
+          <p className="mt-4 text-sm text-muted-foreground">No provider events recorded yet.</p>
+        ) : (
+          <ul className="mt-4 divide-y divide-border/60">
+            {(events_.data ?? []).map((e) => {
+              const writes = Array.isArray(e.write_results) ? e.write_results : [];
+              const failedWrites = writes.filter((w) => !w.ok);
+              const open = expanded === e.id;
+              return (
+                <li key={e.id} className="py-3">
+                  <button
+                    type="button"
+                    className="flex w-full flex-wrap items-center justify-between gap-3 text-left"
+                    onClick={() => setExpanded(open ? null : e.id)}
+                    aria-expanded={open}
+                  >
+                    <span className="min-w-0">
+                      <span className="block truncate text-sm font-medium text-foreground">
+                        {e.event_type ?? "unknown event"}
+                      </span>
+                      <span className="block text-xs text-muted-foreground">
+                        {formatDistanceToNow(new Date(e.created_at), { addSuffix: true })} · {e.environment ?? "—"} ·{" "}
+                        {e.event_id}
+                      </span>
+                    </span>
+                    <span className="flex items-center gap-2">
+                      <Badge variant="outline">{writes.length} writes</Badge>
+                      {failedWrites.length > 0 && (
+                        <Badge variant="destructive">{failedWrites.length} failed</Badge>
+                      )}
+                      <Badge
+                        variant={
+                          e.state === "processed" ? "secondary" : e.state === "failed" ? "destructive" : "outline"
+                        }
+                      >
+                        {e.state}
+                      </Badge>
+                    </span>
+                  </button>
+
+                  {open && (
+                    <div className="mt-3 space-y-2 rounded-lg border border-border/60 bg-muted/20 p-3">
+                      {e.last_error && (
+                        <p className="text-xs text-destructive">Handler error: {e.last_error}</p>
+                      )}
+                      {e.user_id && (
+                        <p className="text-xs text-muted-foreground">User: {e.user_id}</p>
+                      )}
+                      {writes.length === 0 ? (
+                        <p className="text-xs text-muted-foreground">
+                          No entitlement or credit writes were attempted for this event.
+                        </p>
+                      ) : (
+                        <ul className="space-y-1.5">
+                          {writes.map((w, i) => (
+                            <li key={`${e.id}-${i}`} className="flex items-start gap-2 text-xs">
+                              {w.ok
+                                ? <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-success" aria-hidden="true" />
+                                : <XCircle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-destructive" aria-hidden="true" />}
+                              <span className="min-w-0">
+                                <span className="font-medium text-foreground">{w.op}</span>{" "}
+                                <span className="text-muted-foreground">→ {w.table}</span>
+                                {w.detail && (
+                                  <span className="block break-all text-muted-foreground">
+                                    {JSON.stringify(w.detail)}
+                                  </span>
+                                )}
+                                {w.error && <span className="block text-destructive">{w.error}</span>}
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </Card>
 
       <Card className="p-4">
         <h2 className="flex items-center gap-2 text-sm font-semibold">

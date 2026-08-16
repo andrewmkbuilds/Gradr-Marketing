@@ -2,7 +2,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { billingService, type PlanInterval, type PlanKey } from "@/lib/billing";
 import { getPaddleEnvironment } from "@/lib/paddle";
 import { track } from "@/lib/telemetry/events";
@@ -152,6 +152,42 @@ export function useCredits() {
       return data ?? { application_credits: 0, interview_credits: 0 };
     },
   });
+}
+
+/**
+ * Keeps balances honest without a refresh: the webhook writes credits and
+ * entitlements server-side, so the browser has no other way to learn that a
+ * purchase settled.
+ */
+export function useBillingRealtime() {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    if (!user) return;
+    const invalidate = () => {
+      void queryClient.invalidateQueries({ queryKey: ["usage-credits"] });
+      void queryClient.invalidateQueries({ queryKey: ["entitlements"] });
+      void queryClient.invalidateQueries({ queryKey: ["purchases"] });
+      void queryClient.invalidateQueries({ queryKey: ["subscription"] });
+    };
+    const filter = `user_id=eq.${user.id}`;
+    const channel = supabase
+      .channel(`billing-${user.id}`)
+      .on("postgres_changes", { event: "*", schema: "public", table: "usage_credits", filter }, invalidate)
+      .on("postgres_changes", { event: "*", schema: "public", table: "purchases", filter }, invalidate)
+      .on("postgres_changes", { event: "*", schema: "public", table: "subscribers", filter }, invalidate)
+      .on("postgres_changes", { event: "*", schema: "public", table: "feature_usage", filter }, invalidate)
+      .subscribe();
+
+    // Usage is also consumed in-app (not only by webhooks), so poll gently
+    // as a safety net when realtime replication is unavailable.
+    const timer = window.setInterval(invalidate, 60_000);
+    return () => {
+      window.clearInterval(timer);
+      void supabase.removeChannel(channel);
+    };
+  }, [user, queryClient]);
 }
 
 export function usePurchases() {
