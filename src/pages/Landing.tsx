@@ -38,7 +38,7 @@ import { HexFloatFx, ParticleScrollFx } from "@/components/canvasui/CanvasFx";
 import { CanvasFxFrame } from "@/components/canvasui/CanvasFxFrame";
 import { ResumeTransform } from "@/components/landing/ResumeTransform";
 import { trackSignupCta, trackUpgradeCta, type CtaLocation } from "@/lib/telemetry/events";
-import { appPricingHref, goToApp } from "@/lib/appLinks";
+import { appHref, appPricingHref, goToApp } from "@/lib/appLinks";
 import { DepthShowcase } from "@/components/landing/DepthShowcase";
 import {
   ApplicationVisual, AssistantVisual,
@@ -1111,7 +1111,7 @@ export default function Landing() {
                         plan: p.name.toLowerCase(),
                         billingPeriod: "annual",
                       });
-                      goToApp(user ? appPricingHref() : appPricingHref("/pricing"), navigate);
+                      goToApp(user ? appPricingHref() : appHref("/auth?next=%2Fpricing"), navigate);
                     }}
                   >
                     {p.cta}
