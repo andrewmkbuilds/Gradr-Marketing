@@ -210,9 +210,15 @@ export function useBillingActions() {
       // the provider webhook — a click is not a payment.
       track("checkout_started", { plan, billing_period: interval, product_type: "subscription" });
       try {
-        const { url, completed } = await billingService.createCheckout({ plan, interval });
+        const { url, completed, effect } = await billingService.createCheckout({ plan, interval });
         if (url) openExternal(url);
-        else if (completed) await refreshEntitlements();
+        else if (completed && effect === "next_billing_period") {
+          // Downgrade: paid-for time is honoured, so nothing changes today.
+          await queryClient.invalidateQueries({ queryKey: ["subscription"] });
+          toast.success("Plan change scheduled", {
+            description: "You keep your current plan until the end of this billing period.",
+          });
+        } else if (completed) await refreshEntitlements();
       } catch (error) {
         const message = error instanceof Error ? error.message : "";
         if (message.toLowerCase().includes("sign in")) toast.error(message);
@@ -221,7 +227,7 @@ export function useBillingActions() {
         setPending(null);
       }
     },
-    [refreshEntitlements, checkoutFailed],
+    [refreshEntitlements, checkoutFailed, queryClient],
   );
 
   const buyPack = useCallback(async (pack: string) => {

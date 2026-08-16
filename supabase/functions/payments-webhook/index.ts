@@ -190,12 +190,23 @@ async function upsertSubscription(data: any, env: PaddleEnv) {
   }
 }
 
+const TIER_RANK: Record<string, number> = { free: 0, starter: 1, pro: 2, advanced: 3 };
+
 // deno-lint-ignore no-explicit-any
 async function updateSubscription(data: any, env: PaddleEnv) {
   const status: string = data.status ?? "active";
   const periodEnd = data.currentBillingPeriod?.endsAt ?? null;
   const entitled = isEntitled(status, periodEnd);
   const { externalPriceId, plan } = planFromItems(data);
+
+  // Read the pre-change state so a plan switch can be classified as an
+  // upgrade or a downgrade and mailed accordingly.
+  const { data: before } = await db()
+    .from("subscribers")
+    .select("user_id, subscription_tier, billing_interval, price_id, subscription_status")
+    .eq("stripe_subscription_id", data.id)
+    .eq("environment", env)
+    .maybeSingle();
 
   const patch: Record<string, unknown> = {
     subscribed: entitled,
@@ -222,7 +233,65 @@ async function updateSubscription(data: any, env: PaddleEnv) {
   // Rebuild the row from the event rather than dropping the entitlement.
   if (!updated?.length && data?.customData?.userId) {
     await upsertSubscription(data, env);
+    return;
   }
+
+  const userId = (before?.user_id as string | undefined) ?? data?.customData?.userId;
+  if (!userId || !plan || !externalPriceId) return;
+
+  // Plan switch: tier or interval actually changed on a still-live plan.
+  const priceChanged = Boolean(before?.price_id) && before?.price_id !== externalPriceId;
+  if (entitled && priceChanged) {
+    const oldTier = String(before?.subscription_tier ?? "free");
+    const isUpgrade = (TIER_RANK[plan.tier] ?? 0) > (TIER_RANK[oldTier] ?? 0) ||
+      (plan.tier === oldTier && plan.interval === "annual");
+    await billingEmail(
+      isUpgrade ? "subscription-upgraded" : "subscription-downgraded",
+      await emailFor(userId, env),
+      `plan-change-${data.id}-${externalPriceId}`,
+      {
+        previousPlan: planLabel(oldTier, before?.billing_interval as string | null),
+        planName: planLabel(plan.tier, plan.interval),
+        interval: plan.interval,
+        effectiveDate: isUpgrade ? "Immediately" : formatDate(periodEnd),
+        nextBillingDate: formatDate(periodEnd),
+      },
+    );
+  }
+
+  // Scheduled cancellation: confirm it and keep the win-back door open.
+  const scheduledCancel = data.scheduledChange?.action === "cancel";
+  const wasScheduled = Boolean(before?.subscription_status) && before?.subscription_status === "canceled";
+  if (scheduledCancel && !wasScheduled) {
+    await sendCancellationEmail(userId, env, plan?.tier ?? null, plan?.interval ?? null, periodEnd, data.id);
+  }
+}
+
+/** Cancellation confirmation + win-back offer, sent once per subscription. */
+async function sendCancellationEmail(
+  userId: string,
+  env: PaddleEnv,
+  tier: string | null,
+  interval: string | null,
+  periodEnd: string | null,
+  subscriptionId: string,
+) {
+  await billingEmail("subscription-cancelled", await emailFor(userId, env), `sub-cancelled-${subscriptionId}`, {
+    planName: planLabel(tier, interval),
+    cancelledAt: formatDate(new Date().toISOString()),
+    accessUntil: formatDate(periodEnd),
+  });
+
+  await db().rpc("enqueue_notification", {
+    _user_id: userId,
+    _type: "billing_subscription_cancelled",
+    _title: "Your plan is cancelled",
+    _body: periodEnd
+      ? "You keep full access until the end of your paid period. Change your mind any time."
+      : "You keep access until the end of your paid period. Change your mind any time.",
+    _link: "/pricing",
+    _metadata: { subscription_id: subscriptionId },
+  });
 }
 
 /** Dunning: a failed renewal marks the plan past_due and warns the customer. */
@@ -563,6 +632,18 @@ Deno.serve(async (req) => {
         await updateSubscription({ ...event.data, status: "canceled" }, env);
         // deno-lint-ignore no-explicit-any
         const canceled = planFromItems(event.data as any);
+        if (eventUserId) {
+          await sendCancellationEmail(
+            eventUserId,
+            env,
+            canceled.plan?.tier ?? null,
+            canceled.plan?.interval ?? null,
+            // deno-lint-ignore no-explicit-any
+            (event.data as any)?.currentBillingPeriod?.endsAt ?? null,
+            // deno-lint-ignore no-explicit-any
+            String((event.data as any)?.id ?? ""),
+          );
+        }
         await phCapture("subscription_cancelled", eventUserId, {
           plan: canceled.plan?.tier ?? "unknown",
           billing_period: canceled.plan?.interval ?? "unknown",
