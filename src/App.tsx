@@ -48,6 +48,7 @@ import { SurfaceProvider } from "@/components/surface/SurfaceLink";
 // Route-level code splitting: only the shell, dashboard, auth and landing
 // pages ship in the initial bundle. Everything else loads on navigation.
 const MarketingSurface = lazy(() => import("./surfaces/MarketingSurface"));
+import { AppPricingRedirect } from "@/components/surface/AppPricingRedirect";
 const NewsSurface = lazy(() => import("./surfaces/NewsSurface"));
 const DocsSurface = lazy(() => import("./surfaces/DocsSurface"));
 const AffiliatesSurface = lazy(() => import("./surfaces/AffiliatesSurface"));
@@ -363,7 +364,9 @@ function AppRoutes() {
         ))}
         <Route path="/career-advice" element={publicPage(appOnly, <AnimatedPage><CareerAdvice /></AnimatedPage>)} />
         <Route path="/career-advice/:slug" element={publicPage(appOnly, <AnimatedPage><GuideArticle /></AnimatedPage>)} />
-        <Route path="/pricing" element={<PricingRoute />} />
+        {/* Marketing surfaces never initialise checkout: gradr.me/pricing hands
+            the visitor to the product's pricing route on app.gradr.me. */}
+        <Route path="/pricing" element={homeOnly ? <AppPricingRedirect /> : <PricingRoute />} />
         <Route path="/privacy" element={publicPage(appOnly, <AnimatedPage><Privacy /></AnimatedPage>)} />
         <Route path="/terms" element={publicPage(appOnly, <AnimatedPage><Terms /></AnimatedPage>)} />
         <Route path="/refund-policy" element={publicPage(appOnly, <AnimatedPage><RefundPolicy /></AnimatedPage>)} />
