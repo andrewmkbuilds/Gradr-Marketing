@@ -354,6 +354,33 @@ async function handlePaymentFailed(data: any, env: PaddleEnv) {
   });
 }
 
+/** Receipt for a subscription payment (first charge or renewal). */
+// deno-lint-ignore no-explicit-any
+async function sendSubscriptionReceipt(data: any, env: PaddleEnv) {
+  const subscriptionId = data?.subscriptionId ?? null;
+  if (!subscriptionId) return;
+  const { data: row } = await db()
+    .from("subscribers")
+    .select("user_id, subscription_tier, billing_interval, current_period_end")
+    .eq("stripe_subscription_id", subscriptionId)
+    .eq("environment", env)
+    .maybeSingle();
+  const userId = (row?.user_id as string | undefined) ?? data?.customData?.userId;
+  if (!userId) return;
+
+  await billingEmail("payment-successful", await emailFor(userId, env), `txn-paid-${data.id}`, {
+    amount: formatMoney(
+      data?.details?.totals?.grandTotal ?? data?.details?.totals?.total,
+      (data?.currencyCode ?? "USD").toUpperCase(),
+    ),
+    planName: planLabel(row?.subscription_tier as string | null, row?.billing_interval as string | null),
+    interval: (row?.billing_interval as string | null) ?? undefined,
+    paidAt: formatDate(data?.billedAt ?? new Date().toISOString()),
+    nextBillingDate: formatDate(row?.current_period_end ?? null),
+    invoiceUrl: "https://app.gradr.me/billing",
+  });
+}
+
 /** A completed payment clears a prior dunning state. */
 // deno-lint-ignore no-explicit-any
 async function clearPaymentIssue(data: any, env: PaddleEnv) {
@@ -700,6 +727,7 @@ async function handleRequest(req: Request): Promise<Response> {
       case EventName.TransactionCompleted:
         await clearPaymentIssue(event.data, env);
         await grantPackCredits(event.data, env);
+        await sendSubscriptionReceipt(event.data, env);
         await recordDiscountUse(event.data, env);
         await recordAffiliateCommission(event.data, env);
         await phCapture("payment_completed", eventUserId, {
