@@ -18,6 +18,7 @@ import { useBillingActions, useCredits, usePurchases, useSubscription } from "@/
 import { Seo } from "@/components/Seo";
 import { PaymentIssueBanner } from "@/components/PaymentIssueBanner";
 import { PaymentsConfigBanner } from "@/components/PaymentsConfigBanner";
+import { CancelPlanDialog } from "@/components/billing/CancelPlanDialog";
 import { Link } from "react-router-dom";
 
 function formatMoney(cents: number, currency: string) {
@@ -50,6 +51,7 @@ export default function Billing() {
   const [to, setTo] = useState("");
   const [packType, setPackType] = useState("all");
   const [status, setStatus] = useState("all");
+  const [cancelOpen, setCancelOpen] = useState(false);
 
   const filtered = useMemo(() => {
     return (purchases ?? []).filter((p) => {
@@ -150,10 +152,17 @@ export default function Billing() {
 
           <div className="flex gap-2">
             {sub.isSubscribed ? (
-              <Button className="gap-2" onClick={() => void openPortal()} disabled={pending === "portal"}>
-                <ExternalLink className="h-4 w-4" />
-                Manage subscription
-              </Button>
+              <>
+                <Button className="gap-2" onClick={() => void openPortal()} disabled={pending === "portal"}>
+                  <ExternalLink className="h-4 w-4" />
+                  Manage subscription
+                </Button>
+                {!sub.cancelAtPeriodEnd && (
+                  <Button variant="ghost" onClick={() => setCancelOpen(true)}>
+                    Cancel plan
+                  </Button>
+                )}
+              </>
             ) : (
               <Button className="gap-2" onClick={() => navigate("/pricing")}>
                 <Sparkles className="h-4 w-4" />
@@ -164,9 +173,16 @@ export default function Billing() {
         </div>
         {sub.isSubscribed && (
           <p className="text-xs text-muted-foreground mt-4">
-            Switch between monthly and annual billing, update your card, or cancel from the Paddle billing portal.
+            Change plan from the pricing page — upgrades apply instantly and are pro-rated. Update your
+            card or cancel from the Paddle billing portal.
           </p>
         )}
+        <CancelPlanDialog
+          open={cancelOpen}
+          onOpenChange={setCancelOpen}
+          onContinueToCancel={() => void openPortal()}
+          onOfferAccepted={() => void restorePurchases()}
+        />
       </Card>
 
       <div className="grid gap-4 sm:grid-cols-2">
