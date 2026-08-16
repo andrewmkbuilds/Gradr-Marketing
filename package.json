@@ -17,6 +17,8 @@
     "test:watch": "vitest",
     "security:baseline": "node scripts/security-baseline.mjs",
     "smoke": "node scripts/smoke-test.mjs",
+    "db:health": "bun run scripts/db-health.mjs",
+    "test:db": "vitest run src/test/dbContract.test.ts",
     "test:security": "vitest run src/test/securityBaseline.test.ts",
     "check:legal": "node scripts/check-legal-readiness.mjs",
     "test:visual": "node scripts/auth-hero-visual.mjs",

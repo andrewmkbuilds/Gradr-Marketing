@@ -14,9 +14,9 @@ import {
  * only "object not found" and 5xx responses are treated as failures.
  */
 
-const url = process.env.VITE_SUPABASE_URL;
-const key =
-  process.env.VITE_SUPABASE_PUBLISHABLE_KEY || process.env.VITE_SUPABASE_ANON_KEY;
+const env = { ...process.env, ...(import.meta.env as Record<string, string | undefined>) };
+const url = env.VITE_SUPABASE_URL;
+const key = env.VITE_SUPABASE_PUBLISHABLE_KEY || env.VITE_SUPABASE_ANON_KEY;
 const enabled = Boolean(url && key);
 
 const headers = {
