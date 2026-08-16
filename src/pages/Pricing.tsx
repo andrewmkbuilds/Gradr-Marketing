@@ -1,4 +1,4 @@
-import { Check, Sparkles, Rocket, Zap, Crown, Loader2, BadgePercent, ShieldCheck } from "lucide-react";
+import { Check, Sparkles, Rocket, Zap, Crown, Loader2, BadgePercent, ShieldCheck, AlertTriangle, RefreshCw } from "lucide-react";
 import { trackSignupCta, trackUpgradeCta } from "@/lib/telemetry/events";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -19,7 +19,13 @@ import {
   planPriceLabel,
   type PlanId,
 } from "@/config/pricing";
-import { formatMinorAmount, previewPrices, type PreviewedPrice } from "@/lib/paddle";
+import {
+  formatMinorAmount,
+  previewPrices,
+  PriceLookupError,
+  type PriceLookupCode,
+  type PreviewedPrice,
+} from "@/lib/paddle";
 import type { PlanKey } from "@/lib/billing";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
@@ -377,7 +383,7 @@ export default function Pricing() {
                     onClick={() => (current ? navigate("/billing") : handleSelect(tier))}
                     variant={tier.highlighted ? "default" : "outline"}
                     className="w-full"
-                    disabled={pending === pendingKey}
+                    disabled={pending === pendingKey || (!current && checkoutBlocked)}
                   >
                     {current ? (
                       "Current plan"
@@ -410,7 +416,8 @@ export default function Pricing() {
                   <Skeleton className="h-8 w-24" />
                 ) : (
                   <span className="type-h1 text-foreground">
-                    {priceFor(pack.priceId) ?? "Price shown at checkout"}
+                    {priceFor(pack.priceId) ??
+                      (checkoutBlocked ? "Price unavailable" : "Price shown at checkout")}
                   </span>
                 )}
               </div>
@@ -418,9 +425,13 @@ export default function Pricing() {
                 variant="outline"
                 className="w-full"
                 onClick={() => handlePack(pack.priceId)}
-                disabled={pending === pack.priceId}
+                disabled={pending === pack.priceId || checkoutBlocked}
               >
-                {pending === pack.priceId ? "Opening checkout…" : "Buy pack"}
+                {pending === pack.priceId
+                  ? "Opening checkout…"
+                  : checkoutBlocked
+                    ? "Unavailable"
+                    : "Buy pack"}
               </Button>
             </Card>
             </SpatialCard>
