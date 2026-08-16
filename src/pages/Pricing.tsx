@@ -48,7 +48,8 @@ export default function Pricing() {
 
   const [prices, setPrices] = useState<Record<string, PreviewedPrice>>({});
   const [pricesLoading, setPricesLoading] = useState(true);
-  const [pricesError, setPricesError] = useState<string | null>(null);
+  const [priceFailure, setPriceFailure] = useState<PriceLookupCode | null>(null);
+  const [reloadKey, setReloadKey] = useState(0);
 
   // Localized prices come straight from Paddle — no client-side math, no
   // re-formatting of the strings Paddle returns.
@@ -63,18 +64,20 @@ export default function Pricing() {
       .then((result) => {
         if (cancelled) return;
         setPrices(result);
-        setPricesError(null);
+        setPriceFailure(null);
       })
       .catch((err) => {
         if (cancelled) return;
-        setPricesError(err instanceof Error ? err.message : "Couldn't load prices");
+        setPriceFailure(err instanceof PriceLookupError ? err.code : "unavailable");
       })
       .finally(() => !cancelled && setPricesLoading(false));
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [reloadKey]);
 
+  /** Catalog is genuinely missing → checkout cannot start, so it is disabled. */
+  const checkoutBlocked = priceFailure === "catalog_missing";
   const priceFor = (id: string) => prices[id]?.formattedTotal;
 
   const handleSelect = (tier: Tier | null) => {
