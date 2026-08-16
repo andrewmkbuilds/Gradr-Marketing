@@ -32,6 +32,11 @@ export interface PackCheckoutRequest {
 export interface CheckoutResult {
   url?: string;
   completed?: boolean;
+  /**
+   * For in-place plan changes: whether the new plan is live now (upgrade,
+   * pro-rated immediately) or starts at the next renewal (downgrade).
+   */
+  effect?: "immediate" | "next_billing_period";
 }
 
 /**

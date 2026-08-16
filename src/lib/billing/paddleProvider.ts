@@ -57,6 +57,19 @@ export async function openPaddleCheckout(
   return { completed: false };
 }
 
+/**
+ * Switches an existing subscription to another plan instead of opening a
+ * second checkout. Returns false when the user has nothing to change, so the
+ * caller falls back to a normal checkout.
+ */
+async function changeExistingPlan(priceId: string): Promise<CheckoutResult | null> {
+  const { data, error } = await supabase.functions.invoke("payments-change-plan", {
+    body: { priceId, environment: getPaddleEnvironment() },
+  });
+  if (error || !data?.ok) return null;
+  return { completed: true, effect: data.effect as "immediate" | "next_billing_period" };
+}
+
 /** Lovable-managed payments (Paddle) — overlay checkout + hosted customer portal. */
 export const paddleBillingProvider: BillingProvider = {
   id: "paddle",
@@ -64,12 +77,16 @@ export const paddleBillingProvider: BillingProvider = {
   async createCheckout({ plan, interval }: CheckoutRequest): Promise<CheckoutResult> {
     const priceId = PLAN_PRICE_IDS[`${plan}-${interval}`];
     if (!priceId) throw new Error(`Unknown plan: ${plan} ${interval}`);
+    // Existing subscribers upgrade in place (pro-rated immediately) rather
+    // than starting a duplicate subscription through checkout.
+    const changed = await changeExistingPlan(priceId);
+    if (changed) return changed;
     const discount = await resolveCheckoutDiscount(plan, interval);
-    return openPaddleCheckout(priceId, "/welcome", discount.discountId ?? null);
+    return openPaddleCheckout(priceId, "/dashboard?checkout=success", discount.discountId ?? null);
   },
 
   async createPackCheckout({ pack }: PackCheckoutRequest): Promise<CheckoutResult> {
-    return openPaddleCheckout(pack, "/welcome?purchase=pack");
+    return openPaddleCheckout(pack, "/dashboard?checkout=success&purchase=pack");
   },
 
   async openCustomerPortal(): Promise<CheckoutResult> {
