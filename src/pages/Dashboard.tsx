@@ -11,6 +11,7 @@ import { formatDistanceToNow } from "date-fns";
 import { useQuery } from "@tanstack/react-query";
 import { CreditsBalance } from "@/components/CreditsBalance";
 import { PaymentIssueBanner } from "@/components/PaymentIssueBanner";
+import { PurchaseSuccessToast } from "@/components/billing/PurchaseSuccessToast";
 import { UsageBars } from "@/components/UsageBars";
 import { Surface, SurfaceHeader } from "@/components/ui/surface";
 import { CareerReadiness, type ReadinessPillar } from "@/components/dashboard/CareerReadiness";
@@ -286,6 +287,7 @@ export default function Dashboard() {
 
   return (
     <div className="mx-auto max-w-7xl space-y-4 sm:space-y-6">
+      <PurchaseSuccessToast />
       <div>
         <h1 className="type-h2 tracking-tight text-foreground sm:text-2xl">Career Dashboard</h1>
         <p className="text-sm text-muted-foreground mt-1">Your AI-powered career command center</p>
