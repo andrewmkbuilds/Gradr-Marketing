@@ -1,4 +1,5 @@
 import { toast } from "sonner";
+import { reportApiFailure } from "@/lib/monitoring/reliability";
 
 /**
  * Standardized error handler for AI edge function calls.
@@ -15,6 +16,13 @@ export function handleAiFunctionError(
     anyErr?.context?.status ?? anyErr?.status ?? anyErr?.context?.response?.status;
   const message: string =
     data?.error ?? anyErr?.message ?? "Something went wrong";
+
+  // Every AI edge-function failure lands in the reliability funnel, whether or
+  // not we have a friendly toast for it.
+  reportApiFailure(anyErr?.context?.functionName ?? "ai_function", fnError, {
+    status: status ?? null,
+    message,
+  });
 
   if (status === 401 || /unauthorized/i.test(message)) {
     toast.error("Please sign in to use this feature", {

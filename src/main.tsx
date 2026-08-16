@@ -9,9 +9,11 @@ import { initTelemetry } from "./lib/telemetry/journey";
 import RootErrorBoundary from "./components/RootErrorBoundary";
 import { registerServiceWorker } from "./lib/offline/registerServiceWorker";
 import { initCspReporting } from "./lib/security/cspReport";
+import { initReliabilityMonitors } from "./lib/monitoring/reliability";
 
 initTelemetry();
 initCspReporting();
+initReliabilityMonitors();
 registerServiceWorker();
 
 createRoot(document.getElementById("root")!).render(

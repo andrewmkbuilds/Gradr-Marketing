@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from "react";
+import { reportStorageFailure } from "@/lib/monitoring/reliability";
 import { track } from "@/lib/telemetry/events";
 import { Link } from "react-router-dom";
 import {
@@ -153,7 +154,15 @@ export default function ResumeEngine() {
         .from("resumes")
         .upload(filePath, selectedFile);
 
-      if (uploadError) throw uploadError;
+      if (uploadError) {
+        reportStorageFailure("resume_upload", uploadError, {
+          context: {
+            file_type: selectedFile.type || "unknown",
+            file_size_kb: Math.round(selectedFile.size / 1024),
+          },
+        });
+        throw uploadError;
+      }
 
       const text = extractedText || (await extractResumeText(selectedFile));
 
