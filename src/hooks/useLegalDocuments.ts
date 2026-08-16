@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { reportApiFailure } from "@/lib/monitoring/reliability";
 import {
   PRIVACY_V1,
   PRIVACY_V1_EFFECTIVE,
@@ -119,8 +120,24 @@ export function usePendingLegalAcceptances(enabled: boolean) {
       setLoading(false);
       return;
     }
+    const { data: session } = await supabase.auth.getSession();
     const { data, error } = await supabase.rpc("pending_legal_acceptances");
-    if (!error) setPending((data ?? []) as PendingAcceptance[]);
+    if (error) {
+      // A failure here hides the acceptance modal entirely — never swallow it.
+      reportApiFailure("rpc:pending_legal_acceptances", error, {
+        code: error.code || undefined,
+        message: error.message,
+        context: {
+          userId: session?.session?.user?.id ?? null,
+          hasSession: Boolean(session?.session),
+          pgCode: error.code ?? null,
+          details: error.details ?? null,
+          hint: error.hint ?? null,
+        },
+      });
+    } else {
+      setPending((data ?? []) as PendingAcceptance[]);
+    }
     setLoading(false);
   }, [enabled]);
 
@@ -134,7 +151,14 @@ export function usePendingLegalAcceptances(enabled: boolean) {
         _document_id: documentId,
         _user_agent: typeof navigator !== "undefined" ? navigator.userAgent : undefined,
       });
-      if (error) throw error;
+      if (error) {
+        reportApiFailure("rpc:accept_legal_document", error, {
+          code: error.code || undefined,
+          message: error.message,
+          context: { documentId, pgCode: error.code ?? null, hint: error.hint ?? null },
+        });
+        throw error;
+      }
       await refresh();
     },
     [refresh],
