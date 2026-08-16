@@ -14,7 +14,8 @@ import {
 } from "@/components/ui/select";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
-import { useBillingActions, useCredits, usePurchases, useSubscription } from "@/hooks/useSubscription";
+import { useBillingActions, useBillingRealtime, useCredits, usePurchases, useSubscription } from "@/hooks/useSubscription";
+import { PLAN_PRICING, formatUsd, type PlanId } from "@/config/pricing";
 import { Seo } from "@/components/Seo";
 import { PaymentIssueBanner } from "@/components/PaymentIssueBanner";
 import { PaymentsConfigBanner } from "@/components/PaymentsConfigBanner";
@@ -32,6 +33,7 @@ function packTypeOf(packKey: string) {
 
 
 export default function Billing() {
+  useBillingRealtime();
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const sub = useSubscription();
@@ -87,6 +89,16 @@ export default function Billing() {
   };
 
 
+
+  // List price for the plan actually on file. Paddle may charge less (discount,
+  // proration or tax differences), so this is labelled as an estimate.
+  const nextAmount = sub.isSubscribed && sub.plan !== "free" && !sub.cancelAtPeriodEnd
+    ? formatUsd(
+        sub.billingInterval === "annual"
+          ? PLAN_PRICING[sub.plan as PlanId].annual
+          : PLAN_PRICING[sub.plan as PlanId].monthly,
+      )
+    : null;
 
   const renews = sub.currentPeriodEnd
     ? new Date(sub.currentPeriodEnd).toLocaleDateString(undefined, {
@@ -145,6 +157,28 @@ export default function Billing() {
                 {sub.cancelAtPeriodEnd ? `Cancels on ${renews}` : `Renews on ${renews}`}
               </p>
             )}
+            {sub.isSubscribed && (
+              <dl className="grid gap-3 pt-2 sm:grid-cols-3">
+                <div>
+                  <dt className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Billing cycle</dt>
+                  <dd className="text-sm text-foreground">
+                    {sub.billingInterval === "annual" ? "Yearly" : "Monthly"}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-xs uppercase tracking-[0.14em] text-muted-foreground">
+                    {sub.cancelAtPeriodEnd ? "Access until" : "Next renewal"}
+                  </dt>
+                  <dd className="text-sm text-foreground">{renews ?? "—"}</dd>
+                </div>
+                <div>
+                  <dt className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Next charge</dt>
+                  <dd className="text-sm text-foreground">
+                    {sub.cancelAtPeriodEnd ? "No further charges" : nextAmount ? `${nextAmount} (est.)` : "—"}
+                  </dd>
+                </div>
+              </dl>
+            )}
             {!sub.isSubscribed && (
               <p className="text-sm text-muted-foreground">Upgrade to unlock unlimited AI analysis and coaching.</p>
             )}
@@ -187,9 +221,14 @@ export default function Billing() {
 
       <div className="grid gap-4 sm:grid-cols-2">
         <Card className="p-5">
-          <div className="flex items-center gap-2 mb-2">
-            <Zap className="h-4 w-4 text-primary" />
-            <span className="text-sm text-muted-foreground">Application credits</span>
+          <div className="flex items-center justify-between gap-2 mb-2">
+            <span className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Zap className="h-4 w-4 text-primary" />
+              Application credits
+            </span>
+            <Button variant="ghost" size="sm" className="h-7 text-xs" asChild>
+              <Link to="/credits">Details</Link>
+            </Button>
           </div>
           <div className="type-h1 text-foreground">{credits?.application_credits ?? 0}</div>
         </Card>
