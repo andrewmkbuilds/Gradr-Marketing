@@ -59,6 +59,7 @@ Deno.serve(async (req) => {
       .select("id")
       .eq("user_id", user.id)
       .eq("eligibility_type", "retention")
+      .limit(1)
       .maybeSingle();
     if (prior) return json({ error: "already_redeemed" }, 409);
 
