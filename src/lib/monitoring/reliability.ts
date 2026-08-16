@@ -192,7 +192,37 @@ export async function monitored<T>(
   }
 }
 
-/** Escape hatch used by the global handlers below. */
+/**
+ * Global safety net: anything that escapes a component or a promise chain is
+ * still classified into the reliability funnel.
+ */
+export function initReliabilityMonitors() {
+  if (typeof window === "undefined") return;
+
+  window.addEventListener("unhandledrejection", (event) => {
+    const reason = (event as PromiseRejectionEvent).reason;
+    const message = reason instanceof Error ? reason.message : String(reason ?? "");
+    if (/abort/i.test(message)) return;
+    reportIncident({
+      kind: /auth|jwt|session/i.test(message) ? "auth" : "api",
+      operation: "unhandled_rejection",
+      cause: reason,
+      message,
+    });
+  });
+
+  window.addEventListener("error", (event) => {
+    if (!(event as ErrorEvent).error) return;
+    reportIncident({
+      kind: "api",
+      operation: "window_error",
+      cause: (event as ErrorEvent).error,
+      message: (event as ErrorEvent).message,
+    });
+  });
+}
+
+/** Escape hatch for callers that only want the raw capture. */
 export function reportUnhandled(error: unknown, source: string) {
   captureError(error, { source });
 }
