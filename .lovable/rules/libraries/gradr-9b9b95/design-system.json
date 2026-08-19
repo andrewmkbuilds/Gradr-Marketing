@@ -1,0 +1,697 @@
+{
+  "meta": {
+    "name": "Gradr",
+    "package": "@ws-yhsbpv7vzerhgz1jytm5/7b7f6ecf-2053-4eab-8d79-98c165b342aa",
+    "version": "1.4.0",
+    "framework": "react",
+    "css_framework": "tailwind",
+    "starter_template": "custom_design_system",
+    "theme_files": [
+      "src/gradr/styles/theme.css"
+    ],
+    "source_type": "local",
+    "source_manifest": {
+      "#enrichment": "3619a28d34abf7a712b52540eb66d67b8bf4fa8bb7d616421424fbda316f26d6",
+      ".dsignore": "81ae609430738e4cc18383ed07690de8",
+      ".gitignore": "974ed55248e0f10703f9ebbce26ec853",
+      ".lovable/meta.yaml": "8794970d6049858cc148d2b86f7a2b22",
+      ".lovable/sources.yaml": "1c992250fe68cf2d1473048454ea330a",
+      ".lovable/system.md": "3b757cf48989186adbe7456af792b635",
+      "README.md": "d19675c449605f23c7cfa133c69b398b",
+      "bunfig.toml": "25f4c8696b22b0943db7191e0cdf7942",
+      "eslint.config.js": "07a67437fb1a45ab36d6de0145ff09de",
+      "lovable.toml": "b32568cbef680de9cbb176344986f1a3",
+      "mockupPreviewPlugin.ts": "31ef4032f7d8544530469d43df45be9e",
+      "package.json": "0096d66fe7abe106fdd19f30e06dca69",
+      "playwright.config.ts": "e3e7a0b72485be535def23970b186ad2",
+      "public/favicon.png": "d90cd415403e33ee7aa5f7a133032d09",
+      "public/gradr-token-changelog.json": "6631b2b79352d02df04c8372336e27ab",
+      "public/gradr-tokens.json": "7566bdda330dd0fd976ecb0e50da3590",
+      "public/og-gradr.png": "f7da55f4d1e5717b8f146adbf26e931e",
+      "scripts/export-tokens.mjs": "bef08ad98ebb7c65240c1a587f32b0e7",
+      "src/assets/logos/gradr-app-icon.png": "c3e07629860b47432bc9f986c9171866",
+      "src/assets/logos/gradr-logo-mono-black.png": "7c3b284e86d4235fb6923763899161d1",
+      "src/assets/logos/gradr-logo-mono-white.png": "2513c793afe90b5b8277067d08369803",
+      "src/assets/logos/gradr-logo.png": "9def09030727c1a8918a71474cb68d33",
+      "src/gradr/__tests__/__snapshots__/variants.test.tsx.snap": "f8d773c50f089fde45e09100aea41173",
+      "src/gradr/__tests__/a11y.test.tsx": "35eba0608df9480547fc1226bdcef947",
+      "src/gradr/__tests__/variants.test.tsx": "e26fa64cc972c6a56aea221b00b41992",
+      "src/gradr/components/alert.tsx": "3a8a1a89d5a4e115790f273c8b9115ee",
+      "src/gradr/components/badge.tsx": "96d38ab536125442443b5907946b8895",
+      "src/gradr/components/button.tsx": "5ecd92e246c39574a963f921ca29df51",
+      "src/gradr/components/card.tsx": "cc36bc7bfa49995920e6d9dd363f593f",
+      "src/gradr/components/form-field.tsx": "b2656b6d4ad9c0d4909db21f77d73c13",
+      "src/gradr/components/input.tsx": "0c3939c5d40c98ded773c1571cb67bb9",
+      "src/gradr/components/label.tsx": "df1f9149cc75bb63d703cf2034cdf540",
+      "src/gradr/components/text.tsx": "bec6dd415d4714fdb8c18c3df8deee46",
+      "src/gradr/components/textarea.tsx": "8cee38f7d46915930de071cda8146e18",
+      "src/gradr/index.ts": "a48d73ee8721a24d6f0622ad108b47a8",
+      "src/gradr/lib/cn.ts": "e795db07767d3849242dae01cb33960e",
+      "src/gradr/lib/theme.tsx": "900aba2089c443b45f15f224b8391210",
+      "src/gradr/styles/theme.css": "c4dbe5600058e5203814792ae6211caa",
+      "src/gradr/tokens/index.ts": "dd0a9e5d0e663492000c8bb5bea9c348",
+      "src/gradr/tokens/tokens.css": "ed9772c1389f8e950bca1afad9bbd8e6",
+      "src/gradr/tokens/tokens.gen.ts": "2e9015a98c641d94b44bb734c4ab79c7",
+      "src/gradr/tokens/tokens.json": "b8e8b9ab1e3688885f5e1318650ee6d5",
+      "src/index.ts": "8b33e42996f3b073361c2add692802f4",
+      "src/mockup-preview.d.ts": "b62b797986c7306e90175027247c0568",
+      "src/routeTree.gen.ts": "b532e49ed44947a1bff483338212b5df",
+      "src/router.tsx": "8f905e713b0eba7fa8148b7995a708c9",
+      "src/routes/[__component].preview.$.tsx": "06d671f4774ac83355e59ad69a350bab",
+      "src/routes/[__mockup].preview.$.tsx": "5d9f42470848aa60148f20f9580e240e",
+      "src/routes/__root.tsx": "165da802e6244ffe6561681d8a92698b",
+      "src/routes/accessibility.tsx": "910f1b9cd0974a1cc02e3fabe8b4ec04",
+      "src/routes/api/public/tokens.ts": "dbfee1a6e63768112009e687f2044d2a",
+      "src/routes/colors.tsx": "a71289294a62f11e21e84f75f172e63c",
+      "src/routes/components.tsx": "43f7a3efcd92ff6e1d5b3d246fcc869b",
+      "src/routes/contrast-audit.tsx": "3a52856f05777df781c6d66153396f04",
+      "src/routes/index.tsx": "acc6455b8fa194f99acefda9dbd11b3f",
+      "src/routes/style-guide.tsx": "8379b53ac3bf0c57159570cf767f0c25",
+      "src/routes/theme-matrix.tsx": "31cbf4f63b36cd5fa851fa3922ec5126",
+      "src/routes/token-changelog.tsx": "025d3482ad034ed1a0993faefb05062e",
+      "src/routes/tokens.tsx": "f7a14b4cc5e7e7cae52b575014dcd0c3",
+      "src/routes/typography.tsx": "a1601a3ae35551a46413c94469f95476",
+      "src/showcase/chrome.tsx": "a7d50e046e358199334fffdd374a0078",
+      "src/showcase/component-docs.ts": "eade0c393967981d69fa0ebfce714b31",
+      "src/showcase/contrast.ts": "08baac6da7d906a94d921413fbebeaf4",
+      "src/showcase/form-field-demo.tsx": "92841cc340dff06e7c254cb85efae136",
+      "src/showcase/props-table.tsx": "2a03cd3c8530a1b1f384688cf8e39862",
+      "src/showcase/theme-matrix.tsx": "5ea4dd21c99e1a9c82ffb84e8fa80174",
+      "src/showcase/token-diff.ts": "24af40f7b289c93d9fcd364b3e22d491",
+      "src/showcase/token-docs.ts": "b6937f6ad3e6ec8225d4c2afef5649df",
+      "src/styles.css": "d93d5a00e57d88c537b55cb1d804daf3",
+      "tests/visual/__screenshots__/theme-matrix.spec.ts/matrix-pane-dark-on-dark.png": "49e7c2495e08aa25fb2460c256af72b3",
+      "tests/visual/__screenshots__/theme-matrix.spec.ts/matrix-pane-dark-on-light.png": "b05d8e2b5269cda84d457931d1bdef6b",
+      "tests/visual/__screenshots__/theme-matrix.spec.ts/matrix-pane-light-on-dark.png": "d426db42707173c1d4201428a7fd5c8b",
+      "tests/visual/__screenshots__/theme-matrix.spec.ts/matrix-pane-light-on-light.png": "0d7b631e101a370f0b2472e4bf83c2cd",
+      "tests/visual/__screenshots__/theme-matrix.spec.ts/style-guide-dark.png": "5baae7e513ad9b0c027d78f7849ff705",
+      "tests/visual/__screenshots__/theme-matrix.spec.ts/style-guide-light.png": "f0a1e133ca2fb014d00217202e56fd3f",
+      "tests/visual/__screenshots__/theme-matrix.spec.ts/theme-matrix-dark.png": "89d17a6b54f564427897bbabf8bc6ade",
+      "tests/visual/__screenshots__/theme-matrix.spec.ts/theme-matrix-light.png": "1ebcd1f7a63addb019c9d675083a19fb",
+      "tests/visual/style-guide-interactions.spec.ts": "d3751a7fc09b055280dda0b63bebea51",
+      "tests/visual/theme-matrix.spec.ts": "0163562afe0fe949819fb5ae51b076f7",
+      "tsconfig.json": "2c01f74695a52036f2a023e04e4ceb8e",
+      "vite.config.ts": "94fd08fb73a33f8d2c51992ff209a0c2",
+      "vitest.config.ts": "52e330d06c1eef879fd18f287f1e2083",
+      "vitest.setup.ts": "3709e3aa95abf0544678f0f2d9b46702",
+      "wrangler.jsonc": "680b897d48e44bcc65fe437c29b38f3b"
+    },
+    "pipeline_version": 8
+  },
+  "tokens": {
+    "color": [
+      {
+        "name": "--color-shell",
+        "raw": "#f9f7f6",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--color-fog",
+        "raw": "#b3c1c6",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--color-harbor",
+        "raw": "#256074",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--color-hull",
+        "raw": "#733e24",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--color-ink",
+        "raw": "#18292f",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--color-harbor-soft",
+        "raw": "#e7eef1",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--color-hull-soft",
+        "raw": "#f3e9e3",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--color-slate",
+        "raw": "#55676d",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--color-success",
+        "raw": "#2f6b46",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--background",
+        "raw": "#f9f7f6",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--foreground",
+        "raw": "#18292f",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--surface",
+        "raw": "#ffffff",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--surface-muted",
+        "raw": "#eeeae8",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--border",
+        "raw": "#869398",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--muted-foreground",
+        "raw": "#55676d",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--primary",
+        "raw": "#256074",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--primary-foreground",
+        "raw": "#f9f7f6",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--accent",
+        "raw": "#733e24",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--accent-foreground",
+        "raw": "#f9f7f6",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--destructive",
+        "raw": "#8c2f22",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--destructive-foreground",
+        "raw": "#f9f7f6",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--ring",
+        "raw": "#256074",
+        "source": "src/gradr/styles/theme.css"
+      }
+    ],
+    "spacing": [
+      {
+        "name": "--text-h1--letter-spacing",
+        "raw": "-0.02em",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--text-h2--letter-spacing",
+        "raw": "-0.015em",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--text-h3--letter-spacing",
+        "raw": "-0.01em",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--text-overline--letter-spacing",
+        "raw": "0.09em",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--text-button--letter-spacing",
+        "raw": "0.005em",
+        "source": "src/gradr/styles/theme.css"
+      }
+    ],
+    "typography": [
+      {
+        "name": "--font-display",
+        "raw": "\"Bricolage Grotesque\", ui-sans-serif, system-ui, sans-serif",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--font-sans",
+        "raw": "\"Geist\", \"Inter\", ui-sans-serif, system-ui, sans-serif",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--text-h1",
+        "raw": "3.5rem",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--text-h1--line-height",
+        "raw": "1.05",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--text-h1--font-weight",
+        "raw": "600",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--text-h2",
+        "raw": "2.25rem",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--text-h2--line-height",
+        "raw": "1.1",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--text-h2--font-weight",
+        "raw": "600",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--text-h3",
+        "raw": "1.75rem",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--text-h3--line-height",
+        "raw": "1.2",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--text-h3--font-weight",
+        "raw": "600",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--text-h4",
+        "raw": "1.375rem",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--text-h4--line-height",
+        "raw": "1.3",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--text-h4--font-weight",
+        "raw": "600",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--text-h5",
+        "raw": "1.125rem",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--text-h5--line-height",
+        "raw": "1.4",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--text-h5--font-weight",
+        "raw": "600",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--text-h6",
+        "raw": "1rem",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--text-h6--line-height",
+        "raw": "1.45",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--text-h6--font-weight",
+        "raw": "600",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--text-body-lg",
+        "raw": "1.125rem",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--text-body-lg--line-height",
+        "raw": "1.65",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--text-body",
+        "raw": "1rem",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--text-body--line-height",
+        "raw": "1.6",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--text-body-sm",
+        "raw": "0.875rem",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--text-body-sm--line-height",
+        "raw": "1.55",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--text-caption",
+        "raw": "0.8125rem",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--text-caption--line-height",
+        "raw": "1.45",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--text-overline",
+        "raw": "0.6875rem",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--text-overline--line-height",
+        "raw": "1.3",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--text-overline--font-weight",
+        "raw": "600",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--text-button",
+        "raw": "0.875rem",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--text-button--line-height",
+        "raw": "1",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--text-button--font-weight",
+        "raw": "500",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--text-code",
+        "raw": "0.8125rem",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--text-code--line-height",
+        "raw": "1.5",
+        "source": "src/gradr/styles/theme.css"
+      }
+    ],
+    "radius": [
+      {
+        "name": "--radius-card",
+        "raw": "1rem",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--radius-control",
+        "raw": "0.7rem",
+        "source": "src/gradr/styles/theme.css"
+      }
+    ],
+    "shadow": [
+      {
+        "name": "--shadow-raise",
+        "raw": "0 1px 2px rgb(37 96 116 / 0.3), 0 8px 24px -14px rgb(24 41 47 / 0.25)",
+        "source": "src/gradr/styles/theme.css"
+      },
+      {
+        "name": "--shadow-float",
+        "raw": "0 2px 4px rgb(24 41 47 / 0.08), 0 20px 40px -20px rgb(24 41 47 / 0.35)",
+        "source": "src/gradr/styles/theme.css"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Alert",
+      "file": "src/gradr/components/alert.tsx",
+      "import_path": "",
+      "props": [
+        {
+          "name": "variant",
+          "type": "enum",
+          "values": [
+            "info",
+            "primary",
+            "danger"
+          ],
+          "default": "info"
+        },
+        {
+          "name": "title",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "Badge",
+      "file": "src/gradr/components/badge.tsx",
+      "import_path": "",
+      "props": [
+        {
+          "name": "variant",
+          "type": "enum",
+          "values": [
+            "neutral",
+            "primary",
+            "accent",
+            "danger",
+            "outline"
+          ],
+          "default": "neutral"
+        }
+      ]
+    },
+    {
+      "name": "Button",
+      "file": "src/gradr/components/button.tsx",
+      "import_path": "",
+      "props": [
+        {
+          "name": "variant",
+          "type": "enum",
+          "values": [
+            "primary",
+            "accent",
+            "outline",
+            "ghost",
+            "destructive",
+            "link"
+          ],
+          "default": "primary"
+        },
+        {
+          "name": "size",
+          "type": "enum",
+          "values": [
+            "sm",
+            "md",
+            "lg",
+            "icon",
+            "icon-sm",
+            "icon-lg",
+            "inline"
+          ],
+          "default": "md"
+        },
+        {
+          "name": "loading",
+          "type": "boolean"
+        }
+      ]
+    },
+    {
+      "name": "Card",
+      "file": "src/gradr/components/card.tsx",
+      "import_path": "",
+      "props": [
+        {
+          "name": "variant",
+          "type": "enum",
+          "values": [
+            "outline",
+            "raised",
+            "float"
+          ],
+          "default": "outline"
+        },
+        {
+          "name": "padding",
+          "type": "enum",
+          "values": [
+            "none",
+            "md",
+            "lg"
+          ],
+          "default": "md"
+        }
+      ]
+    },
+    {
+      "name": "CardTitle",
+      "file": "src/gradr/components/card.tsx",
+      "import_path": ""
+    },
+    {
+      "name": "CardDescription",
+      "file": "src/gradr/components/card.tsx",
+      "import_path": ""
+    },
+    {
+      "name": "FormField",
+      "file": "src/gradr/components/form-field.tsx",
+      "import_path": "",
+      "props": [
+        {
+          "name": "label",
+          "type": "any",
+          "required": true
+        },
+        {
+          "name": "help",
+          "type": "any"
+        },
+        {
+          "name": "error",
+          "type": "any"
+        },
+        {
+          "name": "required",
+          "type": "boolean"
+        },
+        {
+          "name": "children",
+          "type": "function",
+          "required": true
+        }
+      ]
+    },
+    {
+      "name": "Input",
+      "file": "src/gradr/components/input.tsx",
+      "import_path": "",
+      "props": [
+        {
+          "name": "invalid",
+          "type": "boolean"
+        }
+      ]
+    },
+    {
+      "name": "Label",
+      "file": "src/gradr/components/label.tsx",
+      "import_path": "",
+      "props": [
+        {
+          "name": "required",
+          "type": "boolean"
+        }
+      ]
+    },
+    {
+      "name": "Text",
+      "file": "src/gradr/components/text.tsx",
+      "import_path": "",
+      "props": [
+        {
+          "name": "variant",
+          "type": "enum",
+          "values": [
+            "h1",
+            "h2",
+            "h3",
+            "h4",
+            "h5",
+            "h6",
+            "lead",
+            "body",
+            "body-sm",
+            "caption",
+            "overline",
+            "button",
+            "code"
+          ],
+          "default": "body"
+        },
+        {
+          "name": "tone",
+          "type": "enum",
+          "values": [
+            "default",
+            "muted",
+            "primary",
+            "accent",
+            "destructive"
+          ],
+          "default": "default"
+        },
+        {
+          "name": "as",
+          "type": "any"
+        }
+      ]
+    },
+    {
+      "name": "Textarea",
+      "file": "src/gradr/components/textarea.tsx",
+      "import_path": "",
+      "props": [
+        {
+          "name": "invalid",
+          "type": "boolean"
+        }
+      ]
+    },
+    {
+      "name": "ThemeProvider",
+      "file": "src/gradr/lib/theme.tsx",
+      "import_path": ""
+    }
+  ],
+  "assets": [
+    {
+      "file": "src/assets/logos/gradr-app-icon.png",
+      "kind": "logo",
+      "format": "png"
+    },
+    {
+      "file": "src/assets/logos/gradr-logo-mono-black.png",
+      "kind": "logo",
+      "format": "png"
+    },
+    {
+      "file": "src/assets/logos/gradr-logo-mono-white.png",
+      "kind": "logo",
+      "format": "png"
+    },
+    {
+      "file": "src/assets/logos/gradr-logo.png",
+      "kind": "logo",
+      "format": "png"
+    }
+  ]
+}
