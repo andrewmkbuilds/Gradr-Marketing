@@ -289,7 +289,7 @@ export default function Dashboard() {
     <div className="mx-auto max-w-7xl space-y-4 sm:space-y-6">
       <PurchaseSuccessToast />
       <div>
-        <h1 className="type-h2 tracking-tight text-foreground sm:text-2xl">Career Dashboard</h1>
+        <h1 className="text-h2 tracking-tight text-foreground sm:text-2xl">Career Dashboard</h1>
         <p className="text-sm text-muted-foreground mt-1">Your AI-powered career command center</p>
       </div>
 
