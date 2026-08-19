@@ -1,0 +1,48 @@
+/* ============================================================
+   Gradr design system — Tailwind v3 adapter layer
+
+   The attached library (src/design-system/gradr-9b9b95) authors its
+   theme with Tailwind v4 `@theme`, which this project (Tailwind v3)
+   cannot consume directly. This file declares the library's brand and
+   shape tokens as plain custom properties so the utilities generated
+   in tailwind.config.ts (bg-harbor, rounded-control, shadow-raise, …)
+   resolve exactly to the library's values.
+
+   Semantic role tokens (--primary, --background, --border, …) are NOT
+   redeclared here: this project already carries the same Yacht Club
+   roles as HSL triplets, and the design-system components consume them
+   through the shared `bg-primary` / `text-foreground` utilities.
+
+   Do not edit values here to "customise" the system — they mirror the
+   library source. Loaded after index.css so the library wins.
+   ============================================================ */
+
+:root {
+  /* Brand palette — raw library values */
+  --color-shell: #f9f7f6;
+  --color-fog: #b3c1c6;
+  --color-harbor: #256074;
+  --color-hull: #733e24;
+  --color-ink: #18292f;
+  --color-harbor-soft: #e7eef1;
+  --color-hull-soft: #f3e9e3;
+  --color-slate: #55676d;
+  --color-success: #2f6b46;
+
+  /* Shape */
+  --radius-card: 1rem;
+  --radius-control: 0.7rem;
+
+  /* Elevation */
+  --shadow-raise: 0 1px 2px rgb(37 96 116 / 0.3), 0 8px 24px -14px rgb(24 41 47 / 0.25);
+  --shadow-float: 0 2px 4px rgb(24 41 47 / 0.08), 0 20px 40px -20px rgb(24 41 47 / 0.35);
+}
+
+.dark {
+  /* Dark-mode brand tints, matching the library's dark role values */
+  --color-harbor: #6fb2c8;
+  --color-hull: #c8794f;
+  --color-harbor-soft: #21353c;
+  --color-hull-soft: #33231a;
+  --color-slate: #b3c1c6;
+}
