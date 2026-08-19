@@ -59,15 +59,45 @@ export async function openPaddleCheckout(
 
 /**
  * Switches an existing subscription to another plan instead of opening a
- * second checkout. Returns false when the user has nothing to change, so the
- * caller falls back to a normal checkout.
+ * second checkout.
+ *
+ * Returns `null` ONLY when the caller genuinely has no live subscription and a
+ * normal checkout is safe. Any other failure throws, because falling through to
+ * checkout for an already-paying customer would create a second parallel
+ * subscription and double-charge them.
  */
 async function changeExistingPlan(priceId: string): Promise<CheckoutResult | null> {
   const { data, error } = await supabase.functions.invoke("payments-change-plan", {
     body: { priceId, environment: getPaddleEnvironment() },
   });
-  if (error || !data?.ok) return null;
-  return { completed: true, effect: data.effect as "immediate" | "next_billing_period" };
+
+  if (!error && data?.ok) {
+    return { completed: true, effect: data.effect as "immediate" | "next_billing_period" };
+  }
+
+  // The edge function encodes the reason in the JSON body; a non-2xx status
+  // surfaces as a FunctionsHttpError whose response we still need to read.
+  let reason: string | undefined = typeof data?.error === "string" ? data.error : undefined;
+  const ctx = (error as { context?: Response } | null)?.context;
+  if (!reason && ctx && typeof ctx.json === "function") {
+    try {
+      const body = await ctx.clone().json();
+      reason = typeof body?.error === "string" ? body.error : undefined;
+    } catch {
+      /* non-JSON response */
+    }
+  }
+
+  // No subscription yet → a fresh checkout is the correct path.
+  if (reason === "no_subscription") return null;
+
+  if (reason === "already_on_plan") {
+    throw new Error("You're already on this plan.");
+  }
+
+  throw new Error(
+    "We couldn't switch your plan just now. Please try again in a moment or manage your subscription from the billing portal.",
+  );
 }
 
 /** Lovable-managed payments (Paddle) — overlay checkout + hosted customer portal. */
@@ -84,6 +114,7 @@ export const paddleBillingProvider: BillingProvider = {
     const discount = await resolveCheckoutDiscount(plan, interval);
     return openPaddleCheckout(priceId, "/dashboard?checkout=success", discount.discountId ?? null);
   },
+
 
   async createPackCheckout({ pack }: PackCheckoutRequest): Promise<CheckoutResult> {
     return openPaddleCheckout(pack, "/dashboard?checkout=success&purchase=pack");
