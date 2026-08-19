@@ -5,6 +5,8 @@ import { createRoot } from "react-dom/client";
 import { HelmetProvider } from "react-helmet-async";
 import App from "./App.tsx";
 import "./index.css";
+// Loaded after index.css so the attached design system's tokens win.
+import "./styles/design-system.css";
 import { initTelemetry } from "./lib/telemetry/journey";
 import RootErrorBoundary from "./components/RootErrorBoundary";
 import { registerServiceWorker } from "./lib/offline/registerServiceWorker";
