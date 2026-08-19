@@ -31,7 +31,22 @@ export default {
           DEFAULT: "hsl(var(--surface))",
           secondary: "hsl(var(--surface-secondary))",
           elevated: "hsl(var(--surface-elevated))",
+          // Gradr design system: inset/hover fill role
+          muted: "hsl(var(--surface-secondary))",
         },
+        // Gradr design system brand palette
+        shell: "var(--color-shell)",
+        fog: "var(--color-fog)",
+        harbor: {
+          DEFAULT: "var(--color-harbor)",
+          soft: "var(--color-harbor-soft)",
+        },
+        hull: {
+          DEFAULT: "var(--color-hull)",
+          soft: "var(--color-hull-soft)",
+        },
+        ink: "var(--color-ink)",
+        slate: "var(--color-slate)",
         overlay: "hsl(var(--overlay))",
         info: {
           DEFAULT: "hsl(var(--info))",
@@ -122,6 +137,30 @@ export default {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+        // Gradr design system
+        card: "var(--radius-card)",
+        control: "var(--radius-control)",
+      },
+      boxShadow: {
+        // Gradr design system
+        raise: "var(--shadow-raise)",
+        float: "var(--shadow-float)",
+      },
+      fontSize: {
+        // Gradr design system type scale — one class per semantic role
+        h1: ["3.5rem", { lineHeight: "1.05", letterSpacing: "-0.02em", fontWeight: "600" }],
+        h2: ["2.25rem", { lineHeight: "1.1", letterSpacing: "-0.015em", fontWeight: "600" }],
+        h3: ["1.75rem", { lineHeight: "1.2", letterSpacing: "-0.01em", fontWeight: "600" }],
+        h4: ["1.375rem", { lineHeight: "1.3", fontWeight: "600" }],
+        h5: ["1.125rem", { lineHeight: "1.4", fontWeight: "600" }],
+        h6: ["1rem", { lineHeight: "1.45", fontWeight: "600" }],
+        "body-lg": ["1.125rem", { lineHeight: "1.65" }],
+        body: ["1rem", { lineHeight: "1.6" }],
+        "body-sm": ["0.875rem", { lineHeight: "1.55" }],
+        caption: ["0.8125rem", { lineHeight: "1.45" }],
+        overline: ["0.6875rem", { lineHeight: "1.3", letterSpacing: "0.09em", fontWeight: "600" }],
+        button: ["0.875rem", { lineHeight: "1", letterSpacing: "0.005em", fontWeight: "500" }],
+        code: ["0.8125rem", { lineHeight: "1.5" }],
       },
       keyframes: {
         "accordion-down": {
