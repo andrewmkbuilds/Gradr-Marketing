@@ -148,7 +148,7 @@ export default {
       },
       fontSize: {
         // Gradr design system type scale — one class per semantic role
-        h1: ["var(--text-h1, 3.5rem)", { lineHeight: "1.05", letterSpacing: "-0.02em", fontWeight: "600" }],
+        h1: ["3.5rem", { lineHeight: "1.05", letterSpacing: "-0.02em", fontWeight: "600" }],
         h2: ["2.25rem", { lineHeight: "1.1", letterSpacing: "-0.015em", fontWeight: "600" }],
         h3: ["1.75rem", { lineHeight: "1.2", letterSpacing: "-0.01em", fontWeight: "600" }],
         h4: ["1.375rem", { lineHeight: "1.3", fontWeight: "600" }],
