@@ -1,0 +1,634 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Gradr component variant snapshots > Alert/variant=danger renders stable markup 1`] = `
+<div
+  class="rounded-card border p-4 text-sm border-destructive/40 bg-destructive/10 text-foreground"
+  role="status"
+>
+  <p
+    class="font-display font-semibold"
+  >
+    Survey scheduled
+  </p>
+  <div
+    class="text-muted-foreground"
+  >
+    Tuesday, 09:00.
+  </div>
+</div>
+`;
+
+exports[`Gradr component variant snapshots > Alert/variant=info renders stable markup 1`] = `
+<div
+  class="rounded-card border p-4 text-sm border-border bg-surface-muted text-foreground"
+  role="status"
+>
+  <p
+    class="font-display font-semibold"
+  >
+    Survey scheduled
+  </p>
+  <div
+    class="text-muted-foreground"
+  >
+    Tuesday, 09:00.
+  </div>
+</div>
+`;
+
+exports[`Gradr component variant snapshots > Alert/variant=primary renders stable markup 1`] = `
+<div
+  class="rounded-card border p-4 text-sm border-primary/30 bg-primary/10 text-foreground"
+  role="status"
+>
+  <p
+    class="font-display font-semibold"
+  >
+    Survey scheduled
+  </p>
+  <div
+    class="text-muted-foreground"
+  >
+    Tuesday, 09:00.
+  </div>
+</div>
+`;
+
+exports[`Gradr component variant snapshots > Badge/variant=accent renders stable markup 1`] = `
+<span
+  class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-accent text-accent-foreground"
+>
+  Graded
+</span>
+`;
+
+exports[`Gradr component variant snapshots > Badge/variant=neutral renders stable markup 1`] = `
+<span
+  class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-surface-muted text-foreground"
+>
+  Graded
+</span>
+`;
+
+exports[`Gradr component variant snapshots > Badge/variant=outline renders stable markup 1`] = `
+<span
+  class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium border border-border text-muted-foreground"
+>
+  Graded
+</span>
+`;
+
+exports[`Gradr component variant snapshots > Badge/variant=primary renders stable markup 1`] = `
+<span
+  class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-primary text-primary-foreground"
+>
+  Graded
+</span>
+`;
+
+exports[`Gradr component variant snapshots > Button/size=icon renders stable markup 1`] = `
+<button
+  aria-label="Refresh"
+  class="inline-flex shrink-0 items-center justify-center gap-2 rounded-control text-button transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:opacity-90 size-10 p-0"
+>
+  Refresh
+</button>
+`;
+
+exports[`Gradr component variant snapshots > Button/size=icon-lg renders stable markup 1`] = `
+<button
+  aria-label="Refresh"
+  class="inline-flex shrink-0 items-center justify-center gap-2 rounded-control text-button transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:opacity-90 size-12 p-0"
+>
+  Refresh
+</button>
+`;
+
+exports[`Gradr component variant snapshots > Button/size=icon-sm renders stable markup 1`] = `
+<button
+  aria-label="Refresh"
+  class="inline-flex shrink-0 items-center justify-center gap-2 rounded-control text-button transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:opacity-90 size-8 p-0"
+>
+  Refresh
+</button>
+`;
+
+exports[`Gradr component variant snapshots > Button/size=inline renders stable markup 1`] = `
+<button
+  aria-label="Refresh"
+  class="inline-flex shrink-0 items-center justify-center gap-2 rounded-control text-button transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:opacity-90 h-auto p-0"
+>
+  Refresh
+</button>
+`;
+
+exports[`Gradr component variant snapshots > Button/size=lg renders stable markup 1`] = `
+<button
+  aria-label="Refresh"
+  class="inline-flex shrink-0 items-center justify-center gap-2 rounded-control transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:opacity-90 h-12 px-6 text-body"
+>
+  Refresh
+</button>
+`;
+
+exports[`Gradr component variant snapshots > Button/size=md renders stable markup 1`] = `
+<button
+  aria-label="Refresh"
+  class="inline-flex shrink-0 items-center justify-center gap-2 rounded-control text-button transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:opacity-90 h-10 px-4"
+>
+  Refresh
+</button>
+`;
+
+exports[`Gradr component variant snapshots > Button/size=sm renders stable markup 1`] = `
+<button
+  aria-label="Refresh"
+  class="inline-flex shrink-0 items-center justify-center gap-2 rounded-control text-button transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:opacity-90 h-8 px-3"
+>
+  Refresh
+</button>
+`;
+
+exports[`Gradr component variant snapshots > Button/state=disabled renders stable markup 1`] = `
+<button
+  class="inline-flex shrink-0 items-center justify-center gap-2 rounded-control text-button transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:opacity-90 h-10 px-4"
+  disabled=""
+>
+  Save
+</button>
+`;
+
+exports[`Gradr component variant snapshots > Button/state=loading renders stable markup 1`] = `
+<button
+  aria-busy="true"
+  class="inline-flex shrink-0 items-center justify-center gap-2 rounded-control text-button transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:opacity-90 h-10 px-4"
+  disabled=""
+>
+  Working…
+</button>
+`;
+
+exports[`Gradr component variant snapshots > Button/variant=accent renders stable markup 1`] = `
+<button
+  class="inline-flex shrink-0 items-center justify-center gap-2 rounded-control text-button transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 bg-accent text-accent-foreground hover:opacity-90 h-10 px-4"
+>
+  Save changes
+</button>
+`;
+
+exports[`Gradr component variant snapshots > Button/variant=destructive renders stable markup 1`] = `
+<button
+  class="inline-flex shrink-0 items-center justify-center gap-2 rounded-control text-button transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 bg-destructive text-destructive-foreground hover:opacity-90 h-10 px-4"
+>
+  Save changes
+</button>
+`;
+
+exports[`Gradr component variant snapshots > Button/variant=ghost renders stable markup 1`] = `
+<button
+  class="inline-flex shrink-0 items-center justify-center gap-2 rounded-control text-button transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 bg-transparent text-foreground hover:bg-surface-muted h-10 px-4"
+>
+  Save changes
+</button>
+`;
+
+exports[`Gradr component variant snapshots > Button/variant=link renders stable markup 1`] = `
+<button
+  class="inline-flex shrink-0 items-center justify-center gap-2 rounded-control text-button transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 bg-transparent text-primary underline underline-offset-4 hover:opacity-80 h-10 px-4"
+>
+  Save changes
+</button>
+`;
+
+exports[`Gradr component variant snapshots > Button/variant=outline renders stable markup 1`] = `
+<button
+  class="inline-flex shrink-0 items-center justify-center gap-2 rounded-control text-button transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 border border-border bg-transparent text-foreground hover:bg-surface-muted h-10 px-4"
+>
+  Save changes
+</button>
+`;
+
+exports[`Gradr component variant snapshots > Button/variant=primary renders stable markup 1`] = `
+<button
+  class="inline-flex shrink-0 items-center justify-center gap-2 rounded-control text-button transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:opacity-90 h-10 px-4"
+>
+  Save changes
+</button>
+`;
+
+exports[`Gradr component variant snapshots > Card/float+lg renders stable markup 1`] = `
+<div
+  class="rounded-card bg-surface text-foreground shadow-float p-8"
+>
+  <h3
+    class="font-display text-lg font-semibold"
+  >
+    Slip 14
+  </h3>
+  <p
+    class="text-sm text-muted-foreground"
+  >
+    Renewal due 12 Sep
+  </p>
+</div>
+`;
+
+exports[`Gradr component variant snapshots > Card/float+md renders stable markup 1`] = `
+<div
+  class="rounded-card bg-surface text-foreground shadow-float p-5"
+>
+  <h3
+    class="font-display text-lg font-semibold"
+  >
+    Slip 14
+  </h3>
+  <p
+    class="text-sm text-muted-foreground"
+  >
+    Renewal due 12 Sep
+  </p>
+</div>
+`;
+
+exports[`Gradr component variant snapshots > Card/float+none renders stable markup 1`] = `
+<div
+  class="rounded-card bg-surface text-foreground shadow-float p-0"
+>
+  <h3
+    class="font-display text-lg font-semibold"
+  >
+    Slip 14
+  </h3>
+  <p
+    class="text-sm text-muted-foreground"
+  >
+    Renewal due 12 Sep
+  </p>
+</div>
+`;
+
+exports[`Gradr component variant snapshots > Card/outline+lg renders stable markup 1`] = `
+<div
+  class="rounded-card bg-surface text-foreground border border-border p-8"
+>
+  <h3
+    class="font-display text-lg font-semibold"
+  >
+    Slip 14
+  </h3>
+  <p
+    class="text-sm text-muted-foreground"
+  >
+    Renewal due 12 Sep
+  </p>
+</div>
+`;
+
+exports[`Gradr component variant snapshots > Card/outline+md renders stable markup 1`] = `
+<div
+  class="rounded-card bg-surface text-foreground border border-border p-5"
+>
+  <h3
+    class="font-display text-lg font-semibold"
+  >
+    Slip 14
+  </h3>
+  <p
+    class="text-sm text-muted-foreground"
+  >
+    Renewal due 12 Sep
+  </p>
+</div>
+`;
+
+exports[`Gradr component variant snapshots > Card/outline+none renders stable markup 1`] = `
+<div
+  class="rounded-card bg-surface text-foreground border border-border p-0"
+>
+  <h3
+    class="font-display text-lg font-semibold"
+  >
+    Slip 14
+  </h3>
+  <p
+    class="text-sm text-muted-foreground"
+  >
+    Renewal due 12 Sep
+  </p>
+</div>
+`;
+
+exports[`Gradr component variant snapshots > Card/raised+lg renders stable markup 1`] = `
+<div
+  class="rounded-card bg-surface text-foreground border border-border shadow-raise p-8"
+>
+  <h3
+    class="font-display text-lg font-semibold"
+  >
+    Slip 14
+  </h3>
+  <p
+    class="text-sm text-muted-foreground"
+  >
+    Renewal due 12 Sep
+  </p>
+</div>
+`;
+
+exports[`Gradr component variant snapshots > Card/raised+md renders stable markup 1`] = `
+<div
+  class="rounded-card bg-surface text-foreground border border-border shadow-raise p-5"
+>
+  <h3
+    class="font-display text-lg font-semibold"
+  >
+    Slip 14
+  </h3>
+  <p
+    class="text-sm text-muted-foreground"
+  >
+    Renewal due 12 Sep
+  </p>
+</div>
+`;
+
+exports[`Gradr component variant snapshots > Card/raised+none renders stable markup 1`] = `
+<div
+  class="rounded-card bg-surface text-foreground border border-border shadow-raise p-0"
+>
+  <h3
+    class="font-display text-lg font-semibold"
+  >
+    Slip 14
+  </h3>
+  <p
+    class="text-sm text-muted-foreground"
+  >
+    Renewal due 12 Sep
+  </p>
+</div>
+`;
+
+exports[`Gradr component variant snapshots > FormField/error renders stable markup 1`] = `
+<div
+  class="space-y-1.5"
+>
+  <label
+    class="text-sm font-medium text-foreground"
+    for="_r_1_"
+  >
+    Registration
+  </label>
+  <input
+    aria-describedby="_r_1_-error"
+    aria-invalid="true"
+    class="h-10 w-full rounded-control border bg-surface px-3 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 disabled:opacity-50 border-destructive focus-visible:ring-destructive"
+    id="_r_1_"
+    value="MX-0"
+  />
+  <p
+    class="text-caption text-destructive"
+    id="_r_1_-error"
+    role="alert"
+  >
+    Registration must be six characters.
+  </p>
+</div>
+`;
+
+exports[`Gradr component variant snapshots > FormField/help renders stable markup 1`] = `
+<div
+  class="space-y-1.5"
+>
+  <label
+    class="text-sm font-medium text-foreground"
+    for="_r_0_"
+  >
+    Vessel name
+    <span
+      class="text-destructive"
+    >
+       *
+    </span>
+  </label>
+  <input
+    aria-describedby="_r_0_-help"
+    class="h-10 w-full rounded-control border border-border bg-surface px-3 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
+    id="_r_0_"
+    placeholder="Northwind"
+    required=""
+  />
+  <p
+    class="text-caption text-muted-foreground"
+    id="_r_0_-help"
+  >
+    Shown on the manifest.
+  </p>
+</div>
+`;
+
+exports[`Gradr component variant snapshots > Input/default renders stable markup 1`] = `
+<input
+  class="h-10 w-full rounded-control border border-border bg-surface px-3 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
+  placeholder="Northwind"
+/>
+`;
+
+exports[`Gradr component variant snapshots > Input/disabled renders stable markup 1`] = `
+<input
+  class="h-10 w-full rounded-control border border-border bg-surface px-3 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
+  disabled=""
+  value="A-14"
+/>
+`;
+
+exports[`Gradr component variant snapshots > Input/invalid renders stable markup 1`] = `
+<input
+  aria-invalid="true"
+  class="h-10 w-full rounded-control border bg-surface px-3 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 disabled:opacity-50 border-destructive focus-visible:ring-destructive"
+  value="MX-0"
+/>
+`;
+
+exports[`Gradr component variant snapshots > Label/default renders stable markup 1`] = `
+<label
+  class="text-sm font-medium text-foreground"
+  for="a"
+>
+  Owner
+</label>
+`;
+
+exports[`Gradr component variant snapshots > Label/required renders stable markup 1`] = `
+<label
+  class="text-sm font-medium text-foreground"
+  for="a"
+>
+  Owner
+  <span
+    class="text-destructive"
+  >
+     *
+  </span>
+</label>
+`;
+
+exports[`Gradr component variant snapshots > Text/tone=accent renders stable markup 1`] = `
+<p
+  class="font-sans text-body text-accent"
+>
+  Harbor operations
+</p>
+`;
+
+exports[`Gradr component variant snapshots > Text/tone=default renders stable markup 1`] = `
+<p
+  class="font-sans text-body text-foreground"
+>
+  Harbor operations
+</p>
+`;
+
+exports[`Gradr component variant snapshots > Text/tone=destructive renders stable markup 1`] = `
+<p
+  class="font-sans text-body text-destructive"
+>
+  Harbor operations
+</p>
+`;
+
+exports[`Gradr component variant snapshots > Text/tone=muted renders stable markup 1`] = `
+<p
+  class="font-sans text-body text-muted-foreground"
+>
+  Harbor operations
+</p>
+`;
+
+exports[`Gradr component variant snapshots > Text/tone=primary renders stable markup 1`] = `
+<p
+  class="font-sans text-body text-primary"
+>
+  Harbor operations
+</p>
+`;
+
+exports[`Gradr component variant snapshots > Text/variant=body renders stable markup 1`] = `
+<p
+  class="font-sans text-body text-foreground"
+>
+  Harbor operations
+</p>
+`;
+
+exports[`Gradr component variant snapshots > Text/variant=body-sm renders stable markup 1`] = `
+<p
+  class="font-sans text-body-sm text-foreground"
+>
+  Harbor operations
+</p>
+`;
+
+exports[`Gradr component variant snapshots > Text/variant=button renders stable markup 1`] = `
+<span
+  class="font-sans text-button text-foreground"
+>
+  Harbor operations
+</span>
+`;
+
+exports[`Gradr component variant snapshots > Text/variant=caption renders stable markup 1`] = `
+<p
+  class="font-sans text-caption text-muted-foreground"
+>
+  Harbor operations
+</p>
+`;
+
+exports[`Gradr component variant snapshots > Text/variant=code renders stable markup 1`] = `
+<code
+  class="font-mono text-code text-foreground"
+>
+  Harbor operations
+</code>
+`;
+
+exports[`Gradr component variant snapshots > Text/variant=h1 renders stable markup 1`] = `
+<h1
+  class="font-display text-h1 text-foreground"
+>
+  Harbor operations
+</h1>
+`;
+
+exports[`Gradr component variant snapshots > Text/variant=h2 renders stable markup 1`] = `
+<h2
+  class="font-display text-h2 text-foreground"
+>
+  Harbor operations
+</h2>
+`;
+
+exports[`Gradr component variant snapshots > Text/variant=h3 renders stable markup 1`] = `
+<h3
+  class="font-display text-h3 text-foreground"
+>
+  Harbor operations
+</h3>
+`;
+
+exports[`Gradr component variant snapshots > Text/variant=h4 renders stable markup 1`] = `
+<h4
+  class="font-display text-h4 text-foreground"
+>
+  Harbor operations
+</h4>
+`;
+
+exports[`Gradr component variant snapshots > Text/variant=h5 renders stable markup 1`] = `
+<h5
+  class="font-display text-h5 text-foreground"
+>
+  Harbor operations
+</h5>
+`;
+
+exports[`Gradr component variant snapshots > Text/variant=h6 renders stable markup 1`] = `
+<h6
+  class="font-display text-h6 text-foreground"
+>
+  Harbor operations
+</h6>
+`;
+
+exports[`Gradr component variant snapshots > Text/variant=lead renders stable markup 1`] = `
+<p
+  class="font-sans text-body-lg text-muted-foreground"
+>
+  Harbor operations
+</p>
+`;
+
+exports[`Gradr component variant snapshots > Text/variant=overline renders stable markup 1`] = `
+<p
+  class="font-sans text-overline uppercase text-muted-foreground"
+>
+  Harbor operations
+</p>
+`;
+
+exports[`Gradr component variant snapshots > Textarea/default renders stable markup 1`] = `
+<textarea
+  class="min-h-24 w-full rounded-control border border-border bg-surface px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
+  placeholder="Notes"
+/>
+`;
+
+exports[`Gradr component variant snapshots > Textarea/invalid renders stable markup 1`] = `
+<textarea
+  aria-invalid="true"
+  class="min-h-24 w-full rounded-control border bg-surface px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 disabled:opacity-50 border-destructive focus-visible:ring-destructive"
+>
+  …
+</textarea>
+`;

@@ -27,3 +27,6 @@ dist-ssr
 # Visual regression working captures (baselines are committed)
 tests/visual/current/
 tests/visual/diff/
+
+# Lovable sandbox workspace directory
+.workspace/

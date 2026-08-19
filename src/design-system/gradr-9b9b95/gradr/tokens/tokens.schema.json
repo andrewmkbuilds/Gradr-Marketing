@@ -1,0 +1,447 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gradr.me/gradr-tokens.schema.json",
+  "title": "Gradr token catalog",
+  "description": "Structure of gradr-tokens.json, the exported Gradr design token catalog.",
+  "type": "object",
+  "required": [
+    "$name",
+    "base",
+    "semantic"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "$name": {
+      "type": "string",
+      "const": "Gradr"
+    },
+    "$description": {
+      "type": "string"
+    },
+    "$version": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}\\.\\d+$"
+    },
+    "$generated": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "base": {
+      "type": "object",
+      "required": [
+        "color",
+        "typography",
+        "radius",
+        "shadow",
+        "other"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "color": {
+          "title": "color tokens",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "required": [
+            "--color-shell",
+            "--color-fog",
+            "--color-harbor",
+            "--color-hull",
+            "--color-ink",
+            "--color-harbor-soft",
+            "--color-hull-soft",
+            "--color-slate",
+            "--color-success"
+          ],
+          "properties": {
+            "--color-shell": {
+              "type": "string"
+            },
+            "--color-fog": {
+              "type": "string"
+            },
+            "--color-harbor": {
+              "type": "string"
+            },
+            "--color-hull": {
+              "type": "string"
+            },
+            "--color-ink": {
+              "type": "string"
+            },
+            "--color-harbor-soft": {
+              "type": "string"
+            },
+            "--color-hull-soft": {
+              "type": "string"
+            },
+            "--color-slate": {
+              "type": "string"
+            },
+            "--color-success": {
+              "type": "string"
+            }
+          }
+        },
+        "typography": {
+          "title": "typography tokens",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "required": [
+            "--font-display",
+            "--font-sans",
+            "--text-h1",
+            "--text-h1--line-height",
+            "--text-h1--letter-spacing",
+            "--text-h1--font-weight",
+            "--text-h2",
+            "--text-h2--line-height",
+            "--text-h2--letter-spacing",
+            "--text-h2--font-weight",
+            "--text-h3",
+            "--text-h3--line-height",
+            "--text-h3--letter-spacing",
+            "--text-h3--font-weight",
+            "--text-h4",
+            "--text-h4--line-height",
+            "--text-h4--font-weight",
+            "--text-h5",
+            "--text-h5--line-height",
+            "--text-h5--font-weight",
+            "--text-h6",
+            "--text-h6--line-height",
+            "--text-h6--font-weight",
+            "--text-body-lg",
+            "--text-body-lg--line-height",
+            "--text-body",
+            "--text-body--line-height",
+            "--text-body-sm",
+            "--text-body-sm--line-height",
+            "--text-caption",
+            "--text-caption--line-height",
+            "--text-overline",
+            "--text-overline--line-height",
+            "--text-overline--letter-spacing",
+            "--text-overline--font-weight",
+            "--text-button",
+            "--text-button--line-height",
+            "--text-button--letter-spacing",
+            "--text-button--font-weight",
+            "--text-code",
+            "--text-code--line-height"
+          ],
+          "properties": {
+            "--font-display": {
+              "type": "string"
+            },
+            "--font-sans": {
+              "type": "string"
+            },
+            "--text-h1": {
+              "type": "string"
+            },
+            "--text-h1--line-height": {
+              "type": "string"
+            },
+            "--text-h1--letter-spacing": {
+              "type": "string"
+            },
+            "--text-h1--font-weight": {
+              "type": "string"
+            },
+            "--text-h2": {
+              "type": "string"
+            },
+            "--text-h2--line-height": {
+              "type": "string"
+            },
+            "--text-h2--letter-spacing": {
+              "type": "string"
+            },
+            "--text-h2--font-weight": {
+              "type": "string"
+            },
+            "--text-h3": {
+              "type": "string"
+            },
+            "--text-h3--line-height": {
+              "type": "string"
+            },
+            "--text-h3--letter-spacing": {
+              "type": "string"
+            },
+            "--text-h3--font-weight": {
+              "type": "string"
+            },
+            "--text-h4": {
+              "type": "string"
+            },
+            "--text-h4--line-height": {
+              "type": "string"
+            },
+            "--text-h4--font-weight": {
+              "type": "string"
+            },
+            "--text-h5": {
+              "type": "string"
+            },
+            "--text-h5--line-height": {
+              "type": "string"
+            },
+            "--text-h5--font-weight": {
+              "type": "string"
+            },
+            "--text-h6": {
+              "type": "string"
+            },
+            "--text-h6--line-height": {
+              "type": "string"
+            },
+            "--text-h6--font-weight": {
+              "type": "string"
+            },
+            "--text-body-lg": {
+              "type": "string"
+            },
+            "--text-body-lg--line-height": {
+              "type": "string"
+            },
+            "--text-body": {
+              "type": "string"
+            },
+            "--text-body--line-height": {
+              "type": "string"
+            },
+            "--text-body-sm": {
+              "type": "string"
+            },
+            "--text-body-sm--line-height": {
+              "type": "string"
+            },
+            "--text-caption": {
+              "type": "string"
+            },
+            "--text-caption--line-height": {
+              "type": "string"
+            },
+            "--text-overline": {
+              "type": "string"
+            },
+            "--text-overline--line-height": {
+              "type": "string"
+            },
+            "--text-overline--letter-spacing": {
+              "type": "string"
+            },
+            "--text-overline--font-weight": {
+              "type": "string"
+            },
+            "--text-button": {
+              "type": "string"
+            },
+            "--text-button--line-height": {
+              "type": "string"
+            },
+            "--text-button--letter-spacing": {
+              "type": "string"
+            },
+            "--text-button--font-weight": {
+              "type": "string"
+            },
+            "--text-code": {
+              "type": "string"
+            },
+            "--text-code--line-height": {
+              "type": "string"
+            }
+          }
+        },
+        "radius": {
+          "title": "radius tokens",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "required": [
+            "--radius-card",
+            "--radius-control"
+          ],
+          "properties": {
+            "--radius-card": {
+              "type": "string"
+            },
+            "--radius-control": {
+              "type": "string"
+            }
+          }
+        },
+        "shadow": {
+          "title": "shadow tokens",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "required": [
+            "--shadow-raise",
+            "--shadow-float"
+          ],
+          "properties": {
+            "--shadow-raise": {
+              "type": "string"
+            },
+            "--shadow-float": {
+              "type": "string"
+            }
+          }
+        },
+        "other": {
+          "title": "other tokens",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "properties": {}
+        }
+      }
+    },
+    "semantic": {
+      "type": "object",
+      "required": [
+        "light",
+        "dark"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "light": {
+          "title": "Light theme roles",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "required": [
+            "--background",
+            "--foreground",
+            "--surface",
+            "--surface-muted",
+            "--border",
+            "--muted-foreground",
+            "--primary",
+            "--primary-foreground",
+            "--accent",
+            "--accent-foreground",
+            "--destructive",
+            "--destructive-foreground",
+            "--ring"
+          ],
+          "properties": {
+            "--background": {
+              "type": "string"
+            },
+            "--foreground": {
+              "type": "string"
+            },
+            "--surface": {
+              "type": "string"
+            },
+            "--surface-muted": {
+              "type": "string"
+            },
+            "--border": {
+              "type": "string"
+            },
+            "--muted-foreground": {
+              "type": "string"
+            },
+            "--primary": {
+              "type": "string"
+            },
+            "--primary-foreground": {
+              "type": "string"
+            },
+            "--accent": {
+              "type": "string"
+            },
+            "--accent-foreground": {
+              "type": "string"
+            },
+            "--destructive": {
+              "type": "string"
+            },
+            "--destructive-foreground": {
+              "type": "string"
+            },
+            "--ring": {
+              "type": "string"
+            }
+          }
+        },
+        "dark": {
+          "title": "Dark theme roles",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "required": [
+            "--background",
+            "--foreground",
+            "--surface",
+            "--surface-muted",
+            "--border",
+            "--muted-foreground",
+            "--primary",
+            "--primary-foreground",
+            "--accent",
+            "--accent-foreground",
+            "--destructive",
+            "--destructive-foreground",
+            "--ring"
+          ],
+          "properties": {
+            "--background": {
+              "type": "string"
+            },
+            "--foreground": {
+              "type": "string"
+            },
+            "--surface": {
+              "type": "string"
+            },
+            "--surface-muted": {
+              "type": "string"
+            },
+            "--border": {
+              "type": "string"
+            },
+            "--muted-foreground": {
+              "type": "string"
+            },
+            "--primary": {
+              "type": "string"
+            },
+            "--primary-foreground": {
+              "type": "string"
+            },
+            "--accent": {
+              "type": "string"
+            },
+            "--accent-foreground": {
+              "type": "string"
+            },
+            "--destructive": {
+              "type": "string"
+            },
+            "--destructive-foreground": {
+              "type": "string"
+            },
+            "--ring": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}
