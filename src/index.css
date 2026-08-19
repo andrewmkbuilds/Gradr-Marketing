@@ -101,7 +101,7 @@
     --overlay: 197 34% 16%;
     --overlay-opacity: 0.34;
 
-    --radius: 0.7rem;
+    --radius: var(--radius-control);
 
     /* ---------- Charts — teal → mahogany spectrum ---------- */
     --chart-1: 195 52% 30%;
