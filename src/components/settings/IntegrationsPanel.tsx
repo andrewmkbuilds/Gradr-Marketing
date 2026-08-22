@@ -137,7 +137,7 @@ export function IntegrationsPanel() {
                       />
                     </div>
                     <p className="text-xs text-muted-foreground mt-1">{item.description}</p>
-                    <p className="text-[11px] text-muted-foreground/80 mt-1">
+                    <p className="text-xs text-muted-foreground mt-1">
                       {state?.lastSyncedAt
                         ? `Last synced ${formatDistanceToNow(new Date(state.lastSyncedAt), { addSuffix: true })}`
                         : item.configured

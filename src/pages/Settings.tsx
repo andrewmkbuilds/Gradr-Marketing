@@ -236,12 +236,12 @@ export default function Settings() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="text-xs font-medium text-muted-foreground mb-1.5 block">Preferred Send Time</label>
-              <Input type="time" value={digestSendTime} onChange={(e) => setDigestSendTime(e.target.value)} className="bg-secondary border-border" />
+              <label htmlFor="digest-send-time" className="text-xs font-medium text-muted-foreground mb-1.5 block">Preferred Send Time</label>
+              <Input id="digest-send-time" type="time" value={digestSendTime} onChange={(e) => setDigestSendTime(e.target.value)} className="bg-secondary border-border" />
             </div>
             <div>
-              <label className="text-xs font-medium text-muted-foreground mb-1.5 block">Timezone</label>
-              <Input value={digestTimezone} onChange={(e) => setDigestTimezone(e.target.value)} placeholder="America/New_York" className="bg-secondary border-border" />
+              <label htmlFor="digest-timezone" className="text-xs font-medium text-muted-foreground mb-1.5 block">Timezone</label>
+              <Input id="digest-timezone" value={digestTimezone} onChange={(e) => setDigestTimezone(e.target.value)} placeholder="America/New_York" className="bg-secondary border-border" />
             </div>
           </div>
 
