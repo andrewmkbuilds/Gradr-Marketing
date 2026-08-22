@@ -22,7 +22,8 @@
      Every other value below is derived from these four by
      shifting lightness/saturation only — no foreign hues.
      ============================================================ */
-  :root {
+  :root,
+  .theme-light {
     /* ---------- Foundation (raw, for reference + derivations) ---------- */
     --yc-soft-white: 20 10% 94%;
     --yc-cool-gray: 150 3% 74%;
@@ -149,7 +150,8 @@
     --sheen-strength: 0.09;
   }
 
-  .dark {
+  .dark,
+  .theme-dark {
     /* ---------- Surfaces — deep harbour water ---------- */
     --background: 198 40% 7%;
     --surface: 198 34% 10%;

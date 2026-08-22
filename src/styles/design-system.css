@@ -17,7 +17,8 @@
    library source. Loaded after index.css so the library wins.
    ============================================================ */
 
-:root {
+:root,
+.theme-light {
   /* Brand palette — raw library values */
   --color-shell: #f9f7f6;
   --color-fog: #b3c1c6;
@@ -38,7 +39,8 @@
   --shadow-float: 0 2px 4px rgb(24 41 47 / 0.08), 0 20px 40px -20px rgb(24 41 47 / 0.35);
 }
 
-.dark {
+.dark,
+.theme-dark {
   /* Dark-mode brand tints, matching the library's dark role values */
   --color-harbor: #6fb2c8;
   --color-hull: #c8794f;
