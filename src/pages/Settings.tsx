@@ -145,7 +145,7 @@ export default function Settings() {
       </div>
 
       <Card
-        as="section"
+        role="region"
         variant="raised"
         padding="lg"
         aria-labelledby="appearance-heading"
