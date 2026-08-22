@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { DollarSign, Users, TrendingUp, Clock, Sparkles, CheckCircle2, ArrowRight, Loader2 } from "lucide-react";
 import { useMyAffiliate, useAffiliateSettings } from "@/hooks/useAffiliate";
+import { Button, Card, Text } from "@/design-system/gradr-9b9b95";
 
 export default function AffiliateProgram() {
   const navigate = useNavigate();
@@ -15,9 +16,9 @@ export default function AffiliateProgram() {
     if (isLoading) return <Loader2 className="h-5 w-5 animate-spin text-primary" />;
     if (my?.profile && my.profile.status === "active") {
       return (
-        <button onClick={() => navigate("/affiliate/dashboard")} className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-medium hover:opacity-90 transition">
-          Open affiliate dashboard <ArrowRight className="h-4 w-4" />
-        </button>
+        <Button size="lg" onClick={() => navigate("/affiliate/dashboard")}>
+          Open affiliate dashboard <ArrowRight className="h-4 w-4" aria-hidden />
+        </Button>
       );
     }
     if (my?.application?.status === "pending") {
@@ -33,16 +34,14 @@ export default function AffiliateProgram() {
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-destructive/10 text-destructive text-sm border border-destructive/20">
             Previous application was not approved
           </div>
-          <button onClick={() => navigate("/affiliate/apply")} className="block px-6 py-3 rounded-lg bg-primary text-primary-foreground font-medium hover:opacity-90 transition">
-            Reapply
-          </button>
+          <Button size="lg" onClick={() => navigate("/affiliate/apply")}>Reapply</Button>
         </div>
       );
     }
     return (
-      <button onClick={() => navigate("/affiliate/apply")} className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-medium hover:opacity-90 transition ring-1 ring-primary/20">
-        Apply to become an affiliate <ArrowRight className="h-4 w-4" />
-      </button>
+      <Button size="lg" onClick={() => navigate("/affiliate/apply")}>
+        Apply to become an affiliate <ArrowRight className="h-4 w-4" aria-hidden />
+      </Button>
     );
   };
 
@@ -52,13 +51,13 @@ export default function AffiliateProgram() {
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium">
           <Sparkles className="h-3 w-3" /> Gradr Partner Program
         </div>
-        <h1 className="text-4xl font-bold text-foreground tracking-tight">
+        <Text variant="h2" as="h1">
           Earn {rateType === "percentage" ? `${rate}%` : `$${rate}`} for every paying customer you refer
-        </h1>
-        <p className="text-muted-foreground max-w-2xl mx-auto">
+        </Text>
+        <Text variant="lead" className="mx-auto max-w-2xl">
           Share Gradr with your audience and earn recurring commissions on every subscription —
           backed by a {cookieDays}-day cookie window so you get credit for the full buying journey.
-        </p>
+        </Text>
         <div className="pt-4">{renderCta()}</div>
       </div>
 
@@ -68,18 +67,18 @@ export default function AffiliateProgram() {
           { icon: Clock, title: `${cookieDays}-day cookie`, desc: "Industry-leading attribution window — full credit for the journey." },
           { icon: Users, title: "Audience aligned", desc: "Perfect for career creators, coaches, bootcamps, and communities." },
         ].map((b) => (
-          <div key={b.title} className="elev-2 rounded-xl p-6 animate-fade-in">
-            <b.icon className="h-5 w-5 text-primary mb-3" />
-            <div className="text-sm font-semibold text-foreground">{b.title}</div>
-            <p className="text-xs text-muted-foreground mt-1">{b.desc}</p>
-          </div>
+          <Card key={b.title} variant="raised" padding="lg" className="animate-fade-in">
+            <b.icon className="mb-3 h-5 w-5 text-primary" aria-hidden />
+            <Text variant="h6" as="h3">{b.title}</Text>
+            <Text variant="caption" className="mt-1">{b.desc}</Text>
+          </Card>
         ))}
       </div>
 
-      <div className="elev-2 rounded-xl p-6 animate-fade-in">
-        <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-          <TrendingUp className="h-4 w-4 text-primary" /> How it works
-        </h2>
+      <Card variant="raised" padding="lg" className="animate-fade-in">
+        <Text variant="h5" as="h2" className="mb-4 flex items-center gap-2">
+          <TrendingUp className="h-4 w-4 text-primary" aria-hidden /> How it works
+        </Text>
         <ol className="space-y-3 text-sm">
           {[
             "Apply with your audience info and promo plan — most applications reviewed within 48 hours.",
@@ -94,10 +93,10 @@ export default function AffiliateProgram() {
             </li>
           ))}
         </ol>
-      </div>
+      </Card>
 
-      <div className="elev-2 rounded-xl p-6 animate-fade-in">
-        <h2 className="text-lg font-semibold text-foreground mb-3">Terms summary</h2>
+      <Card variant="raised" padding="lg" className="animate-fade-in">
+        <Text variant="h5" as="h2" className="mb-3">Terms summary</Text>
         <ul className="space-y-2 text-sm text-muted-foreground">
           {[
             "No self-referrals or incentivized fake signups.",
@@ -113,7 +112,7 @@ export default function AffiliateProgram() {
             {settings.affiliate_terms}
           </p>
         )}
-      </div>
+      </Card>
     </div>
   );
 }
