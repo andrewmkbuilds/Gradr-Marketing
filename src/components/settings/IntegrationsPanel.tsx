@@ -78,7 +78,7 @@ export function IntegrationsPanel() {
       {permissionDenied && (
         <div
           role="alert"
-          className="flex items-start gap-2 rounded-control border border-destructive/40 bg-destructive/10 p-3 text-xs text-destructive"
+          className="flex items-start gap-2 rounded-control border border-destructive/40 bg-destructive/10 p-3 text-caption text-destructive"
         >
           <ShieldAlert className="h-4 w-4 mt-0.5 shrink-0" />
           <span>
@@ -91,7 +91,7 @@ export function IntegrationsPanel() {
       {rateLimited && (
         <div
           role="status"
-          className="flex items-start gap-2 rounded-control border border-border bg-surface-muted p-3 text-xs text-muted-foreground"
+          className="flex items-start gap-2 rounded-control border border-border bg-surface-muted p-3 text-caption text-muted-foreground"
         >
           <AlertTriangle className="h-4 w-4 mt-0.5 shrink-0" />
           <span>Logo lookups are rate limited right now — cached logos and initials are shown.</span>
