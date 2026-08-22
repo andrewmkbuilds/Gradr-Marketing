@@ -1157,6 +1157,7 @@ export default function Landing() {
 
         {/* -------------------------------- final CTA --------------------------- */}
         <Section className="border-t border-border/60">
+          <ScrollFloat distance={56}>
           <Reveal className="relative overflow-hidden rounded-3xl border border-primary/25 bg-card px-6 py-14 text-center sm:px-12 sm:py-20">
             <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-primary/10 to-transparent" aria-hidden />
             <h2 className="relative mx-auto max-w-3xl text-balance text-3xl font-bold leading-[1.1] tracking-tight sm:text-4xl lg:text-5xl">
