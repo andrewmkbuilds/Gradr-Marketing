@@ -53,13 +53,18 @@ export default tseslint.config(
           selector:
             "JSXAttribute[name.name=/^(className|class)$/] Literal[value=/^(?!.*var\\(--)(?=[\\s\\S]*(#[0-9a-fA-F]{3,8}\\b|\\b(rgba?|hsla?)\\(\\s*[0-9.]))/]",
           message:
-            "Hardcoded colors are not allowed. Use a Gradr semantic token (bg-primary, text-muted-foreground, border-border, …).",
+            "Hardcoded color in a class name. Replace it with a Gradr semantic token: " +
+            "surfaces bg-background / bg-surface / bg-surface-muted, text text-foreground / text-muted-foreground, " +
+            "brand bg-primary / text-primary / bg-accent, lines border-border, focus ring-ring, errors text-destructive. " +
+            "Full list: .lovable/rules/libraries/gradr-9b9b95/design-tokens.md — live preview at /design-system.",
         },
         {
           selector:
             "JSXAttribute[name.name='style'] Property[key.name=/[Cc]olor$|^fill$|^stroke$|^background$|^backgroundImage$/] > Literal[value=/^(?!.*var\\(--)(?=[\\s\\S]*(#[0-9a-fA-F]{3,8}\\b|\\b(rgba?|hsla?)\\(\\s*[0-9.]))/]",
           message:
-            "Inline color literals are not allowed. Use a Gradr semantic token or CSS variable (var(--primary)).",
+            "Inline color literal in a style prop. Use a Gradr semantic token class (bg-primary, text-muted-foreground, border-border) " +
+            "or reference the variable directly (hsl(var(--primary))). " +
+            "Full list: .lovable/rules/libraries/gradr-9b9b95/design-tokens.md — live preview at /design-system.",
         },
       ],
     },
