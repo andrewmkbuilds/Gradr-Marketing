@@ -59,6 +59,13 @@ const NAV = [
   { label: "For Professionals", href: "#professionals" },
 ];
 
+/** Section boundaries the scroll rail ticks against. */
+const SECTION_IDS = [
+  "product", "resume", "matching", "applications", "interview",
+  "assistant", "how-it-works", "transformation", "pricing", "faq",
+];
+
+
 const FRAGMENTS = [
   "Resume builders", "Job boards", "Spreadsheets", "Interview prep tools",
   "LinkedIn", "Scattered notes", "AI chatbots", "Email threads", "Calendars",
