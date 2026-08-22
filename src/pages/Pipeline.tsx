@@ -307,7 +307,12 @@ export default function Pipeline() {
       )}
 
       <DndContext sensors={sensors} onDragStart={onDragStart} onDragEnd={onDragEnd}>
-        <div className="flex gap-4 overflow-x-auto pb-4">
+        <div
+          role="region"
+          aria-label="Application pipeline board"
+          tabIndex={0}
+          className="flex gap-4 overflow-x-auto pb-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+        >
           {COLUMNS.map((c) => (
             <Column key={c.key} status={c.key} label={c.label} tone={c.tone} jobs={grouped[c.key]} onCardClick={setSelected} />
           ))}

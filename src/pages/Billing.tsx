@@ -252,17 +252,17 @@ export default function Billing() {
 
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-4">
           <div className="space-y-1">
-            <Label className="text-xs text-muted-foreground">From</Label>
-            <Input type="date" value={from} onChange={(e) => setFrom(e.target.value)} />
+            <Label htmlFor="history-from" className="text-xs text-muted-foreground">From</Label>
+            <Input id="history-from" type="date" value={from} onChange={(e) => setFrom(e.target.value)} />
           </div>
           <div className="space-y-1">
-            <Label className="text-xs text-muted-foreground">To</Label>
-            <Input type="date" value={to} onChange={(e) => setTo(e.target.value)} />
+            <Label htmlFor="history-to" className="text-xs text-muted-foreground">To</Label>
+            <Input id="history-to" type="date" value={to} onChange={(e) => setTo(e.target.value)} />
           </div>
           <div className="space-y-1">
-            <Label className="text-xs text-muted-foreground">Pack type</Label>
+            <Label htmlFor="history-pack-type" className="text-xs text-muted-foreground">Pack type</Label>
             <Select value={packType} onValueChange={setPackType}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectTrigger id="history-pack-type" aria-label="Filter purchases by pack type"><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All packs</SelectItem>
                 <SelectItem value="application">Applications</SelectItem>
@@ -271,9 +271,9 @@ export default function Billing() {
             </Select>
           </div>
           <div className="space-y-1">
-            <Label className="text-xs text-muted-foreground">Status</Label>
+            <Label htmlFor="history-status" className="text-xs text-muted-foreground">Status</Label>
             <Select value={status} onValueChange={setStatus}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectTrigger id="history-status" aria-label="Filter purchases by status"><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All statuses</SelectItem>
                 <SelectItem value="paid">Paid</SelectItem>
