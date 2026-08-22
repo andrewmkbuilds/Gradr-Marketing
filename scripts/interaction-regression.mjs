@@ -76,11 +76,11 @@ const context = await browser.newContext({
 const page = await context.newPage();
 
 await check("affiliate application form accepts input and validates", async () => {
-  await page.goto(`${BASE}/affiliate/apply`, { waitUntil: "domcontentloaded" });
+  await page.goto(`${BASE}/affiliate/join`, { waitUntil: "domcontentloaded" });
   await page.waitForTimeout(800);
   const inputs = page.locator("form input:not([type=hidden]), form textarea");
   const count = await inputs.count();
-  assert(count > 0, "no form controls rendered on /affiliate/apply");
+  assert(count > 0, "no form controls rendered on /affiliate/join");
 
   const first = inputs.first();
   await first.click();
