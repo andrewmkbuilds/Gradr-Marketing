@@ -173,7 +173,7 @@
     "test:visual:states": "node scripts/visual-states.mjs",
     "test:visual:breakpoints": "node scripts/visual-regression.mjs --viewports=mobile,tablet",
     "test:interactions": "node scripts/interaction-regression.mjs",
-    "lint:colors": "eslint . --config eslint.colors.config.js"
+    "lint:colors": "eslint . --config eslint.colors.config.js --quiet"
   },
   "type": "module",
   "version": "0.0.0"
