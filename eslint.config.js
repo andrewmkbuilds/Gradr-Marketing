@@ -45,7 +45,40 @@ export default tseslint.config(
           ],
         },
       ],
+      // Design system guard: colors must come from semantic tokens, never literals.
+      "no-restricted-syntax": [
+        "error",
+        {
+          selector:
+            "JSXAttribute[name.name=/^(className|class)$/] > Literal[value=/#[0-9a-fA-F]{3,8}\\b|\\b(rgba?|hsla?)\\(/]",
+          message:
+            "Hardcoded colors are not allowed. Use a Gradr semantic token (bg-primary, text-muted-foreground, border-border, …).",
+        },
+        {
+          selector:
+            "JSXAttribute[name.name=/^(className|class)$/] JSXExpressionContainer Literal[value=/#[0-9a-fA-F]{3,8}\\b|\\b(rgba?|hsla?)\\(/]",
+          message:
+            "Hardcoded colors are not allowed. Use a Gradr semantic token (bg-primary, text-muted-foreground, border-border, …).",
+        },
+        {
+          selector:
+            "JSXAttribute[name.name='style'] Property[key.name=/[Cc]olor$|^fill$|^stroke$|^background$/] > Literal[value=/^\\s*(#|rgb|hsl)/]",
+          message:
+            "Inline color literals are not allowed. Use a Gradr semantic token or CSS variable (var(--primary)).",
+        },
+      ],
     },
 
+  },
+  {
+    // Token sources, generated artifacts and design-system vendor code define the literals.
+    files: [
+      "src/design-system/**",
+      "src/styles/**",
+      "scripts/**",
+      "**/*.test.ts",
+      "**/*.test.tsx",
+    ],
+    rules: { "no-restricted-syntax": "off" },
   },
 );
