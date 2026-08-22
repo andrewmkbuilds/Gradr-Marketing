@@ -80,7 +80,7 @@ export function EligibilityPanel() {
                 <span className="min-w-0 flex-1">
                   <span className="flex items-center gap-2">
                     <Text variant="body-sm" as="span" className="font-medium">{v.label}</Text>
-                    <Badge variant="outline" className={copy.tone}>
+                    <Badge variant={copy.badgeVariant}>
                       {copy.label}
                     </Badge>
                   </span>
