@@ -1,9 +1,7 @@
 import { useMemo, useState, useEffect } from "react";
 import { track, trackOnce } from "@/lib/telemetry/events";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
+import { Badge, Button, Input, Label, Text } from "@/design-system/gradr-9b9b95";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -164,9 +162,13 @@ export function OnboardingDialog({ open, onComplete }: Props) {
                 className={cn("h-1 rounded-full transition-colors", i <= step ? "bg-primary" : "bg-secondary")}
                 aria-hidden="true"
               />
-              <span className={cn("text-[11px]", i === step ? "text-foreground" : "text-muted-foreground")}>
+              <Text
+                variant="caption"
+                as="span"
+                className={cn("block", i === step ? "text-foreground" : "text-muted-foreground")}
+              >
                 {s}
-              </span>
+              </Text>
             </li>
           ))}
         </ol>
@@ -199,11 +201,8 @@ export function OnboardingDialog({ open, onComplete }: Props) {
                       <ul className="flex flex-wrap gap-2">
                         {roles.map((r, i) => (
                           <li key={r}>
-                            <span className={cn(
-                              "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs",
-                              i === 0 ? "bg-primary/15 text-primary" : "bg-secondary text-foreground",
-                            )}>
-                              {i === 0 && <span className="text-[10px] uppercase tracking-wide">primary</span>}
+                            <Badge variant={i === 0 ? "primary" : "neutral"} className="gap-1.5">
+                              {i === 0 && <Text variant="overline" as="span">primary</Text>}
                               {r}
                               <button
                                 type="button"
@@ -213,24 +212,19 @@ export function OnboardingDialog({ open, onComplete }: Props) {
                               >
                                 <X className="h-3 w-3" aria-hidden="true" />
                               </button>
-                            </span>
+                            </Badge>
                           </li>
                         ))}
                       </ul>
                     )}
                   </div>
                   <div>
-                    <p className="mb-2 text-xs text-muted-foreground">Popular targets</p>
+                    <Text variant="caption" className="mb-2">Popular targets</Text>
                     <div className="flex flex-wrap gap-2">
                       {ROLE_SUGGESTIONS.filter((r) => !roles.includes(r)).slice(0, 6).map((r) => (
-                        <button
-                          key={r}
-                          type="button"
-                          onClick={() => addRole(r)}
-                          className="min-h-9 rounded-full border border-border px-3 text-xs text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground"
-                        >
+                        <Button key={r} type="button" variant="outline" size="sm" onClick={() => addRole(r)}>
                           + {r}
-                        </button>
+                        </Button>
                       ))}
                     </div>
                   </div>
@@ -253,27 +247,25 @@ export function OnboardingDialog({ open, onComplete }: Props) {
                 <>
                   <div>
                     <Label>Industries you want to work in</Label>
-                    <p className="mt-1 text-xs text-muted-foreground">
+                    <Text variant="caption" className="mt-1">
                       We boost matches in these sectors. Skip if you're open to anything.
-                    </p>
+                    </Text>
                     <div className="mt-3 flex flex-wrap gap-2">
                       {INDUSTRIES.map((ind) => {
                         const on = industries.includes(ind);
                         return (
-                          <button
+                          <Button
                             key={ind}
                             type="button"
+                            variant={on ? "primary" : "outline"}
+                            size="sm"
                             aria-pressed={on}
                             onClick={() =>
                               setIndustries((prev) => (on ? prev.filter((x) => x !== ind) : [...prev, ind]))
                             }
-                            className={cn(
-                              "min-h-9 rounded-full border px-3 text-xs transition-colors",
-                              on ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:border-primary/40",
-                            )}
                           >
                             {ind}
-                          </button>
+                          </Button>
                         );
                       })}
                     </div>
@@ -289,10 +281,10 @@ export function OnboardingDialog({ open, onComplete }: Props) {
                       </SelectContent>
                     </Select>
                     {eligibleIdentity && (
-                      <p className="flex items-center gap-1.5 text-xs text-primary">
+                      <Text variant="caption" tone="primary" className="flex items-center gap-1.5">
                         <BadgePercent className="h-3.5 w-3.5" aria-hidden="true" />
                         You may qualify for a verified discount — we'll offer it after setup.
-                      </p>
+                      </Text>
                     )}
                   </div>
                 </>
@@ -322,14 +314,15 @@ export function OnboardingDialog({ open, onComplete }: Props) {
                     </div>
                     <div className="flex flex-wrap gap-2">
                       {SALARY_STEPS.map((k) => (
-                        <button
+                        <Button
                           key={k}
                           type="button"
+                          variant="outline"
+                          size="sm"
                           onClick={() => setSalaryMin(String(k * 1000))}
-                          className="min-h-9 rounded-full border border-border px-3 text-xs text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground"
                         >
                           {k}k+
-                        </button>
+                        </Button>
                       ))}
                     </div>
                   </div>
@@ -366,18 +359,17 @@ export function OnboardingDialog({ open, onComplete }: Props) {
         <DialogFooter className="gap-2 sm:justify-between">
           <Button
             variant="ghost"
-            className="gap-1.5"
             onClick={() => setStep((s) => Math.max(0, s - 1))}
             disabled={step === 0}
           >
             <ArrowLeft className="h-4 w-4" aria-hidden="true" /> Back
           </Button>
           {step < STEPS.length - 1 ? (
-            <Button className="gap-1.5" onClick={() => setStep((s) => s + 1)} disabled={!canAdvance}>
+            <Button onClick={() => setStep((s) => s + 1)} disabled={!canAdvance}>
               Continue <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </Button>
           ) : (
-            <Button onClick={submit} disabled={roles.length === 0 || saving} className="gap-2">
+            <Button onClick={submit} disabled={roles.length === 0 || saving}>
               {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
               Save & re-rank matches
             </Button>
