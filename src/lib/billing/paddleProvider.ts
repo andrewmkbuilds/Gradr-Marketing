@@ -2,6 +2,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { getPaddle, getPaddleEnvironment, getPaddlePriceId } from "@/lib/paddle";
 import { resolveCheckoutDiscount } from "@/hooks/useEligibility";
 import { PAID_PLAN_IDS, PLAN_PRICING } from "@/config/pricing";
+import { reportApiFailure } from "@/lib/monitoring/reliability";
 import type {
   BillingProvider,
   CheckoutRequest,
@@ -24,6 +25,30 @@ const PLAN_PRICE_IDS: Record<string, string> = Object.fromEntries(
 );
 
 
+/**
+ * Records the attempt server-side so repeated checkouts for the same
+ * subscriber inside a short window raise an admin alert with subscription
+ * context. Monitoring must never block a purchase, so failures are swallowed.
+ */
+async function recordCheckoutAttempt(priceId: string) {
+  try {
+    const { data } = await supabase.rpc("record_checkout_attempt", {
+      _price_id: priceId,
+      _environment: getPaddleEnvironment(),
+    });
+    const result = data as { attempts?: number; alerted?: boolean } | null;
+    if (result?.alerted) {
+      reportApiFailure("checkout-duplicate-attempts", null, {
+        code: "repeated_checkout",
+        message: "Subscriber reopened checkout repeatedly in a short window",
+        context: { priceId, attempts: result.attempts ?? 0 },
+      });
+    }
+  } catch {
+    /* monitoring is best-effort */
+  }
+}
+
 /** Opens the Paddle overlay for one human-readable price ID. */
 export async function openPaddleCheckout(
   priceId: string,
@@ -34,8 +59,11 @@ export async function openPaddleCheckout(
   const user = data.user;
   if (!user) throw new Error("Sign in before making a purchase.");
 
+  await recordCheckoutAttempt(priceId);
+
   const paddle = await getPaddle();
   const paddlePriceId = await getPaddlePriceId(priceId);
+
 
   paddle.Checkout.open({
     items: [{ priceId: paddlePriceId, quantity: 1 }],

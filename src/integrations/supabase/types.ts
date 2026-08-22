@@ -980,6 +980,72 @@ export type Database = {
         }
         Relationships: []
       }
+      checkout_abuse_alerts: {
+        Row: {
+          acknowledged_at: string | null
+          attempts: number
+          created_at: string
+          environment: string
+          id: string
+          price_id: string
+          subscription_id: string | null
+          subscription_status: string | null
+          subscription_tier: string | null
+          user_id: string
+          window_seconds: number
+        }
+        Insert: {
+          acknowledged_at?: string | null
+          attempts: number
+          created_at?: string
+          environment?: string
+          id?: string
+          price_id: string
+          subscription_id?: string | null
+          subscription_status?: string | null
+          subscription_tier?: string | null
+          user_id: string
+          window_seconds: number
+        }
+        Update: {
+          acknowledged_at?: string | null
+          attempts?: number
+          created_at?: string
+          environment?: string
+          id?: string
+          price_id?: string
+          subscription_id?: string | null
+          subscription_status?: string | null
+          subscription_tier?: string | null
+          user_id?: string
+          window_seconds?: number
+        }
+        Relationships: []
+      }
+      checkout_attempts: {
+        Row: {
+          created_at: string
+          environment: string
+          id: string
+          price_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          environment?: string
+          id?: string
+          price_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          environment?: string
+          id?: string
+          price_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       company_research: {
         Row: {
           cache_key: string
@@ -4615,6 +4681,10 @@ export type Database = {
           msg_id: number
           read_ct: number
         }[]
+      }
+      record_checkout_attempt: {
+        Args: { _environment?: string; _price_id: string }
+        Returns: Json
       }
       record_conversion_commission: {
         Args: {

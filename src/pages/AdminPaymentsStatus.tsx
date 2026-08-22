@@ -11,6 +11,7 @@ import { currentPaymentsDiagnostics } from "@/lib/paymentsConfig";
 import { LEGAL_PAGES } from "@/content/legal";
 import { TIERS, CREDIT_PACKS } from "@/config/tiers";
 import { PageHeader } from "@/components/app/PageHeader";
+import { PaymentsHealthPanel } from "@/components/admin/PaymentsHealthPanel";
 import { Activity } from "lucide-react";
 
 type CheckStatus = "pass" | "warn" | "fail";
@@ -221,6 +222,8 @@ export default function AdminPaymentsStatus() {
           ))}
         </ul>
       </Card>
+
+      <PaymentsHealthPanel />
 
       {diag.issues.length > 0 && (
         <Card className="p-5">
