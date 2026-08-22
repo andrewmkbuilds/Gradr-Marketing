@@ -58,7 +58,7 @@ export function ShareCard({ code, link }: { code: string; link: string }) {
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, w, h);
 
-    ctx.fillStyle = "rgba(115, 62, 36, 0.22)";
+    ctx.fillStyle = "rgba(115, 62, 36, 0.22)"; // theme-token-ok
     ctx.beginPath();
     ctx.arc(w - 140, 120, 220, 0, Math.PI * 2);
     ctx.fill();

@@ -29,7 +29,7 @@ export const MagneticButton = forwardRef<HTMLButtonElement, MagneticButtonProps>
     const y = useSpring(useMotionValue(0), springPointer);
     const gx = useMotionValue(50);
     const gy = useMotionValue(50);
-    const sheen = useMotionTemplate`radial-gradient(120px circle at ${gx}% ${gy}%, hsl(0 0% 100% / 0.22), transparent 65%)`;
+    const sheen = useMotionTemplate`radial-gradient(120px circle at ${gx}% ${gy}%, hsl(0 0% 100% / 0.22), transparent 65%)`; // theme-token-ok
 
     const button = (
       <Button

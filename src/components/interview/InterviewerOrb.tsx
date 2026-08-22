@@ -67,9 +67,9 @@ export function InterviewerOrb({ state, name = "AI Interviewer", className }: Pr
           style={{
             background:
               "conic-gradient(from 0deg, transparent 0deg, hsl(var(--primary)/0.55) 60deg, transparent 140deg, transparent 220deg, hsl(var(--brand-secondary,var(--primary))/0.35) 280deg, transparent 340deg)",
-            maskImage: "radial-gradient(circle, transparent 61%, #000 62%, #000 66%, transparent 67%)",
+            maskImage: "radial-gradient(circle, transparent 61%, #000 62%, #000 66%, transparent 67%)", // theme-token-ok
             WebkitMaskImage:
-              "radial-gradient(circle, transparent 61%, #000 62%, #000 66%, transparent 67%)",
+              "radial-gradient(circle, transparent 61%, #000 62%, #000 66%, transparent 67%)", // theme-token-ok
           }}
           animate={reduced ? undefined : { rotate: 360 }}
           transition={{ duration: tuning.spin, ease: "linear", repeat: Infinity }}

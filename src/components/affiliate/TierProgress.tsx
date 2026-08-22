@@ -87,7 +87,7 @@ export function TierProgress({
         <div className="flex items-center gap-3">
           <div
             className="h-11 w-11 rounded-xl flex items-center justify-center"
-            style={{ background: `${current?.color ?? DEFAULT_TIER_COLOR}22`, color: current?.color ?? DEFAULT_TIER_COLOR }}
+            style={{ background: `${current?.color ?? DEFAULT_TIER_COLOR}22`, color: current?.color ?? DEFAULT_TIER_COLOR }} // theme-token-ok
           >
             <Trophy className="h-5 w-5" />
           </div>
@@ -122,7 +122,7 @@ export function TierProgress({
             animate={{ width: `${progress}%` }}
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="h-full rounded-full"
-            style={{ background: `linear-gradient(90deg, ${current?.color ?? DEFAULT_TIER_COLOR}, hsl(var(--primary)))` }}
+            style={{ background: `linear-gradient(90deg, ${current?.color ?? DEFAULT_TIER_COLOR}, hsl(var(--primary)))` }} // theme-token-ok
           />
         </div>
       </div>

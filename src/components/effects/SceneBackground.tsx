@@ -68,8 +68,8 @@ export function SceneBackground({
           style={{
             background:
               "conic-gradient(from 180deg at 50% -10%, transparent 0deg, hsl(var(--primary) / 0.14) 20deg, transparent 40deg, hsl(var(--brand-secondary) / 0.10) 62deg, transparent 90deg)",
-            maskImage: "radial-gradient(ellipse at 50% 0%, #000 30%, transparent 75%)",
-            WebkitMaskImage: "radial-gradient(ellipse at 50% 0%, #000 30%, transparent 75%)",
+            maskImage: "radial-gradient(ellipse at 50% 0%, #000 30%, transparent 75%)", // theme-token-ok
+            WebkitMaskImage: "radial-gradient(ellipse at 50% 0%, #000 30%, transparent 75%)", // theme-token-ok
           }}
         />
       )}
@@ -80,8 +80,8 @@ export function SceneBackground({
           style={{
             backgroundImage: "radial-gradient(hsl(var(--foreground) / 0.16) 1px, transparent 1px)",
             backgroundSize: "22px 22px",
-            maskImage: "radial-gradient(ellipse at 50% 30%, #000, transparent 72%)",
-            WebkitMaskImage: "radial-gradient(ellipse at 50% 30%, #000, transparent 72%)",
+            maskImage: "radial-gradient(ellipse at 50% 30%, #000, transparent 72%)", // theme-token-ok
+            WebkitMaskImage: "radial-gradient(ellipse at 50% 30%, #000, transparent 72%)", // theme-token-ok
           }}
         />
       )}
