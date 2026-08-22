@@ -62,7 +62,7 @@ function GallerySpecimen({ scope }: { scope: string }) {
   return (
     <div className="space-y-8 bg-background p-6">
       <Row title="Buttons" hint="Variants x sizes, plus hover, disabled and loading states.">
-        <div className="flex flex-wrap items-center gap-3">
+        <div data-gallery="buttons" className="flex flex-wrap items-center gap-3">
           {BUTTON_VARIANTS.map((variant) => (
             <Button key={variant} variant={variant}>
               {variant}
@@ -77,7 +77,7 @@ function GallerySpecimen({ scope }: { scope: string }) {
             ★
           </Button>
         </div>
-        <div className="flex flex-wrap items-center gap-3">
+        <div data-gallery="states" className="flex flex-wrap items-center gap-3">
           <Button disabled>Disabled</Button>
           <Button variant="outline" disabled>
             Disabled outline
