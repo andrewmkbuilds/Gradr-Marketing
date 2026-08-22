@@ -267,7 +267,7 @@ export function InterviewStudio(props: Props) {
             >
               {/* Stage atmosphere: a grid floor and a soft top light, both static and cheap. */}
               <div
-                className="pointer-events-none absolute inset-0 opacity-[0.35] [mask-image:radial-gradient(ellipse_at_50%_0%,#000,transparent_72%)]"
+                className="pointer-events-none absolute inset-0 opacity-[0.35] [mask-image:radial-gradient(ellipse_at_50%_0%,black,transparent_72%)]"
                 style={{
                   backgroundImage:
                     "linear-gradient(to right, hsl(var(--border)/0.5) 1px, transparent 1px), linear-gradient(to bottom, hsl(var(--border)/0.5) 1px, transparent 1px)",
