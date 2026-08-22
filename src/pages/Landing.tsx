@@ -1181,6 +1181,7 @@ export default function Landing() {
               </Button>
             </div>
           </Reveal>
+          </ScrollFloat>
         </Section>
       </main>
 
