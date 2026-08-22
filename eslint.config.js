@@ -3,6 +3,7 @@ import globals from "globals";
 import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
 import tseslint from "typescript-eslint";
+import { colorRuleExemptions, noHardcodedColorSyntax } from "./eslint-rules/no-hardcoded-colors.js";
 
 export default tseslint.config(
   { ignores: ["dist"] },
@@ -46,40 +47,14 @@ export default tseslint.config(
         },
       ],
       // Design system guard: colors must come from semantic tokens, never literals.
-      // Values that resolve a CSS custom property (hsl(var(--primary))) are fine.
-      "no-restricted-syntax": [
-        "error",
-        {
-          selector:
-            "JSXAttribute[name.name=/^(className|class)$/] Literal[value=/^(?!.*var\\(--)(?=[\\s\\S]*(#[0-9a-fA-F]{3,8}\\b|\\b(rgba?|hsla?)\\(\\s*[0-9.]))/]",
-          message:
-            "Hardcoded color in a class name. Replace it with a Gradr semantic token: " +
-            "surfaces bg-background / bg-surface / bg-surface-muted, text text-foreground / text-muted-foreground, " +
-            "brand bg-primary / text-primary / bg-accent, lines border-border, focus ring-ring, errors text-destructive. " +
-            "Full list: .lovable/rules/libraries/gradr-9b9b95/design-tokens.md — live preview at /design-system.",
-        },
-        {
-          selector:
-            "JSXAttribute[name.name='style'] Property[key.name=/[Cc]olor$|^fill$|^stroke$|^background$|^backgroundImage$/] > Literal[value=/^(?!.*var\\(--)(?=[\\s\\S]*(#[0-9a-fA-F]{3,8}\\b|\\b(rgba?|hsla?)\\(\\s*[0-9.]))/]",
-          message:
-            "Inline color literal in a style prop. Use a Gradr semantic token class (bg-primary, text-muted-foreground, border-border) " +
-            "or reference the variable directly (hsl(var(--primary))). " +
-            "Full list: .lovable/rules/libraries/gradr-9b9b95/design-tokens.md — live preview at /design-system.",
-        },
-      ],
+      // Shared with the CI-only color gate (eslint.colors.config.js).
+      "no-restricted-syntax": ["error", ...noHardcodedColorSyntax],
     },
 
   },
   {
     // Token sources, generated artifacts and design-system vendor code define the literals.
-    files: [
-      "src/design-system/**",
-      "src/components/ui/chart.tsx",
-      "src/styles/**",
-      "scripts/**",
-      "**/*.test.ts",
-      "**/*.test.tsx",
-    ],
+    files: colorRuleExemptions,
     rules: { "no-restricted-syntax": "off" },
   },
 );
