@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Copy, Check, Share2, Twitter, Linkedin, Mail, MessageCircle, Download } from "lucide-react";
 import { toast } from "sonner";
+import { Button, Card, Text } from "@/design-system/gradr-9b9b95";
 import { yachtClub } from "@/lib/design/yachtClub";
 
 const SHARE_COPY =
@@ -89,20 +90,17 @@ export function ShareCard({ code, link }: { code: string; link: string }) {
   };
 
   return (
-    <div className="elev-2 rounded-xl p-6 space-y-5">
+    <Card variant="raised" padding="lg" className="space-y-5">
       <div className="flex items-start justify-between gap-3 flex-wrap">
         <div>
-          <h3 className="text-sm font-semibold text-foreground">Invite friends</h3>
-          <p className="text-xs text-muted-foreground mt-1">
+          <Text variant="h6" as="h3">Invite friends</Text>
+          <Text variant="caption" className="mt-1">
             Share your link anywhere. You earn on every paid upgrade it drives.
-          </p>
+          </Text>
         </div>
-        <button
-          onClick={nativeShare}
-          className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-primary text-primary-foreground text-sm hover:opacity-90 transition active:scale-[0.98]"
-        >
-          <Share2 className="h-3.5 w-3.5" /> Share
-        </button>
+        <Button size="sm" onClick={nativeShare}>
+          <Share2 className="h-3.5 w-3.5" aria-hidden /> Share
+        </Button>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-[1fr_auto]">
@@ -110,13 +108,10 @@ export function ShareCard({ code, link }: { code: string; link: string }) {
           <div className="text-[11px] uppercase tracking-wide text-muted-foreground">Referral link</div>
           <div className="text-sm font-mono text-foreground truncate mt-1">{link}</div>
         </div>
-        <button
-          onClick={() => copy(link, "link")}
-          className="inline-flex items-center justify-center gap-2 px-4 rounded-xl border border-border bg-secondary/40 text-sm hover:bg-secondary transition active:scale-[0.98]"
-        >
-          {copied === "link" ? <Check className="h-3.5 w-3.5 text-success" /> : <Copy className="h-3.5 w-3.5" />}
+        <Button variant="outline" className="h-auto" onClick={() => copy(link, "link")}>
+          {copied === "link" ? <Check className="h-3.5 w-3.5 text-success" aria-hidden /> : <Copy className="h-3.5 w-3.5" aria-hidden />}
           {copied === "link" ? "Copied" : "Copy link"}
-        </button>
+        </Button>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-[1fr_auto]">
@@ -124,13 +119,10 @@ export function ShareCard({ code, link }: { code: string; link: string }) {
           <div className="text-[11px] uppercase tracking-wide text-muted-foreground">Referral code</div>
           <div className="text-lg font-mono font-bold tracking-widest text-primary mt-1">{code}</div>
         </div>
-        <button
-          onClick={() => copy(code, "code")}
-          className="inline-flex items-center justify-center gap-2 px-4 rounded-xl border border-border bg-secondary/40 text-sm hover:bg-secondary transition active:scale-[0.98]"
-        >
-          {copied === "code" ? <Check className="h-3.5 w-3.5 text-success" /> : <Copy className="h-3.5 w-3.5" />}
+        <Button variant="outline" className="h-auto" onClick={() => copy(code, "code")}>
+          {copied === "code" ? <Check className="h-3.5 w-3.5 text-success" aria-hidden /> : <Copy className="h-3.5 w-3.5" aria-hidden />}
           {copied === "code" ? "Copied" : "Copy code"}
-        </button>
+        </Button>
       </div>
 
       <div className="flex flex-wrap gap-2">
@@ -145,13 +137,10 @@ export function ShareCard({ code, link }: { code: string; link: string }) {
             <s.icon className="h-3.5 w-3.5" /> {s.label}
           </a>
         ))}
-        <button
-          onClick={downloadCard}
-          className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-border text-xs text-foreground hover:bg-secondary transition"
-        >
-          <Download className="h-3.5 w-3.5" /> Referral card
-        </button>
+        <Button variant="outline" size="sm" onClick={downloadCard}>
+          <Download className="h-3.5 w-3.5" aria-hidden /> Referral card
+        </Button>
       </div>
-    </div>
+    </Card>
   );
 }
