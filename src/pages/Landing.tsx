@@ -16,7 +16,7 @@ import {
   formatUsd,
   planPriceLabel,
 } from "@/config/pricing";
-import { Button } from "@/components/ui/button";
+import { Button, Card, Text } from "@/design-system/gradr-9b9b95";
 import {
   Accordion, AccordionContent, AccordionItem, AccordionTrigger,
 } from "@/components/ui/accordion";
@@ -266,7 +266,7 @@ function Heading({
 }
 
 function Lede({ children }: { children: React.ReactNode }) {
-  return <BlurText className="type-lede max-w-2xl text-muted-foreground">{children}</BlurText>;
+  return <BlurText className="max-w-2xl text-body-lg text-muted-foreground">{children}</BlurText>;
 }
 
 
@@ -487,7 +487,7 @@ export default function Landing() {
                   initial={{ opacity: 0, y: 14 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.7, ease: easeOut, delay: 0.5 }}
-                  className="type-lede max-w-xl text-muted-foreground"
+                  className="max-w-xl text-body-lg text-muted-foreground"
                 >
                   Gradr scores your resume, ranks live roles against your real skills, runs spoken mock
                   interviews and tracks every application — one intelligent system that remembers your
@@ -508,15 +508,13 @@ export default function Landing() {
                     />
                   </MagneticButton>
                   <Magnetic strength={6}>
-                    <Button asChild size="lg" variant="outline" className="h-12 px-6 text-base">
-                      <motion.button
-                        type="button"
-                        whileTap={{ scale: 0.97 }}
-                        transition={springSnappy}
-                        onClick={() => scrollIntoViewSafely("how-it-works")}
-                      >
-                        See how Gradr works
-                      </motion.button>
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      type="button"
+                      onClick={() => scrollIntoViewSafely("how-it-works")}
+                    >
+                      See how Gradr works
                     </Button>
                   </Magnetic>
                 </motion.div>
@@ -675,7 +673,7 @@ export default function Landing() {
                   </li>
                 ))}
               </ul>
-              <Button size="lg" className="h-11" onClick={start("feature_section", "Optimize my resume")}>
+              <Button size="lg" onClick={start("feature_section", "Optimize my resume")}>
                 Optimize my resume
                 <ArrowRight className="ml-2 h-4 w-4" aria-hidden />
               </Button>
@@ -748,7 +746,7 @@ export default function Landing() {
                   </li>
                 ))}
               </ul>
-              <Button size="lg" variant="outline" className="h-11" onClick={start("feature_section", "Find my matches")}>
+              <Button size="lg" variant="outline" onClick={start("feature_section", "Find my matches")}>
                 <Search className="mr-2 h-4 w-4" aria-hidden />
                 Find my matches
               </Button>
@@ -771,7 +769,7 @@ export default function Landing() {
                 Everything stays editable. Gradr drafts the first version so you spend your time on judgment, not
                 formatting.
               </p>
-              <Button size="lg" className="h-11" onClick={start("feature_section", "Build an application")}>
+              <Button size="lg" onClick={start("feature_section", "Build an application")}>
                 Build an application
                 <ArrowRight className="ml-2 h-4 w-4" aria-hidden />
               </Button>
@@ -818,12 +816,12 @@ export default function Landing() {
 
           <Reveal delay={80} className="mt-8 flex flex-col gap-3 sm:flex-row">
             <SpatialCta>
-              <Button size="lg" className="h-12 px-6" onClick={start("feature_section", "Run a mock interview")}>
+              <Button size="lg" onClick={start("feature_section", "Run a mock interview")}>
                 Run a mock interview
                 <ArrowRight className="ml-2 h-4 w-4" aria-hidden />
               </Button>
             </SpatialCta>
-            <Button size="lg" variant="outline" className="h-12 px-6" onClick={() => goToApp(appPricingHref(), navigate)}>
+            <Button size="lg" variant="outline" onClick={() => goToApp(appPricingHref(), navigate)}>
               See interview plans
             </Button>
           </Reveal>
@@ -903,19 +901,21 @@ export default function Landing() {
                 <SpotlightCard className="h-full p-6">
                   <div id={a.id} className="scroll-mt-28" />
                   <a.icon className="h-5 w-5 text-primary" aria-hidden />
-                  <h3 className="mt-4 text-sm font-semibold text-foreground">{a.title}</h3>
-                  <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{a.copy}</p>
+                  <Text variant="h6" as="h3" className="mt-4">{a.title}</Text>
+                  <Text variant="body-sm" tone="muted" className="mt-1.5">{a.copy}</Text>
                 </SpotlightCard>
                 </SpatialCard>
               </Reveal>
             ))}
-            <Reveal delay={250} className="flex flex-col justify-center rounded-2xl border border-border bg-card p-6">
-              <p className="text-sm leading-relaxed text-muted-foreground">
+            <Reveal delay={250}>
+              <Card variant="outline" padding="lg" className="flex h-full flex-col justify-center">
+              <Text variant="body-sm" tone="muted">
                 Not sure where you fit? Start free — Gradr adapts to the stage you're actually at.
-              </p>
-              <Button variant="outline" className="mt-4 h-11 w-full sm:w-auto" onClick={start("pricing", "Get started free")}>
+              </Text>
+              <Button variant="outline" className="mt-4 w-full sm:w-auto" onClick={start("pricing", "Get started free")}>
                 Get started free
               </Button>
+              </Card>
             </Reveal>
           </div>
         </Section>
@@ -940,7 +940,7 @@ export default function Landing() {
           </ol>
 
           <Reveal delay={80} className="mt-8">
-            <Button size="lg" className="h-12 px-6" onClick={start("feature_section", "Start building your career system")}>
+            <Button size="lg" onClick={start("feature_section", "Start building your career system")}>
               Start building your career system
               <ArrowRight className="ml-2 h-4 w-4" aria-hidden />
             </Button>
@@ -955,10 +955,9 @@ export default function Landing() {
           </Reveal>
 
           <div className="mt-10 grid gap-4 lg:grid-cols-2">
-            <Reveal className="rounded-2xl border border-border bg-secondary/20 p-6">
-              <h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-                The usual setup
-              </h3>
+            <Reveal>
+              <Card variant="outline" padding="lg" className="h-full">
+              <Text variant="overline" as="h3">The usual setup</Text>
               <ul className="mt-5 space-y-3">
                 {OLD_WAY.map((t) => (
                   <li key={t} className="flex gap-3 text-sm text-muted-foreground">
@@ -967,13 +966,13 @@ export default function Landing() {
                   </li>
                 ))}
               </ul>
-              <p className="mt-5 text-xs text-muted-foreground/80">
-                Five tools that never talk to each other.
-              </p>
+              <Text variant="caption" className="mt-5">Five tools that never talk to each other.</Text>
+              </Card>
             </Reveal>
 
-            <Reveal delay={100} className="rounded-2xl border border-primary/30 bg-primary/[0.05] p-6">
-              <h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">Gradr</h3>
+            <Reveal delay={100}>
+              <Card variant="raised" padding="lg" className="h-full">
+              <Text variant="overline" as="h3" tone="primary">Gradr</Text>
               <ul className="mt-5 space-y-3">
                 {NEW_WAY.map((t) => (
                   <li key={t} className="flex gap-3 text-sm text-foreground">
@@ -982,9 +981,8 @@ export default function Landing() {
                   </li>
                 ))}
               </ul>
-              <p className="mt-5 text-xs text-muted-foreground">
-                One connected career system.
-              </p>
+              <Text variant="caption" className="mt-5">One connected career system.</Text>
+              </Card>
             </Reveal>
           </div>
         </Section>
@@ -1009,7 +1007,7 @@ export default function Landing() {
                   </li>
                 ))}
               </ul>
-              <Button size="lg" className="h-11" onClick={start("feature_section", "Rewrite my resume")}>
+              <Button size="lg" onClick={start("feature_section", "Rewrite my resume")}>
                 Rewrite my resume
                 <ArrowRight className="ml-2 h-4 w-4" aria-hidden />
               </Button>
@@ -1072,18 +1070,18 @@ export default function Landing() {
                   }`}
                 >
                   <div className="flex items-center justify-between">
-                    <h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-foreground">{p.name}</h3>
+                    <Text variant="overline" as="h3" className="text-foreground">{p.name}</Text>
                     {p.highlight && (
                       <span className="rounded-full bg-primary/15 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-primary">
                         <GradientText variant="shine">Most complete</GradientText>
                       </span>
                     )}
                   </div>
-                  <p className="mt-2 text-sm text-muted-foreground">{p.tagline}</p>
+                  <Text variant="body-sm" tone="muted" className="mt-2">{p.tagline}</Text>
 
                   <div className="mt-6 flex items-baseline gap-2">
-                    <span className="text-4xl font-bold tracking-tight tabular-nums text-foreground">{priceLabel}</span>
-                    <span className="text-sm text-muted-foreground">{periodNote}</span>
+                    <Text variant="h3" as="span" className="tabular-nums">{priceLabel}</Text>
+                    <Text variant="body-sm" as="span" tone="muted">{periodNote}</Text>
                   </div>
                   {savings > 0 && (
                     <div className="mt-2 flex items-center gap-2 text-xs">
@@ -1106,8 +1104,8 @@ export default function Landing() {
                   </ul>
 
                   <Button
-                    className="mt-6 h-11 w-full"
-                    variant={p.highlight ? "default" : "outline"}
+                    className="mt-6 w-full"
+                    variant={p.highlight ? "primary" : "outline"}
                     onClick={() => {
                       if (p.name === "Free") {
                         start("pricing", p.cta)();
@@ -1160,21 +1158,20 @@ export default function Landing() {
           <ScrollFloat distance={56}>
           <Reveal className="relative overflow-hidden rounded-3xl border border-primary/25 bg-card px-6 py-14 text-center sm:px-12 sm:py-20">
             <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-primary/10 to-transparent" aria-hidden />
-            <h2 className="relative mx-auto max-w-3xl text-balance text-3xl font-bold leading-[1.1] tracking-tight sm:text-4xl lg:text-5xl">
+            <Text variant="h2" className="relative mx-auto max-w-3xl text-balance">
               Your next opportunity deserves more than another resume.
-            </h2>
-            <p className="relative mx-auto mt-4 max-w-xl text-base leading-relaxed text-muted-foreground">
+            </Text>
+            <Text variant="lead" className="relative mx-auto mt-4 max-w-xl">
               Build a smarter career system with Gradr.
-            </p>
+            </Text>
             <div className="relative mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-              <Button size="lg" className="h-12 px-7 text-base" onClick={start("final_cta", "Get started free")}>
+              <Button size="lg" onClick={start("final_cta", "Get started free")}>
                 Get started free
                 <ArrowRight className="ml-2 h-4 w-4" aria-hidden />
               </Button>
               <Button
                 size="lg"
                 variant="outline"
-                className="h-12 px-7 text-base"
                 onClick={() => scrollIntoViewSafely("product")}
               >
                 Explore Gradr

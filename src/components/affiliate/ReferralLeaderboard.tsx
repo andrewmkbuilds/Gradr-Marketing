@@ -50,7 +50,7 @@ export function ReferralLeaderboard() {
               {r.tier_name && (
                 <span
                   className="text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full"
-                  style={{ background: `${r.tier_color ?? DEFAULT_TIER_COLOR}22`, color: r.tier_color ?? DEFAULT_TIER_COLOR }}
+                  style={{ background: `${r.tier_color ?? DEFAULT_TIER_COLOR}22`, color: r.tier_color ?? DEFAULT_TIER_COLOR }} // theme-token-ok
                 >
                   {r.tier_name}
                 </span>

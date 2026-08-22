@@ -7,6 +7,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useMyAffiliate } from "@/hooks/useAffiliate";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
+import { Button, Card, Input, Label, Text, Textarea } from "@/design-system/gradr-9b9b95";
 
 const schema = z.object({
   full_name: z.string().trim().min(2).max(120),
@@ -41,10 +42,10 @@ export default function AffiliateApply() {
   }
   if (my?.application?.status === "pending") {
     return (
-      <div className="max-w-2xl mx-auto elev-2 rounded-xl p-8 text-center">
-        <h1 className="text-xl font-semibold text-foreground mb-2">Application under review</h1>
-        <p className="text-sm text-muted-foreground">We typically review within 48 hours. We'll notify you once a decision is made.</p>
-      </div>
+      <Card variant="raised" padding="lg" className="mx-auto max-w-2xl text-center">
+        <Text variant="h5" as="h1" className="mb-2">Application under review</Text>
+        <Text variant="body-sm" tone="muted">We typically review within 48 hours. We'll notify you once a decision is made.</Text>
+      </Card>
     );
   }
 
@@ -84,31 +85,32 @@ export default function AffiliateApply() {
     navigate("/affiliate");
   };
 
-  const inputCls = "w-full px-3 py-2 rounded-lg bg-secondary border border-border text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40";
-  const labelCls = "text-xs font-medium text-foreground block mb-1.5";
+  const selectCls =
+    "h-10 w-full rounded-control border border-border bg-surface px-3 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       <div>
-        <h1 className="type-h1 text-foreground">Affiliate Application</h1>
-        <p className="text-sm text-muted-foreground mt-1">Tell us about you and your audience.</p>
+        <Text variant="h2" as="h1">Affiliate Application</Text>
+        <Text variant="body-sm" tone="muted" className="mt-1">Tell us about you and your audience.</Text>
       </div>
 
-      <form onSubmit={handleSubmit} className="elev-2 rounded-xl p-6 space-y-5">
+      <Card variant="raised" padding="lg">
+        <form onSubmit={handleSubmit} className="space-y-5">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div><label className={labelCls}>Full name *</label><input name="full_name" required defaultValue={user?.user_metadata?.full_name || ""} className={inputCls} /></div>
-          <div><label className={labelCls}>Contact email *</label><input name="email" type="email" required defaultValue={user?.email || ""} className={inputCls} /></div>
-          <div><label className={labelCls}>Brand / company</label><input name="brand_name" className={inputCls} /></div>
-          <div><label className={labelCls}>Website</label><input name="website" placeholder="https://" className={inputCls} /></div>
-          <div><label className={labelCls}>Twitter / X</label><input name="twitter" placeholder="@handle or url" className={inputCls} /></div>
-          <div><label className={labelCls}>LinkedIn</label><input name="linkedin" className={inputCls} /></div>
-          <div><label className={labelCls}>YouTube / TikTok</label><input name="youtube" className={inputCls} /></div>
-          <div><label className={labelCls}>Audience type *</label><input name="audience_type" required placeholder="e.g. career coach, student creator" className={inputCls} /></div>
-          <div><label className={labelCls}>Audience size *</label><input name="audience_size" required placeholder="e.g. 12k newsletter, 50k YT" className={inputCls} /></div>
-          <div><label className={labelCls}>Payout email *</label><input name="payout_email" type="email" required defaultValue={user?.email || ""} className={inputCls} /></div>
+          <div><Label className="mb-1.5 block">Full name *</Label><Input name="full_name" required defaultValue={user?.user_metadata?.full_name || ""} /></div>
+          <div><Label className="mb-1.5 block">Contact email *</Label><Input name="email" type="email" required defaultValue={user?.email || ""} /></div>
+          <div><Label className="mb-1.5 block">Brand / company</Label><Input name="brand_name" /></div>
+          <div><Label className="mb-1.5 block">Website</Label><Input name="website" placeholder="https://" /></div>
+          <div><Label className="mb-1.5 block">Twitter / X</Label><Input name="twitter" placeholder="@handle or url" /></div>
+          <div><Label className="mb-1.5 block">LinkedIn</Label><Input name="linkedin" /></div>
+          <div><Label className="mb-1.5 block">YouTube / TikTok</Label><Input name="youtube" /></div>
+          <div><Label className="mb-1.5 block">Audience type *</Label><Input name="audience_type" required placeholder="e.g. career coach, student creator" /></div>
+          <div><Label className="mb-1.5 block">Audience size *</Label><Input name="audience_size" required placeholder="e.g. 12k newsletter, 50k YT" /></div>
+          <div><Label className="mb-1.5 block">Payout email *</Label><Input name="payout_email" type="email" required defaultValue={user?.email || ""} /></div>
           <div>
-            <label className={labelCls}>Payout method *</label>
-            <select name="payout_method" defaultValue="paypal" className={inputCls}>
+            <Label className="mb-1.5 block">Payout method *</Label>
+            <select name="payout_method" defaultValue="paypal" className={selectCls}>
               <option value="paypal">PayPal</option>
               <option value="wise">Wise</option>
               <option value="bank">Bank transfer</option>
@@ -116,22 +118,23 @@ export default function AffiliateApply() {
           </div>
         </div>
         <div>
-          <label className={labelCls}>How will you promote Gradr? *</label>
-          <textarea name="promotion_plan" required rows={4} className={inputCls} placeholder="Newsletter feature, YouTube review, course bonus, etc." />
+          <Label className="mb-1.5 block">How will you promote Gradr? *</Label>
+          <Textarea name="promotion_plan" required rows={4}  placeholder="Newsletter feature, YouTube review, course bonus, etc." />
         </div>
         <div>
-          <label className={labelCls}>Why do you want to join? *</label>
-          <textarea name="why_join" required rows={3} className={inputCls} />
+          <Label className="mb-1.5 block">Why do you want to join? *</Label>
+          <Textarea name="why_join" required rows={3}  />
         </div>
         <label className="flex items-start gap-2 text-sm text-muted-foreground">
           <input type="checkbox" name="agreed_to_terms" required className="mt-1" />
           <span>I agree to the Gradr affiliate terms, including no self-referrals, no brand-keyword paid search, and commission reversal on refunds.</span>
         </label>
-        <button type="submit" disabled={submitting} className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary text-primary-foreground font-medium hover:opacity-90 transition disabled:opacity-50">
-          {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+        <Button type="submit" disabled={submitting}>
+          {submitting ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : <Send className="h-4 w-4" aria-hidden />}
           Submit application
-        </button>
-      </form>
+        </Button>
+        </form>
+      </Card>
     </div>
   );
 }

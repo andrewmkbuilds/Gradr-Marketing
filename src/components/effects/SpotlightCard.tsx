@@ -89,7 +89,7 @@ export function SpotlightCard({
           className="pointer-events-none absolute -inset-px rounded-[inherit] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
           style={{
             background: edge,
-            WebkitMask: "linear-gradient(#000,#000) content-box, linear-gradient(#000,#000)",
+            WebkitMask: "linear-gradient(#000,#000) content-box, linear-gradient(#000,#000)", // theme-token-ok
             WebkitMaskComposite: "xor",
             maskComposite: "exclude",
             padding: 1,

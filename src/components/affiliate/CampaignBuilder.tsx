@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Copy, Plus, Save, Trash2, Link2, Loader2 } from "lucide-react";
 import { format } from "date-fns";
+import { Button, Card, Input, Label, Text, Textarea } from "@/design-system/gradr-9b9b95";
 import { supabase } from "@/integrations/supabase/client";
 
 interface Props {
@@ -108,76 +109,66 @@ export function CampaignBuilder({ affiliateProfileId, affiliateCode }: Props) {
   const set = (k: keyof FormState) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm((f) => ({ ...f, [k]: e.target.value }));
 
-  const inputCls =
-    "w-full px-3 py-2 rounded-lg bg-secondary border border-border text-sm focus:outline-none focus:ring-1 focus:ring-primary";
-  const labelCls = "text-xs font-medium text-muted-foreground block mb-1.5";
 
   return (
     <div className="space-y-6">
-      <div className="elev-2 rounded-xl p-6 space-y-4">
+      <Card variant="raised" padding="lg" className="space-y-4">
         <div className="flex items-center gap-2">
           <Plus className="h-4 w-4 text-primary" />
-          <h3 className="text-sm font-semibold text-foreground">Campaign link builder</h3>
+          <Text variant="h6" as="h3">Campaign link builder</Text>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <div>
-            <label className={labelCls}>Campaign name *</label>
-            <input value={form.name} onChange={set("name")} placeholder="Twitter launch" className={inputCls} />
+            <Label className="mb-1.5 block">Campaign name *</Label>
+            <Input value={form.name} onChange={set("name")} placeholder="Twitter launch" />
           </div>
           <div>
-            <label className={labelCls}>Landing path</label>
-            <input value={form.landing_path} onChange={set("landing_path")} placeholder="/pricing" className={inputCls} />
+            <Label className="mb-1.5 block">Landing path</Label>
+            <Input value={form.landing_path} onChange={set("landing_path")} placeholder="/pricing" />
           </div>
           <div>
-            <label className={labelCls}>utm_source</label>
-            <input value={form.utm_source} onChange={set("utm_source")} placeholder="twitter" className={inputCls} />
+            <Label className="mb-1.5 block">utm_source</Label>
+            <Input value={form.utm_source} onChange={set("utm_source")} placeholder="twitter" />
           </div>
           <div>
-            <label className={labelCls}>utm_medium</label>
-            <input value={form.utm_medium} onChange={set("utm_medium")} placeholder="social" className={inputCls} />
+            <Label className="mb-1.5 block">utm_medium</Label>
+            <Input value={form.utm_medium} onChange={set("utm_medium")} placeholder="social" />
           </div>
           <div>
-            <label className={labelCls}>utm_campaign</label>
-            <input value={form.utm_campaign} onChange={set("utm_campaign")} placeholder="spring-launch" className={inputCls} />
+            <Label className="mb-1.5 block">utm_campaign</Label>
+            <Input value={form.utm_campaign} onChange={set("utm_campaign")} placeholder="spring-launch" />
           </div>
           <div>
-            <label className={labelCls}>utm_content</label>
-            <input value={form.utm_content} onChange={set("utm_content")} placeholder="hero-cta" className={inputCls} />
+            <Label className="mb-1.5 block">utm_content</Label>
+            <Input value={form.utm_content} onChange={set("utm_content")} placeholder="hero-cta" />
           </div>
           <div className="md:col-span-2">
-            <label className={labelCls}>utm_term (optional)</label>
-            <input value={form.utm_term} onChange={set("utm_term")} placeholder="career+os" className={inputCls} />
+            <Label className="mb-1.5 block">utm_term (optional)</Label>
+            <Input value={form.utm_term} onChange={set("utm_term")} placeholder="career+os" />
           </div>
           <div className="md:col-span-2">
-            <label className={labelCls}>Notes (private)</label>
-            <textarea value={form.notes} onChange={set("notes")} rows={2} className={inputCls} />
+            <Label className="mb-1.5 block">Notes (private)</Label>
+            <Textarea value={form.notes} onChange={set("notes")} rows={2} />
           </div>
         </div>
 
         <div className="rounded-lg border border-border bg-background/40 p-3 flex items-center gap-2 flex-wrap">
           <Link2 className="h-4 w-4 text-primary shrink-0" />
           <code className="text-xs text-foreground break-all flex-1 min-w-0">{preview}</code>
-          <button
-            onClick={() => copy(preview)}
-            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-secondary text-xs hover:bg-secondary/80 transition"
-          >
-            <Copy className="h-3 w-3" /> Copy
-          </button>
+          <Button variant="outline" size="sm" onClick={() => copy(preview)}>
+            <Copy className="h-3 w-3" aria-hidden /> Copy
+          </Button>
         </div>
 
-        <button
-          onClick={() => save.mutate()}
-          disabled={save.isPending}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm hover:opacity-90 disabled:opacity-50 transition"
-        >
-          {save.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save className="h-3.5 w-3.5" />}
+        <Button onClick={() => save.mutate()} disabled={save.isPending}>
+          {save.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden /> : <Save className="h-3.5 w-3.5" aria-hidden />}
           Save campaign
-        </button>
-      </div>
+        </Button>
+      </Card>
 
-      <div className="elev-2 rounded-xl p-6">
-        <h3 className="text-sm font-semibold text-foreground mb-3">Saved campaigns</h3>
+      <Card variant="raised" padding="lg">
+        <Text variant="h6" as="h3" className="mb-3">Saved campaigns</Text>
         {isLoading ? (
           <Loader2 className="h-5 w-5 animate-spin text-primary" />
         ) : !campaigns || campaigns.length === 0 ? (
@@ -207,20 +198,12 @@ export function CampaignBuilder({ affiliateProfileId, affiliateCode }: Props) {
                       <code className="text-[11px] text-muted-foreground break-all block mt-1">{url}</code>
                     </div>
                     <div className="flex gap-1 shrink-0">
-                      <button
-                        onClick={() => copy(url)}
-                        aria-label="Copy campaign link"
-                        className="p-2 rounded-md hover:bg-secondary text-muted-foreground hover:text-foreground"
-                      >
-                        <Copy className="h-3.5 w-3.5" />
-                      </button>
-                      <button
-                        onClick={() => remove.mutate(c.id)}
-                        aria-label="Delete campaign"
-                        className="p-2 rounded-md hover:bg-destructive/10 text-muted-foreground hover:text-destructive"
-                      >
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </button>
+                      <Button variant="ghost" size="icon-sm" onClick={() => copy(url)} aria-label="Copy campaign link">
+                        <Copy className="h-3.5 w-3.5" aria-hidden />
+                      </Button>
+                      <Button variant="ghost" size="icon-sm" onClick={() => remove.mutate(c.id)} aria-label="Delete campaign" className="hover:text-destructive">
+                        <Trash2 className="h-3.5 w-3.5" aria-hidden />
+                      </Button>
                     </div>
                   </div>
                 </li>
@@ -228,7 +211,7 @@ export function CampaignBuilder({ affiliateProfileId, affiliateCode }: Props) {
             })}
           </ul>
         )}
-      </div>
+      </Card>
     </div>
   );
 }
