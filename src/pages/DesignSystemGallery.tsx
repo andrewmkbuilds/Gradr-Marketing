@@ -11,7 +11,7 @@ import {
   Text,
   Textarea,
 } from "@/design-system/gradr-9b9b95";
-import RouteSeo from "@/components/RouteSeo";
+import { Helmet } from "react-helmet-async";
 
 const BUTTON_VARIANTS = ["primary", "accent", "outline", "ghost", "destructive", "link"] as const;
 const BUTTON_SIZES = ["sm", "md", "lg"] as const;
@@ -173,11 +173,10 @@ function TypographySpecimens() {
 export default function DesignSystemGallery() {
   return (
     <main className="mx-auto max-w-6xl px-4 py-12 space-y-12" data-testid="design-system-gallery">
-      <RouteSeo
-        title="Design system gallery | Gradr"
-        description="Internal reference of Gradr design-system buttons, cards, inputs and typography in light and dark themes."
-        noindex
-      />
+      <Helmet>
+        <title>Design system gallery | Gradr</title>
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
       <header className="space-y-2">
         <Text variant="h1">Design system gallery</Text>
         <Text variant="lead" className="text-muted-foreground">
