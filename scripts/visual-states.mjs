@@ -15,6 +15,7 @@
  * selectors are reported as skipped rather than failing the run.
  */
 import { chromium } from "playwright";
+import sharp from "sharp";
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "fs";
 import { join } from "path";
 
@@ -80,17 +81,25 @@ async function launch() {
   }
 }
 
-function differenceRatio(a, b) {
-  if (a.length !== b.length) return 1;
+/**
+ * Perceptual-ish pixel diff: both images are normalised to the same small
+ * greyscale raster, so PNG compression noise and sub-pixel antialiasing don't
+ * register while real palette/layout drift does.
+ */
+async function differenceRatio(a, b) {
+  const raster = (buf) =>
+    sharp(buf).resize(160, 160, { fit: "fill" }).greyscale().raw().toBuffer();
+  const [pa, pb] = await Promise.all([raster(a), raster(b)]);
+  if (pa.length !== pb.length) return 1;
   let diff = 0;
-  for (let i = 0; i < a.length; i += 1) if (a[i] !== b[i]) diff += 1;
-  return diff / a.length;
+  for (let i = 0; i < pa.length; i += 1) if (Math.abs(pa[i] - pb[i]) > 12) diff += 1;
+  return diff / pa.length;
 }
 
 const failures = [];
 const skipped = [];
 
-function record(file, shot) {
+async function record(file, shot) {
   const baselinePath = join(BASELINE_DIR, file);
   if (UPDATE || !existsSync(baselinePath)) {
     writeFileSync(baselinePath, shot);
@@ -98,7 +107,7 @@ function record(file, shot) {
     return;
   }
   writeFileSync(join(CURRENT_DIR, file), shot);
-  const ratio = differenceRatio(readFileSync(baselinePath), shot);
+  const ratio = await differenceRatio(readFileSync(baselinePath), shot);
   if (ratio > DIFF_TOLERANCE) {
     failures.push({ file, ratio });
     console.log(`✖ ${file} differs by ${(ratio * 100).toFixed(1)}%`);
@@ -120,15 +129,23 @@ try {
     });
     // Force the app's own theme store so the switch itself is exercised.
     await context.addInitScript(
-      ([key, value]) => window.localStorage.setItem(key, value),
+      ([key, value]) => {
+        window.localStorage.setItem(key, value);
+        // Deterministic captures: settled consent UI and no ambient motion.
+        window.localStorage.setItem("gradr-cookie-consent", JSON.stringify({ analytics: false, marketing: false, functional: false, decidedAt: "2026-01-01T00:00:00.000Z" }));
+        window.localStorage.setItem("gradr-motion", "reduced");
+      },
       ["gradr-theme", theme],
     );
     const page = await context.newPage();
+    await page.addStyleTag({
+      content: "*,*::before,*::after{animation:none!important;transition:none!important}",
+    }).catch(() => {});
 
     for (const [name, path] of PAGES) {
       await page.goto(`${BASE}${path}`, { waitUntil: "domcontentloaded" });
       await page.waitForTimeout(1200);
-      record(`${name}-${theme}.png`, await page.screenshot());
+      await record(`${name}-${theme}.png`, await page.screenshot());
     }
 
     for (const { name, path, selector, state } of STATES) {
@@ -142,7 +159,7 @@ try {
       if (state === "hover") await el.hover();
       if (state === "focus") await el.focus();
       await page.waitForTimeout(250);
-      record(`${name}-${theme}.png`, await el.screenshot());
+      await record(`${name}-${theme}.png`, await el.screenshot());
     }
 
     await context.close();
