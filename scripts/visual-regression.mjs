@@ -25,6 +25,7 @@ const DIFF_TOLERANCE = Number(process.env.VISUAL_TOLERANCE ?? 0.03); // 3% of pi
 
 const ROUTES = [
   ["landing", "/landing"],
+  ["design-system", "/design-system"],
   ["pricing", "/pricing"],
   ["auth", "/auth"],
   ["job-search", "/job-search"],
@@ -34,11 +35,27 @@ const ROUTES = [
   ["notfound", "/this-route-does-not-exist"],
 ];
 
-const VIEWPORTS = [
+const ALL_VIEWPORTS = [
   ["mobile", 390, 844],
   ["tablet", 834, 1112],
   ["desktop", 1440, 900],
 ];
+
+// `--viewports=mobile,tablet` narrows the run to specific breakpoints so CI can
+// gate small-screen layout separately from the slower full sweep.
+const viewportFilter = (process.argv.find((a) => a.startsWith("--viewports=")) ?? "")
+  .replace("--viewports=", "")
+  .split(",")
+  .map((v) => v.trim())
+  .filter(Boolean);
+const VIEWPORTS = viewportFilter.length
+  ? ALL_VIEWPORTS.filter(([name]) => viewportFilter.includes(name))
+  : ALL_VIEWPORTS;
+
+if (!VIEWPORTS.length) {
+  console.error(`No viewports matched "${viewportFilter.join(",")}". Known: mobile, tablet, desktop.`);
+  process.exit(1);
+}
 
 function findChromium() {
   for (const envPath of [process.env.PLAYWRIGHT_CHROMIUM_PATH, process.env.CHROME_PATH]) {
