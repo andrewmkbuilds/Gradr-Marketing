@@ -397,27 +397,46 @@ export default function Auth() {
       {/* Email form */}
       <form onSubmit={handleEmailAuth} noValidate className="space-y-3.5">
         {isSignUp && (
-          <div className="space-y-1.5">
-            <div className="relative">
-              <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+          <FormField label="Full name" error={fieldErrors.fullName}>
+            {(control) => (
               <Input
-                id="auth-full-name"
+                {...control}
                 name="name"
                 autoComplete="name"
-                aria-label="Full name"
                 placeholder="Full name"
                 value={fullName}
                 onChange={(e) => { setFullName(e.target.value); setFieldErrors((p) => ({ ...p, fullName: undefined })); }}
-                aria-invalid={!!fieldErrors.fullName}
-                aria-describedby={fieldErrors.fullName ? "error-fullName" : undefined}
-                className="pl-10"
               />
-            </div>
-            {fieldErrors.fullName && (
-              <p id="error-fullName" className="text-caption text-destructive">{fieldErrors.fullName}</p>
             )}
-          </div>
+          </FormField>
         )}
+        <FormField label="Email address" error={fieldErrors.email}>
+          {(control) => (
+            <Input
+              {...control}
+              invalid={control.invalid || !!formError}
+              name="email"
+              autoComplete="email"
+              type="email"
+              placeholder="Email address"
+              value={email}
+              onChange={(e) => { setEmail(e.target.value); setFormError(null); setFieldErrors((p) => ({ ...p, email: undefined })); }}
+            />
+          )}
+        </FormField>
+        <FormField label="Password" error={fieldErrors.password}>
+          {(control) => (
+            <Input
+              {...control}
+              name="password"
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => { setPassword(e.target.value); setFormError(null); setFieldErrors((p) => ({ ...p, password: undefined })); }}
+            />
+          )}
+        </FormField>
+
         <div className="space-y-1.5">
           <div className="relative">
             <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
