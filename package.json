@@ -165,7 +165,9 @@
     "test:visual:routes": "node scripts/visual-regression.mjs",
     "test:voice-e2e": "node scripts/voice-e2e.mjs",
     "test:watch": "vitest",
-    "typecheck": "tsgo -p tsconfig.app.json && tsgo -p tsconfig.node.json"
+    "typecheck": "tsgo -p tsconfig.app.json && tsgo -p tsconfig.node.json",
+    "test:a11y:ci": "node scripts/a11y-ci.mjs",
+    "test:theme-matrix": "node scripts/theme-matrix.mjs"
   },
   "type": "module",
   "version": "0.0.0"
