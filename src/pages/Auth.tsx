@@ -286,7 +286,7 @@ export default function Auth() {
             </p>
           </div>
           {isGuest && (
-            <p className="text-xs text-muted-foreground">
+            <p className="text-caption text-muted-foreground">
               Your guest work is saved — keep using the app while you confirm.
             </p>
           )}
@@ -311,7 +311,7 @@ export default function Auth() {
                   ? "Sending…"
                   : "Resend verification email"}
             </Button>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-caption text-muted-foreground">
               No email after a minute? Check your spam folder before resending.
             </p>
             <Button
@@ -389,7 +389,7 @@ export default function Auth() {
         <div className="absolute inset-0 flex items-center">
           <span className="w-full border-t border-border" />
         </div>
-        <div className="relative flex justify-center text-xs uppercase tracking-wider">
+        <div className="relative flex justify-center text-caption uppercase tracking-wider">
           <span className="bg-background px-3 text-muted-foreground">or</span>
         </div>
       </div>
@@ -414,7 +414,7 @@ export default function Auth() {
               />
             </div>
             {fieldErrors.fullName && (
-              <p id="error-fullName" className="text-xs text-destructive">{fieldErrors.fullName}</p>
+              <p id="error-fullName" className="text-caption text-destructive">{fieldErrors.fullName}</p>
             )}
           </div>
         )}
@@ -436,7 +436,7 @@ export default function Auth() {
             />
           </div>
           {fieldErrors.email && (
-            <p id="error-email" className="text-xs text-destructive">{fieldErrors.email}</p>
+            <p id="error-email" className="text-caption text-destructive">{fieldErrors.email}</p>
           )}
         </div>
         <div className="space-y-1.5">
@@ -456,7 +456,7 @@ export default function Auth() {
             />
           </div>
           {fieldErrors.password && (
-            <p id="error-password" className="text-xs text-destructive">{fieldErrors.password}</p>
+            <p id="error-password" className="text-caption text-destructive">{fieldErrors.password}</p>
           )}
         </div>
 
@@ -465,7 +465,7 @@ export default function Auth() {
           <div className="flex justify-end">
             <Link
               to={nextParam ? `/forgot-password?next=${encodeURIComponent(nextParam)}` : "/forgot-password"}
-              className="text-xs text-muted-foreground hover:text-primary transition-colors"
+              className="text-caption text-muted-foreground hover:text-primary transition-colors"
             >
               Forgot password?
             </Link>
@@ -504,7 +504,7 @@ export default function Auth() {
         </Button>
 
         {isSignUp && (
-          <p className="text-center text-xs leading-relaxed text-muted-foreground">
+          <p className="text-center text-caption leading-relaxed text-muted-foreground">
             By creating an account you agree to our{" "}
             <Link to="/terms" className="text-primary underline underline-offset-2">
               Terms &amp; Conditions
