@@ -22,6 +22,7 @@ import { TierProgress, MilestoneBadges } from "@/components/affiliate/TierProgre
 import { ShareCard } from "@/components/affiliate/ShareCard";
 import { ReferralLeaderboard } from "@/components/affiliate/ReferralLeaderboard";
 import { ActivityTimeline, type TimelineEvent } from "@/components/affiliate/ActivityTimeline";
+import { Button, Card, Text } from "@/design-system/gradr-9b9b95";
 
 type Tab = "overview" | "rewards" | "analytics" | "campaigns";
 
@@ -120,27 +121,31 @@ export default function AffiliateDashboard() {
     <div className="max-w-7xl mx-auto space-y-6">
       <div className="flex items-start justify-between flex-wrap gap-3">
         <div>
-          <h1 className="type-h1 text-foreground tracking-tight">Gradr Referral Program</h1>
-          <p className="text-sm text-muted-foreground mt-1">
+          <Text variant="h2" as="h1">Gradr Referral Program</Text>
+          <Text variant="body-sm" tone="muted" className="mt-1">
             Share Gradr, climb the levels, get paid. Everything below is live data from your account.
-          </p>
+          </Text>
         </div>
-        <button onClick={() => navigate("/affiliate/resources")} className="text-xs text-primary hover:underline">Resources & terms →</button>
+        <Button variant="link" size="inline" onClick={() => navigate("/affiliate/resources")}>
+          Resources &amp; terms →
+        </Button>
       </div>
 
       <ShareCard code={profile.affiliate_code} link={link} />
 
       <div className="flex gap-1 border-b border-border overflow-x-auto">
         {tabs.map((t) => (
-          <button
+          <Button
             key={t.id}
+            variant="ghost"
             onClick={() => setTab(t.id)}
-            className={`inline-flex items-center gap-2 px-4 py-2.5 text-sm border-b-2 transition whitespace-nowrap ${
-              tab === t.id ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"
+            aria-current={tab === t.id ? "page" : undefined}
+            className={`whitespace-nowrap rounded-none border-b-2 ${
+              tab === t.id ? "border-primary text-primary" : "border-transparent text-muted-foreground"
             }`}
           >
-            <t.icon className="h-3.5 w-3.5" /> {t.label}
-          </button>
+            <t.icon className="h-3.5 w-3.5" aria-hidden /> {t.label}
+          </Button>
         ))}
       </div>
 
@@ -160,9 +165,9 @@ export default function AffiliateDashboard() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-            <div className="elev-2 rounded-xl p-6 lg:col-span-2">
-              <div className="flex items-center justify-between text-sm mb-2">
-                <h3 className="font-semibold text-foreground">Payout progress</h3>
+            <Card variant="raised" padding="lg" className="lg:col-span-2">
+              <div className="mb-2 flex items-center justify-between text-sm">
+                <Text variant="h6" as="h3">Payout progress</Text>
                 <span className="text-xs text-muted-foreground">
                   ${unpaid.toFixed(2)} of ${threshold.toFixed(2)} minimum
                 </span>
@@ -189,24 +194,24 @@ export default function AffiliateDashboard() {
                   </div>
                 ))}
               </div>
-            </div>
+            </Card>
 
-            <div className="elev-2 rounded-xl p-6">
-              <h3 className="text-sm font-semibold text-foreground mb-2">Earnings projection</h3>
-              <div className="type-h1 text-foreground">
+            <Card variant="raised" padding="lg">
+              <Text variant="h6" as="h3" className="mb-2">Earnings projection</Text>
+              <Text variant="h3" as="div">
                 ${(earnings?.projected_next_30d ?? 0).toFixed(2)}
-              </div>
-              <p className="text-xs text-muted-foreground mt-2">
+              </Text>
+              <Text variant="caption" className="mt-2">
                 Estimated next 30 days, based on your actual conversion pace and average commission of $
                 {(earnings?.avg_commission ?? 0).toFixed(2)}.
-              </p>
-            </div>
+              </Text>
+            </Card>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <ActivityTimeline events={timeline} />
-            <div className="elev-2 rounded-xl p-6">
-              <h3 className="text-sm font-semibold text-foreground mb-3">Payout history</h3>
+            <Card variant="raised" padding="lg">
+              <Text variant="h6" as="h3" className="mb-3">Payout history</Text>
               {data!.payouts.length === 0 ? (
                 <p className="text-sm text-muted-foreground py-8 text-center">No payouts yet. Payouts are processed monthly once you hit the minimum threshold.</p>
               ) : (
@@ -231,7 +236,7 @@ export default function AffiliateDashboard() {
                   ))}
                 </ul>
               )}
-            </div>
+            </Card>
           </div>
         </>
       )}

@@ -7,6 +7,7 @@ import {
 } from "recharts";
 import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/design-system/gradr-9b9b95";
 
 interface Props {
   affiliateProfileId: string;
@@ -92,15 +93,16 @@ export function AffiliateAnalytics({ affiliateProfileId }: Props) {
       <div className="flex items-center justify-between gap-3 flex-wrap">
         <div className="flex gap-1 p-1 rounded-lg bg-secondary/50 border border-border">
           {RANGES.map((r) => (
-            <button
+            <Button
               key={r.value}
+              variant="ghost"
+              size="sm"
               onClick={() => setRange(r.value)}
-              className={`px-3 py-1 text-xs rounded-md transition ${
-                range === r.value ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
-              }`}
+              aria-pressed={range === r.value}
+              className={range === r.value ? "bg-background text-foreground shadow-raise" : "text-muted-foreground"}
             >
               {r.label}
-            </button>
+            </Button>
           ))}
         </div>
       </div>
