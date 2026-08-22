@@ -204,8 +204,10 @@ export function AppSidebar() {
                   const panelId = `nav-group-${group.id}`;
 
                   return (
-                    <Collapsible key={group.id} open={open} onOpenChange={(next) => setGroupOpen(group.id, next)}>
-                      <SidebarMenuItem>
+                    // The Collapsible lives *inside* the <li> so the sidebar
+                    // <ul> only ever has <li> children (axe: list / listitem).
+                    <SidebarMenuItem key={group.id}>
+                      <Collapsible open={open} onOpenChange={(next) => setGroupOpen(group.id, next)}>
                         <CollapsibleTrigger asChild>
                           <button
                             type="button"
@@ -276,8 +278,8 @@ export function AppSidebar() {
                             })}
                           </ul>
                         </CollapsibleContent>
-                      </SidebarMenuItem>
-                    </Collapsible>
+                      </Collapsible>
+                    </SidebarMenuItem>
                   );
                 })}
               </SidebarMenu>
