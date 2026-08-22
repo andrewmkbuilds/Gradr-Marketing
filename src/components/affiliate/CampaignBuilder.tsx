@@ -211,7 +211,7 @@ export function CampaignBuilder({ affiliateProfileId, affiliateCode }: Props) {
             })}
           </ul>
         )}
-      </div>
+      </Card>
     </div>
   );
 }
