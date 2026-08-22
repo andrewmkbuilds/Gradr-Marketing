@@ -437,47 +437,7 @@ export default function Auth() {
           )}
         </FormField>
 
-        <div className="space-y-1.5">
-          <div className="relative">
-            <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-            <Input
-              id="auth-email"
-              name="email"
-              autoComplete="email"
-              aria-label="Email address"
-              type="email"
-              placeholder="Email address"
-              value={email}
-              onChange={(e) => { setEmail(e.target.value); setFormError(null); setFieldErrors((p) => ({ ...p, email: undefined })); }}
-              aria-invalid={!!fieldErrors.email || !!formError}
-              aria-describedby={fieldErrors.email ? "error-email" : undefined}
-              className="pl-10"
-            />
-          </div>
-          {fieldErrors.email && (
-            <p id="error-email" className="text-caption text-destructive">{fieldErrors.email}</p>
-          )}
-        </div>
-        <div className="space-y-1.5">
-          <div className="relative">
-            <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-            <Input
-              id="auth-password"
-              name="password"
-              aria-label="Password"
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => { setPassword(e.target.value); setFormError(null); setFieldErrors((p) => ({ ...p, password: undefined })); }}
-              aria-invalid={!!fieldErrors.password}
-              aria-describedby={fieldErrors.password ? "error-password" : undefined}
-              className="pl-10"
-            />
-          </div>
-          {fieldErrors.password && (
-            <p id="error-password" className="text-caption text-destructive">{fieldErrors.password}</p>
-          )}
-        </div>
+
 
 
         {!isSignUp && (
