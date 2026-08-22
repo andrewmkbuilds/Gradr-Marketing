@@ -132,7 +132,7 @@ try {
       ([key, value]) => {
         window.localStorage.setItem(key, value);
         // Deterministic captures: settled consent UI and no ambient motion.
-        window.localStorage.setItem("gradr-cookie-consent", JSON.stringify({ analytics: false, marketing: false, functional: false, decidedAt: "2026-01-01T00:00:00.000Z" }));
+        window.localStorage.setItem("gradr-cookie-consent", JSON.stringify({ version: 1, decidedAt: new Date("2026-01-01T00:00:00.000Z").toISOString(), choices: { analytics: false, marketing: false, functional: false } }));
         window.localStorage.setItem("gradr-motion", "reduced");
       },
       ["gradr-theme", theme],
