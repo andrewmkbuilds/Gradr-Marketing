@@ -5,8 +5,7 @@ import { urlFor } from "@/config/domains";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { lovable } from "@/integrations/lovable/index";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button, Input } from "@/design-system/gradr-9b9b95";
 import { AuthLayout } from "@/components/AuthLayout";
 import { Mail, Lock, User, ArrowRight, CheckCircle, AlertCircle, RefreshCw } from "lucide-react";
 import {
@@ -293,14 +292,15 @@ export default function Auth() {
           )}
           <div className="space-y-2">
             {isGuest && (
-              <Button className="w-full h-11" onClick={() => navigate(nextTarget, { replace: true })}>
+              <Button size="lg" className="w-full" onClick={() => navigate(nextTarget, { replace: true })}>
                 Continue for now
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             )}
             <Button
               variant="outline"
-              className="w-full h-11 gap-2"
+              size="lg"
+              className="w-full"
               onClick={handleResendVerification}
               disabled={resending || resendIn > 0}
             >
@@ -316,7 +316,8 @@ export default function Auth() {
             </p>
             <Button
               variant="ghost"
-              className="w-full h-11 text-muted-foreground"
+              size="lg"
+              className="w-full"
               onClick={() => setPendingEmail(null)}
             >
               Use a different email
@@ -347,7 +348,8 @@ export default function Auth() {
       <div className="space-y-2.5">
         <Button
           variant="outline"
-          className="w-full h-11 border-border text-foreground hover:bg-secondary justify-center gap-3"
+          size="lg"
+          className="w-full justify-center"
           onClick={() => handleOAuth("google")}
         >
           <svg className="h-4 w-4" viewBox="0 0 24 24">
@@ -360,7 +362,8 @@ export default function Auth() {
         </Button>
         <Button
           variant="outline"
-          className="w-full h-11 border-border text-foreground hover:bg-secondary justify-center gap-3"
+          size="lg"
+          className="w-full justify-center"
           onClick={() => handleOAuth("apple")}
         >
           <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
@@ -370,7 +373,8 @@ export default function Auth() {
         </Button>
         <Button
           variant="outline"
-          className="w-full h-11 border-border text-foreground hover:bg-secondary justify-center gap-3"
+          size="lg"
+          className="w-full justify-center"
           onClick={() => handleOAuth("microsoft")}
         >
           <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
@@ -406,7 +410,7 @@ export default function Auth() {
                 onChange={(e) => { setFullName(e.target.value); setFieldErrors((p) => ({ ...p, fullName: undefined })); }}
                 aria-invalid={!!fieldErrors.fullName}
                 aria-describedby={fieldErrors.fullName ? "error-fullName" : undefined}
-                className="pl-10 h-11 bg-secondary border-border"
+                className="pl-10"
               />
             </div>
             {fieldErrors.fullName && (
@@ -428,7 +432,7 @@ export default function Auth() {
               onChange={(e) => { setEmail(e.target.value); setFormError(null); setFieldErrors((p) => ({ ...p, email: undefined })); }}
               aria-invalid={!!fieldErrors.email || !!formError}
               aria-describedby={fieldErrors.email ? "error-email" : undefined}
-              className="pl-10 h-11 bg-secondary border-border"
+              className="pl-10"
             />
           </div>
           {fieldErrors.email && (
@@ -448,7 +452,7 @@ export default function Auth() {
               onChange={(e) => { setPassword(e.target.value); setFormError(null); setFieldErrors((p) => ({ ...p, password: undefined })); }}
               aria-invalid={!!fieldErrors.password}
               aria-describedby={fieldErrors.password ? "error-password" : undefined}
-              className="pl-10 h-11 bg-secondary border-border"
+              className="pl-10"
             />
           </div>
           {fieldErrors.password && (
@@ -482,8 +486,8 @@ export default function Auth() {
 
         <Button
           type="submit"
-
-          className="w-full h-11 bg-primary text-primary-foreground font-medium gap-2"
+          size="lg"
+          className="w-full"
           disabled={loading}
         >
           {loading ? (
@@ -517,7 +521,8 @@ export default function Auth() {
       <Button
         type="button"
         variant="ghost"
-        className="w-full h-11 text-muted-foreground hover:text-foreground"
+        size="lg"
+        className="w-full"
         onClick={handleGuest}
         disabled={loading}
       >
