@@ -11,6 +11,9 @@ export default tseslint.config(
   { ignores: ["dist", "node_modules", "supabase/functions/**"] },
   {
     files: ["**/*.{ts,tsx}"],
+    // Inline eslint-disable comments target rules from the main config that are
+    // not loaded here; ignore them so the gate only reports color violations.
+    linterOptions: { noInlineConfig: true, reportUnusedDisableDirectives: "off" },
     languageOptions: { parser: tseslint.parser, ecmaVersion: 2022, sourceType: "module" },
     rules: { "no-restricted-syntax": ["error", ...noHardcodedColorSyntax] },
   },
