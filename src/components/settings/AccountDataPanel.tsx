@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Download, Trash2, Loader2, ShieldAlert } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button, Card, Input, Text } from "@/design-system/gradr-9b9b95";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
@@ -83,37 +82,37 @@ export function AccountDataPanel() {
   };
 
   return (
-    <section className="elev-2 rounded-xl p-6 space-y-6" aria-label="Your data">
+    <Card variant="raised" padding="lg" role="region" className="space-y-6" aria-label="Your data">
       <div className="flex items-center gap-3">
-        <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
+        <div className="h-10 w-10 rounded-control bg-primary/10 flex items-center justify-center">
           <ShieldAlert className="h-5 w-5 text-primary" />
         </div>
         <div>
-          <h2 className="text-sm font-medium text-foreground">Your data</h2>
-          <p className="text-xs text-muted-foreground">Export everything, or permanently close your account</p>
+          <Text variant="h5" as="h2">Your data</Text>
+          <Text variant="caption">Export everything, or permanently close your account</Text>
         </div>
       </div>
 
-      <div className="rounded-lg border border-border bg-secondary/40 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="rounded-control border border-border bg-surface-muted p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <p className="text-sm font-medium text-foreground">Export my data</p>
-          <p className="text-xs text-muted-foreground mt-0.5">
+          <Text variant="body-sm" className="font-medium">Export my data</Text>
+          <Text variant="caption" className="mt-0.5">
             Profile, resumes, matches, applications, interviews and billing history as JSON.
-          </p>
+          </Text>
         </div>
-        <Button onClick={exportData} disabled={exporting} variant="outline" className="gap-2 shrink-0">
+        <Button onClick={exportData} disabled={exporting} variant="outline" className="shrink-0">
           {exporting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
           Download export
         </Button>
       </div>
 
-      <div className="rounded-lg border border-destructive/40 bg-destructive/5 p-4 space-y-3">
+      <div className="rounded-control border border-destructive/40 bg-destructive/5 p-4 space-y-3">
         <div>
-          <p className="text-sm font-medium text-foreground">Delete my account</p>
-          <p className="text-xs text-muted-foreground mt-0.5">
+          <Text variant="body-sm" className="font-medium">Delete my account</Text>
+          <Text variant="caption" className="mt-0.5">
             This permanently removes your account, files and every record above. It cannot be undone — export first if
             you want a copy.
-          </p>
+          </Text>
         </div>
         <div className="flex flex-col sm:flex-row sm:items-center gap-3">
           <Input
@@ -121,19 +120,19 @@ export function AccountDataPanel() {
             onChange={(e) => setConfirm(e.target.value)}
             placeholder="Type DELETE to confirm"
             aria-label="Type DELETE to confirm account deletion"
-            className="bg-background border-border sm:max-w-xs"
+            className="sm:max-w-xs"
           />
           <Button
             onClick={deleteAccount}
             disabled={deleting || confirm !== "DELETE"}
             variant="destructive"
-            className="gap-2 shrink-0"
+            className="shrink-0"
           >
             {deleting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
             Delete account
           </Button>
         </div>
       </div>
-    </section>
+    </Card>
   );
 }

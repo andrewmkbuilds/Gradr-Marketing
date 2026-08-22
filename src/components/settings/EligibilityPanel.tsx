@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Badge, Button, Card, Text } from "@/design-system/gradr-9b9b95";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BadgePercent, Plus, ShieldCheck } from "lucide-react";
 import { VerificationDialog } from "@/components/VerificationDialog";
@@ -22,28 +21,31 @@ export function EligibilityPanel() {
   };
 
   return (
-    <section
+    <Card
       id="eligibility"
+      role="region"
+      variant="raised"
+      padding="lg"
       aria-labelledby="eligibility-heading"
-      className="elev-2 rounded-xl p-6 space-y-5 animate-fade-in scroll-mt-24"
+      className="space-y-5 animate-fade-in scroll-mt-24"
     >
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
+          <div className="h-10 w-10 rounded-control bg-primary/10 flex items-center justify-center">
             <BadgePercent className="h-5 w-5 text-primary" aria-hidden="true" />
           </div>
           <div>
-            <h2 id="eligibility-heading" className="text-h3 text-foreground">
+            <Text variant="h5" as="h2" id="eligibility-heading">
               Eligibility &amp; discounts
-            </h2>
-            <p className="text-xs text-muted-foreground">
+            </Text>
+            <Text variant="caption">
               {discountPercent > 0
                 ? `${discountPercent}% off is applied automatically at checkout.`
                 : "Students, educators, military, healthcare and nonprofit teams save on every plan."}
-            </p>
+            </Text>
           </div>
         </div>
-        <Button variant="outline" size="sm" className="gap-1.5" onClick={() => openFor(null)}>
+        <Button variant="outline" size="sm" onClick={() => openFor(null)}>
           <Plus className="h-4 w-4" aria-hidden="true" />
           Add verification
         </Button>
@@ -52,12 +54,12 @@ export function EligibilityPanel() {
       {isLoading ? (
         <Skeleton className="h-20 w-full" />
       ) : verifications.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-border p-6 text-center">
+        <div className="rounded-card border border-dashed border-border p-6 text-center">
           <ShieldCheck className="mx-auto h-6 w-6 text-muted-foreground" aria-hidden="true" />
-          <p className="mt-2 text-sm font-medium text-foreground">No verifications yet</p>
-          <p className="mt-1 text-xs text-muted-foreground">
+          <Text variant="body-sm" className="mt-2 font-medium">No verifications yet</Text>
+          <Text variant="caption" className="mt-1">
             Verify once and your discount applies to every future renewal.
-          </p>
+          </Text>
           <Button size="sm" className="mt-4" onClick={() => openFor(null)}>
             Check if you qualify
           </Button>
@@ -70,23 +72,23 @@ export function EligibilityPanel() {
             return (
               <li
                 key={v.id}
-                className="flex flex-wrap items-center gap-3 rounded-lg border border-border bg-card/60 p-3"
+                className="flex flex-wrap items-center gap-3 rounded-control border border-border bg-surface-muted p-3"
               >
-                <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
+                <span className="flex h-9 w-9 items-center justify-center rounded-control bg-primary/10">
                   <Icon className="h-4 w-4 text-primary" aria-hidden="true" />
                 </span>
                 <span className="min-w-0 flex-1">
                   <span className="flex items-center gap-2">
-                    <span className="text-sm font-medium text-foreground">{v.label}</span>
-                    <Badge variant="outline" className={copy.tone}>
+                    <Text variant="body-sm" as="span" className="font-medium">{v.label}</Text>
+                    <Badge variant={copy.badgeVariant}>
                       {copy.label}
                     </Badge>
                   </span>
-                  <span className="mt-0.5 block text-xs text-muted-foreground">
+                  <Text variant="caption" as="span" className="mt-0.5 block">
                     {v.status === "verified" && v.expires_at
                       ? `${copy.hint} Valid until ${formatDate(v.expires_at)}.`
                       : (v.failure_reason ?? copy.hint)}
-                  </span>
+                  </Text>
                 </span>
                 {(v.status === "expired" || v.status === "failed" || v.status === "revoked") && (
                   <Button
@@ -108,6 +110,6 @@ export function EligibilityPanel() {
         onOpenChange={setDialogOpen}
         defaultType={preselect}
       />
-    </section>
+    </Card>
   );
 }

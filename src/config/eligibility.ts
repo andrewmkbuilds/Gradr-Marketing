@@ -41,35 +41,47 @@ export type VerificationStatus =
   | "revoked"
   | "manual_review";
 
-export const STATUS_COPY: Record<VerificationStatus, { label: string; tone: string; hint: string }> = {
+/** Design-system Badge variant per status, for surfaces on the Gradr library. */
+export type StatusBadgeVariant = "neutral" | "primary" | "accent" | "danger" | "outline";
+
+export const STATUS_COPY: Record<
+  VerificationStatus,
+  { label: string; tone: string; badgeVariant: StatusBadgeVariant; hint: string }
+> = {
   verified: {
     label: "Verified",
     tone: "text-primary border-primary/40 bg-primary/10",
+    badgeVariant: "primary",
     hint: "Your discount is applied automatically at checkout.",
   },
   pending: {
     label: "In progress",
     tone: "text-muted-foreground border-border bg-muted/40",
+    badgeVariant: "outline",
     hint: "Finish the verification steps to activate your discount.",
   },
   manual_review: {
     label: "Under review",
     tone: "text-muted-foreground border-border bg-muted/40",
+    badgeVariant: "outline",
     hint: "We're reviewing your details. This usually takes 1–2 business days.",
   },
   failed: {
     label: "Not verified",
     tone: "text-destructive border-destructive/40 bg-destructive/10",
+    badgeVariant: "danger",
     hint: "We couldn't confirm your eligibility. You can try again anytime.",
   },
   expired: {
     label: "Expired",
     tone: "text-warning border-warning/40 bg-warning/10",
+    badgeVariant: "accent",
     hint: "Re-verify to keep your discount active.",
   },
   revoked: {
     label: "Revoked",
     tone: "text-destructive border-destructive/40 bg-destructive/10",
+    badgeVariant: "danger",
     hint: "This discount was removed. Contact support if you think that's wrong.",
   },
 };

@@ -167,7 +167,8 @@
     "test:watch": "vitest",
     "typecheck": "tsgo -p tsconfig.app.json && tsgo -p tsconfig.node.json",
     "test:a11y:ci": "node scripts/a11y-ci.mjs",
-    "test:theme-matrix": "node scripts/theme-matrix.mjs"
+    "test:theme-matrix": "node scripts/theme-matrix.mjs",
+    "test:visual:states": "node scripts/visual-states.mjs"
   },
   "type": "module",
   "version": "0.0.0"
