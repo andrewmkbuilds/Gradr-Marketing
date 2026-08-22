@@ -24,15 +24,11 @@ const OUT = "artifacts/theme-matrix";
 mkdirSync(OUT, { recursive: true });
 
 const ROUTES = [
-  { path: "/", name: "dashboard" },
-  { path: "/resume", name: "resume-engine" },
-  { path: "/match", name: "match-engine" },
-  { path: "/pipeline", name: "pipeline" },
-  { path: "/interview", name: "interview-engine" },
-  { path: "/growth", name: "growth-engine" },
-  { path: "/settings", name: "settings" },
-  { path: "/billing", name: "billing" },
-  { path: "/credits", name: "credits" },
+  { path: "/", name: "landing" },
+  { path: "/auth", name: "auth" },
+  { path: "/ats-resume-checker", name: "ats-checker" },
+  { path: "/affiliate", name: "affiliate-program" },
+  { path: "/career-advice", name: "career-advice" },
 ];
 
 const failures = [];
