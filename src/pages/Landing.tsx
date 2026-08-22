@@ -23,9 +23,10 @@ import {
 import { useAuth } from "@/hooks/useAuth";
 import { BrandLogo } from "@/components/BrandLogo";
 import { Reveal } from "@/components/landing/Reveal";
+import { LandingScrollProgress } from "@/components/landing/LandingScrollProgress";
 import { motion, useScroll, useTransform } from "motion/react";
 import {
-  Atmosphere, CountUp, Magnetic, Parallax, ScrollProgress,
+  Atmosphere, CountUp, Magnetic, Parallax,
   DepthStage, DepthLayer, ScrollDepth, FloatPanel, SpatialCard, SpatialCta, ScrollCue,
   easeOut, viewportOnce, springSnappy,
 } from "@/components/motion";
@@ -433,7 +434,7 @@ export default function Landing() {
         )}
       </header>
 
-      <ScrollProgress />
+      <LandingScrollProgress sectionIds={SECTION_IDS} />
 
       {/* -------------------------------- hero -------------------------------- */}
       <main id="hero">
@@ -678,7 +679,7 @@ export default function Landing() {
                 <ArrowRight className="ml-2 h-4 w-4" aria-hidden />
               </Button>
             </Reveal>
-            <Reveal delay={100}>
+            <Reveal delay={100} hoverLift>
               {/* Particle Scroll: the analysis arrives as drifting sand and
                   condenses into the real report as the section scrolls up —
                   the transformation the section is describing, made literal. */}
@@ -718,7 +719,7 @@ export default function Landing() {
         <Section id="matching" className="relative border-t border-border/60 bg-card/30">
           <SceneBackground variant="threads" intensity={0.4} />
           <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
-            <Reveal delay={100} className="lg:order-2 lg:pl-4">
+            <Reveal delay={100} hoverLift className="lg:order-2 lg:pl-4">
               <Parallax distance={-72}>
               <DepthShowcase
                 highlights={[
@@ -774,7 +775,7 @@ export default function Landing() {
                 <ArrowRight className="ml-2 h-4 w-4" aria-hidden />
               </Button>
             </Reveal>
-            <Reveal delay={100}><ScrollFloat><ApplicationVisual /></ScrollFloat></Reveal>
+            <Reveal delay={100} hoverLift><ScrollFloat><ApplicationVisual /></ScrollFloat></Reveal>
           </div>
         </Section>
 
@@ -790,7 +791,7 @@ export default function Landing() {
             </Lede>
           </Reveal>
 
-          <Reveal delay={100} className="mt-10">
+          <Reveal delay={100} hoverLift className="mt-10">
             <Parallax distance={-56}>
             <DepthShowcase
               tilt={5}
