@@ -43,6 +43,7 @@ import { SurfaceProvider } from "@/components/surface/SurfaceLink";
 // "Gradr (App)" project on app.gradr.me and is deliberately not mounted here.
 const MarketingSurface = lazy(() => import("./surfaces/MarketingSurface"));
 import { AppPricingRedirect } from "@/components/surface/AppPricingRedirect";
+const DesignSystemGallery = lazy(() => import("./pages/DesignSystemGallery"));
 const NewsSurface = lazy(() => import("./surfaces/NewsSurface"));
 const DocsSurface = lazy(() => import("./surfaces/DocsSurface"));
 const AffiliatesSurface = lazy(() => import("./surfaces/AffiliatesSurface"));
@@ -186,6 +187,8 @@ function AppRoutes() {
         <Route path="/dpa" element={<AnimatedPage><Dpa /></AnimatedPage>} />
         <Route path="/job-search" element={<AnimatedPage><JobSearchIndex /></AnimatedPage>} />
         <Route path="/job-search/:slug" element={<AnimatedPage><JobLanding /></AnimatedPage>} />
+        {/* Internal, noindexed component gallery used by the visual suites. */}
+        <Route path="/design-system" element={<DesignSystemGallery />} />
         <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
         <Route path="*" element={<AppSurfaceHandoff />} />
       </Routes>
