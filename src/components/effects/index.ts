@@ -17,5 +17,6 @@ export { SceneBackground } from "./SceneBackground";
 export type { SceneVariant } from "./SceneBackground";
 export { ScrollFloat } from "./ScrollFloat";
 export { ScrollStack } from "./ScrollStack";
+export { CursorEffects } from "./CursorEffects";
 export { MagicBento } from "./MagicBento";
 export type { BentoItem } from "./MagicBento";
