@@ -78,20 +78,19 @@ export function CursorEffects({ className }: { className?: string }) {
             />
             <motion.span
               key="ring"
-              className="absolute -left-5 -top-5 h-10 w-10 rounded-full border border-primary/60 mix-blend-normal"
+              className="absolute -left-5 -top-5 h-10 w-10 rounded-full border border-primary/60"
               style={{ x: ringX, y: ringY }}
               initial={{ opacity: 0, scale: 0.5 }}
               animate={{
                 opacity: 1,
                 scale: pressed ? 0.7 : hot ? 1.35 : 0.85,
-                borderColor: hot ? "hsl(var(--primary))" : "hsl(var(--primary) / 0.45)",
               }}
               exit={{ opacity: 0, scale: 0.5 }}
               transition={springSnappy}
             />
             <motion.span
               key="dot"
-              className="absolute -left-[3px] -top-[3px] h-1.5 w-1.5 rounded-full bg-primary"
+              className="absolute -left-0.5 -top-0.5 h-1 w-1 rounded-full bg-primary"
               style={{ x, y }}
               initial={{ opacity: 0 }}
               animate={{ opacity: hot ? 0 : 1 }}
