@@ -645,7 +645,7 @@ export default function Landing() {
           </Reveal>
 
           <MagicBento
-            className="mt-12"
+            className="mt-12 will-change-transform"
             columns={4}
             items={SYSTEM.map((sItem) => ({
               key: sItem.n,
@@ -721,6 +721,7 @@ export default function Landing() {
           <SceneBackground variant="threads" intensity={0.4} />
           <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
             <Reveal delay={100} className="lg:order-2 lg:pl-4">
+              <Parallax distance={-72}>
               <DepthShowcase
                 highlights={[
                   { icon: Target, label: "94% role fit", at: "tr" },
@@ -729,8 +730,10 @@ export default function Landing() {
               >
                 <JobMatchingDemo />
               </DepthShowcase>
+              </Parallax>
             </Reveal>
-            <Reveal className="space-y-5 lg:order-1">
+            <Reveal className="lg:order-1">
+              <Parallax distance={34} className="space-y-5">
               <Eyebrow>02 — Job matching</Eyebrow>
               <Heading>Stop applying everywhere. Apply where you actually fit.</Heading>
               <Lede>
@@ -749,6 +752,7 @@ export default function Landing() {
                 <Search className="mr-2 h-4 w-4" aria-hidden />
                 Find my matches
               </Button>
+              </Parallax>
             </Reveal>
           </div>
         </Section>
@@ -789,6 +793,7 @@ export default function Landing() {
           </Reveal>
 
           <Reveal delay={100} className="mt-10">
+            <Parallax distance={-56}>
             <DepthShowcase
               tilt={5}
               highlights={[
@@ -798,6 +803,7 @@ export default function Landing() {
             >
               <InterviewCoachDemo />
             </DepthShowcase>
+            </Parallax>
           </Reveal>
 
           <MagicBento
@@ -1009,7 +1015,9 @@ export default function Landing() {
               </Button>
             </Reveal>
             <Reveal delay={100}>
-              <ResumeTransform />
+              <ScrollFloat distance={64}>
+                <ResumeTransform />
+              </ScrollFloat>
             </Reveal>
           </div>
         </Section>
@@ -1047,7 +1055,7 @@ export default function Landing() {
             </p>
           </Reveal>
 
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <ScrollFloat distance={40} className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             {PLANS.map((p, i) => {
               const priceLabel = planPriceLabel(p.id, billing);
               const periodNote =
@@ -1120,7 +1128,7 @@ export default function Landing() {
                 </Reveal>
               );
             })}
-          </div>
+          </ScrollFloat>
         </Section>
 
         {/* ----------------------------------- faq ------------------------------ */}
