@@ -13,6 +13,7 @@
  *   node scripts/visual-regression.mjs            # compare against baselines
  */
 import { chromium } from "playwright";
+import sharp from "sharp";
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "fs";
 import { join } from "path";
 
@@ -25,6 +26,7 @@ const DIFF_TOLERANCE = Number(process.env.VISUAL_TOLERANCE ?? 0.03); // 3% of pi
 
 const ROUTES = [
   ["landing", "/landing"],
+  ["design-system", "/design-system"],
   ["pricing", "/pricing"],
   ["auth", "/auth"],
   ["job-search", "/job-search"],
@@ -34,11 +36,27 @@ const ROUTES = [
   ["notfound", "/this-route-does-not-exist"],
 ];
 
-const VIEWPORTS = [
+const ALL_VIEWPORTS = [
   ["mobile", 390, 844],
   ["tablet", 834, 1112],
   ["desktop", 1440, 900],
 ];
+
+// `--viewports=mobile,tablet` narrows the run to specific breakpoints so CI can
+// gate small-screen layout separately from the slower full sweep.
+const viewportFilter = (process.argv.find((a) => a.startsWith("--viewports=")) ?? "")
+  .replace("--viewports=", "")
+  .split(",")
+  .map((v) => v.trim())
+  .filter(Boolean);
+const VIEWPORTS = viewportFilter.length
+  ? ALL_VIEWPORTS.filter(([name]) => viewportFilter.includes(name))
+  : ALL_VIEWPORTS;
+
+if (!VIEWPORTS.length) {
+  console.error(`No viewports matched "${viewportFilter.join(",")}". Known: mobile, tablet, desktop.`);
+  process.exit(1);
+}
 
 function findChromium() {
   for (const envPath of [process.env.PLAYWRIGHT_CHROMIUM_PATH, process.env.CHROME_PATH]) {
@@ -70,12 +88,35 @@ async function launch() {
   }
 }
 
-/** Coarse byte-level difference ratio — enough to catch layout/palette drift. */
-function differenceRatio(a, b) {
-  if (a.length !== b.length) return 1;
+/**
+ * Perceptual difference ratio: decodes both PNGs and compares pixels with a
+ * small per-channel tolerance, so antialiasing noise does not read as drift
+ * while real layout or palette changes still fail the gate.
+ */
+async function differenceRatio(a, b) {
+  const CHANNEL_TOLERANCE = 12;
+  const [rawA, rawB] = await Promise.all(
+    [a, b].map((buf) => sharp(buf).raw().ensureAlpha().toBuffer({ resolveWithObject: true })),
+  );
+  if (
+    rawA.info.width !== rawB.info.width ||
+    rawA.info.height !== rawB.info.height
+  ) {
+    return 1;
+  }
+  const pa = rawA.data;
+  const pb = rawB.data;
   let diff = 0;
-  for (let i = 0; i < a.length; i += 1) if (a[i] !== b[i]) diff += 1;
-  return diff / a.length;
+  for (let i = 0; i < pa.length; i += 4) {
+    if (
+      Math.abs(pa[i] - pb[i]) > CHANNEL_TOLERANCE ||
+      Math.abs(pa[i + 1] - pb[i + 1]) > CHANNEL_TOLERANCE ||
+      Math.abs(pa[i + 2] - pb[i + 2]) > CHANNEL_TOLERANCE
+    ) {
+      diff += 1;
+    }
+  }
+  return diff / (pa.length / 4);
 }
 
 mkdirSync(BASELINE_DIR, { recursive: true });
@@ -104,7 +145,7 @@ try {
         continue;
       }
       writeFileSync(join(CURRENT_DIR, file), shot);
-      const ratio = differenceRatio(readFileSync(baselinePath), shot);
+      const ratio = await differenceRatio(readFileSync(baselinePath), shot);
       if (ratio > DIFF_TOLERANCE) {
         failures.push({ file, ratio });
         console.log(`✖ ${file} differs by ${(ratio * 100).toFixed(1)}%`);
