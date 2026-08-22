@@ -69,16 +69,18 @@ export function CursorEffects({ className }: { className?: string }) {
           <>
             <motion.span
               key="halo"
-              className="absolute -left-32 -top-32 h-64 w-64 rounded-full bg-primary/10 blur-3xl"
+              className="absolute left-0 top-0 block"
               style={{ x: haloX, y: haloY }}
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: hot ? 0.9 : 0.55, scale: hot ? 1.15 : 1 }}
               exit={{ opacity: 0, scale: 0.8 }}
               transition={springPointer}
-            />
+            >
+              <span className="block size-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-3xl" />
+            </motion.span>
             <motion.span
               key="ring"
-              className="absolute -left-5 -top-5 h-10 w-10 rounded-full border border-primary/60"
+              className="absolute left-0 top-0 block"
               style={{ x: ringX, y: ringY }}
               initial={{ opacity: 0, scale: 0.5 }}
               animate={{
@@ -87,16 +89,20 @@ export function CursorEffects({ className }: { className?: string }) {
               }}
               exit={{ opacity: 0, scale: 0.5 }}
               transition={springSnappy}
-            />
+            >
+              <span className="block size-10 -translate-x-1/2 -translate-y-1/2 rounded-full border border-primary/60" />
+            </motion.span>
             <motion.span
               key="dot"
-              className="absolute -left-0.5 -top-0.5 h-1 w-1 rounded-full bg-primary"
+              className="absolute left-0 top-0 block"
               style={{ x, y }}
               initial={{ opacity: 0 }}
               animate={{ opacity: hot ? 0 : 1 }}
               exit={{ opacity: 0 }}
               transition={springSnappy}
-            />
+            >
+              <span className="block size-1 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary" />
+            </motion.span>
           </>
         ) : null}
       </AnimatePresence>
