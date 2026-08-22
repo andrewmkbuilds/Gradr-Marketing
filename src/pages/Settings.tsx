@@ -274,7 +274,7 @@ export default function Settings() {
         </div>
       </Card>
 
-      </div>
+
 
       <UsageBars />
 
