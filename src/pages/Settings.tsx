@@ -2,8 +2,7 @@ import { ThemeSegmentedControl } from "@/components/ThemeToggle";
 import { MotionSegmentedControl } from "@/components/MotionToggle";
 import { useState, useEffect } from "react";
 import { Palette, User, Save, Loader2, Bell, Send } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button, Card, FormField, Input, Text } from "@/design-system/gradr-9b9b95";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
@@ -13,6 +12,7 @@ import { AccountDataPanel } from "@/components/settings/AccountDataPanel";
 import { EligibilityPanel } from "@/components/settings/EligibilityPanel";
 import { UsageBars } from "@/components/UsageBars";
 import { logPreferencesRead } from "@/lib/preferencesAudit";
+
 
 
 export default function Settings() {
