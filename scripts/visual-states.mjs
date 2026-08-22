@@ -113,7 +113,7 @@ try {
       viewport: { width: 1280, height: 900 },
       colorScheme: theme,
       reducedMotion: "reduce",
-￼    });
+    });
     // Force the app's own theme store so the switch itself is exercised.
     await context.addInitScript(
       ([key, value]) => window.localStorage.setItem(key, value),
