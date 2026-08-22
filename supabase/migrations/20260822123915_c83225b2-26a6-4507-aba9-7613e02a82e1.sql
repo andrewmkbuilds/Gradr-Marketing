@@ -1,0 +1,1 @@
+GRANT EXECUTE ON FUNCTION public.affiliate_leaderboard(integer) TO anon, authenticated;
