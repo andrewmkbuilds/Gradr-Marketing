@@ -138,124 +138,142 @@ export default function Settings() {
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div>
-        <h1 className="type-h1 text-foreground tracking-tight">Profile Settings</h1>
-        <p className="text-sm text-muted-foreground mt-1">Set your career preferences to improve AI recommendations</p>
+        <Text variant="h1" className="tracking-tight">Profile Settings</Text>
+        <Text variant="body-sm" tone="muted" className="mt-1">
+          Set your career preferences to improve AI recommendations
+        </Text>
       </div>
 
-      <section aria-labelledby="appearance-heading" className="elev-2 rounded-xl p-6 space-y-4 animate-fade-in">
+      <Card
+        as="section"
+        variant="raised"
+        padding="lg"
+        aria-labelledby="appearance-heading"
+        className="space-y-4 animate-fade-in"
+      >
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
+          <div className="h-10 w-10 rounded-control bg-primary/10 flex items-center justify-center">
             <Palette className="h-5 w-5 text-primary" aria-hidden="true" />
           </div>
           <div>
-            <h2 id="appearance-heading" className="text-h3 text-foreground">Appearance</h2>
-            <p className="text-xs text-muted-foreground">Choose your theme. System follows your device setting.</p>
+            <Text variant="h5" id="appearance-heading" as="h2">Appearance</Text>
+            <Text variant="caption">Choose your theme. System follows your device setting.</Text>
           </div>
         </div>
         <ThemeSegmentedControl />
 
         <div className="border-t border-border pt-4 space-y-2">
-          <h3 className="text-sm font-medium text-foreground">Motion</h3>
-          <p className="text-xs text-muted-foreground">
+          <Text variant="h6" as="h3">Motion</Text>
+          <Text variant="caption">
             Reduce animation, parallax and background effects across Gradr. System follows your device
             accessibility setting.
-          </p>
+          </Text>
           <MotionSegmentedControl />
         </div>
-      </section>
+      </Card>
 
-      <div className="elev-2 rounded-xl p-6 space-y-5 animate-fade-in">
+      <Card variant="raised" padding="lg" className="space-y-5 animate-fade-in">
         <div className="flex items-center gap-3 mb-2">
-          <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
-            <User className="h-5 w-5 text-primary" />
+          <div className="h-10 w-10 rounded-control bg-primary/10 flex items-center justify-center">
+            <User className="h-5 w-5 text-primary" aria-hidden="true" />
           </div>
           <div>
-            <p className="text-sm font-medium text-foreground">{user?.email}</p>
-            <p className="text-xs text-muted-foreground">Account email</p>
+            <Text variant="body-sm" className="font-medium">{user?.email}</Text>
+            <Text variant="caption">Account email</Text>
           </div>
         </div>
 
         <div className="space-y-4">
-          <div>
-            <label className="text-xs font-medium text-muted-foreground mb-1.5 block">Display Name</label>
-            <Input value={displayName} onChange={(e) => setDisplayName(e.target.value)} placeholder="Your name" className="bg-secondary border-border" />
-          </div>
+          <FormField label="Display Name">
+            {(control) => (
+              <Input {...control} value={displayName} onChange={(e) => setDisplayName(e.target.value)} placeholder="Your name" />
+            )}
+          </FormField>
 
-          <div>
-            <label className="text-xs font-medium text-muted-foreground mb-1.5 block">Target Job Title</label>
-            <Input value={targetJobTitle} onChange={(e) => setTargetJobTitle(e.target.value)} placeholder="e.g., Senior Frontend Engineer" className="bg-secondary border-border" />
-          </div>
+          <FormField label="Target Job Title">
+            {(control) => (
+              <Input {...control} value={targetJobTitle} onChange={(e) => setTargetJobTitle(e.target.value)} placeholder="e.g., Senior Frontend Engineer" />
+            )}
+          </FormField>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="text-xs font-medium text-muted-foreground mb-1.5 block">Target Salary</label>
-              <Input value={targetSalary} onChange={(e) => setTargetSalary(e.target.value)} placeholder="e.g., $150k-$200k" className="bg-secondary border-border" />
-            </div>
-            <div>
-              <label className="text-xs font-medium text-muted-foreground mb-1.5 block">Target Industry</label>
-              <Input value={targetIndustry} onChange={(e) => setTargetIndustry(e.target.value)} placeholder="e.g., Fintech, SaaS" className="bg-secondary border-border" />
-            </div>
+            <FormField label="Target Salary">
+              {(control) => (
+                <Input {...control} value={targetSalary} onChange={(e) => setTargetSalary(e.target.value)} placeholder="e.g., $150k-$200k" />
+              )}
+            </FormField>
+            <FormField label="Target Industry">
+              {(control) => (
+                <Input {...control} value={targetIndustry} onChange={(e) => setTargetIndustry(e.target.value)} placeholder="e.g., Fintech, SaaS" />
+              )}
+            </FormField>
           </div>
 
-          <div>
-            <label className="text-xs font-medium text-muted-foreground mb-1.5 block">Career Stage</label>
-            <Input value={careerStage} onChange={(e) => setCareerStage(e.target.value)} placeholder="e.g., mid-career, senior, entry-level" className="bg-secondary border-border" />
-          </div>
+          <FormField label="Career Stage">
+            {(control) => (
+              <Input {...control} value={careerStage} onChange={(e) => setCareerStage(e.target.value)} placeholder="e.g., mid-career, senior, entry-level" />
+            )}
+          </FormField>
 
-          <div>
-            <label className="text-xs font-medium text-muted-foreground mb-1.5 block">Skills (comma-separated)</label>
-            <Input value={skills} onChange={(e) => setSkills(e.target.value)} placeholder="e.g., React, TypeScript, Node.js, AWS" className="bg-secondary border-border" />
-          </div>
+          <FormField label="Skills" help="Comma-separated — these feed match scoring.">
+            {(control) => (
+              <Input {...control} value={skills} onChange={(e) => setSkills(e.target.value)} placeholder="e.g., React, TypeScript, Node.js, AWS" />
+            )}
+          </FormField>
         </div>
 
-        <Button onClick={saveProfile} disabled={saving} className="bg-primary text-primary-foreground hover:bg-primary/90 w-full">
-          {saving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Save className="h-4 w-4 mr-2" />}
+        <Button onClick={saveProfile} disabled={saving} className="w-full">
+          {saving ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : <Save className="h-4 w-4" aria-hidden="true" />}
           Save Profile
         </Button>
-      </div>
+      </Card>
 
-      <div className="elev-2 rounded-xl p-6 space-y-5 animate-fade-in">
+      <Card variant="raised" padding="lg" className="space-y-5 animate-fade-in">
         <div className="flex items-center gap-3 mb-2">
-          <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
-            <Bell className="h-5 w-5 text-primary" />
+          <div className="h-10 w-10 rounded-control bg-primary/10 flex items-center justify-center">
+            <Bell className="h-5 w-5 text-primary" aria-hidden="true" />
           </div>
           <div>
-            <p className="text-sm font-medium text-foreground">Daily Email Digest</p>
-            <p className="text-xs text-muted-foreground">High-match jobs and overdue follow-ups</p>
+            <Text variant="body-sm" className="font-medium">Daily Email Digest</Text>
+            <Text variant="caption">High-match jobs and overdue follow-ups</Text>
           </div>
         </div>
 
         <div className="space-y-4">
-          <label className="flex items-center justify-between gap-3 rounded-lg border border-border bg-secondary/40 p-3">
+          <label className="flex items-center justify-between gap-3 rounded-control border border-border bg-surface-muted p-3">
             <span>
-              <span className="block text-sm font-medium text-foreground">Enable daily digest</span>
-              <span className="block text-xs text-muted-foreground mt-0.5">Prepared at your preferred local time.</span>
+              <span className="block text-body-sm font-medium text-foreground">Enable daily digest</span>
+              <span className="mt-0.5 block text-caption text-muted-foreground">Prepared at your preferred local time.</span>
             </span>
             <input type="checkbox" checked={digestEnabled} onChange={(e) => setDigestEnabled(e.target.checked)} className="h-4 w-4 accent-primary" />
           </label>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label htmlFor="digest-send-time" className="text-xs font-medium text-muted-foreground mb-1.5 block">Preferred Send Time</label>
-              <Input id="digest-send-time" type="time" value={digestSendTime} onChange={(e) => setDigestSendTime(e.target.value)} className="bg-secondary border-border" />
-            </div>
-            <div>
-              <label htmlFor="digest-timezone" className="text-xs font-medium text-muted-foreground mb-1.5 block">Timezone</label>
-              <Input id="digest-timezone" value={digestTimezone} onChange={(e) => setDigestTimezone(e.target.value)} placeholder="America/New_York" className="bg-secondary border-border" />
-            </div>
+            <FormField label="Preferred Send Time">
+              {(control) => (
+                <Input {...control} type="time" value={digestSendTime} onChange={(e) => setDigestSendTime(e.target.value)} />
+              )}
+            </FormField>
+            <FormField label="Timezone">
+              {(control) => (
+                <Input {...control} value={digestTimezone} onChange={(e) => setDigestTimezone(e.target.value)} placeholder="America/New_York" />
+              )}
+            </FormField>
           </div>
 
-          <div className="rounded-lg border border-border bg-secondary/40 p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="rounded-control border border-border bg-surface-muted p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <p className="text-sm font-medium text-foreground">Last sent status</p>
-              <p className="text-xs text-muted-foreground mt-0.5">{lastDigestStatus || "No digest prepared yet"}</p>
+              <Text variant="body-sm" className="font-medium">Last sent status</Text>
+              <Text variant="caption" className="mt-0.5">{lastDigestStatus || "No digest prepared yet"}</Text>
             </div>
-            <Button onClick={sendTestDigest} disabled={testingDigest} variant="outline" className="gap-2">
-              {testingDigest ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+            <Button onClick={sendTestDigest} disabled={testingDigest} variant="outline" size="sm">
+              {testingDigest ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : <Send className="h-4 w-4" aria-hidden="true" />}
               Send test email
             </Button>
           </div>
         </div>
+      </Card>
+
       </div>
 
       <UsageBars />
