@@ -645,7 +645,7 @@ export default function Landing() {
           </Reveal>
 
           <MagicBento
-            className="mt-12 will-change-transform"
+            className="mt-12"
             columns={4}
             items={SYSTEM.map((sItem) => ({
               key: sItem.n,
