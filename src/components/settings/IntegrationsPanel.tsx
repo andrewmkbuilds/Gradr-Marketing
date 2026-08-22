@@ -134,7 +134,7 @@ export function IntegrationsPanel() {
                           : item.docsHint}
                     </Text>
                     {state?.lastError && (
-                      <p className="text-[11px] text-destructive mt-1">{state.lastError}</p>
+                      <Text variant="caption" tone="destructive" className="mt-1">{state.lastError}</Text>
                     )}
                   </div>
 
