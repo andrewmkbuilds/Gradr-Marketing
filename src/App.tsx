@@ -11,6 +11,7 @@ import { AnimatedPage } from "@/components/AnimatedPage";
 import { RouteSeo } from "@/components/RouteSeo";
 import { CANONICAL_ALIASES } from "@/lib/seo/canonical";
 import { CookieConsent } from "@/components/CookieConsent";
+import { CursorEffects } from "@/components/effects/CursorEffects";
 import { OfflineBanner } from "@/components/OfflineBanner";
 import { RouteSkeleton } from "@/components/states/PageSkeletons";
 
@@ -284,6 +285,7 @@ const App = () => (
               <AppRoutes />
             </Suspense>
             <CookieConsent />
+            <CursorEffects />
             <OfflineBanner />
           </AuthProvider>
         </BrowserRouter>
