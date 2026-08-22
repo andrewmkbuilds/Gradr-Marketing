@@ -72,7 +72,7 @@ const RULES = [
   },
   {
     id: "inline-style-colour",
-    pattern: /style=\{\{[^}]*(?:color|background|borderColor|fill|stroke)\s*:\s*["'`](?!var\()[^"'`]+["'`]/g,
+    pattern: /style=\{\{[^}]*(?:color|background|borderColor|fill|stroke)\s*:\s*["'`](?![^"'`]*var\(--)[^"'`]+["'`]/g,
     message: "Inline colour style bypasses theming — move it to a token-backed class or use hsl(var(--token)).",
   },
   {
