@@ -15,13 +15,14 @@ const PKG = JSON.parse(readFileSync(join(ROOT, "package.json"), "utf8"));
 
 const FORBIDDEN = /@tanstack\/(start|react-start|react-router|router|start-[a-z-]+)/;
 
+// This project serves the public brand surfaces only — the authenticated
+// product lives in the separate "Gradr (App)" project.
 const CRITICAL_ROUTES = [
   "/",
-  "/auth",
+  "/landing",
   "/pricing",
-  "/interview",
-  "/resume",
-  "/billing",
+  "/career-advice",
+  "/job-search",
   "*",
 ];
 
