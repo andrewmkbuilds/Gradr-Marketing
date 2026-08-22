@@ -5,10 +5,9 @@ import { urlFor } from "@/config/domains";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { lovable } from "@/integrations/lovable/index";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button, FormField, Input } from "@/design-system/gradr-9b9b95";
 import { AuthLayout } from "@/components/AuthLayout";
-import { Mail, Lock, User, ArrowRight, CheckCircle, AlertCircle, RefreshCw } from "lucide-react";
+import { ArrowRight, CheckCircle, AlertCircle, RefreshCw } from "lucide-react";
 import {
   authCallbackUrl,
   consumeAuthCallbackError,
@@ -287,20 +286,21 @@ export default function Auth() {
             </p>
           </div>
           {isGuest && (
-            <p className="text-xs text-muted-foreground">
+            <p className="text-caption text-muted-foreground">
               Your guest work is saved — keep using the app while you confirm.
             </p>
           )}
           <div className="space-y-2">
             {isGuest && (
-              <Button className="w-full h-11" onClick={() => navigate(nextTarget, { replace: true })}>
+              <Button size="lg" className="w-full" onClick={() => navigate(nextTarget, { replace: true })}>
                 Continue for now
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             )}
             <Button
               variant="outline"
-              className="w-full h-11 gap-2"
+              size="lg"
+              className="w-full"
               onClick={handleResendVerification}
               disabled={resending || resendIn > 0}
             >
@@ -311,12 +311,13 @@ export default function Auth() {
                   ? "Sending…"
                   : "Resend verification email"}
             </Button>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-caption text-muted-foreground">
               No email after a minute? Check your spam folder before resending.
             </p>
             <Button
               variant="ghost"
-              className="w-full h-11 text-muted-foreground"
+              size="lg"
+              className="w-full"
               onClick={() => setPendingEmail(null)}
             >
               Use a different email
@@ -347,7 +348,8 @@ export default function Auth() {
       <div className="space-y-2.5">
         <Button
           variant="outline"
-          className="w-full h-11 border-border text-foreground hover:bg-secondary justify-center gap-3"
+          size="lg"
+          className="w-full justify-center"
           onClick={() => handleOAuth("google")}
         >
           <svg className="h-4 w-4" viewBox="0 0 24 24">
@@ -360,7 +362,8 @@ export default function Auth() {
         </Button>
         <Button
           variant="outline"
-          className="w-full h-11 border-border text-foreground hover:bg-secondary justify-center gap-3"
+          size="lg"
+          className="w-full justify-center"
           onClick={() => handleOAuth("apple")}
         >
           <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
@@ -370,7 +373,8 @@ export default function Auth() {
         </Button>
         <Button
           variant="outline"
-          className="w-full h-11 border-border text-foreground hover:bg-secondary justify-center gap-3"
+          size="lg"
+          className="w-full justify-center"
           onClick={() => handleOAuth("microsoft")}
         >
           <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
@@ -385,7 +389,7 @@ export default function Auth() {
         <div className="absolute inset-0 flex items-center">
           <span className="w-full border-t border-border" />
         </div>
-        <div className="relative flex justify-center text-xs uppercase tracking-wider">
+        <div className="relative flex justify-center text-caption uppercase tracking-wider">
           <span className="bg-background px-3 text-muted-foreground">or</span>
         </div>
       </div>
@@ -393,75 +397,54 @@ export default function Auth() {
       {/* Email form */}
       <form onSubmit={handleEmailAuth} noValidate className="space-y-3.5">
         {isSignUp && (
-          <div className="space-y-1.5">
-            <div className="relative">
-              <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+          <FormField label="Full name" error={fieldErrors.fullName}>
+            {(control) => (
               <Input
-                id="auth-full-name"
+                {...control}
                 name="name"
                 autoComplete="name"
-                aria-label="Full name"
                 placeholder="Full name"
                 value={fullName}
                 onChange={(e) => { setFullName(e.target.value); setFieldErrors((p) => ({ ...p, fullName: undefined })); }}
-                aria-invalid={!!fieldErrors.fullName}
-                aria-describedby={fieldErrors.fullName ? "error-fullName" : undefined}
-                className="pl-10 h-11 bg-secondary border-border"
               />
-            </div>
-            {fieldErrors.fullName && (
-              <p id="error-fullName" className="text-xs text-destructive">{fieldErrors.fullName}</p>
             )}
-          </div>
+          </FormField>
         )}
-        <div className="space-y-1.5">
-          <div className="relative">
-            <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+        <FormField label="Email address" error={fieldErrors.email}>
+          {(control) => (
             <Input
-              id="auth-email"
+              {...control}
+              invalid={control.invalid || !!formError}
               name="email"
               autoComplete="email"
-              aria-label="Email address"
               type="email"
               placeholder="Email address"
               value={email}
               onChange={(e) => { setEmail(e.target.value); setFormError(null); setFieldErrors((p) => ({ ...p, email: undefined })); }}
-              aria-invalid={!!fieldErrors.email || !!formError}
-              aria-describedby={fieldErrors.email ? "error-email" : undefined}
-              className="pl-10 h-11 bg-secondary border-border"
             />
-          </div>
-          {fieldErrors.email && (
-            <p id="error-email" className="text-xs text-destructive">{fieldErrors.email}</p>
           )}
-        </div>
-        <div className="space-y-1.5">
-          <div className="relative">
-            <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+        </FormField>
+        <FormField label="Password" error={fieldErrors.password}>
+          {(control) => (
             <Input
-              id="auth-password"
+              {...control}
               name="password"
-              aria-label="Password"
               type="password"
               placeholder="Password"
               value={password}
               onChange={(e) => { setPassword(e.target.value); setFormError(null); setFieldErrors((p) => ({ ...p, password: undefined })); }}
-              aria-invalid={!!fieldErrors.password}
-              aria-describedby={fieldErrors.password ? "error-password" : undefined}
-              className="pl-10 h-11 bg-secondary border-border"
             />
-          </div>
-          {fieldErrors.password && (
-            <p id="error-password" className="text-xs text-destructive">{fieldErrors.password}</p>
           )}
-        </div>
+        </FormField>
+
+
 
 
         {!isSignUp && (
           <div className="flex justify-end">
             <Link
               to={nextParam ? `/forgot-password?next=${encodeURIComponent(nextParam)}` : "/forgot-password"}
-              className="text-xs text-muted-foreground hover:text-primary transition-colors"
+              className="text-caption text-muted-foreground hover:text-primary transition-colors"
             >
               Forgot password?
             </Link>
@@ -482,8 +465,8 @@ export default function Auth() {
 
         <Button
           type="submit"
-
-          className="w-full h-11 bg-primary text-primary-foreground font-medium gap-2"
+          size="lg"
+          className="w-full"
           disabled={loading}
         >
           {loading ? (
@@ -500,7 +483,7 @@ export default function Auth() {
         </Button>
 
         {isSignUp && (
-          <p className="text-center text-xs leading-relaxed text-muted-foreground">
+          <p className="text-center text-caption leading-relaxed text-muted-foreground">
             By creating an account you agree to our{" "}
             <Link to="/terms" className="text-primary underline underline-offset-2">
               Terms &amp; Conditions
@@ -517,7 +500,8 @@ export default function Auth() {
       <Button
         type="button"
         variant="ghost"
-        className="w-full h-11 text-muted-foreground hover:text-foreground"
+        size="lg"
+        className="w-full"
         onClick={handleGuest}
         disabled={loading}
       >

@@ -13,6 +13,11 @@ import type { RevealProps } from "@/components/motion/Reveal";
 
 export type { RevealProps } from "@/components/motion/Reveal";
 
+export interface LandingRevealProps extends RevealProps {
+  /** Adds a small hover/focus settle-and-lift. No colour or layout change. */
+  hoverLift?: boolean;
+}
+
 const offset: Record<NonNullable<RevealProps["direction"]>, { x: number; y: number }> = {
   up: { x: 0, y: 34 },
   down: { x: 0, y: -34 },
@@ -28,7 +33,8 @@ export function Reveal({
   direction = "up",
   as = "div",
   lift = false,
-}: RevealProps) {
+  hoverLift = false,
+}: LandingRevealProps) {
   const reduced = useReducedMotionPref();
   const ref = useRef<HTMLElement>(null);
   const Tag = motion.create(as as ElementType);
@@ -56,11 +62,20 @@ export function Reveal({
     );
   }
 
+  const interaction = hoverLift
+    ? {
+        whileHover: { y: -4, scale: 1.008 },
+        whileTap: { scale: 0.997 },
+        transition: { type: "spring" as const, stiffness: 260, damping: 24, mass: 0.6 },
+      }
+    : {};
+
   return (
     <Tag
       ref={ref}
       className={className}
       style={{ x, y, scale, opacity } as { x: MotionValue<number> }}
+      {...interaction}
     >
       {children}
     </Tag>
