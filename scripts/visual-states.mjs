@@ -9,6 +9,10 @@
  *
  *   node scripts/visual-states.mjs --update   # (re)write baselines
  *   node scripts/visual-states.mjs            # compare against baselines
+ *
+ * Note: /admin/design-system/* is auth-gated. Without a signed-in admin session
+ * those entries capture the auth redirect and the element-level gallery
+ * selectors are reported as skipped rather than failing the run.
  */
 import { chromium } from "playwright";
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "fs";
