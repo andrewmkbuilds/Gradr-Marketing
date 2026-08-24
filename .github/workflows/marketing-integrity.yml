@@ -40,6 +40,9 @@ jobs:
       - name: Legacy marketing routes never serve product content (preview + production hosts)
         run: node scripts/check-legacy-routes.mjs http://localhost:8080
 
+      - name: 404 experience (unknown routes, suggestions, offline) in preview + production
+        run: node scripts/check-not-found.mjs http://localhost:8080
+
       - name: Canonical / og:url stay on gradr.me and product CTAs stay absolute
         run: node scripts/check-canonical-og.mjs http://localhost:8080
 
