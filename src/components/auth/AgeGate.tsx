@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { AlertCircle, ShieldCheck } from "lucide-react";
-import { Button, FormField, Input } from "@/design-system/gradr-9b9b95";
+import { Button, FormField, Input, Text } from "@/design-system/gradr-9b9b95";
 import { MINIMUM_AGE, checkDateOfBirth, recordAgeGate } from "@/lib/compliance/coppa";
 import { SELLER_CONTACT_EMAIL } from "@/content/legal";
 
@@ -47,11 +47,13 @@ export function AgeGate({
         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/15">
           <ShieldCheck className="h-5 w-5 text-primary" aria-hidden="true" />
         </div>
-        <h1 className="text-xl font-semibold text-foreground">What's your date of birth?</h1>
-        <p className="text-sm text-muted-foreground">
+        <Text variant="h4" as="h1">
+          What's your date of birth?
+        </Text>
+        <Text variant="body-sm" tone="muted">
           We ask everyone once, before an account is created. Your date of birth stays in this
           browser — we never send or store it.
-        </p>
+        </Text>
       </div>
 
       <FormField label="Date of birth" error={error ?? undefined}>
@@ -77,13 +79,13 @@ export function AgeGate({
         Back
       </Button>
 
-      <p className="text-center text-caption leading-relaxed text-muted-foreground">
+      <Text variant="caption" className="text-center">
         Gradr is for people aged {MINIMUM_AGE} and over. Read our{" "}
         <Link to="/childrens-privacy" className="text-primary underline underline-offset-2">
           Children's Privacy Notice
         </Link>
         .
-      </p>
+      </Text>
     </form>
   );
 }
@@ -96,21 +98,21 @@ export function AgeBlockedNotice() {
         <AlertCircle className="h-5 w-5 text-destructive" aria-hidden="true" />
       </div>
       <div className="space-y-2">
-        <h1 className="text-xl font-semibold text-foreground">
+        <Text variant="h4" as="h1">
           You need to be {MINIMUM_AGE} to use Gradr
-        </h1>
-        <p className="text-sm text-muted-foreground">
+        </Text>
+        <Text variant="body-sm" tone="muted">
           Gradr is a career platform built for people aged {MINIMUM_AGE} and over, so we can't
           create an account for you right now. Nothing you typed was saved or sent, and we've
           switched off all optional analytics on this device.
-        </p>
-        <p className="text-sm text-muted-foreground">
+        </Text>
+        <Text variant="body-sm" tone="muted">
           Come back when you're {MINIMUM_AGE} — your future job search will still be here.
-        </p>
+        </Text>
       </div>
-      <div className="space-y-2 rounded-xl border border-border bg-surface p-4">
-        <p className="text-sm text-foreground">Parent or guardian?</p>
-        <p className="text-sm text-muted-foreground">
+      <div className="space-y-2 rounded-card border border-border bg-surface p-4">
+        <Text variant="body-sm">Parent or guardian?</Text>
+        <Text variant="body-sm" tone="muted">
           If a child under {MINIMUM_AGE} has already shared information with us, email{" "}
           <a
             href={`mailto:${SELLER_CONTACT_EMAIL}`}
@@ -119,7 +121,7 @@ export function AgeBlockedNotice() {
             {SELLER_CONTACT_EMAIL}
           </a>{" "}
           and we'll delete it and confirm when it's done.
-        </p>
+        </Text>
       </div>
       <div className="flex flex-wrap gap-3 text-sm">
         <Link to="/childrens-privacy" className="text-primary underline underline-offset-2">
