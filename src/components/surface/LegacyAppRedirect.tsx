@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { PRODUCTION_ORIGIN, isMultiSurfaceHost } from "@/config/domains";
+import { PRODUCTION_ORIGIN, isProduction, surfaceFromHost, currentHost } from "@/config/domains";
 import { legacyAppTarget } from "@/lib/legacyAppPaths";
 import { track } from "@/lib/telemetry/events";
 import { AnimatedPage } from "@/components/AnimatedPage";
