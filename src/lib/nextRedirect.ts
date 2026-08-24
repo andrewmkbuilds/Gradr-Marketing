@@ -20,32 +20,62 @@ const MAX_LENGTH = 512;
 /** Auth-owned routes are never valid destinations — they'd cause a redirect loop. */
 const AUTH_PATHS = ["/auth", "/forgot-password", "/reset-password"];
 
-export function sanitizeNext(raw: string | null | undefined): string | null {
-  if (!raw) return null;
+/**
+ * Why a destination was refused. Reported on hand-off analytics so a spike in
+ * malformed links can be told apart from a genuine auth-loop bug.
+ */
+export type NextRejectionReason =
+  | "empty"
+  | "too_long"
+  | "decode_failed"
+  | "backslash_escape"
+  | "protocol_relative"
+  | "not_absolute_path"
+  | "control_characters"
+  | "auth_loop"
+  | "root_path";
+
+export type NextClassification =
+  | { value: string; reason: null }
+  | { value: null; reason: NextRejectionReason };
+
+/** Validates a destination and explains any refusal. */
+export function classifyNext(raw: string | null | undefined): NextClassification {
+  if (!raw) return { value: null, reason: "empty" };
 
   let value = raw.trim();
-  if (!value || value.length > MAX_LENGTH) return null;
+  if (!value) return { value: null, reason: "empty" };
+  if (value.length > MAX_LENGTH) return { value: null, reason: "too_long" };
 
   // A single decode pass catches links that were encoded twice on the way in.
   if (value.includes("%2F") || value.includes("%2f")) {
     try {
       value = decodeURIComponent(value);
     } catch {
-      return null;
+      return { value: null, reason: "decode_failed" };
     }
   }
 
   // Normalize backslashes: some browsers treat "/\host" as protocol-relative.
-  if (value.includes("\\")) return null;
-  if (!value.startsWith("/") || value.startsWith("//")) return null;
-  if (value.includes("\n") || value.includes("\r")) return null;
+  if (value.includes("\\")) return { value: null, reason: "backslash_escape" };
+  if (value.startsWith("//")) return { value: null, reason: "protocol_relative" };
+  if (!value.startsWith("/")) return { value: null, reason: "not_absolute_path" };
+  if (value.includes("\n") || value.includes("\r")) {
+    return { value: null, reason: "control_characters" };
+  }
 
   const path = value.split("?")[0].split("#")[0].replace(/\/+$/, "") || "/";
-  if (AUTH_PATHS.includes(path)) return null;
-  if (path === "/") return null; // "/" is already the default landing spot
+  if (AUTH_PATHS.includes(path)) return { value: null, reason: "auth_loop" };
+  // "/" is already the default landing spot.
+  if (path === "/") return { value: null, reason: "root_path" };
 
-  return value;
+  return { value, reason: null };
 }
+
+export function sanitizeNext(raw: string | null | undefined): string | null {
+  return classifyNext(raw).value;
+}
+
 
 /** Reads and validates `next` out of a location search string. */
 export function readNext(search: string): string | null {
