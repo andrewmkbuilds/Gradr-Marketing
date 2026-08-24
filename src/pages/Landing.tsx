@@ -39,7 +39,7 @@ import { HexFloatFx, ParticleScrollFx } from "@/components/canvasui/CanvasFx";
 import { CanvasFxFrame } from "@/components/canvasui/CanvasFxFrame";
 import { ResumeTransform } from "@/components/landing/ResumeTransform";
 import { trackSignupCta, trackUpgradeCta, type CtaLocation } from "@/lib/telemetry/events";
-import { appHref, appPricingHref, goToApp } from "@/lib/appLinks";
+import { appAuthHref, appHref, appPricingHref, goToApp } from "@/lib/appLinks";
 import { DepthShowcase } from "@/components/landing/DepthShowcase";
 import {
   ApplicationVisual, AssistantVisual,
@@ -314,10 +314,12 @@ export default function Landing() {
    * signal instead of counting generic navigation.
    */
   const start = (location: CtaLocation, text: string) => () => {
-    trackSignupCta({ location, text, authenticated: Boolean(user), destination: user ? "/" : "/auth" });
-    navigate(user ? "/" : "/auth");
+    const href = appAuthHref(user ? "/" : "/auth");
+    trackSignupCta({ location, text, authenticated: Boolean(user), destination: href });
+    goToApp(href, navigate);
   };
-  const login = () => navigate(user ? "/" : "/auth");
+  const login = () => goToApp(appAuthHref(user ? "/" : "/auth"), navigate);
+  const openApp = () => goToApp(appAuthHref("/"), navigate);
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-background text-foreground">
@@ -376,7 +378,7 @@ export default function Landing() {
           <div className="hidden shrink-0 items-center gap-2 md:flex">
             <ThemeToggle className="min-h-9 min-w-9" />
             {user ? (
-              <Button size="sm" onClick={() => navigate("/")}>Open Gradr</Button>
+              <Button size="sm" onClick={openApp}>Open Gradr</Button>
             ) : (
               <>
                 <Button variant="ghost" size="sm" onClick={login}>Log in</Button>
@@ -429,7 +431,7 @@ export default function Landing() {
             </motion.ul>
             <div className="mt-3 flex gap-2">
               {user ? (
-                <Button className="flex-1" onClick={() => navigate("/")}>Open Gradr</Button>
+                <Button className="flex-1" onClick={openApp}>Open Gradr</Button>
               ) : (
                 <>
                   <Button variant="outline" className="flex-1" onClick={login}>Log in</Button>
@@ -1125,7 +1127,7 @@ export default function Landing() {
                         plan: p.name.toLowerCase(),
                         billingPeriod: "annual",
                       });
-                      goToApp(user ? appPricingHref() : appHref("/auth?next=%2Fpricing"), navigate);
+                      goToApp(user ? appPricingHref() : appAuthHref("/auth?next=%2Fpricing"), navigate);
                     }}
                   >
                     {p.cta}
