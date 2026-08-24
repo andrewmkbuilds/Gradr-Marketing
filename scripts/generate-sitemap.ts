@@ -23,7 +23,6 @@ interface SitemapEntry {
 // crawlers to a sign-in wall.
 const entries: SitemapEntry[] = [
   { path: "/", changefreq: "weekly", priority: "1.0" },
-  { path: "/pricing", changefreq: "monthly", priority: "0.9" },
   { path: "/ats-resume-checker", changefreq: "monthly", priority: "0.9" },
   { path: "/ai-interview-coach", changefreq: "monthly", priority: "0.9" },
   { path: "/ai-cover-letter-generator", changefreq: "monthly", priority: "0.9" },
@@ -36,6 +35,7 @@ const entries: SitemapEntry[] = [
   { path: "/refund-policy", changefreq: "yearly", priority: "0.4" },
   { path: "/cookie-policy", changefreq: "yearly", priority: "0.4" },
   { path: "/dpa", changefreq: "yearly", priority: "0.4" },
+  { path: "/childrens-privacy", changefreq: "yearly", priority: "0.4" },
   // Career advice guides — lastmod comes from each guide's own `updated` date.
   ...GUIDES.map((guide) => ({
     path: guidePath(guide.slug),
@@ -53,6 +53,8 @@ const entries: SitemapEntry[] = [
   // /auth, /forgot-password, /reset-password, /verify-email, /welcome
   // /resume, /jobs, /match, /pipeline, /apply, /interview, /growth
   // /settings, /billing, /affiliate/dashboard, /admin/*
+  // /pricing is excluded too: on the marketing surface it only redirects to
+  // app.gradr.me/pricing, and sitemaps must list indexable URLs, not redirects.
 ];
 
 
@@ -90,7 +92,6 @@ const marketingEntries: SitemapEntry[] = [
   { path: "/", changefreq: "weekly", priority: "1.0" },
   { path: "/features", changefreq: "monthly", priority: "0.9" },
   { path: "/use-cases", changefreq: "monthly", priority: "0.8" },
-  { path: "/pricing", changefreq: "monthly", priority: "0.9" },
   { path: "/testimonials", changefreq: "monthly", priority: "0.6" },
   { path: "/demos", changefreq: "monthly", priority: "0.7" },
   { path: "/about", changefreq: "yearly", priority: "0.5" },

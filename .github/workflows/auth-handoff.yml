@@ -46,8 +46,14 @@ jobs:
       - name: next= validation check — preview
         run: node scripts/check-next-validation.mjs http://localhost:8080
 
+      - name: Marketing separation check — preview
+        run: node scripts/check-marketing-separation.mjs http://localhost:8080
+
       - name: CTA hand-off check — production
         run: node scripts/check-cta-handoff.mjs https://gradr.me
 
       - name: next= validation check — production
         run: node scripts/check-next-validation.mjs https://gradr.me
+
+      - name: Marketing separation check — production
+        run: node scripts/check-marketing-separation.mjs https://gradr.me
