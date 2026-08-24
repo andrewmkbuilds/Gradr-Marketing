@@ -36,18 +36,10 @@ function generateToken(): string {
 //  - end-user callers may only send templates on USER_SENDABLE, and only to their
 //    own verified address. This stops one signed-in user from mailing spoofed
 //    "payment failed" notices to somebody else.
-const USER_SENDABLE = new Set([
-  'welcome',
-  'resume-analysis',
-  'ats-score-update',
-  'interview-completed',
-  'interview-report',
-  'career-plan',
-  'daily-briefing',
-  'application-followup',
-  'job-match',
-  'verification-submitted',
-])
+// The product email templates that end users could trigger now live in the app
+// project (app.gradr.me); this surface only carries service-role sends.
+const USER_SENDABLE = new Set<string>([])
+
 
 function decodeJwtClaims(token: string): Record<string, unknown> | null {
   try {
