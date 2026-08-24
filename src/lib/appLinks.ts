@@ -14,26 +14,35 @@
  */
 import {
   PRODUCTION_ORIGIN,
-  currentSurface,
   isProduction,
   pinnedSurface,
   surfaceFromHost,
-  urlFor,
 } from "@/config/domains";
 
 /** Pricing route inside the product — the only place checkout may start. */
 export const APP_PRICING_PATH = "/pricing";
 
 /**
+ * True only for a bundle that genuinely serves the product.
+ *
+ * `currentSurface()` falls back to "app" for unprefixed paths on dev/preview
+ * hosts, which would keep product links on this (marketing) bundle where no
+ * product route exists. Only a pinned app bundle, or one served from
+ * app.gradr.me in production, may keep such links relative.
+ */
+function isAppBundle(): boolean {
+  return pinnedSurface() === "app" || (isProduction() && surfaceFromHost() === "app");
+}
+
+/**
  * Href for a product path from wherever this code is running.
- * Returns a relative path when already on the app surface (so React Router can
- * handle it), and an absolute app URL from every marketing surface.
+ * Returns a relative path only when this really is the app bundle (so React
+ * Router can handle it), and an absolute app URL from every marketing surface.
  */
 export function appHref(path: string = "/"): string {
   const normalized = path.startsWith("/") ? path : `/${path}`;
-  if (currentSurface() === "app") return normalized;
-  if (isProduction()) return `${PRODUCTION_ORIGIN.app}${normalized}`;
-  return urlFor("app", normalized);
+  if (isAppBundle()) return normalized;
+  return `${PRODUCTION_ORIGIN.app}${normalized}`;
 }
 
 /** True when the href leaves the current origin (needs a full navigation). */
@@ -79,9 +88,29 @@ export function appAuthHref(path: string = "/"): string {
   // hosts, which would keep the link on this (marketing) bundle. Only a bundle
   // that is genuinely the app — pinned, or served from app.gradr.me — may keep
   // the link relative.
-  const isAppBundle =
-    pinnedSurface() === "app" ||
-    (isProduction() && surfaceFromHost() === "app");
-  if (isAppBundle) return normalized;
+  if (isAppBundle()) return normalized;
   return `${PRODUCTION_ORIGIN.app}${normalized}`;
+}
+
+/**
+ * Auth routes as the app project actually serves them.
+ *
+ * The product router mounts `/auth` (with `?mode=signup` for account
+ * creation) — there are no `/login` or `/signup` routes on app.gradr.me, so
+ * pointing marketing CTAs at those paths would land visitors on the app's 404.
+ * Keeping the paths here means one place to change if the app renames them.
+ */
+export const APP_LOGIN_PATH = "/auth";
+export const APP_SIGNUP_PATH = "/auth?mode=signup";
+
+/** Absolute app URL for "Log in" / "Sign in" CTAs on any marketing surface. */
+export function appLoginHref(next?: string): string {
+  const query = next ? `&next=${encodeURIComponent(next)}` : "";
+  return appAuthHref(query ? `${APP_LOGIN_PATH}?${query.slice(1)}` : APP_LOGIN_PATH);
+}
+
+/** Absolute app URL for "Get started" / "Sign up" CTAs. */
+export function appSignupHref(next?: string): string {
+  const query = next ? `&next=${encodeURIComponent(next)}` : "";
+  return appAuthHref(`${APP_SIGNUP_PATH}${query}`);
 }

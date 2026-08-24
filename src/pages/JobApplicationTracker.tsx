@@ -1,3 +1,4 @@
+import { appSignupHref } from "@/lib/appLinks";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -185,14 +186,14 @@ export default function JobApplicationTracker() {
           are actually worth your afternoon.
         </p>
         <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-          <Link
-            to={ctaHref("/auth?mode=signup", "hero_primary")}
+          <a
+            href={ctaHref(appSignupHref(), "hero_primary")}
             onClick={trackCta("hero_primary", "/auth")}
             className="inline-flex h-11 items-center gap-2 rounded-xl bg-primary px-5 text-sm font-medium text-primary-foreground transition-transform hover:scale-[1.02] motion-reduce:transform-none"
           >
             <KanbanSquare className="h-4 w-4" aria-hidden="true" />
             Start tracking free
-          </Link>
+          </a>
           <Link
             to={ctaHref("/ats-resume-checker", "hero_secondary")}
             onClick={trackCta("hero_secondary", "/ats-resume-checker")}
@@ -327,14 +328,14 @@ export default function JobApplicationTracker() {
           Create a free account, save your first role, and let Gradr handle the scoring, the
           tailoring, the follow-ups and the interview prep.
         </p>
-        <Link
-          to={ctaHref("/auth?mode=signup", "footer_cta")}
+        <a
+          href={ctaHref(appSignupHref(), "footer_cta")}
           onClick={trackCta("footer_cta", "/auth")}
           className="mt-6 inline-flex h-11 items-center gap-2 rounded-xl bg-primary px-6 text-sm font-medium text-primary-foreground transition-transform hover:scale-[1.02] motion-reduce:transform-none"
         >
           Start tracking free
           <ArrowRight className="h-4 w-4" aria-hidden="true" />
-        </Link>
+        </a>
       </section>
     </PublicShell>
   );

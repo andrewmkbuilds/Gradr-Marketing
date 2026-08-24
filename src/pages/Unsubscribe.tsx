@@ -1,5 +1,6 @@
+import { appHref } from "@/lib/appLinks";
 import { useEffect, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { CheckCircle2, MailX, AlertTriangle, Loader2, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -100,9 +101,9 @@ export default function Unsubscribe() {
                 Confirm unsubscribe
               </Button>
               <Button asChild>
-                <Link to="/settings">
+                <a href={appHref("/settings")}>
                   Fine-tune my preferences <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
+                </a>
               </Button>
             </div>
           </>
@@ -122,9 +123,9 @@ export default function Unsubscribe() {
               time in your settings.
             </p>
             <Button asChild>
-              <Link to="/settings">
+              <a href={appHref("/settings")}>
                 Open email preferences <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
+              </a>
             </Button>
           </>
         ) : null}
@@ -143,7 +144,7 @@ export default function Unsubscribe() {
                 : "We couldn't update your preferences just now. Please try again in a moment."}
             </p>
             <Button asChild>
-              <Link to="/settings">Manage email preferences</Link>
+              <a href={appHref("/settings")}>Manage email preferences</a>
             </Button>
           </>
         ) : null}

@@ -1,3 +1,4 @@
+import { appHref, appLoginHref } from "@/lib/appLinks";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
@@ -57,13 +58,13 @@ export default function AiResumeOptimization() {
           <Link to="/" className="text-sm text-muted-foreground hover:text-foreground inline-flex items-center gap-2">
             <ArrowLeft className="h-3.5 w-3.5" /> Gradr
           </Link>
-          <Link
-            to={ctaHref("/auth", "header")}
+          <a
+            href={ctaHref(appLoginHref(), "header")}
             onClick={trackCta("header", "/auth")}
             className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-sm hover:opacity-90 transition"
           >
             <Sparkles className="h-3.5 w-3.5" /> Try the AI resume builder
-          </Link>
+          </a>
 
         </div>
       </header>
@@ -361,20 +362,20 @@ export default function AiResumeOptimization() {
               missing keywords, and AI rewrite suggestions in seconds. Free to start.
             </p>
             <div className="mt-4 flex flex-wrap gap-3">
-              <Link
-                to={ctaHref("/auth", "footer_cta_auth")}
+              <a
+                href={ctaHref(appLoginHref(), "footer_cta_auth")}
                 onClick={trackCta("footer_cta", "/auth")}
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm hover:opacity-90 transition"
               >
                 <Sparkles className="h-3.5 w-3.5" /> Start free
-              </Link>
-              <Link
-                to={ctaHref("/resume", "footer_cta_resume")}
+              </a>
+              <a
+                href={ctaHref(appHref("/resume"), "footer_cta_resume")}
                 onClick={trackCta("footer_cta", "/resume")}
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-secondary text-foreground text-sm hover:bg-secondary/80 transition"
               >
                 Open Resume Engine
-              </Link>
+              </a>
               <Link
                 to={ctaHref("/pricing", "footer_cta_pricing")}
                 onClick={trackCta("footer_cta", "/pricing")}
@@ -394,7 +395,7 @@ export default function AiResumeOptimization() {
           <div className="flex gap-4">
             <Link to="/pricing" className="hover:text-foreground">Pricing</Link>
             <Link to="/affiliate" className="hover:text-foreground">Affiliate program</Link>
-            <Link to="/auth" className="hover:text-foreground">Sign in</Link>
+            <a href={appLoginHref()} className="hover:text-foreground">Sign in</a>
           </div>
         </div>
       </footer>
