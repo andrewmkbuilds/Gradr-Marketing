@@ -30,6 +30,10 @@
   --color-slate: #55676d;
   --color-success: #2f6b46;
 
+  /* Typography — mirrors the library's v4 @theme font tokens. */
+  --font-display: "Bricolage Grotesque", "Geist", system-ui, sans-serif;
+  --font-sans: "Geist", "Inter var", Inter, system-ui, sans-serif;
+
   /* Shape */
   --radius-card: 1rem;
   --radius-control: 0.7rem;
