@@ -77,6 +77,8 @@ export type HandoffContext = {
   next?: AppDestination;
   /** Whether a session already exists on this surface. */
   authenticated?: boolean;
+  /** 1 for the original click, 2+ for retries from the recovery UI. */
+  attempt?: number;
 };
 
 export type HandoffFailureDetail = {
@@ -96,12 +98,23 @@ export function handoffToApp(
 ): void {
   const crossOrigin = isCrossOrigin(href);
   const resolved = resolveNextDestination(context.next);
-  track("auth_handoff_started", {
+  const attempt = context.attempt ?? 1;
+  const nextProps = {
     cta_location: context.location,
     destination: href.slice(0, 80),
     next_path: resolved.value ?? undefined,
     next_requested: resolved.requested,
     next_status: resolved.status,
+    next_reason: resolved.reason,
+    attempt,
+  };
+  if (attempt > 1) {
+    // A retry is a distinct funnel step: it means the first hand-off failed and
+    // the visitor chose to try again rather than abandon.
+    track("auth_handoff_retried", nextProps);
+  }
+  track("auth_handoff_started", {
+    ...nextProps,
     cross_origin: crossOrigin,
     authenticated: Boolean(context.authenticated),
   });
@@ -130,23 +143,17 @@ export function handoffToApp(
     // Still here: the browser never left this document, so the app origin did
     // not answer (offline, DNS, TLS, blocked, or a hosting outage).
     const reason = navigator.onLine ? "app_unreachable" : "offline";
-    track("auth_handoff_failed", {
-      cta_location: context.location,
-      destination: href.slice(0, 80),
-      next_path: resolved.value ?? undefined,
-      next_requested: resolved.requested,
-      next_status: resolved.status,
-      reason,
-    });
+    track("auth_handoff_failed", { ...nextProps, reason });
     window.dispatchEvent(
       new CustomEvent<HandoffFailureDetail>(HANDOFF_FAILED_EVENT, {
-        detail: { href, context, reason },
+        detail: { href, context: { ...context, attempt }, reason },
       }),
     );
   }, HANDOFF_TIMEOUT_MS);
 
   window.location.assign(href);
 }
+
 
 /** Convenience: send the visitor to sign-in, deep-linked to `next`. */
 export function goToAppAuth(
