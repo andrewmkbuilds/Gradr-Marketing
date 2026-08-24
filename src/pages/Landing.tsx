@@ -39,7 +39,8 @@ import { HexFloatFx, ParticleScrollFx } from "@/components/canvasui/CanvasFx";
 import { CanvasFxFrame } from "@/components/canvasui/CanvasFxFrame";
 import { ResumeTransform } from "@/components/landing/ResumeTransform";
 import { trackSignupCta, trackUpgradeCta, type CtaLocation } from "@/lib/telemetry/events";
-import { appAuthHref, appPricingHref, goToApp } from "@/lib/appLinks";
+import { appPricingHref, goToApp } from "@/lib/appLinks";
+import { appSignInHref, goToAppAuth } from "@/lib/authHandoff";
 import { DepthShowcase } from "@/components/landing/DepthShowcase";
 import {
   ApplicationVisual, AssistantVisual,
@@ -313,13 +314,13 @@ export default function Landing() {
    * it says, so `homepage_viewed → signup_cta_clicked` stays a real intent
    * signal instead of counting generic navigation.
    */
-  const start = (location: CtaLocation, text: string) => () => {
-    const href = appAuthHref(user ? "/" : "/auth");
+  const start = (location: CtaLocation, text: string, next?: string) => () => {
+    const href = appSignInHref(next);
     trackSignupCta({ location, text, authenticated: Boolean(user), destination: href });
-    goToApp(href, navigate);
+    goToAppAuth({ location, next, authenticated: Boolean(user) }, navigate);
   };
-  const login = () => goToApp(appAuthHref(user ? "/" : "/auth"), navigate);
-  const openApp = () => goToApp(appAuthHref("/"), navigate);
+  const login = () => goToAppAuth({ location: "navbar", authenticated: Boolean(user) }, navigate);
+  const openApp = () => goToAppAuth({ location: "navbar", next: "/", authenticated: Boolean(user) }, navigate);
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-background text-foreground">
@@ -683,7 +684,7 @@ export default function Landing() {
                   </li>
                 ))}
               </ul>
-              <Button size="lg" onClick={start("feature_section", "Optimize my resume")}>
+              <Button size="lg" onClick={start("feature_section", "Optimize my resume", "/resume")}>
                 Optimize my resume
                 <ArrowRight className="ml-2 h-4 w-4" aria-hidden />
               </Button>
@@ -756,7 +757,7 @@ export default function Landing() {
                   </li>
                 ))}
               </ul>
-              <Button size="lg" variant="outline" onClick={start("feature_section", "Find my matches")}>
+              <Button size="lg" variant="outline" onClick={start("feature_section", "Find my matches", "/match")}>
                 <Search className="mr-2 h-4 w-4" aria-hidden />
                 Find my matches
               </Button>
@@ -779,7 +780,7 @@ export default function Landing() {
                 Everything stays editable. Gradr drafts the first version so you spend your time on judgment, not
                 formatting.
               </p>
-              <Button size="lg" onClick={start("feature_section", "Build an application")}>
+              <Button size="lg" onClick={start("feature_section", "Build an application", "/applications")}>
                 Build an application
                 <ArrowRight className="ml-2 h-4 w-4" aria-hidden />
               </Button>
@@ -826,7 +827,7 @@ export default function Landing() {
 
           <Reveal delay={80} className="mt-8 flex flex-col gap-3 sm:flex-row">
             <SpatialCta>
-              <Button size="lg" onClick={start("feature_section", "Run a mock interview")}>
+              <Button size="lg" onClick={start("feature_section", "Run a mock interview", "/interview")}>
                 Run a mock interview
                 <ArrowRight className="ml-2 h-4 w-4" aria-hidden />
               </Button>
@@ -950,7 +951,7 @@ export default function Landing() {
           </ol>
 
           <Reveal delay={80} className="mt-8">
-            <Button size="lg" onClick={start("feature_section", "Start building your career system")}>
+            <Button size="lg" onClick={start("feature_section", "Start building your career system", "/")}>
               Start building your career system
               <ArrowRight className="ml-2 h-4 w-4" aria-hidden />
             </Button>
@@ -1017,7 +1018,7 @@ export default function Landing() {
                   </li>
                 ))}
               </ul>
-              <Button size="lg" onClick={start("feature_section", "Rewrite my resume")}>
+              <Button size="lg" onClick={start("feature_section", "Rewrite my resume", "/resume")}>
                 Rewrite my resume
                 <ArrowRight className="ml-2 h-4 w-4" aria-hidden />
               </Button>
@@ -1127,7 +1128,7 @@ export default function Landing() {
                         plan: p.name.toLowerCase(),
                         billingPeriod: "annual",
                       });
-                      goToApp(user ? appPricingHref() : appAuthHref("/auth?next=%2Fpricing"), navigate);
+                      goToApp(user ? appPricingHref() : appSignInHref("/pricing"), navigate);
                     }}
                   >
                     {p.cta}
