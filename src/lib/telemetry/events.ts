@@ -22,6 +22,7 @@ export type GradrEvent =
   | "signup_cta_clicked"
   | "auth_handoff_started"
   | "auth_handoff_failed"
+  | "auth_handoff_retried"
   // Signup
   | "signup_started"
   | "account_created"
