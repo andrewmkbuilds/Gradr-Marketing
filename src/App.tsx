@@ -12,6 +12,8 @@ import { RouteSeo } from "@/components/RouteSeo";
 import { CANONICAL_ALIASES } from "@/lib/seo/canonical";
 import { CookieConsent } from "@/components/CookieConsent";
 import { CursorEffects } from "@/components/effects/CursorEffects";
+import { AuthHandoffFallback } from "@/components/AuthHandoffFallback";
+
 import { OfflineBanner } from "@/components/OfflineBanner";
 import { RouteSkeleton } from "@/components/states/PageSkeletons";
 
@@ -289,6 +291,8 @@ const App = () => (
             <CookieConsent />
             <CursorEffects />
             <OfflineBanner />
+            <AuthHandoffFallback />
+
           </AuthProvider>
         </BrowserRouter>
       </TooltipProvider>
