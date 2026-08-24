@@ -89,10 +89,10 @@ try {
       );
       await page.waitForTimeout(2500);
 
+      // Only the chrome regions are captured. Marks inside animated hero art
+      // move with scroll-driven motion and would diff on timing rather than on
+      // the brand; scripts/logo-visual.mjs asserts those marks structurally.
       const targets = [...REGIONS];
-      // Every explicit brand mark on the page gets its own capture.
-      const markCount = await page.locator("[data-brand-logo]").count();
-      for (let i = 0; i < markCount; i += 1) targets.push([`mark-${i}`, "[data-brand-logo]"]);
 
       for (const [regionName, selector] of targets) {
         const index = regionName.startsWith("mark-") ? Number(regionName.slice(5)) : 0;
