@@ -24,7 +24,9 @@ We may update these terms from time to time. We will change the "Last updated" d
 
 ## 2. Eligibility and age requirements
 
-The Service is intended for people who are at least 16 years old. If you are under the age of majority where you live, you may only use Gradr with the involvement of a parent or guardian who agrees to these terms on your behalf. We do not knowingly provide the Service to children under 16.
+The Service is intended for people who are at least 13 years old. We ask for your date of birth on a neutral age screen before an account can be created, and we refuse the sign-up if it shows an age under 13. In line with the US Children's Online Privacy Protection Act (COPPA), we do not knowingly collect personal information from children under 13 — see our [Children's Privacy Notice](/childrens-privacy).
+
+If you are 13 or older but under the age of majority where you live, you may only use Gradr with the involvement of a parent or guardian who agrees to these terms on your behalf, and paid plans should be purchased by an adult account holder.
 
 You are responsible for complying with the laws of the country you access Gradr from. The Service is not directed at any jurisdiction where offering it would be unlawful.
 
@@ -269,7 +271,9 @@ No online service can be completely secure, so we cannot guarantee absolute secu
 
 ## 11. Children and minors
 
-Gradr is not intended for children under 16, and we do not knowingly collect their personal data. If you believe a child has given us personal data, contact ${SELLER_CONTACT_EMAIL} and we will delete it.
+Gradr is directed to people aged 13 and over. We run a neutral age screen before account creation and refuse sign-ups that declare an age under 13; a device that fails the screen also has all optional analytics, marketing and attribution storage disabled. Consistent with COPPA, we do not knowingly collect, use or disclose personal information from children under 13.
+
+If you believe a child under 13 has given us personal data, contact ${SELLER_CONTACT_EMAIL}. We will verify the request from a parent or guardian, delete the information, close the account and confirm when it is done. Full details are in our [Children's Privacy Notice](/childrens-privacy).
 
 ## 12. Your privacy rights
 

@@ -55,6 +55,7 @@ const Terms = lazy(() => import("./pages/legal/Terms"));
 const RefundPolicy = lazy(() => import("./pages/legal/RefundPolicy"));
 const CookiePolicy = lazy(() => import("./pages/legal/CookiePolicy"));
 const Dpa = lazy(() => import("./pages/legal/Dpa"));
+const ChildrensPrivacy = lazy(() => import("./pages/legal/ChildrensPrivacy"));
 const AiResumeOptimization = lazy(() => import("./pages/blog/AiResumeOptimization"));
 const AtsResumeChecker = lazy(() => import("./pages/AtsResumeChecker"));
 const AiCoverLetterGenerator = lazy(() => import("./pages/AiCoverLetterGenerator"));
@@ -186,6 +187,7 @@ function AppRoutes() {
         <Route path="/refund-policy" element={<AnimatedPage><RefundPolicy /></AnimatedPage>} />
         <Route path="/cookie-policy" element={<AnimatedPage><CookiePolicy /></AnimatedPage>} />
         <Route path="/dpa" element={<AnimatedPage><Dpa /></AnimatedPage>} />
+        <Route path="/childrens-privacy" element={<AnimatedPage><ChildrensPrivacy /></AnimatedPage>} />
         <Route path="/job-search" element={<AnimatedPage><JobSearchIndex /></AnimatedPage>} />
         <Route path="/job-search/:slug" element={<AnimatedPage><JobLanding /></AnimatedPage>} />
         {/* Internal, noindexed component gallery used by the visual suites. */}

@@ -20,6 +20,7 @@ import {
   readConsent,
   writeConsent,
 } from "@/lib/cookieConsent";
+import { isKnownChildDevice } from "@/lib/compliance/coppa";
 
 /** Opens the preferences dialog from anywhere (footer link, cookie policy page). */
 export function openCookiePreferences() {
@@ -39,6 +40,13 @@ export function CookieConsent() {
   const [choices, setChoices] = useState<ConsentChoices>(() => readConsent()?.choices ?? ALL_OFF);
 
   useEffect(() => {
+    // COPPA: a device that declared an age under 13 never gets the optional
+    // categories offered to it — everything optional stays off, no prompt.
+    if (!decided && isKnownChildDevice()) {
+      writeConsent(ALL_OFF);
+      setDecided(true);
+      return;
+    }
     // Honour GPC without prompting.
     if (!decided && hasGlobalPrivacyControl()) {
       writeConsent(ALL_OFF);

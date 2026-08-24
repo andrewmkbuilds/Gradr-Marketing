@@ -66,6 +66,11 @@
     <priority>0.4</priority>
   </url>
   <url>
+    <loc>https://gradr.me/childrens-privacy</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
     <loc>https://gradr.me/dpa</loc>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>

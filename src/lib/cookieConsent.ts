@@ -5,6 +5,8 @@
  * consent, and read synchronously so analytics never fires before a choice.
  * Strictly necessary cookies are always on and are not represented as a toggle.
  */
+import { isKnownChildDevice } from "@/lib/compliance/coppa";
+
 export const CONSENT_STORAGE_KEY = "gradr-cookie-consent";
 export const CONSENT_VERSION = 1;
 /** Re-ask after 12 months, matching the retention stated in the Cookie Policy. */
@@ -90,5 +92,8 @@ export function writeConsent(choices: ConsentChoices): StoredConsent {
 /** Current effective choices — used by analytics/attribution before they fire. */
 export function consentFor(category: ConsentCategory): boolean {
   if (hasGlobalPrivacyControl()) return false;
+  // COPPA: a device that declared an age under 13 gets strictly necessary only,
+  // whatever is stored in the consent record.
+  if (isKnownChildDevice()) return false;
   return readConsent()?.choices[category] ?? false;
 }
