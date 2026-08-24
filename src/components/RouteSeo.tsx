@@ -6,7 +6,7 @@ import { GUIDES_BY_SLUG } from "@/content/guides";
 import { JOB_LANDINGS_BY_SLUG } from "@/content/jobLandings";
 import { legalJsonLd } from "@/lib/structuredData";
 import { POLICIES_UPDATED } from "@/content/legal";
-import { COOKIE_POLICY_EFFECTIVE, DPA_EFFECTIVE } from "@/content/legalExtra";
+import { CHILDRENS_PRIVACY_EFFECTIVE, COOKIE_POLICY_EFFECTIVE, DPA_EFFECTIVE } from "@/content/legalExtra";
 import {
   type Surface,
   canonicalUrlFor,
@@ -71,6 +71,10 @@ const META: Record<string, { title: string; description: string }> = {
   "/cookie-policy": {
     title: "Cookie Policy",
     description: "Every cookie and storage key Gradr sets, grouped by category, plus how to accept, reject, or fine-tune analytics, attribution, and functional cookies.",
+  },
+  "/childrens-privacy": {
+    title: "Children's Privacy Notice",
+    description: "Gradr is for people aged 13 and over. How our age screen works, what we do if a child under 13 registers, and how a parent or guardian can have data deleted.",
   },
   "/dpa": {
     title: "Data Processing Addendum",
@@ -428,6 +432,7 @@ export function RouteSeo() {
     "/privacy": POLICIES_UPDATED,
     "/refund-policy": POLICIES_UPDATED,
     "/cookie-policy": COOKIE_POLICY_EFFECTIVE,
+    "/childrens-privacy": CHILDRENS_PRIVACY_EFFECTIVE,
     "/dpa": DPA_EFFECTIVE,
   };
   const legalLd = legalUpdated[pathname]

@@ -17,6 +17,8 @@ import { EXPECTED_CALLBACK_URL, recordOAuthHop } from "@/lib/oauth/forensics";
 import { OAuthHostMismatchNotice } from "@/components/auth/OAuthHostMismatchNotice";
 import { toast } from "sonner";
 import { reportAuthFailure } from "@/lib/monitoring/reliability";
+import { AgeBlockedNotice, AgeGate } from "@/components/auth/AgeGate";
+import { isKnownChildDevice, readAgeGate } from "@/lib/compliance/coppa";
 import { z } from "zod";
 import { emailSchema, friendlyAuthError } from "@/lib/authErrors";
 
@@ -48,6 +50,11 @@ export default function Auth() {
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
+
+  // COPPA age screen — gates every path that can create an account.
+  const [ageOk, setAgeOk] = useState(() => readAgeGate()?.eligible === true);
+  const [ageBlocked, setAgeBlocked] = useState(() => isKnownChildDevice());
+  const [pendingAction, setPendingAction] = useState<(() => void) | null>(null);
 
   const [pendingEmail, setPendingEmail] = useState<string | null>(null);
   const [resending, setResending] = useState(false);
@@ -134,6 +141,19 @@ export default function Auth() {
     return { email: emailResult.data!, password: passwordResult.data!, fullName: cleanName };
   };
 
+  /**
+   * Runs `action` only once this device has passed the age screen. Account
+   * creation (email, OAuth, guest) never starts before that.
+   */
+  const requireAge = (action: () => void) => {
+    if (ageBlocked) return;
+    if (ageOk) {
+      action();
+      return;
+    }
+    setPendingAction(() => action);
+  };
+
   const handleResendVerification = async () => {
     if (!pendingEmail || resending || resendIn > 0) return;
     setResending(true);
@@ -161,6 +181,15 @@ export default function Auth() {
     setFormError(null);
     const valid = validateForm();
     if (!valid) return;
+    // New accounts must clear the age screen first; existing sign-ins do not.
+    if (isSignUp && !isGuest && !ageOk) {
+      setPendingAction(() => () => void runEmailAuth(valid));
+      return;
+    }
+    void runEmailAuth(valid);
+  };
+
+  const runEmailAuth = async (valid: { email: string; password: string; fullName: string }) => {
     const { email, password, fullName } = valid;
     setLoading(true);
     if (isSignUp) markSignupIntent("email");
@@ -211,6 +240,10 @@ export default function Auth() {
 
 
   const handleOAuth = async (provider: "google" | "apple" | "microsoft") => {
+    if (!ageOk) {
+      requireAge(() => void handleOAuth(provider));
+      return;
+    }
     // Recorded before the redirect so the funnel survives the round trip.
     if (isSignUp) markSignupIntent(provider);
 
@@ -252,6 +285,10 @@ export default function Auth() {
   };
 
   const handleGuest = async () => {
+    if (!ageOk) {
+      requireAge(() => void handleGuest());
+      return;
+    }
     setLoading(true);
     try {
       const { error } = await supabase.auth.signInAnonymously();
@@ -268,6 +305,34 @@ export default function Auth() {
       setLoading(false);
     }
   };
+
+  if (ageBlocked) {
+    return (
+      <AuthLayout>
+        <AgeBlockedNotice />
+      </AuthLayout>
+    );
+  }
+
+  if (pendingAction && !ageOk) {
+    return (
+      <AuthLayout>
+        <AgeGate
+          onVerified={() => {
+            setAgeOk(true);
+            const action = pendingAction;
+            setPendingAction(null);
+            action();
+          }}
+          onBlocked={() => {
+            setPendingAction(null);
+            setAgeBlocked(true);
+          }}
+          onCancel={() => setPendingAction(null)}
+        />
+      </AuthLayout>
+    );
+  }
 
   if (pendingEmail) {
     return (

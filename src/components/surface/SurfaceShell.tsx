@@ -195,6 +195,9 @@ export function SurfaceShell({ nav = [], eyebrow, children }: SurfaceShellProps)
             <CrossLink surface="home" to="/cookie-policy" className="text-xs text-muted-foreground hover:text-foreground">
               Cookies
             </CrossLink>
+            <CrossLink surface="home" to="/childrens-privacy" className="text-xs text-muted-foreground hover:text-foreground">
+              Children's privacy
+            </CrossLink>
             <span className="text-xs text-muted-foreground">
               © {new Date().getFullYear()} Gradr
             </span>
