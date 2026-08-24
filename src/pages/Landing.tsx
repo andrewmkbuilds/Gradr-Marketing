@@ -343,7 +343,7 @@ export default function Landing() {
           aria-label="Main"
           className={`page-shell flex items-center justify-between gap-4 transition-all ${scrolled ? "h-14" : "h-16"}`}
         >
-          <a href="#hero" className="flex shrink-0 items-center gap-2 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+          <a href="#hero" className="flex shrink-0 items-center gap-2 rounded-control focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
             <BrandLogo size={28} />
             <span className="text-base font-bold tracking-[0.24em]">GRADR</span>
           </a>
