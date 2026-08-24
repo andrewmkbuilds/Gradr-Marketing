@@ -18,7 +18,7 @@
  *    visitor on a page that appears to have ignored their click.
  */
 import { appAuthHref, isCrossOrigin } from "@/lib/appLinks";
-import { sanitizeNext } from "@/lib/nextRedirect";
+import { classifyNext, type NextRejectionReason } from "@/lib/nextRedirect";
 import { track } from "@/lib/telemetry/events";
 
 /** How long a real navigation is given before we call the hand-off failed. */
@@ -39,6 +39,8 @@ export type NextResolution = {
   status: NextStatus;
   /** What the caller asked for, trimmed for analytics. */
   requested?: string;
+  /** Why it was refused — only present when `status` is "sanitized". */
+  reason?: NextRejectionReason;
 };
 
 /**
@@ -49,15 +51,17 @@ export type NextResolution = {
  */
 export function resolveNextDestination(next?: AppDestination | null): NextResolution {
   if (next === undefined || next === null || next === "") return { value: null, status: "none" };
-  const safe = sanitizeNext(next);
+  const { value, reason } = classifyNext(next);
   return {
-    value: safe,
-    // `sanitizeNext` returns the input verbatim when it is already safe, so an
+    value,
+    // `classifyNext` returns the input verbatim when it is already safe, so an
     // unchanged value means "accepted" and anything else was rewritten/dropped.
-    status: safe === next ? "accepted" : "sanitized",
+    status: value === next ? "accepted" : "sanitized",
     requested: next.slice(0, 80),
+    reason: value === next ? undefined : (reason ?? undefined),
   };
 }
+
 
 /** Absolute app URL for the sign-in screen, optionally deep-linked. */
 export function appSignInHref(next?: AppDestination): string {
