@@ -133,3 +133,41 @@ describe("hand-off failure recovery", () => {
     expect(detail.context.location).toBe("hero");
   });
 });
+
+describe("sanitization reasons and retry", () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+    vi.mocked(track).mockClear();
+  });
+  afterEach(() => vi.useRealTimers());
+
+  it("distinguishes malformed paths from auth-loop patterns", () => {
+    expect(resolveNextDestination("//evil.example").reason).toBe("protocol_relative");
+    expect(resolveNextDestination("https://evil.example").reason).toBe("not_absolute_path");
+    expect(resolveNextDestination("/\\evil.example").reason).toBe("backslash_escape");
+    expect(resolveNextDestination("/" + "a".repeat(600)).reason).toBe("too_long");
+    expect(resolveNextDestination("/auth").reason).toBe("auth_loop");
+    expect(resolveNextDestination("/reset-password").reason).toBe("auth_loop");
+    expect(resolveNextDestination("/interview").reason).toBeUndefined();
+  });
+
+  it("reports the reason on hand-off analytics", () => {
+    setHost("https://gradr.me/");
+    goToAppAuth({ location: "hero", next: "/auth" });
+    const [, props] = vi.mocked(track).mock.calls[0];
+    expect(props).toMatchObject({ next_status: "sanitized", next_reason: "auth_loop" });
+  });
+
+  it("records a retry attempt that keeps the original next destination", () => {
+    const location = setHost("https://gradr.me/");
+    handoffToApp("https://app.gradr.me/auth?next=%2Fresume", {
+      location: "hero",
+      next: "/resume",
+      attempt: 2,
+    });
+    const events = vi.mocked(track).mock.calls.map((c) => c[0]);
+    expect(events[0]).toBe("auth_handoff_retried");
+    expect(vi.mocked(track).mock.calls[0][1]).toMatchObject({ attempt: 2, next_path: "/resume" });
+    expect(location.assign).toHaveBeenCalledWith("https://app.gradr.me/auth?next=%2Fresume");
+  });
+});
