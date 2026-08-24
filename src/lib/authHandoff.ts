@@ -162,3 +162,16 @@ export function goToAppAuth(
 ): void {
   handoffToApp(appSignInHref(context.next), context, navigate);
 }
+
+/**
+ * Read-only validation probe for end-to-end tests.
+ *
+ * `?next=` rules must hold in the *shipped* bundle, on preview and production
+ * alike, and the only way an external test can assert them is to call the same
+ * function the CTAs use. Pure and side-effect free: it validates a string and
+ * returns the verdict, so exposing it grants no capability.
+ */
+if (typeof window !== "undefined") {
+  (window as unknown as Record<string, unknown>).__gradrResolveNext =
+    resolveNextDestination;
+}
