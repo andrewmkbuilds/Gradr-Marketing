@@ -20,6 +20,8 @@ export type GradrEvent =
   | "homepage_viewed"
   | "pricing_viewed"
   | "signup_cta_clicked"
+  | "auth_handoff_started"
+  | "auth_handoff_failed"
   // Signup
   | "signup_started"
   | "account_created"
