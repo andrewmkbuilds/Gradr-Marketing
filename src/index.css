@@ -280,12 +280,12 @@
 
   /* Global text selection: Yacht Club mahogany accent instead of browser default blue. */
   ::selection {
-    background-color: #733E24;
-    color: #FFFFFF;
+    background-color: hsl(var(--mahogany));
+    color: hsl(var(--mahogany-foreground));
   }
   ::-moz-selection {
-    background-color: #733E24;
-    color: #FFFFFF;
+    background-color: hsl(var(--mahogany));
+    color: hsl(var(--mahogany-foreground));
   }
 
 
@@ -373,11 +373,6 @@
     letter-spacing: -0.035em;
     font-weight: 700;
   }
-  .text-h1 { @apply text-3xl font-bold tracking-tight; letter-spacing: -0.025em; }
-  .text-h2 { @apply text-xl font-semibold tracking-tight; letter-spacing: -0.015em; }
-  .text-h3 { @apply text-base font-semibold; }
-  .text-body { @apply text-sm leading-relaxed; }
-  .text-small { @apply text-xs; color: hsl(var(--text-muted)); }
   .text-metric {
     font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
     font-variant-numeric: tabular-nums;
