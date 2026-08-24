@@ -1,7 +1,8 @@
 import { useEffect, useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { ArrowRight, Compass, Home, LifeBuoy, Search } from "lucide-react";
-import { Badge, Button, Card, CardDescription, CardTitle, Text } from "@/design-system/gradr-9b9b95";
+import { Badge, Card, CardDescription, CardTitle, Text } from "@/design-system/gradr-9b9b95";
+import { buttonVariants } from "@/design-system/gradr-9b9b95/gradr/components/button";
 import { PublicShell } from "@/components/PublicShell";
 import { Seo } from "@/components/Seo";
 import { appHref, appLoginHref } from "@/lib/appLinks";
@@ -67,44 +68,38 @@ const NotFound = () => {
       <section className="page-shell py-20">
         <div className="mx-auto max-w-3xl text-center">
           <Badge variant="outline">Error 404</Badge>
-          <Text as="h1" variant="h1" className="mt-6">
+          <Text variant="h1" className="mt-6">
             We couldn&apos;t find that page
           </Text>
-          <Text variant="lead" className="mx-auto mt-4 max-w-xl text-muted-foreground">
-            The link may be broken, or the page moved when we split the Gradr product onto its own
-            app subdomain.
+          <Text variant="lead" className="mx-auto mt-4 max-w-xl">
+            The link may be broken, or the page moved when the Gradr product split onto its own app
+            subdomain.
           </Text>
 
-          <Text variant="body-sm" className="mt-6 text-muted-foreground">
+          <Text variant="caption" className="mt-6">
             Requested path
           </Text>
-          <Text variant="code" className="mt-1 block break-all text-foreground">
+          <Text variant="code" as="p" className="mt-1 break-all">
             {pathname}
           </Text>
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Button asChild>
-              <Link to="/">
-                <Home aria-hidden="true" />
-                Back to homepage
-              </Link>
-            </Button>
-            <Button asChild variant="secondary">
-              <a href={appLoginHref()}>
-                Open the app
-                <ArrowRight aria-hidden="true" />
-              </a>
-            </Button>
-            <Button asChild variant="ghost">
-              <a href={appHref("/support")}>
-                <LifeBuoy aria-hidden="true" />
-                Get help
-              </a>
-            </Button>
+            <Link to="/" className={buttonVariants({ variant: "primary" })}>
+              <Home aria-hidden="true" className="size-4" />
+              Back to homepage
+            </Link>
+            <a href={appLoginHref()} className={buttonVariants({ variant: "outline" })}>
+              Open the app
+              <ArrowRight aria-hidden="true" className="size-4" />
+            </a>
+            <a href={appHref("/support")} className={buttonVariants({ variant: "ghost" })}>
+              <LifeBuoy aria-hidden="true" className="size-4" />
+              Get help
+            </a>
           </div>
 
           {closest ? (
-            <Text variant="body-sm" className="mt-6 text-muted-foreground">
+            <Text variant="body-sm" tone="muted" className="mt-6">
               <Search aria-hidden="true" className="mr-2 inline size-4" />
               Did you mean{" "}
               <Link to={closest.to} className="text-primary underline underline-offset-4">
@@ -116,18 +111,26 @@ const NotFound = () => {
         </div>
 
         <div className="mt-16">
-          <Text variant="overline" className="flex items-center justify-center gap-2 text-muted-foreground">
+          <Text
+            variant="overline"
+            as="p"
+            className="flex items-center justify-center gap-2 text-center"
+          >
             <Compass aria-hidden="true" className="size-4" />
             Popular pages
           </Text>
           <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {SUGGESTIONS.map((item) => (
-              <Card key={item.to} asChild interactive>
-                <Link to={item.to}>
+              <Link
+                key={item.to}
+                to={item.to}
+                className="rounded-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <Card variant="raised" className="h-full">
                   <CardTitle>{item.title}</CardTitle>
-                  <CardDescription>{item.description}</CardDescription>
-                </Link>
-              </Card>
+                  <CardDescription className="mt-2">{item.description}</CardDescription>
+                </Card>
+              </Link>
             ))}
           </div>
         </div>
