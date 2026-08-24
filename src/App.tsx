@@ -195,7 +195,10 @@ function AppRoutes() {
         {/* Internal, noindexed component gallery used by the visual suites. */}
         <Route path="/design-system" element={<DesignSystemGallery />} />
         <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
-        <Route path="*" element={<AppSurfaceHandoff />} />
+        {/* Legacy product URLs (/login, /signup, /dashboard, …) forward to
+            their real home on app.gradr.me; anything else is a genuine 404. */}
+        <Route path="*" element={<LegacyAppRedirect />} />
+
       </Routes>
     </AnimatePresence>
   );
