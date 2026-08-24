@@ -22,15 +22,42 @@ export const LEGACY_APP_REDIRECTS: Record<string, string> = {
   "/create-account": "/auth?mode=signup",
   "/logout": "/auth",
   "/sign-out": "/auth",
+  // Password / email flows the product owns.
+  "/forgot-password": "/auth?mode=reset",
+  "/reset-password": "/auth?mode=reset",
+  "/update-password": "/auth?mode=reset",
+  "/confirm": "/verify-email",
+  "/verify": "/verify-email",
   // Authenticated product entry points.
   "/dashboard": "/dashboard",
   "/home": "/dashboard",
   "/app": "/dashboard",
   "/account": "/settings",
   "/profile": "/settings/profile",
+  "/preferences": "/settings",
+  "/notifications": "/settings/notifications",
+  "/security": "/settings/security",
   "/subscription": "/billing",
+  "/plan": "/billing",
+  "/invoices": "/billing",
   "/upgrade": "/pricing",
   "/checkout": "/pricing",
+  // Product modules under their old marketing-side names.
+  "/resumes": "/resume",
+  "/resume-builder": "/resume",
+  "/ats": "/resume",
+  "/ats-checker": "/resume",
+  "/applications": "/pipeline",
+  "/tracker": "/pipeline",
+  "/job-tracker": "/pipeline",
+  "/mock-interview": "/interview",
+  "/interviews": "/interview",
+  "/practice": "/interview",
+  "/matches": "/match",
+  "/job-matches": "/match",
+  "/skills": "/growth",
+  "/analytics": "/growth",
+  "/insights": "/growth",
 };
 
 /** Path prefixes that only ever existed on the product surface. */
@@ -44,13 +71,21 @@ export const LEGACY_APP_PREFIXES = [
   "/jobs",
   "/pipeline",
   "/apply",
+  "/applications",
   "/interview",
   "/growth",
   "/admin",
   "/welcome",
   "/onboarding",
   "/verify-email",
+  "/auth",
+  "/portfolio",
+  "/networking",
+  "/coach",
+  "/integrations",
+  "/notifications",
 ];
+
 
 /** Normalise like `canonicalPath` does, without resolving SEO aliases. */
 function normalize(pathname: string): string {
