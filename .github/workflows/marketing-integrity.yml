@@ -1,0 +1,54 @@
+name: Marketing integrity
+
+# Guards the marketing surface against the four regressions that have bitten
+# before: legacy product URLs resolving locally, canonical/og:url drifting off
+# gradr.me, brand asset files being replaced, and brand chrome changing visually.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  integrity:
+    name: Legacy routes, canonicals, brand assets and brand visuals
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      # Pure file hashes — no browser or build needed, so fail fast.
+      - name: Brand asset integrity (hash manifest)
+        run: node scripts/check-brand-assets.mjs
+
+      - name: Build
+        run: bun run build
+
+      - name: Install Playwright browsers
+        run: bunx playwright install --with-deps chromium
+
+      - name: Serve build
+        run: |
+          bunx vite preview --port 8080 &
+          for i in $(seq 1 30); do curl -sf -o /dev/null http://localhost:8080/ && break; sleep 1; done
+
+      - name: Legacy marketing routes never serve product content (preview + production hosts)
+        run: node scripts/check-legacy-routes.mjs http://localhost:8080
+
+      - name: Canonical / og:url stay on gradr.me and product CTAs stay absolute
+        run: node scripts/check-canonical-og.mjs http://localhost:8080
+
+      - name: Brand visual regression (header/footer marks, light + dark)
+        run: node scripts/brand-visual.mjs http://localhost:8080
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: brand-visual-diffs
+          path: tests/visual/brand/current
+          if-no-files-found: ignore
