@@ -1,30 +1,25 @@
 project_id = "xaeyjrekewnwjujnrqgu"
-[functions.security-findings]
-verify_jwt = true
 
-[functions.security-export]
-verify_jwt = false
-
-[functions.security-scan-cron]
-verify_jwt = false
-
-[functions.process-email-queue]
-verify_jwt = true
-
-[functions.send-transactional-email]
-verify_jwt = true
-
-[functions.preview-transactional-email]
-verify_jwt = false
-
-[functions.handle-email-unsubscribe]
-verify_jwt = false
-
-[functions.handle-email-suppression]
-verify_jwt = false
-
-[functions.verify-academic-email]
-verify_jwt = true
-
-[functions.admin-metrics]
-verify_jwt = true
+[functions]
+  [functions.admin-metrics]
+    verify_jwt = true
+  [functions.auth-email-hook]
+    verify_jwt = false
+  [functions.handle-email-suppression]
+    verify_jwt = false
+  [functions.handle-email-unsubscribe]
+    verify_jwt = false
+  [functions.preview-transactional-email]
+    verify_jwt = false
+  [functions.process-email-queue]
+    verify_jwt = true
+  [functions.security-export]
+    verify_jwt = false
+  [functions.security-findings]
+    verify_jwt = true
+  [functions.security-scan-cron]
+    verify_jwt = false
+  [functions.send-transactional-email]
+    verify_jwt = true
+  [functions.verify-academic-email]
+    verify_jwt = true
