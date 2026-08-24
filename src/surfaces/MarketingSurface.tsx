@@ -1,3 +1,4 @@
+import { appSignupHref } from "@/lib/appLinks";
 import { Suspense } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { SurfaceShell } from "@/components/surface/SurfaceShell";
@@ -127,14 +128,13 @@ function Hero() {
         interview anxiety with a single AI career workspace.
       </p>
       <div className="mt-8 flex flex-wrap gap-3">
-        <CrossLink
-          surface="app"
-          to="/auth?mode=signup"
+        <a
+          href={appSignupHref()}
           className="inline-flex h-11 items-center gap-1.5 rounded-lg bg-primary px-5 text-sm font-medium text-primary-foreground"
         >
           Start free
           <ArrowRight className="h-4 w-4" aria-hidden="true" />
-        </CrossLink>
+        </a>
         <SLink
           to="/demos"
           className="inline-flex h-11 items-center rounded-lg border border-border px-5 text-sm font-medium text-foreground"
@@ -269,14 +269,13 @@ function Demos() {
           </li>
         ))}
       </ol>
-      <CrossLink
-        surface="app"
-        to="/auth?mode=signup"
+      <a
+        href={appSignupHref()}
         className="mt-10 inline-flex h-11 items-center gap-1.5 rounded-lg bg-primary px-5 text-sm font-medium text-primary-foreground"
       >
         Run it on your resume
         <ArrowRight className="h-4 w-4" aria-hidden="true" />
-      </CrossLink>
+      </a>
     </div>
   );
 }

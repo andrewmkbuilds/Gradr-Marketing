@@ -1,3 +1,4 @@
+import { appSignupHref } from "@/lib/appLinks";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -170,14 +171,14 @@ export default function AtsResumeChecker() {
           and rewrites the weak lines — so a parser never buries your application again.
         </p>
         <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-          <Link
-            to={ctaHref("/auth?mode=signup", "hero_primary")}
+          <a
+            href={ctaHref(appSignupHref(), "hero_primary")}
             onClick={trackCta("hero_primary", "/auth")}
             className="inline-flex h-11 items-center gap-2 rounded-xl bg-primary px-5 text-sm font-medium text-primary-foreground transition-transform hover:scale-[1.02] motion-reduce:transform-none"
           >
             <Sparkles className="h-4 w-4" aria-hidden="true" />
             Check my resume free
-          </Link>
+          </a>
           <Link
             to={ctaHref("/blog/ai-resume-optimization", "hero_secondary")}
             onClick={trackCta("hero_secondary", "/blog/ai-resume-optimization")}
@@ -336,14 +337,14 @@ export default function AtsResumeChecker() {
           Upload your resume, paste a job description, and get your score plus the exact fixes.
           Free to start — no credit card.
         </p>
-        <Link
-          to={ctaHref("/auth?mode=signup", "footer_cta")}
+        <a
+          href={ctaHref(appSignupHref(), "footer_cta")}
           onClick={trackCta("footer_cta", "/auth")}
           className="mt-6 inline-flex h-11 items-center gap-2 rounded-xl bg-primary px-6 text-sm font-medium text-primary-foreground transition-transform hover:scale-[1.02] motion-reduce:transform-none"
         >
           Run my free ATS check
           <ArrowRight className="h-4 w-4" aria-hidden="true" />
-        </Link>
+        </a>
       </section>
     </PublicShell>
   );

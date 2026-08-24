@@ -1,3 +1,4 @@
+import { appSignupHref } from "@/lib/appLinks";
 import { useState } from "react";
 import { Navigate, Route, Routes, useParams } from "react-router-dom";
 import { SurfaceShell } from "@/components/surface/SurfaceShell";
@@ -149,14 +150,13 @@ function NewsArticleRoute() {
           <p className="mt-1 text-sm text-muted-foreground">
             Score your resume, match a live role and run a mock interview — free to start.
           </p>
-          <CrossLink
-            surface="app"
-            to="/auth?mode=signup"
+          <a
+            href={appSignupHref()}
             className="mt-4 inline-flex h-10 items-center gap-1.5 rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground"
           >
             Get started
             <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
-          </CrossLink>
+          </a>
         </div>
       </article>
 

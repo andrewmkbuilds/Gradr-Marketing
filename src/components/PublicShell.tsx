@@ -1,3 +1,4 @@
+import { appHref, appLoginHref, appSignupHref } from "@/lib/appLinks";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { ArrowRight, Menu, X } from "lucide-react";
@@ -20,11 +21,15 @@ const NAV = [
   { label: "Pricing", to: "/pricing" },
 ];
 
+/**
+ * Product destinations live on the app surface only — this project ships no
+ * product routes, so these must be absolute app.gradr.me links.
+ */
 const PRODUCT_LINKS = [
-  { label: "Resume Intelligence", to: "/resume" },
-  { label: "AI Mock Interview", to: "/interview" },
-  { label: "Job matching", to: "/match" },
-  { label: "Application engine", to: "/apply" },
+  { label: "Resume Intelligence", path: "/resume" },
+  { label: "AI Mock Interview", path: "/interview" },
+  { label: "Job matching", path: "/match" },
+  { label: "Application engine", path: "/apply" },
 ];
 
 /** Public, indexable tool landing pages — kept crawlable from every footer. */
@@ -91,20 +96,20 @@ export function PublicShell({ children, source }: PublicShellProps) {
 
           <div className="flex items-center gap-2">
             <ThemeToggle />
-            <Link
-              to="/auth"
+            <a
+              href={appLoginHref()}
               className="hidden h-10 items-center rounded-lg px-3 text-sm text-muted-foreground transition-colors hover:text-foreground sm:inline-flex"
             >
               Sign in
-            </Link>
-            <Link
-              to="/auth?mode=signup"
-              onClick={() => trackSignupCta({ location: "navbar", text: "Get started", authenticated: false, destination: "/auth?mode=signup" })}
+            </a>
+            <a
+              href={appSignupHref()}
+              onClick={() => trackSignupCta({ location: "navbar", text: "Get started", authenticated: false, destination: appSignupHref() })}
               className="inline-flex h-10 items-center gap-1.5 rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground shadow-sm transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transform-none"
             >
               Get started
               <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
-            </Link>
+            </a>
             <button
               type="button"
               onClick={() => setMenuOpen((v) => !v)}
@@ -168,10 +173,13 @@ export function PublicShell({ children, source }: PublicShellProps) {
             <p className="type-overline text-muted-foreground">Product</p>
             <ul className="space-y-2">
               {PRODUCT_LINKS.map((item) => (
-                <li key={item.to}>
-                  <Link to={item.to} className="text-muted-foreground hover:text-foreground">
+                <li key={item.path}>
+                  <a
+                    href={appHref(item.path)}
+                    className="text-muted-foreground hover:text-foreground"
+                  >
                     {item.label}
-                  </Link>
+                  </a>
                 </li>
               ))}
             </ul>
@@ -203,9 +211,9 @@ export function PublicShell({ children, source }: PublicShellProps) {
                 </li>
               ))}
               <li>
-                <Link to="/auth" className="text-muted-foreground hover:text-foreground">
+                <a href={appLoginHref()} className="text-muted-foreground hover:text-foreground">
                   Sign in
-                </Link>
+                </a>
               </li>
             </ul>
           </nav>

@@ -1,3 +1,4 @@
+import { appSignupHref } from "@/lib/appLinks";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -224,14 +225,14 @@ export default function AiInterviewCoach() {
           scored report showing precisely which answers cost you the offer.
         </p>
         <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-          <Link
-            to={ctaHref("/auth?mode=signup", "hero_primary")}
+          <a
+            href={ctaHref(appSignupHref(), "hero_primary")}
             onClick={trackCta("hero_primary", "/auth")}
             className="inline-flex h-11 items-center gap-2 rounded-xl bg-primary px-5 text-sm font-medium text-primary-foreground transition-transform hover:scale-[1.02] motion-reduce:transform-none"
           >
             <Mic className="h-4 w-4" aria-hidden="true" />
             Start a free mock interview
-          </Link>
+          </a>
           <Link
             to={ctaHref("/pricing", "hero_secondary")}
             onClick={trackCta("hero_secondary", "/pricing")}
@@ -434,14 +435,14 @@ export default function AiInterviewCoach() {
           Run your first spoken mock interview in a few minutes and see exactly where your
           answers hold up. Free to start — no credit card.
         </p>
-        <Link
-          to={ctaHref("/auth?mode=signup", "footer_cta")}
+        <a
+          href={ctaHref(appSignupHref(), "footer_cta")}
           onClick={trackCta("footer_cta", "/auth")}
           className="mt-6 inline-flex h-11 items-center gap-2 rounded-xl bg-primary px-5 text-sm font-medium text-primary-foreground transition-transform hover:scale-[1.02] motion-reduce:transform-none"
         >
           <Sparkles className="h-4 w-4" aria-hidden="true" />
           Start practicing free
-        </Link>
+        </a>
       </section>
     </PublicShell>
   );
