@@ -52,7 +52,7 @@ const entries: SitemapEntry[] = [
   // Excluded intentionally (auth-gated, credential flows, or internal tools):
   // /auth, /forgot-password, /reset-password, /verify-email, /welcome
   // /resume, /jobs, /match, /pipeline, /apply, /interview, /growth
-  // /settings, /billing, /affiliate/dashboard, /admin/*
+  // /settings, /billing, /admin/*
   // /pricing is excluded too: on the marketing surface it only redirects to
   // app.gradr.me/pricing, and sitemaps must list indexable URLs, not redirects.
 ];

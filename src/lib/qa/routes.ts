@@ -48,7 +48,6 @@ export const QA_ROUTES: QaRoute[] = [
 
   { id: "settings", label: "Settings", path: "/settings", group: "Account", auth: true, states: ["default", "loading", "error"] },
   { id: "billing", label: "Billing", path: "/billing", group: "Account", auth: true, states: ["default", "loading", "error"] },
-  { id: "affiliate", label: "Affiliate dashboard", path: "/affiliate/dashboard", group: "Account", auth: true, states: FULL },
 
   { id: "admin-home", label: "Admin control room", path: "/admin", group: "Admin", auth: true, states: ["default", "loading", "error"] },
   { id: "admin-revenue", label: "Admin revenue", path: "/admin/revenue", group: "Admin", auth: true, states: ["default", "loading", "error"] },

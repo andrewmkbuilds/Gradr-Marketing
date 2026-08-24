@@ -132,13 +132,9 @@ const META: Record<string, { title: string; description: string }> = {
     title: "Apply to the Affiliate Program",
     description: "Tell us about your audience and apply to become a Gradr affiliate partner.",
   },
-  "/affiliate/dashboard": {
-    title: "Affiliate Dashboard",
-    description: "Track your referral clicks, conversions, commissions, and payouts as a Gradr affiliate.",
-  },
   "/affiliate/resources": {
     title: "Affiliate Resources",
-    description: "Campaign link builder, brand assets, and copy templates for Gradr affiliate partners.",
+    description: "Commission rules, payout terms, and referral policies for Gradr affiliate partners.",
   },
   "/blog/ai-resume-optimization": {
     title: "AI Resume Builder & ATS Guide",
@@ -232,7 +228,6 @@ const NOINDEX_EXACT = new Set([
   "/interview/history",
   "/growth",
   "/affiliate/apply",
-  "/affiliate/dashboard",
   "/affiliate/resources",
 ]);
 

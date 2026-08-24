@@ -37,7 +37,7 @@ export default function AffiliateApply() {
     return <div className="flex justify-center py-20"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>;
   }
   if (my?.profile?.status === "active") {
-    navigate("/affiliate/dashboard", { replace: true });
+    navigate("/affiliate/resources", { replace: true });
     return null;
   }
   if (my?.application?.status === "pending") {
