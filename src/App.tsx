@@ -46,6 +46,7 @@ import { SurfaceProvider } from "@/components/surface/SurfaceLink";
 // "Gradr (App)" project on app.gradr.me and is deliberately not mounted here.
 const MarketingSurface = lazy(() => import("./surfaces/MarketingSurface"));
 import { AppPricingRedirect } from "@/components/surface/AppPricingRedirect";
+import { LegacyAppRedirect } from "@/components/surface/LegacyAppRedirect";
 const DesignSystemGallery = lazy(() => import("./pages/DesignSystemGallery"));
 const NewsSurface = lazy(() => import("./surfaces/NewsSurface"));
 const DocsSurface = lazy(() => import("./surfaces/DocsSurface"));
