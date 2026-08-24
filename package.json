@@ -148,7 +148,7 @@
     "lint": "eslint .",
     "og:check": "node scripts/generate-og-images.mjs --check",
     "og:generate": "node scripts/generate-og-images.mjs",
-    "prebuild": "node scripts/generate-app-icons.mjs --check && node scripts/check-no-tanstack.mjs && node scripts/check-tailwind-classes.mjs && node scripts/check-legacy-design.mjs && node scripts/check-theme-tokens.mjs && node scripts/check-rpc-access.mjs && bun run scripts/generate-sitemap.ts",
+    "prebuild": "node scripts/generate-app-icons.mjs --check && node scripts/check-no-tanstack.mjs && node scripts/check-tailwind-classes.mjs && node scripts/check-legacy-design.mjs && node scripts/check-theme-tokens.mjs && node scripts/check-rpc-access.mjs && node scripts/check-brand-assets.mjs && bun run scripts/generate-sitemap.ts",
     "predev": "bun run scripts/generate-sitemap.ts",
     "prepare": "node scripts/install-git-hooks.mjs",
     "preview": "vite preview",
@@ -176,7 +176,13 @@
     "test:visual:states": "node scripts/visual-states.mjs",
     "test:visual:breakpoints": "node scripts/visual-regression.mjs --viewports=mobile,tablet",
     "test:interactions": "node scripts/interaction-regression.mjs",
-    "lint:colors": "eslint . --config eslint.colors.config.js --quiet"
+    "lint:colors": "eslint . --config eslint.colors.config.js --quiet",
+    "check:legacy-routes": "node scripts/check-legacy-routes.mjs",
+    "check:canonical": "node scripts/check-canonical-og.mjs",
+    "check:brand-assets": "node scripts/check-brand-assets.mjs",
+    "brand:assets:update": "node scripts/check-brand-assets.mjs --update",
+    "test:visual:brand": "node scripts/brand-visual.mjs",
+    "test:visual:brand:update": "node scripts/brand-visual.mjs --update"
   },
   "type": "module",
   "version": "0.0.0"
