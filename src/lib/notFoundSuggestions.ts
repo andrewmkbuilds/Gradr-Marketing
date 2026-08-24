@@ -12,7 +12,7 @@
  * on-screen echo both use — it strips the query/hash, caps the length and
  * masks segments that look like secrets.
  */
-import { appHref, appLoginHref, appSignupHref } from "@/lib/appLinks";
+import { appHref, appLoginHref, appPricingHref, appSignupHref } from "@/lib/appLinks";
 
 export interface NotFoundDestination {
   /** Marketing route (relative) or absolute app URL resolver key. */
@@ -74,13 +74,6 @@ export const NOT_FOUND_DESTINATIONS: NotFoundDestination[] = [
     keywords: ["advice", "guides", "blog", "tips", "help", "career"],
   },
   {
-    to: "/pricing",
-    title: "Plans & pricing",
-    description: "Compare the free, starter and pro plans.",
-    surface: "marketing",
-    keywords: ["pricing", "plans", "price", "cost", "upgrade", "billing", "subscription"],
-  },
-  {
     to: "/blog/ai-resume-optimization",
     title: "AI resume optimization guide",
     description: "How to rewrite a resume so an AI screen ranks it higher.",
@@ -105,6 +98,13 @@ export function appDestinations(): NotFoundDestination[] {
       description: "Start with the free plan — no card required.",
       surface: "app",
       keywords: ["signup", "sign", "register", "create", "join", "start", "free", "trial"],
+    },
+    {
+      to: appPricingHref(),
+      title: "Plans & pricing",
+      description: "Compare the free, starter and pro plans in the app.",
+      surface: "app",
+      keywords: ["pricing", "plans", "price", "cost", "upgrade", "billing", "subscription"],
     },
     {
       to: appHref("/support"),

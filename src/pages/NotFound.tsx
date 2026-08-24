@@ -56,7 +56,7 @@ const NotFound = () => {
   );
 
   const popular = useMemo<NotFoundDestination[]>(
-    () => [...NOT_FOUND_DESTINATIONS.slice(0, 5), ...appDestinations()],
+    () => [...NOT_FOUND_DESTINATIONS, ...appDestinations()],
     [],
   );
 
