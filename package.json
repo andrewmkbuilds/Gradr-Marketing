@@ -178,6 +178,7 @@
     "test:interactions": "node scripts/interaction-regression.mjs",
     "lint:colors": "eslint . --config eslint.colors.config.js --quiet",
     "check:legacy-routes": "node scripts/check-legacy-routes.mjs",
+    "check:not-found": "node scripts/check-not-found.mjs",
     "check:canonical": "node scripts/check-canonical-og.mjs",
     "check:brand-assets": "node scripts/check-brand-assets.mjs",
     "brand:assets:update": "node scripts/check-brand-assets.mjs --update",
