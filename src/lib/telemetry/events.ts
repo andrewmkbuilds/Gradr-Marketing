@@ -26,6 +26,9 @@ export type GradrEvent =
   | "legacy_url_hit"
   | "legacy_url_redirected"
   | "legacy_url_not_found"
+  | "not_found_viewed"
+  | "not_found_suggestion_clicked"
+  | "not_found_offline"
   // Signup
   | "signup_started"
   | "account_created"
