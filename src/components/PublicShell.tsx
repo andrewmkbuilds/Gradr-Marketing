@@ -1,4 +1,4 @@
-import { appLoginHref, appSignupHref } from "@/lib/appLinks";
+import { appHref, appLoginHref, appSignupHref } from "@/lib/appLinks";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { ArrowRight, Menu, X } from "lucide-react";
@@ -21,11 +21,15 @@ const NAV = [
   { label: "Pricing", to: "/pricing" },
 ];
 
+/**
+ * Product destinations live on the app surface only — this project ships no
+ * product routes, so these must be absolute app.gradr.me links.
+ */
 const PRODUCT_LINKS = [
-  { label: "Resume Intelligence", to: "/resume" },
-  { label: "AI Mock Interview", to: "/interview" },
-  { label: "Job matching", to: "/match" },
-  { label: "Application engine", to: "/apply" },
+  { label: "Resume Intelligence", path: "/resume" },
+  { label: "AI Mock Interview", path: "/interview" },
+  { label: "Job matching", path: "/match" },
+  { label: "Application engine", path: "/apply" },
 ];
 
 /** Public, indexable tool landing pages — kept crawlable from every footer. */
@@ -169,10 +173,13 @@ export function PublicShell({ children, source }: PublicShellProps) {
             <p className="type-overline text-muted-foreground">Product</p>
             <ul className="space-y-2">
               {PRODUCT_LINKS.map((item) => (
-                <li key={item.to}>
-                  <Link to={item.to} className="text-muted-foreground hover:text-foreground">
+                <li key={item.path}>
+                  <a
+                    href={appHref(item.path)}
+                    className="text-muted-foreground hover:text-foreground"
+                  >
                     {item.label}
-                  </Link>
+                  </a>
                 </li>
               ))}
             </ul>
