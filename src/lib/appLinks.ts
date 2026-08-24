@@ -16,6 +16,8 @@ import {
   PRODUCTION_ORIGIN,
   currentSurface,
   isProduction,
+  pinnedSurface,
+  surfaceFromHost,
   urlFor,
 } from "@/config/domains";
 
@@ -73,6 +75,13 @@ export function goToApp(href: string, navigate?: (to: string) => void): void {
  */
 export function appAuthHref(path: string = "/"): string {
   const normalized = path.startsWith("/") ? path : `/${path}`;
-  if (currentSurface() === "app") return normalized;
+  // `currentSurface()` falls back to "app" for unprefixed paths on dev/preview
+  // hosts, which would keep the link on this (marketing) bundle. Only a bundle
+  // that is genuinely the app — pinned, or served from app.gradr.me — may keep
+  // the link relative.
+  const isAppBundle =
+    pinnedSurface() === "app" ||
+    (isProduction() && surfaceFromHost() === "app");
+  if (isAppBundle) return normalized;
   return `${PRODUCTION_ORIGIN.app}${normalized}`;
 }
