@@ -18,7 +18,7 @@
  *    visitor on a page that appears to have ignored their click.
  */
 import { appAuthHref, isCrossOrigin } from "@/lib/appLinks";
-import { sanitizeNext } from "@/lib/nextRedirect";
+import { classifyNext, type NextRejectionReason } from "@/lib/nextRedirect";
 import { track } from "@/lib/telemetry/events";
 
 /** How long a real navigation is given before we call the hand-off failed. */
@@ -39,6 +39,8 @@ export type NextResolution = {
   status: NextStatus;
   /** What the caller asked for, trimmed for analytics. */
   requested?: string;
+  /** Why it was refused — only present when `status` is "sanitized". */
+  reason?: NextRejectionReason;
 };
 
 /**
@@ -49,15 +51,17 @@ export type NextResolution = {
  */
 export function resolveNextDestination(next?: AppDestination | null): NextResolution {
   if (next === undefined || next === null || next === "") return { value: null, status: "none" };
-  const safe = sanitizeNext(next);
+  const { value, reason } = classifyNext(next);
   return {
-    value: safe,
-    // `sanitizeNext` returns the input verbatim when it is already safe, so an
+    value,
+    // `classifyNext` returns the input verbatim when it is already safe, so an
     // unchanged value means "accepted" and anything else was rewritten/dropped.
-    status: safe === next ? "accepted" : "sanitized",
+    status: value === next ? "accepted" : "sanitized",
     requested: next.slice(0, 80),
+    reason: value === next ? undefined : (reason ?? undefined),
   };
 }
+
 
 /** Absolute app URL for the sign-in screen, optionally deep-linked. */
 export function appSignInHref(next?: AppDestination): string {
@@ -73,6 +77,8 @@ export type HandoffContext = {
   next?: AppDestination;
   /** Whether a session already exists on this surface. */
   authenticated?: boolean;
+  /** 1 for the original click, 2+ for retries from the recovery UI. */
+  attempt?: number;
 };
 
 export type HandoffFailureDetail = {
@@ -92,12 +98,23 @@ export function handoffToApp(
 ): void {
   const crossOrigin = isCrossOrigin(href);
   const resolved = resolveNextDestination(context.next);
-  track("auth_handoff_started", {
+  const attempt = context.attempt ?? 1;
+  const nextProps = {
     cta_location: context.location,
     destination: href.slice(0, 80),
     next_path: resolved.value ?? undefined,
     next_requested: resolved.requested,
     next_status: resolved.status,
+    next_reason: resolved.reason,
+    attempt,
+  };
+  if (attempt > 1) {
+    // A retry is a distinct funnel step: it means the first hand-off failed and
+    // the visitor chose to try again rather than abandon.
+    track("auth_handoff_retried", nextProps);
+  }
+  track("auth_handoff_started", {
+    ...nextProps,
     cross_origin: crossOrigin,
     authenticated: Boolean(context.authenticated),
   });
@@ -126,17 +143,10 @@ export function handoffToApp(
     // Still here: the browser never left this document, so the app origin did
     // not answer (offline, DNS, TLS, blocked, or a hosting outage).
     const reason = navigator.onLine ? "app_unreachable" : "offline";
-    track("auth_handoff_failed", {
-      cta_location: context.location,
-      destination: href.slice(0, 80),
-      next_path: resolved.value ?? undefined,
-      next_requested: resolved.requested,
-      next_status: resolved.status,
-      reason,
-    });
+    track("auth_handoff_failed", { ...nextProps, reason });
     window.dispatchEvent(
       new CustomEvent<HandoffFailureDetail>(HANDOFF_FAILED_EVENT, {
-        detail: { href, context, reason },
+        detail: { href, context: { ...context, attempt }, reason },
       }),
     );
   }, HANDOFF_TIMEOUT_MS);
@@ -144,10 +154,24 @@ export function handoffToApp(
   window.location.assign(href);
 }
 
+
 /** Convenience: send the visitor to sign-in, deep-linked to `next`. */
 export function goToAppAuth(
   context: HandoffContext,
   navigate?: (to: string) => void,
 ): void {
   handoffToApp(appSignInHref(context.next), context, navigate);
+}
+
+/**
+ * Read-only validation probe for end-to-end tests.
+ *
+ * `?next=` rules must hold in the *shipped* bundle, on preview and production
+ * alike, and the only way an external test can assert them is to call the same
+ * function the CTAs use. Pure and side-effect free: it validates a string and
+ * returns the verdict, so exposing it grants no capability.
+ */
+if (typeof window !== "undefined") {
+  (window as unknown as Record<string, unknown>).__gradrResolveNext =
+    resolveNextDestination;
 }

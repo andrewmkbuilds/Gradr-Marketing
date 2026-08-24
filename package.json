@@ -131,6 +131,7 @@
     "check:theme": "node scripts/check-theme-tokens.mjs",
     "check:theme:runtime": "node scripts/check-theme-tokens.mjs --runtime",
     "check:cta": "node scripts/check-cta-handoff.mjs",
+    "check:next": "node scripts/check-next-validation.mjs",
     "check:domain-health": "node scripts/domain-healthcheck.mjs",
     "check:domains": "node scripts/check-domains.mjs",
     "check:fingerprint": "node scripts/check-bundle-fingerprint.mjs",
