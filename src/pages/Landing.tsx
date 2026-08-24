@@ -39,7 +39,7 @@ import { HexFloatFx, ParticleScrollFx } from "@/components/canvasui/CanvasFx";
 import { CanvasFxFrame } from "@/components/canvasui/CanvasFxFrame";
 import { ResumeTransform } from "@/components/landing/ResumeTransform";
 import { trackSignupCta, trackUpgradeCta, type CtaLocation } from "@/lib/telemetry/events";
-import { appAuthHref, appHref, appPricingHref, goToApp } from "@/lib/appLinks";
+import { appAuthHref, appPricingHref, goToApp } from "@/lib/appLinks";
 import { DepthShowcase } from "@/components/landing/DepthShowcase";
 import {
   ApplicationVisual, AssistantVisual,
