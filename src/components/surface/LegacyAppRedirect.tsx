@@ -27,8 +27,9 @@ export function LegacyAppRedirect() {
   // The product now has its own deployment at app.gradr.me, so every production
   // marketing host can hand these URLs over. Dev and preview builds have no app
   // deployment to reach, so they keep rendering the 404.
-  const host = currentHost();
+  const host = typeof window === "undefined" ? "" : window.location.hostname;
   const canHandOff = isProduction(host) && surfaceFromHost(host) !== "app";
+
 
   useEffect(() => {
     const from = location.pathname;
