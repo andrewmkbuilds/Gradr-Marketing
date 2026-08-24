@@ -9,7 +9,6 @@ import { BrandLogo } from "@/components/BrandLogo";
 
 const AffiliateProgram = lazy(() => import("@/pages/AffiliateProgram"));
 const AffiliateApply = lazy(() => import("@/pages/AffiliateApply"));
-const AffiliateDashboard = lazy(() => import("@/pages/AffiliateDashboard"));
 const AffiliateResources = lazy(() => import("@/pages/AffiliateResources"));
 const Auth = lazy(() => import("@/pages/Auth"));
 const ForgotPassword = lazy(() => import("@/pages/ForgotPassword"));
@@ -57,7 +56,6 @@ export default function AffiliatesSurface() {
       nav={[
         { label: "Program", to: "/" },
         { label: "Apply", to: "/join" },
-        { label: "Dashboard", to: "/dashboard" },
         { label: "Resources", to: "/resources" },
       ]}
     >
@@ -66,14 +64,9 @@ export default function AffiliatesSurface() {
           <Route path="" element={<AffiliateProgram />} />
           <Route path="join" element={<AffiliateApply />} />
           <Route path="apply" element={<SurfaceRedirect to="/join" />} />
-          <Route
-            path="dashboard"
-            element={
-              <RequirePartner>
-                <AffiliateDashboard />
-              </RequirePartner>
-            }
-          />
+          {/* The partner dashboard was retired; /dashboard now lands on the
+              resources page for approved partners. */}
+          <Route path="dashboard" element={<SurfaceRedirect to="/resources" />} />
           <Route
             path="resources"
             element={

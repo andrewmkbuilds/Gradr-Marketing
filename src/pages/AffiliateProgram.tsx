@@ -16,8 +16,8 @@ export default function AffiliateProgram() {
     if (isLoading) return <Loader2 className="h-5 w-5 animate-spin text-primary" />;
     if (my?.profile && my.profile.status === "active") {
       return (
-        <Button size="lg" onClick={() => navigate("/affiliate/dashboard")}>
-          Open affiliate dashboard <ArrowRight className="h-4 w-4" aria-hidden />
+        <Button size="lg" onClick={() => navigate("/affiliate/resources")}>
+          Open partner resources <ArrowRight className="h-4 w-4" aria-hidden />
         </Button>
       );
     }
@@ -82,9 +82,9 @@ export default function AffiliateProgram() {
         <ol className="space-y-3 text-sm">
           {[
             "Apply with your audience info and promo plan — most applications reviewed within 48 hours.",
-            "Once approved, get a unique referral link (myapp.com?ref=YOURCODE) and a real-time dashboard.",
+            "Once approved, get a unique referral link (gradr.me/?ref=YOURCODE) with transparent click and conversion tracking.",
             `Share your link — every click is tracked and remembered for ${cookieDays} days.`,
-            "Earn commissions when referred users sign up and upgrade. Track everything in your dashboard.",
+            "Earn commissions when referred users sign up and upgrade, with monthly payouts once you clear the threshold.",
             "Get paid monthly once you cross the minimum payout threshold.",
           ].map((step, i) => (
             <li key={i} className="flex gap-3">
