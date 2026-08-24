@@ -24,7 +24,11 @@ import NotFound from "@/pages/NotFound";
 export function LegacyAppRedirect() {
   const location = useLocation();
   const target = legacyAppTarget(location.pathname);
-  const multiSurface = isMultiSurfaceHost();
+  // The product now has its own deployment at app.gradr.me, so every production
+  // marketing host can hand these URLs over. Dev and preview builds have no app
+  // deployment to reach, so they keep rendering the 404.
+  const host = currentHost();
+  const canHandOff = isProduction(host) && surfaceFromHost(host) !== "app";
 
   useEffect(() => {
     const from = location.pathname;
@@ -39,20 +43,18 @@ export function LegacyAppRedirect() {
     const query = [targetQuery, search].filter(Boolean).join("&");
     const destination = `${PRODUCTION_ORIGIN.app}${path}${query ? `?${query}` : ""}`;
 
-    track("legacy_url_hit", { from, outcome: multiSurface ? "not_found" : "redirected" });
+    track("legacy_url_hit", { from, outcome: canHandOff ? "redirected" : "not_found" });
 
-    // On shared hosts there is no app deployment to hand off to, so the 404
-    // renders instead — still worth measuring the stale URL above.
-    if (multiSurface) {
+    if (!canHandOff) {
       track("legacy_url_not_found", { from, reason: "shared_host" });
       return;
     }
 
     track("legacy_url_redirected", { from, to: path, destination });
     window.location.replace(destination);
-  }, [multiSurface, target, location.pathname, location.search]);
+  }, [canHandOff, target, location.pathname, location.search]);
 
-  if (multiSurface || !target) {
+  if (!canHandOff || !target) {
     return (
       <AnimatedPage>
         <NotFound />
@@ -61,3 +63,4 @@ export function LegacyAppRedirect() {
   }
   return null;
 }
+
