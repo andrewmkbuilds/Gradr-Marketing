@@ -63,3 +63,16 @@ export function goToApp(href: string, navigate?: (to: string) => void): void {
   if (navigate) navigate(href);
   else window.location.assign(href);
 }
+
+/**
+ * Absolute destination inside the product for auth / "open the app" CTAs.
+ *
+ * Unlike {@link appHref}, this never resolves to a path on the current
+ * marketing origin: the marketing bundle has no `/auth` or product routes, so a
+ * same-origin path would land on the 404 handoff (notably in dev + preview).
+ */
+export function appAuthHref(path: string = "/"): string {
+  const normalized = path.startsWith("/") ? path : `/${path}`;
+  if (currentSurface() === "app") return normalized;
+  return `${PRODUCTION_ORIGIN.app}${normalized}`;
+}
