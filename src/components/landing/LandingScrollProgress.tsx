@@ -61,7 +61,7 @@ export function LandingScrollProgress({ sectionIds = [] as string[] }) {
     <>
       <div aria-hidden className="pointer-events-none fixed inset-x-0 top-0 z-[60] h-px">
         <motion.div
-          className="h-px w-full origin-left bg-gradient-to-r from-primary via-primary-glow to-brand-secondary"
+          className="h-px w-full origin-left bg-gradient-to-r from-primary via-brand-glow to-brand-secondary"
           style={{ scaleX }}
         />
         {ticks.map((t, i) => (

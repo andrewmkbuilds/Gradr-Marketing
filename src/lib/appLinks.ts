@@ -114,3 +114,33 @@ export function appSignupHref(next?: string): string {
   const query = next ? `&next=${encodeURIComponent(next)}` : "";
   return appAuthHref(`${APP_SIGNUP_PATH}${query}`);
 }
+
+/**
+ * Absolute destination for a *product* route (`/resume`, `/interview`, …)
+ * linked from an editorial page. Marketing bundles have no such routes, so a
+ * relative link would fall through to the 404/redirect handler instead of
+ * landing on the product directly.
+ */
+export function appProductHref(path: string): string {
+  return appAuthHref(path);
+}
+
+const PRODUCT_ROUTES = [
+  "/resume",
+  "/match",
+  "/apply",
+  "/interview",
+  "/jobs",
+  "/pipeline",
+  "/growth",
+  "/dashboard",
+  "/billing",
+  "/credits",
+  "/settings",
+];
+
+/** True when a path is served by the product, not by this marketing bundle. */
+export function isProductPath(path: string): boolean {
+  const clean = path.split("?")[0];
+  return PRODUCT_ROUTES.some((route) => clean === route || clean.startsWith(`${route}/`));
+}

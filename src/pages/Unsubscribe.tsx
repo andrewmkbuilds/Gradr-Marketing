@@ -60,7 +60,7 @@ export default function Unsubscribe() {
   };
 
   return (
-    <div className="max-w-xl mx-auto px-4 py-16">
+    <main className="max-w-xl mx-auto px-4 py-16">
       <Seo
         title="Email preferences"
         description="Manage the emails you receive from Gradr."
@@ -149,7 +149,7 @@ export default function Unsubscribe() {
           </>
         ) : null}
       </Card>
-    </div>
+    </main>
   );
 }
 

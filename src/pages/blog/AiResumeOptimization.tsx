@@ -1,4 +1,4 @@
-import { appHref, appLoginHref } from "@/lib/appLinks";
+import { appHref, appLoginHref, appProductHref, isProductPath } from "@/lib/appLinks";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
@@ -69,6 +69,7 @@ export default function AiResumeOptimization() {
         </div>
       </header>
 
+      <main id="content">
       <article className="max-w-3xl mx-auto px-6 py-12">
         <p className="text-xs uppercase tracking-wider text-primary font-medium mb-3">Guide · Resume Intelligence</p>
         <h1 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight leading-tight">
@@ -336,6 +337,23 @@ export default function AiResumeOptimization() {
                   location: "related_jobs_feed",
                 },
               ].map((g) => (
+                // Product engines live on app.gradr.me: link there directly
+                // instead of routing through this bundle's redirect handler.
+                isProductPath(g.to) ? (
+                  <a
+                    key={g.to}
+                    href={ctaHref(appProductHref(g.to), g.location)}
+                    onClick={trackCta(g.location, g.to)}
+                    className="elev-2 rounded-xl p-4 hover:border-primary/40 transition group"
+                  >
+                    <div className="font-medium text-foreground group-hover:text-primary transition">
+                      {g.title}
+                    </div>
+                    <div className="text-sm text-muted-foreground mt-1 leading-relaxed">
+                      {g.desc}
+                    </div>
+                  </a>
+                ) : (
                 <Link
                   key={g.to}
                   to={ctaHref(g.to, g.location)}
@@ -349,6 +367,7 @@ export default function AiResumeOptimization() {
                     {g.desc}
                   </div>
                 </Link>
+                )
               ))}
             </div>
           </section>
@@ -370,7 +389,7 @@ export default function AiResumeOptimization() {
                 <Sparkles className="h-3.5 w-3.5" /> Start free
               </a>
               <a
-                href={ctaHref(appHref("/resume"), "footer_cta_resume")}
+                href={ctaHref(appProductHref("/resume"), "footer_cta_resume")}
                 onClick={trackCta("footer_cta", "/resume")}
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-secondary text-foreground text-sm hover:bg-secondary/80 transition"
               >
@@ -388,6 +407,7 @@ export default function AiResumeOptimization() {
 
         </div>
       </article>
+      </main>
 
       <footer className="border-t border-border mt-8">
         <div className="max-w-4xl mx-auto px-6 py-6 text-xs text-muted-foreground flex items-center justify-between flex-wrap gap-2">

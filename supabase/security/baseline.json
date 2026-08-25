@@ -249,6 +249,7 @@
       "my_eligibility_state",
       "my_verification_timeline",
       "pending_legal_acceptances",
+      "record_checkout_attempt",
       "reject_affiliate_application",
       "request_institution",
       "submit_verification_appeal",
