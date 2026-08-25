@@ -64,48 +64,58 @@ export function CursorEffects({ className }: { className?: string }) {
       aria-hidden
       className={cn("pointer-events-none fixed inset-0 z-50 hidden md:block", className)}
     >
+      {/* Each layer is its own AnimatePresence child — a Fragment cannot hold
+          the ref AnimatePresence attaches, which React warns about on every
+          pointer move. */}
       <AnimatePresence>
         {visible ? (
-          <>
-            <motion.span
-              key="halo"
-              className="absolute left-0 top-0 block"
-              style={{ x: haloX, y: haloY }}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: hot ? 0.9 : 0.55, scale: hot ? 1.15 : 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-              transition={springPointer}
-            >
-              <span className="block size-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-3xl" />
-            </motion.span>
-            <motion.span
-              key="ring"
-              className="absolute left-0 top-0 block"
-              style={{ x: ringX, y: ringY }}
-              initial={{ opacity: 0, scale: 0.5 }}
-              animate={{
-                opacity: 1,
-                scale: pressed ? 0.7 : hot ? 1.35 : 0.85,
-              }}
-              exit={{ opacity: 0, scale: 0.5 }}
-              transition={springSnappy}
-            >
-              <span className="block size-10 -translate-x-1/2 -translate-y-1/2 rounded-full border border-primary/60" />
-            </motion.span>
-            <motion.span
-              key="dot"
-              className="absolute left-0 top-0 block"
-              style={{ x, y }}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: hot ? 0 : 1 }}
-              exit={{ opacity: 0 }}
-              transition={springSnappy}
-            >
-              <span className="block size-1 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary" />
-            </motion.span>
-          </>
+          <motion.span
+            key="halo"
+            className="absolute left-0 top-0 block"
+            style={{ x: haloX, y: haloY }}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: hot ? 0.9 : 0.55, scale: hot ? 1.15 : 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            transition={springPointer}
+          >
+            <span className="block size-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-3xl" />
+          </motion.span>
         ) : null}
       </AnimatePresence>
+      <AnimatePresence>
+        {visible ? (
+          <motion.span
+            key="ring"
+            className="absolute left-0 top-0 block"
+            style={{ x: ringX, y: ringY }}
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{
+              opacity: 1,
+              scale: pressed ? 0.7 : hot ? 1.35 : 0.85,
+            }}
+            exit={{ opacity: 0, scale: 0.5 }}
+            transition={springSnappy}
+          >
+            <span className="block size-10 -translate-x-1/2 -translate-y-1/2 rounded-full border border-primary/60" />
+          </motion.span>
+        ) : null}
+      </AnimatePresence>
+      <AnimatePresence>
+        {visible ? (
+          <motion.span
+            key="dot"
+            className="absolute left-0 top-0 block"
+            style={{ x, y }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: hot ? 0 : 1 }}
+            exit={{ opacity: 0 }}
+            transition={springSnappy}
+          >
+            <span className="block size-1 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary" />
+          </motion.span>
+        ) : null}
+      </AnimatePresence>
+
     </div>
   );
 }

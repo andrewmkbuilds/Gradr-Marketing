@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
+import { appProductHref, isProductPath } from "@/lib/appLinks";
 import { ArrowLeft, ArrowRight, CalendarDays, Clock } from "lucide-react";
 import { PublicShell } from "@/components/PublicShell";
 import { MarketingHero } from "@/components/marketing/MarketingHero";
@@ -111,8 +112,11 @@ export default function GuideArticle() {
         <section className="rounded-xl border border-primary/30 bg-primary/5 p-6">
           <h2 className="text-lg font-semibold text-foreground">{guide.cta.label}</h2>
           <p className="mt-1 text-sm text-muted-foreground">{guide.cta.blurb}</p>
-          <Link
-            to={ctaHref}
+          {/* Guide CTAs that point at a product engine must leave this
+              marketing bundle for app.gradr.me, not hit the redirect handler. */}
+          <CtaLink
+            href={ctaHref}
+            product={isProductPath(guide.cta.href)}
             onClick={() =>
               trackEvent("guide_cta_click", {
                 article: guide.slug,
@@ -124,7 +128,7 @@ export default function GuideArticle() {
           >
             {guide.cta.label}
             <ArrowRight className="h-4 w-4" aria-hidden="true" />
-          </Link>
+          </CtaLink>
         </section>
 
         <FaqBlock items={guide.faqs} source={guide.slug} />
@@ -132,5 +136,26 @@ export default function GuideArticle() {
         <RelatedGuides slugs={guide.related} source={guide.slug} />
       </article>
     </PublicShell>
+  );
+}
+
+/** Renders a router link for marketing paths and a real anchor for product URLs. */
+function CtaLink({
+  href,
+  product,
+  children,
+  ...props
+}: { href: string; product: boolean } & React.AnchorHTMLAttributes<HTMLAnchorElement>) {
+  if (product) {
+    return (
+      <a href={appProductHref(href)} {...props}>
+        {children}
+      </a>
+    );
+  }
+  return (
+    <Link to={href} {...props}>
+      {children}
+    </Link>
   );
 }

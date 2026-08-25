@@ -25,7 +25,7 @@ const RPCS = [
   { name: "my_eligibility_state", args: {}, roles: ["authenticated"] },
   { name: "get_affiliate_public_settings", args: {}, roles: ["anon", "authenticated"] },
   { name: "lookup_affiliate_by_code", args: { _code: "__ci_probe__" }, roles: ["anon", "authenticated"] },
-  { name: "affiliate_leaderboard", args: { _limit: 1 }, roles: ["anon", "authenticated"] },
+  { name: "affiliate_leaderboard", args: { _limit: 1 }, roles: ["authenticated"] },
   { name: "my_affiliate_overview", args: {}, roles: ["authenticated"] },
 ];
 
