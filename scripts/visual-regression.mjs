@@ -28,8 +28,12 @@ const DIFF_TOLERANCE = Number(process.env.VISUAL_TOLERANCE ?? 0.03); // 3% of pi
 const ROUTES = [
   ["landing", "/landing"],
   ["design-system", "/design-system"],
-  ["pricing", "/pricing"],
-  ["auth", "/auth"],
+  // NOTE: /pricing and /auth are retired product paths here — they render the
+  // app hand-off screen and navigate away mid-capture, so they are not stable
+  // marketing surfaces to diff. Their coverage lives in check-marketing-hosts.
+  ["interview-coach", "/ai-interview-coach"],
+  ["cover-letter", "/ai-cover-letter-generator"],
+  ["legal", "/legal"],
   ["job-search", "/job-search"],
   ["ats", "/ats-resume-checker"],
   ["career-advice", "/career-advice"],
