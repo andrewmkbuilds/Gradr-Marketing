@@ -87,7 +87,7 @@ export default function JobLanding() {
             >
               Match my resume to these roles
               <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </Link>
+            </a>
           }
         />
 
