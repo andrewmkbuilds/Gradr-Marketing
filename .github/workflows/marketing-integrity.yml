@@ -54,6 +54,21 @@ jobs:
       - name: Canonical / og:url stay on gradr.me and product CTAs stay absolute
         run: node scripts/check-canonical-og.mjs http://localhost:8080
 
+      - name: Deployment SEO audit (canonicals, robots/noindex, no app metadata)
+        run: node scripts/seo-deploy-audit.mjs http://localhost:8080
+
+      - name: Marketing hosts render no app surface; retired paths hand off
+        run: node scripts/check-marketing-hosts.mjs http://localhost:8080
+
+      - name: No new console or runtime errors on marketing pages
+        run: node scripts/check-console-errors.mjs http://localhost:8080
+
+      - name: Marketing forms (loading, success and error states)
+        run: node scripts/e2e-marketing-forms.mjs http://localhost:8080
+
+      - name: Visual regression (key pages × breakpoints × light/dark)
+        run: node scripts/visual-regression.mjs http://localhost:8080
+
       - name: Brand visual regression (header/footer marks, light + dark)
         run: node scripts/brand-visual.mjs http://localhost:8080
 
@@ -62,4 +77,13 @@ jobs:
         with:
           name: brand-visual-diffs
           path: tests/visual/brand/current
+          if-no-files-found: ignore
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: marketing-visual-diffs
+          path: |
+            tests/visual/current
+            tests/visual/diff
           if-no-files-found: ignore
