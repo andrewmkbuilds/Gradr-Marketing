@@ -8,7 +8,6 @@
     "@lovable.dev/cloud-auth-js": "^1.0.1",
     "@lovable.dev/mcp-js": "0.26.2",
     "@mediapipe/tasks-vision": "^1.0.1",
-    "@paddle/paddle-js": "^1.6.4",
     "@radix-ui/react-accordion": "^1.2.11",
     "@radix-ui/react-alert-dialog": "^1.1.14",
     "@radix-ui/react-aspect-ratio": "^1.1.7",

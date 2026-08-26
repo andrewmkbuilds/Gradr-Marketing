@@ -121,3 +121,19 @@ export function currentPaymentsDiagnostics(): PaymentsDiagnostics {
     VITE_PAYMENTS_ENVIRONMENT: import.meta.env.VITE_PAYMENTS_ENVIRONMENT as string | undefined,
   });
 }
+
+/**
+ * Environment used for entitlement/eligibility reads on this surface. Never
+ * throws: with no valid config it falls back to the token prefix, then to
+ * 'live' — the safe default, since live is the stricter set of records.
+ *
+ * The marketing surface does not open checkout (that lives on app.gradr.me),
+ * so this is the only Paddle-shaped value the public bundle still needs.
+ */
+export function currentPaymentsEnvironment(): PaddleEnvName {
+  const diagnostics = currentPaymentsDiagnostics();
+  if (diagnostics.ok && diagnostics.environment) return diagnostics.environment;
+  if (diagnostics.tokenEnvironment) return diagnostics.tokenEnvironment;
+  const configured = (import.meta.env.VITE_PAYMENTS_ENVIRONMENT as string | undefined)?.trim();
+  return configured === "sandbox" ? "sandbox" : "live";
+}
