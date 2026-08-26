@@ -97,6 +97,16 @@ Deno.serve(async (req) => {
         ].join('|'),
       )
 
+      // Fold repeated fetches by the same client within the same minute
+      // (Gmail's image proxy re-requests aggressively) into a single event.
+      const { data: duplicate } = await db
+        .from('email_engagement_events')
+        .select('id')
+        .eq('client_hash', clientHash)
+        .limit(1)
+        .maybeSingle()
+      if (duplicate) return respond()
+
       const { error } = await db.from('email_engagement_events').insert({
         message_id: messageId,
         template_name: send.template_name,
