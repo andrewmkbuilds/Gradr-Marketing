@@ -1,5 +1,5 @@
 /**
- * Shared Chromium launcher for the Playwright-based CI gates.
+ * Shared Chromium launcher + page-sampling helpers for the Playwright-based CI gates.
  *
  * CI images and the local sandbox store the browser in different places, so
  * every script resolved its own executable path. This centralises that.
@@ -36,4 +36,55 @@ export async function launchChromium() {
     if (!executablePath) throw new Error("No Chromium build available for Playwright.");
     return chromium.launch({ executablePath });
   }
+}
+
+/** Backwards-compatible alias used by older audit scripts. */
+export const launchBrowser = launchChromium;
+
+/**
+ * Sample the DOM while a route boots to catch two visual regressions:
+ *  - the pre-hydration splash never dismissing, and
+ *  - the crawler-only <noscript> SEO fallback becoming visible to JS users.
+ *
+ * If the page navigates while we sample (e.g., an external hand-off), we
+ * return what we observed so far rather than crashing the gate.
+ */
+export async function sampleForFlash(page, { samples = 30, intervalMs = 60 } = {}) {
+  const seoPhrases = [
+    "not a grading, marking or test-score tool",
+    "Gradr — Your AI Career Command Center",
+    "AI career command center for resume analysis",
+  ];
+  const seoVisibleFrames = [];
+  let splashStuck = false;
+  let completed = 0;
+
+  for (let i = 0; i < samples; i++) {
+    try {
+      const snapshot = await page.evaluate((phrases) => {
+        const splash = document.getElementById("app-splash");
+        const bodyText = document.body?.innerText ?? "";
+        const found = phrases.find((p) => bodyText.includes(p));
+        return {
+          splashPresent: Boolean(splash && splash.offsetParent !== null),
+          phrase: found ?? null,
+        };
+      }, seoPhrases);
+
+      if (snapshot.phrase) {
+        seoVisibleFrames.push({ sample: i, phrase: snapshot.phrase });
+      }
+      if (snapshot.splashPresent) splashStuck = true;
+      completed++;
+    } catch {
+      // Page navigated away (external hand-off) — stop sampling.
+      break;
+    }
+
+    if (i < samples - 1) {
+      await page.waitForTimeout(intervalMs).catch(() => {});
+    }
+  }
+
+  return { samples: completed, seoVisibleFrames, splashStuck };
 }
