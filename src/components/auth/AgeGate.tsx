@@ -91,7 +91,14 @@ export function AgeGate({
 }
 
 /** Shown after an under-13 date of birth. Existing account sign-in remains available. */
-export function AgeBlockedNotice({ onSignIn }: { onSignIn: () => void }) {
+export function AgeBlockedNotice({
+  onSignIn,
+  onRecheck,
+}: {
+  onSignIn: () => void;
+  /** Clears the local age-block marker and re-opens the neutral age screen. */
+  onRecheck: () => void;
+}) {
   return (
     <div className="space-y-5">
       <div className="flex h-10 w-10 items-center justify-center rounded-full bg-destructive/15">
