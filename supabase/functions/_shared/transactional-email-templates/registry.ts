@@ -3,6 +3,7 @@ import type * as React from 'npm:react@18.3.1'
 
 import { template as subscriptionUpgraded } from './subscription-upgraded.tsx'
 import { template as subscriptionDowngraded } from './subscription-downgraded.tsx'
+import { template as newsletterConfirm } from './newsletter-confirm.tsx'
 import { template as newsletterWelcome } from './newsletter-welcome.tsx'
 import { template as contactFormReceived } from './contact-form-received.tsx'
 import { template as marketingAnnouncement } from './marketing-announcement.tsx'
@@ -36,6 +37,7 @@ export interface TemplateEntry {
 export const TEMPLATES: Record<string, TemplateEntry> = {
   'subscription-upgraded': subscriptionUpgraded,
   'subscription-downgraded': subscriptionDowngraded,
+  'newsletter-confirm': newsletterConfirm,
   'newsletter-welcome': newsletterWelcome,
   'contact-form-received': contactFormReceived,
   'marketing-announcement': marketingAnnouncement,
