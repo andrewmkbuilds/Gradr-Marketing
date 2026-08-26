@@ -9,7 +9,6 @@
  */
 import { createClient } from 'npm:@supabase/supabase-js@2'
 import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors'
-import { sendTransactionalEmail } from '../_shared/sendTransactional.ts'
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
@@ -99,29 +98,22 @@ Deno.serve(async (req) => {
       day: 'numeric',
     })
 
-    emailed = await sendTransactionalEmail({
-      templateName: TEMPLATE[decision],
-      recipientEmail: recipient,
-      idempotencyKey: `verification-${decision}:${requestId}:${request.reviewed_at ?? ''}`,
-      templateData: {
-        firstName,
-        verificationType: category?.label ?? request.category,
-        reason: notes || undefined,
-        reviewerNotes: notes || undefined,
-        reviewedAt,
-        discountPercent: Number(request.discount_percentage ?? 0),
-        canResubmit: true,
-      },
+    // Verification decision emails are owned by app.gradr.me. The decision and
+    // its audit trail still happen here; the notification does not.
+    console.info('verification-review: decision email delegated to app.gradr.me', {
+      requestId,
+      decision,
     })
+    emailed = false
 
     await admin.rpc('log_verification_event', {
       _request_id: requestId,
-      _event: emailed ? 'email_sent' : 'email_failed',
+      _event: emailed ? 'email_sent' : 'email_delegated',
       _actor_role: 'system',
       _to_status: decision,
       _notes: emailed
         ? `Status email sent to ${recipient}.`
-        : `We could not deliver the status email to ${recipient}.`,
+        : `Status email for ${recipient} is sent by app.gradr.me.`,
       _metadata: { template: TEMPLATE[decision], decision },
     })
   }
