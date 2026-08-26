@@ -29,6 +29,19 @@ const DEDUPE_MINUTES = 30;
 
 const CODE_RE = /^[A-Z0-9][A-Z0-9_-]{2,31}$/;
 
+/** Attribution window, in days, falling back to the program default. */
+const DEFAULT_COOKIE_DAYS = 90;
+
+async function cookieDurationDays(): Promise<number> {
+  const { data } = await db
+    .from("affiliate_settings")
+    .select("cookie_duration_days")
+    .eq("id", 1)
+    .maybeSingle();
+  const days = data?.cookie_duration_days;
+  return typeof days === "number" && days > 0 ? days : DEFAULT_COOKIE_DAYS;
+}
+
 function clean(value: unknown, max: number): string | null {
   if (typeof value !== "string") return null;
   const trimmed = value.trim();
@@ -93,6 +106,10 @@ Deno.serve(async (req) => {
       return json({ tracked: false, reason: "inactive_code" });
     }
 
+    // The visitor's browser needs the attribution window to size its cookie,
+    // and this is the only anonymous path that can read it.
+    const cookieDays = await cookieDurationDays();
+
     const ipHash = await hashIp(req);
     const windowStart = new Date(Date.now() - WINDOW_MINUTES * 60_000).toISOString();
 
@@ -127,7 +144,12 @@ Deno.serve(async (req) => {
       .limit(1)
       .maybeSingle();
     if (existing?.id) {
-      return json({ tracked: true, click_id: existing.id, deduped: true });
+      return json({
+        tracked: true,
+        click_id: existing.id,
+        deduped: true,
+        cookie_duration_days: cookieDays,
+      });
     }
 
     const { data: inserted, error: insertError } = await db
@@ -148,7 +170,7 @@ Deno.serve(async (req) => {
       .single();
     if (insertError) throw insertError;
 
-    return json({ tracked: true, click_id: inserted.id });
+    return json({ tracked: true, click_id: inserted.id, cookie_duration_days: cookieDays });
   } catch (e) {
     const message = e instanceof Error ? e.message : String(e);
     console.error("affiliate-track-click error:", message);

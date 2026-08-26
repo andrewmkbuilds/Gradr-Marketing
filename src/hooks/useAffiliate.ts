@@ -31,14 +31,20 @@ export function useMyAffiliate() {
   });
 }
 
-/** Public marketing settings (safe for anyone) — internal config stays admin-only. */
+/**
+ * Public marketing settings (safe for anyone). Served by the
+ * `affiliate-public-settings` edge function, which runs as service_role and
+ * returns only marketing-safe columns — logged-out visitors hold no direct
+ * database grant on affiliate data.
+ */
 export function useAffiliateSettings() {
   return useQuery({
     queryKey: ["affiliateSettings"],
     staleTime: 5 * 60_000,
     queryFn: async () => {
-      const { data } = await supabase.rpc("get_affiliate_public_settings");
-      return Array.isArray(data) ? data[0] ?? null : data;
+      const { data } = await supabase.functions.invoke("affiliate-public-settings");
+      return data?.settings ?? null;
     },
   });
 }
+

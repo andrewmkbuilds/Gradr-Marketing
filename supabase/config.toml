@@ -1,6 +1,10 @@
 project_id = "xaeyjrekewnwjujnrqgu"
 
 [functions]
+  [functions.affiliate-public-settings]
+    verify_jwt = false
+  [functions.affiliate-track-click]
+    verify_jwt = false
   [functions.admin-metrics]
     verify_jwt = true
   [functions.handle-email-suppression]
