@@ -66,7 +66,7 @@ function Steps({ items }: { items: React.ReactNode[] }) {
   return (
     <ol className="ml-5 list-decimal space-y-2 text-muted-foreground">
       {items.map((item, i) => (
-        <li key={i} className="text-sm leading-relaxed">
+        <li key={i} className="text-body-sm">
           {item}
         </li>
       ))}
