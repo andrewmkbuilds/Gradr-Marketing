@@ -30,8 +30,15 @@ jobs:
       - name: Email links stay on the right domain (and no auth templates here)
         run: node scripts/check-email-links.mjs
 
+      - name: No Paddle browser SDK or removed billing modules (source + lockfiles)
+        run: node scripts/check-no-paddle.mjs
+
       - name: Build
         run: bun run build
+
+      - name: No Paddle references in build artifacts
+        run: node scripts/check-no-paddle.mjs
+
 
       - name: Install Playwright browsers
         run: bunx playwright install --with-deps chromium
@@ -62,6 +69,10 @@ jobs:
 
       - name: No new console or runtime errors on marketing pages
         run: node scripts/check-console-errors.mjs http://localhost:8080
+
+      - name: No new React ref warnings beyond the baseline
+        run: node scripts/check-ref-warnings.mjs http://localhost:8080
+
 
       - name: Marketing forms (loading, success and error states)
         run: node scripts/e2e-marketing-forms.mjs http://localhost:8080

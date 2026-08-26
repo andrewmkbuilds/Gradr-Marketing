@@ -1,7 +1,7 @@
 /**
  * Server-side entitlement enforcement.
  *
- * The client copies in `src/lib/interview/entitlements.ts` and `ProGate` are
+ * The client copy in `src/lib/interview/entitlements.ts` is
  * presentation only. This module is the actual gate: it resolves the caller's
  * plan, spends their monthly allowance first, then falls back to purchased
  * credits, all inside one atomic database function.
