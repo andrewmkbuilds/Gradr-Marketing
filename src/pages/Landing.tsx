@@ -512,7 +512,7 @@ export default function Landing() {
                   transition={{ duration: 0.7, ease: easeOut, delay: 0.62 }}
                   className="flex flex-col gap-3 sm:flex-row"
                 >
-                  <MagneticButton size="lg" className="group h-12 px-6 text-base" onClick={start("hero", "Get started free")}>
+                  <MagneticButton size="lg" className="group" onClick={start("hero", "Get started free")}>
                     Get started free
                     <ArrowRight
                       className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"

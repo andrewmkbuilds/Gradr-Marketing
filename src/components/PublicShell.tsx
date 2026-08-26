@@ -6,6 +6,7 @@ import { BrandLogo } from "@/components/BrandLogo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { trackSignupCta } from "@/lib/telemetry/events";
 import { LEGAL_PAGES } from "@/content/legal";
+import { buttonVariants } from "@/design-system/gradr-9b9b95/gradr/components/button";
 import { cn } from "@/lib/utils";
 
 interface PublicShellProps {
@@ -105,7 +106,7 @@ export function PublicShell({ children, source }: PublicShellProps) {
             <a
               href={appSignupHref()}
               onClick={() => trackSignupCta({ location: "navbar", text: "Get started", authenticated: false, destination: appSignupHref() })}
-              className="inline-flex h-10 items-center gap-1.5 rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground shadow-sm transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transform-none"
+              className={cn(buttonVariants({ size: "md" }), "gap-1.5")}
             >
               Get started
               <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />

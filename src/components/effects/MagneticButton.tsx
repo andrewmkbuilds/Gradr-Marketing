@@ -1,6 +1,6 @@
 import { motion, useMotionTemplate, useMotionValue, useSpring } from "motion/react";
 import { forwardRef, useRef, type ComponentProps, type ReactNode } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/design-system/gradr-9b9b95";
 import { useSpatialPointer } from "@/hooks/useDepthCapability";
 import { springPointer, springSnappy } from "@/lib/motion/tokens";
 import { cn } from "@/lib/utils";
