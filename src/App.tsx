@@ -199,6 +199,11 @@ function AppRoutes() {
         <Route path="/cookie-policy" element={<AnimatedPage><CookiePolicy /></AnimatedPage>} />
         <Route path="/dpa" element={<AnimatedPage><Dpa /></AnimatedPage>} />
         <Route path="/childrens-privacy" element={<AnimatedPage><ChildrensPrivacy /></AnimatedPage>} />
+        <Route path="/acceptable-use" element={<AnimatedPage><AcceptableUse /></AnimatedPage>} />
+        <Route path="/ai-disclaimer" element={<AnimatedPage><AiDisclaimer /></AnimatedPage>} />
+        <Route path="/disclaimer" element={<AnimatedPage><Disclaimer /></AnimatedPage>} />
+        <Route path="/affiliate-disclosure" element={<AnimatedPage><AffiliateDisclosure /></AnimatedPage>} />
+        <Route path="/legal" element={<AnimatedPage><LegalHub /></AnimatedPage>} />
         <Route path="/job-search" element={<AnimatedPage><JobSearchIndex /></AnimatedPage>} />
         <Route path="/job-search/:slug" element={<AnimatedPage><JobLanding /></AnimatedPage>} />
         {/* Internal, noindexed component gallery used by the visual suites. */}
