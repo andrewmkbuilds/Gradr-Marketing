@@ -177,6 +177,7 @@
     "check:not-found": "node scripts/check-not-found.mjs",
     "check:canonical": "node scripts/check-canonical-og.mjs",
     "check:brand-assets": "node scripts/check-brand-assets.mjs",
+    "check:email-links": "node scripts/check-email-links.mjs",
     "brand:assets:update": "node scripts/check-brand-assets.mjs --update",
     "test:visual:brand": "node scripts/brand-visual.mjs",
     "test:visual:brand:update": "node scripts/brand-visual.mjs --update"
