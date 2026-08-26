@@ -196,13 +196,9 @@ async function upsertSubscription(data: any, env: PaddleEnv) {
   );
 
   if (entitled) {
-    // Idempotency is keyed on the subscription id so Paddle retries of the same
-    // created event never double-send the welcome-to-Pro mail.
-    await billingEmail("subscription-started", await emailFor(userId, env), `sub-started-${data.id}`, {
-      planName: planLabel(plan?.tier, plan?.interval),
-      interval: plan?.interval ?? undefined,
-      nextBillingDate: formatDate(periodEnd),
-    });
+    // The welcome-to-plan email is sent by app.gradr.me, which owns every live
+    // billing email. This surface only mirrors subscription state.
+    noteWrite({ op: "email.delegated", table: "transactional_email", ok: true, detail: { template: "subscription-started", owner: "app.gradr.me" } });
   }
 }
 
@@ -300,11 +296,7 @@ async function sendCancellationEmail(
   periodEnd: string | null,
   subscriptionId: string,
 ) {
-  await billingEmail("subscription-cancelled", await emailFor(userId, env), `sub-cancelled-${subscriptionId}`, {
-    planName: planLabel(tier, interval),
-    cancelledAt: formatDate(new Date().toISOString()),
-    accessUntil: formatDate(periodEnd),
-  });
+  noteWrite({ op: "email.delegated", table: "transactional_email", ok: true, detail: { template: "subscription-cancelled", owner: "app.gradr.me", subscriptionId } });
 
   await db().rpc("enqueue_notification", {
     _user_id: userId,
@@ -347,11 +339,7 @@ async function handlePaymentFailed(data: any, env: PaddleEnv) {
     _metadata: { subscription_id: subscriptionId },
   });
 
-  await billingEmail("payment-failed", await emailFor(target, env), `pay-failed-${data?.id ?? subscriptionId}`, {
-    amount: formatMoney(data?.details?.totals?.total, data?.currencyCode ?? "USD"),
-    failedAt: formatDate(data?.updatedAt ?? new Date().toISOString()),
-    updatePaymentUrl: "https://app.gradr.me/billing",
-  });
+  noteWrite({ op: "email.delegated", table: "transactional_email", ok: true, detail: { template: "payment-failed", owner: "app.gradr.me", subscriptionId } });
 }
 
 /** Receipt for a subscription payment (first charge or renewal). */
@@ -368,17 +356,7 @@ async function sendSubscriptionReceipt(data: any, env: PaddleEnv) {
   const userId = (row?.user_id as string | undefined) ?? data?.customData?.userId;
   if (!userId) return;
 
-  await billingEmail("payment-successful", await emailFor(userId, env), `txn-paid-${data.id}`, {
-    amount: formatMoney(
-      data?.details?.totals?.grandTotal ?? data?.details?.totals?.total,
-      (data?.currencyCode ?? "USD").toUpperCase(),
-    ),
-    planName: planLabel(row?.subscription_tier as string | null, row?.billing_interval as string | null),
-    interval: (row?.billing_interval as string | null) ?? undefined,
-    paidAt: formatDate(data?.billedAt ?? new Date().toISOString()),
-    nextBillingDate: formatDate(row?.current_period_end ?? null),
-    invoiceUrl: "https://app.gradr.me/billing",
-  });
+  noteWrite({ op: "email.delegated", table: "transactional_email", ok: true, detail: { template: "payment-successful", owner: "app.gradr.me" } });
 }
 
 /** A completed payment clears a prior dunning state. */
@@ -595,13 +573,7 @@ async function grantPackCredits(data: any, env: PaddleEnv) {
       ),
     );
 
-    await billingEmail("payment-successful", await emailFor(userId, env), `pack-paid-${data.id}-${priceId}`, {
-      amount: formatMoney(data.details?.totals?.total, (data.currencyCode ?? "USD").toUpperCase()),
-      planName: pack.label,
-      interval: "one-off",
-      paidAt: formatDate(data.billedAt ?? new Date().toISOString()),
-      invoiceUrl: "https://app.gradr.me/billing",
-    });
+    noteWrite({ op: "email.delegated", table: "transactional_email", ok: true, detail: { template: "payment-successful", owner: "app.gradr.me" } });
   }
 }
 

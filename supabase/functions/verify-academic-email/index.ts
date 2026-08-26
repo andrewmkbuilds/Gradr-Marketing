@@ -149,12 +149,14 @@ Deno.serve(async (req) => {
       // The student verification code email is sent by app.gradr.me, which owns
       // every verification flow. This surface must not mail product codes.
       console.error('verify-academic-email invoked on the marketing surface', { userId: user.id })
-      const sent = false
-      if (!sent) {
-        return json({ ok: false, error: "We couldn't send the code. Please try again shortly." }, 502)
-      }
-
-      return json({ ok: true, sent: true, email, expiresInMinutes: CODE_TTL_MINUTES, ...info })
+      return json(
+        {
+          ok: false,
+          error: 'Verification codes are sent from app.gradr.me. Continue there to verify your email.',
+          owner: 'app.gradr.me',
+        },
+        410,
+      )
     }
 
     if (action === 'confirm') {
