@@ -70,6 +70,7 @@ export function getPaddleEnvironment(): PaddleEnv {
 /** Throws when payments are misconfigured — only call from user actions. */
 function requireConfig(): { token: string; env: PaddleEnv } {
   if (!config.ok || !config.token || !config.env) {
+    logPaymentsUnavailable();
     throw new Error(`Payments are unavailable: ${config.reason ?? "not configured"}`);
   }
   return { token: config.token, env: config.env };
@@ -81,16 +82,27 @@ let paddlePromise: Promise<Paddle> | null = null;
 export async function getPaddle(): Promise<Paddle> {
   if (!paddlePromise) {
     const { token, env } = requireConfig();
-    paddlePromise = loadPaddle({
-      environment: env === "sandbox" ? "sandbox" : "production",
-      token,
-    }).then((instance) => {
-      if (!instance) throw new Error("Paddle.js failed to initialize");
-      return instance;
-    });
+    // Loaded on demand so a disconnected payments integration never ships the
+    // checkout SDK to visitors who can't buy anything here.
+    paddlePromise = import("@paddle/paddle-js")
+      .then(({ initializePaddle: loadPaddle }) =>
+        loadPaddle({
+          environment: env === "sandbox" ? "sandbox" : "production",
+          token,
+        }),
+      )
+      .then((instance) => {
+        if (!instance) throw new Error("Paddle.js failed to initialize");
+        return instance;
+      })
+      .catch((error) => {
+        paddlePromise = null; // let a later attempt retry a transient chunk failure
+        throw error;
+      });
   }
   return paddlePromise;
 }
+
 
 /** Back-compat helper used by the billing provider. */
 export async function initializePaddle() {
