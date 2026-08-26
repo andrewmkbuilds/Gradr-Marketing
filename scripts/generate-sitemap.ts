@@ -6,6 +6,7 @@ import { JOB_LANDINGS, jobLandingPath } from "../src/content/jobLandings";
 import { DOCS } from "../src/content/docs";
 import { NEWS } from "../src/content/news";
 import { PRODUCTION_ORIGIN } from "../src/config/domains";
+import { LEGAL_LAST_UPDATED, LEGAL_REGISTRY, legalEffectiveDate } from "../src/content/legalRegistry";
 
 const BASE_URL = "https://gradr.me";
 
@@ -30,17 +31,14 @@ const entries: SitemapEntry[] = [
   { path: "/blog/ai-resume-optimization", changefreq: "monthly", priority: "0.8" },
   { path: "/career-advice", changefreq: "weekly", priority: "0.9" },
   { path: "/job-search", changefreq: "weekly", priority: "0.9" },
-  { path: "/terms", changefreq: "yearly", priority: "0.4" },
-  { path: "/privacy", changefreq: "yearly", priority: "0.4" },
-  { path: "/refund-policy", changefreq: "yearly", priority: "0.4" },
-  { path: "/cookie-policy", changefreq: "yearly", priority: "0.4" },
-  { path: "/dpa", changefreq: "yearly", priority: "0.4" },
-  { path: "/childrens-privacy", changefreq: "yearly", priority: "0.4" },
-  { path: "/legal", changefreq: "yearly", priority: "0.5" },
-  { path: "/acceptable-use", changefreq: "yearly", priority: "0.4" },
-  { path: "/ai-disclaimer", changefreq: "yearly", priority: "0.4" },
-  { path: "/disclaimer", changefreq: "yearly", priority: "0.4" },
-  { path: "/affiliate-disclosure", changefreq: "yearly", priority: "0.4" },
+  { path: "/legal", lastmod: LEGAL_LAST_UPDATED, changefreq: "yearly", priority: "0.5" },
+  // Policy pages — lastmod comes from each policy's own effective date.
+  ...LEGAL_REGISTRY.map((page) => ({
+    path: page.path,
+    lastmod: legalEffectiveDate(page.path),
+    changefreq: "yearly" as const,
+    priority: "0.4",
+  })),
 
   // Career advice guides — lastmod comes from each guide's own `updated` date.
   ...GUIDES.map((guide) => ({

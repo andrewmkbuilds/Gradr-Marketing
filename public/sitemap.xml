@@ -41,57 +41,68 @@
     <priority>0.9</priority>
   </url>
   <url>
+    <loc>https://gradr.me/legal</loc>
+    <lastmod>2026-08-26</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
     <loc>https://gradr.me/terms</loc>
+    <lastmod>2026-08-12</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
     <loc>https://gradr.me/privacy</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.4</priority>
-  </url>
-  <url>
-    <loc>https://gradr.me/refund-policy</loc>
+    <lastmod>2026-08-12</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
     <loc>https://gradr.me/cookie-policy</loc>
+    <lastmod>2026-08-12</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
-  </url>
-  <url>
-    <loc>https://gradr.me/dpa</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.4</priority>
-  </url>
-  <url>
-    <loc>https://gradr.me/childrens-privacy</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.4</priority>
-  </url>
-  <url>
-    <loc>https://gradr.me/legal</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://gradr.me/acceptable-use</loc>
+    <lastmod>2026-08-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
     <loc>https://gradr.me/ai-disclaimer</loc>
+    <lastmod>2026-08-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
     <loc>https://gradr.me/disclaimer</loc>
+    <lastmod>2026-08-26</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://gradr.me/refund-policy</loc>
+    <lastmod>2026-08-12</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
     <loc>https://gradr.me/affiliate-disclosure</loc>
+    <lastmod>2026-08-26</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://gradr.me/childrens-privacy</loc>
+    <lastmod>2026-08-22</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://gradr.me/dpa</loc>
+    <lastmod>2026-08-12</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
   </url>
