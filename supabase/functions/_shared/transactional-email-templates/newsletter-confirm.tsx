@@ -33,7 +33,7 @@ const Email = ({ firstName, confirmToken, topic }: Props) => {
       </Paragraph>
       <Cta href={confirmUrl}>Confirm subscription</Cta>
       <Paragraph>This link expires in 7 days and can only be used once.</Paragraph>
-      <SecondaryLink href={marketingLink('/blog', 'newsletter-confirm')}>
+      <SecondaryLink href={marketingLink('/career-advice', 'newsletter-confirm')}>
         Meanwhile, read the latest guides
       </SecondaryLink>
     </EmailLayout>

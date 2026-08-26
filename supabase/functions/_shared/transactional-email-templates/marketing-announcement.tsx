@@ -31,7 +31,7 @@ const Email = ({ firstName, eyebrow, headline, intro, highlights, ctaLabel, ctaP
       <Cta href={marketingLink(ctaPath || '/', 'marketing-announcement')}>
         {ctaLabel || 'Read the announcement'}
       </Cta>
-      <SecondaryLink href={marketingLink('/blog', 'marketing-announcement')}>
+      <SecondaryLink href={marketingLink('/career-advice', 'marketing-announcement')}>
         More from the Gradr blog
       </SecondaryLink>
     </EmailLayout>
