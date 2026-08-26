@@ -33,7 +33,11 @@ export function withEngagementTracking(html: string, messageId: string, supabase
       (match, rawHref: string) => {
         const href = rawHref.replace(/&amp;/g, '&')
         if (!TRACKABLE_LINK.test(href)) return match
-        if (/unsubscribe|email-track/i.test(href)) return match
+        // Never wrap links that carry a secret or gate a critical action: the
+        // unsubscribe link, the double opt-in confirmation link, and anything
+        // with a token must reach the user untouched and must never have its
+        // URL recorded as click data.
+        if (/unsubscribe|email-track|newsletter\/confirm|token=/i.test(href)) return match
         return `href="${escapeAttr(trackUrl(supabaseUrl, messageId, 'click', href))}"`
       },
     )
