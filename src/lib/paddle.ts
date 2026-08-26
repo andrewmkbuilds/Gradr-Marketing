@@ -31,10 +31,19 @@ const config = {
   reason: diagnostics.reason ?? undefined,
 };
 
-if (!config.ok) {
-  // Loud in the console, silent in the UI — checkout surfaces the error when used.
-  console.error(`[payments] disabled: ${config.reason}`);
+/**
+ * Not being configured is a legitimate state: this surface only sells through
+ * app.gradr.me, and the payments integration can be disconnected entirely. So
+ * the diagnostic is emitted once, lazily, the first time something actually
+ * asks for payments — never as an error on every page load.
+ */
+let reasonLogged = false;
+function logPaymentsUnavailable(): void {
+  if (config.ok || reasonLogged) return;
+  reasonLogged = true;
+  console.info(`[payments] not configured: ${config.reason}`);
 }
+
 
 /** True when payments are usable. Gate any payment UI on this. */
 export function isPaymentsConfigured(): boolean {
