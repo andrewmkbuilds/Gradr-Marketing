@@ -215,12 +215,8 @@
     }
   ],
   "functionExecute": {
-    "$comment": "SECURITY DEFINER functions in `public`. PUBLIC execute must never be granted. anon/authenticated execute is only allowed for the functions listed here.",
-    "anonAllowlist": [
-      "affiliate_click_is_valid",
-      "get_affiliate_public_settings",
-      "lookup_affiliate_by_code"
-    ],
+    "$comment": "SECURITY DEFINER functions in `public`. PUBLIC and anon execute must never be granted \u2014 anonymous surfaces go through service_role edge functions. authenticated execute is only allowed for the functions listed here.",
+    "anonAllowlist": [],
     "authenticatedAllowlist": [
       "accept_legal_document",
       "admin_audit_actors",
