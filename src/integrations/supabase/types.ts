@@ -1784,6 +1784,39 @@ export type Database = {
         }
         Relationships: []
       }
+      email_engagement_events: {
+        Row: {
+          client_hash: string | null
+          created_at: string
+          event_type: string
+          id: string
+          message_id: string
+          recipient_email: string | null
+          target_url: string | null
+          template_name: string | null
+        }
+        Insert: {
+          client_hash?: string | null
+          created_at?: string
+          event_type: string
+          id?: string
+          message_id: string
+          recipient_email?: string | null
+          target_url?: string | null
+          template_name?: string | null
+        }
+        Update: {
+          client_hash?: string | null
+          created_at?: string
+          event_type?: string
+          id?: string
+          message_id?: string
+          recipient_email?: string | null
+          target_url?: string | null
+          template_name?: string | null
+        }
+        Relationships: []
+      }
       email_events: {
         Row: {
           created_at: string
@@ -2492,6 +2525,53 @@ export type Database = {
           version?: number
         }
         Relationships: []
+      }
+      newsletter_followups: {
+        Row: {
+          attempts: number
+          created_at: string
+          id: string
+          last_error: string | null
+          scheduled_at: string
+          sent_at: string | null
+          status: string
+          subscriber_id: string
+          template_name: string
+          updated_at: string
+        }
+        Insert: {
+          attempts?: number
+          created_at?: string
+          id?: string
+          last_error?: string | null
+          scheduled_at: string
+          sent_at?: string | null
+          status?: string
+          subscriber_id: string
+          template_name: string
+          updated_at?: string
+        }
+        Update: {
+          attempts?: number
+          created_at?: string
+          id?: string
+          last_error?: string | null
+          scheduled_at?: string
+          sent_at?: string | null
+          status?: string
+          subscriber_id?: string
+          template_name?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "newsletter_followups_subscriber_id_fkey"
+            columns: ["subscriber_id"]
+            isOneToOne: false
+            referencedRelation: "newsletter_subscribers"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       newsletter_subscribers: {
         Row: {
