@@ -5,6 +5,8 @@ import { template as subscriptionUpgraded } from './subscription-upgraded.tsx'
 import { template as subscriptionDowngraded } from './subscription-downgraded.tsx'
 import { template as newsletterConfirm } from './newsletter-confirm.tsx'
 import { template as newsletterWelcome } from './newsletter-welcome.tsx'
+import { template as newsletterFollowupDay1 } from './newsletter-followup-day1.tsx'
+import { template as newsletterFollowupDay3 } from './newsletter-followup-day3.tsx'
 import { template as contactFormReceived } from './contact-form-received.tsx'
 import { template as marketingAnnouncement } from './marketing-announcement.tsx'
 
@@ -39,9 +41,30 @@ export const TEMPLATES: Record<string, TemplateEntry> = {
   'subscription-downgraded': subscriptionDowngraded,
   'newsletter-confirm': newsletterConfirm,
   'newsletter-welcome': newsletterWelcome,
+  'newsletter-followup-day1': newsletterFollowupDay1,
+  'newsletter-followup-day3': newsletterFollowupDay3,
   'contact-form-received': contactFormReceived,
   'marketing-announcement': marketingAnnouncement,
 }
+
+/**
+ * Opt-in welcome sequence for the landing list, in order. Each step is a single
+ * email to a single recipient, scheduled only after that recipient completed
+ * double opt-in, and re-checked against opt-in state + suppression at send
+ * time. The sequence is finite — there is no ongoing drip beyond day 3.
+ */
+export const NEWSLETTER_FOLLOWUPS = [
+  { templateName: 'newsletter-followup-day1', delayHours: 24 },
+  { templateName: 'newsletter-followup-day3', delayHours: 72 },
+] as const
+
+/** Every template that carries open/click tracking (opt-in landing mail only). */
+export const TRACKED_TEMPLATES = [
+  'newsletter-confirm',
+  'newsletter-welcome',
+  'newsletter-followup-day1',
+  'newsletter-followup-day3',
+] as const
 
 /** Template names owned by the marketing surface. */
 export const MARKETING_TEMPLATES = Object.keys(TEMPLATES).filter(
