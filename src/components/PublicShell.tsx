@@ -106,7 +106,7 @@ export function PublicShell({ children, source }: PublicShellProps) {
             <a
               href={appSignupHref()}
               onClick={() => trackSignupCta({ location: "navbar", text: "Get started", authenticated: false, destination: appSignupHref() })}
-              className={cn(buttonVariants({ size: "md" }), "gap-1.5")}
+              className={buttonVariants({ size: "md" })}
             >
               Get started
               <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
