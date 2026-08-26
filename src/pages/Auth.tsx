@@ -146,7 +146,10 @@ export default function Auth() {
    * creation (email, OAuth, guest) never starts before that.
    */
   const requireAge = (action: () => void) => {
-    if (ageBlocked) return;
+    if (ageBlocked) {
+      setIsSignUp(true);
+      return;
+    }
     if (ageOk) {
       action();
       return;
@@ -240,7 +243,9 @@ export default function Auth() {
 
 
   const handleOAuth = async (provider: "google" | "apple" | "microsoft") => {
-    if (!ageOk) {
+    // Existing members may sign in regardless of a device-level age marker.
+    // Sign-up mode still screens before an OAuth request that could create an account.
+    if (isSignUp && !ageOk) {
       requireAge(() => void handleOAuth(provider));
       return;
     }
@@ -306,10 +311,15 @@ export default function Auth() {
     }
   };
 
-  if (ageBlocked) {
+  if (ageBlocked && isSignUp) {
     return (
       <AuthLayout>
-        <AgeBlockedNotice />
+        <AgeBlockedNotice
+          onSignIn={() => {
+            setPendingAction(null);
+            setIsSignUp(false);
+          }}
+        />
       </AuthLayout>
     );
   }

@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { ArrowLeft, ArrowRight, CheckCircle2, MapPin, Wifi } from "lucide-react";
+import { Badge } from "@/design-system/gradr-9b9b95";
+import { buttonVariants } from "@/design-system/gradr-9b9b95/gradr/components/button";
 import { PublicShell } from "@/components/PublicShell";
 import { MarketingHero } from "@/components/marketing/MarketingHero";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -80,7 +82,7 @@ export default function JobLanding() {
                   destination: "/auth",
                 })
               }
-              className="inline-flex h-11 items-center gap-1.5 rounded-lg bg-primary px-5 text-sm font-medium text-primary-foreground shadow-sm transition-transform hover:scale-[1.02] motion-reduce:transform-none"
+              className={buttonVariants({ variant: "primary", size: "lg" })}
             >
               Match my resume to these roles
               <ArrowRight className="h-4 w-4" aria-hidden="true" />
@@ -94,12 +96,9 @@ export default function JobLanding() {
           </h2>
           <div className="flex flex-wrap gap-2">
             {role.skills.map((skill) => (
-              <span
-                key={skill}
-                className="rounded-full border border-border bg-secondary/60 px-3 py-1 text-sm text-foreground"
-              >
+              <Badge key={skill} variant="outline">
                 {skill}
-              </span>
+              </Badge>
             ))}
           </div>
           <p className="text-muted-foreground">
