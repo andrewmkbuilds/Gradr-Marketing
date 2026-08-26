@@ -155,6 +155,7 @@
     "smoke:pages": "node scripts/smoke-critical-pages.mjs",
     "test": "vitest run",
     "test:a11y": "node scripts/a11y-nav.mjs",
+    "test:a11y:404": "node scripts/check-not-found-a11y.mjs",
     "test:db": "vitest run src/test/dbContract.test.ts",
     "test:depth": "node scripts/depth-smoke.mjs",
     "test:oauth-flow": "node scripts/test-oauth-flow.mjs",

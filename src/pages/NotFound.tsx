@@ -11,7 +11,7 @@ import {
   NOT_FOUND_DESTINATIONS,
   appDestinations,
   sanitizeRequestedPath,
-  suggestRoutes,
+  suggestRoutesCached,
   type NotFoundDestination,
 } from "@/lib/notFoundSuggestions";
 
@@ -44,14 +44,17 @@ function useOnlineStatus() {
 const NotFound = () => {
   const { pathname, search } = useLocation();
   const online = useOnlineStatus();
+  const [retrying, setRetrying] = useState(false);
+  const [retryAttempts, setRetryAttempts] = useState(0);
+  const [retryOutcome, setRetryOutcome] = useState<"idle" | "succeeded" | "failed">("idle");
 
   const requested = useMemo(
     () => sanitizeRequestedPath(`${pathname}${search}`),
     [pathname, search],
   );
 
-  const suggestions = useMemo(
-    () => suggestRoutes(requested.path, [...NOT_FOUND_DESTINATIONS, ...appDestinations()], 3),
+  const { suggestions, source: suggestionSource } = useMemo(
+    () => suggestRoutesCached(requested.path, [...NOT_FOUND_DESTINATIONS, ...appDestinations()], 3),
     [requested.path],
   );
 
@@ -67,6 +70,13 @@ const NotFound = () => {
       path_sanitized: requested.sanitized,
       suggestion_count: suggestions.length,
       top_suggestion: suggestions[0]?.title,
+      suggestion_source: suggestionSource,
+      offline: !online,
+    });
+    track("not_found_suggestions_cache", {
+      requested_path: requested.path,
+      source: suggestionSource,
+      suggestion_count: suggestions.length,
       offline: !online,
     });
     // Only the path identifies the miss; connectivity is captured separately.
@@ -76,6 +86,46 @@ const NotFound = () => {
   useEffect(() => {
     if (!online) track("not_found_offline", { requested_path: requested.path });
   }, [online, requested.path]);
+
+  /**
+   * Offline retry.
+   *
+   * A bare `location.reload()` tells us nothing: we never learn whether the
+   * visitor recovered or bounced. Probe a tiny same-origin asset first, record
+   * the outcome (with attempt count and latency), and only reload when the
+   * network actually answered — a failed reload while offline would just wipe
+   * this screen and re-render it.
+   */
+  const onRetry = useCallback(async () => {
+    setRetrying(true);
+    const attempt = retryAttempts + 1;
+    setRetryAttempts(attempt);
+    const startedAt = Date.now();
+    let succeeded = false;
+    let reason: string | undefined;
+    try {
+      const response = await fetch(`/favicon.png?retry=${Date.now()}`, {
+        cache: "no-store",
+        method: "GET",
+      });
+      succeeded = response.ok;
+      if (!response.ok) reason = `status_${response.status}`;
+    } catch {
+      reason = "network_error";
+    }
+    track("not_found_offline_retry", {
+      requested_path: requested.path,
+      retry_succeeded: succeeded,
+      retry_attempt: attempt,
+      retry_duration_ms: Date.now() - startedAt,
+      retry_failure_reason: succeeded ? null : (reason ?? "unknown"),
+      browser_online: navigator.onLine !== false,
+    });
+    setRetryOutcome(succeeded ? "succeeded" : "failed");
+    setRetrying(false);
+    if (succeeded) window.location.reload();
+  }, [requested.path, retryAttempts]);
+
 
   const onSuggestionClick = useCallback((destination: NotFoundDestination, kind: string) => {
     track("not_found_suggestion_clicked", {
@@ -158,12 +208,25 @@ const NotFound = () => {
               </span>
               <button
                 type="button"
-                onClick={() => window.location.reload()}
+                onClick={onRetry}
+                disabled={retrying}
+                aria-label="Retry loading this page"
                 className={`${buttonVariants({ variant: "outline", size: "sm" })} mt-4`}
               >
-                <RefreshCw aria-hidden="true" className="size-4" />
-                Retry
+                <RefreshCw
+                  aria-hidden="true"
+                  className={retrying ? "size-4 animate-spin" : "size-4"}
+                />
+                {retrying ? "Retrying…" : "Retry"}
               </button>
+              <span role="status" aria-live="polite" className="mt-2 block">
+                {retryOutcome === "failed" ? (
+                  <Text variant="body-sm" tone="muted" as="span">
+                    Still offline — we couldn&apos;t reach Gradr. Check your connection and try
+                    again.
+                  </Text>
+                ) : null}
+              </span>
             </Alert>
           ) : null}
 
@@ -218,7 +281,7 @@ const NotFound = () => {
         <div className="section-gap">
           <Text
             variant="overline"
-            as="p"
+            as="h2"
             className="flex items-center justify-center gap-2 text-center"
           >
             <Compass aria-hidden="true" className="size-4" />

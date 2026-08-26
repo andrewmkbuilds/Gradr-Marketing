@@ -29,6 +29,8 @@ export type GradrEvent =
   | "not_found_viewed"
   | "not_found_suggestion_clicked"
   | "not_found_offline"
+  | "not_found_offline_retry"
+  | "not_found_suggestions_cache"
   // Signup
   | "signup_started"
   | "account_created"
