@@ -346,7 +346,7 @@ export default function Landing() {
         >
           <a href="#hero" className="flex shrink-0 items-center gap-2 rounded-control focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
             <BrandLogo size={28} />
-            <span className="text-base font-bold tracking-[0.24em]">GRADR</span>
+            <span className="font-display text-base font-bold tracking-[0.24em]">GRADR</span>
           </a>
 
           <ul className="hidden items-center gap-1 lg:flex">
