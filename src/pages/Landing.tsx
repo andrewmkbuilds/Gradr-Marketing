@@ -231,7 +231,7 @@ function Section({
   id, className = "", children,
 }: { id?: string; className?: string; children: React.ReactNode }) {
   return (
-    <section id={id} className={`relative w-full scroll-mt-24 py-20 sm:py-28 ${className}`}>
+    <section id={id} className={`section-y relative w-full scroll-mt-24 ${className}`}>
       <div className="page-shell">{children}</div>
     </section>
   );
@@ -450,7 +450,7 @@ export default function Landing() {
       {/* -------------------------------- hero -------------------------------- */}
       <main id="hero">
         <ScrollDepth rotate={4} scale={0.96} fade={0.45}>
-        <motion.div className="relative pt-28 sm:pt-32" style={heroReduced ? undefined : { opacity: heroOpacity }}>
+        <motion.div className="relative pt-20 sm:pt-24" style={heroReduced ? undefined : { opacity: heroOpacity }}>
           <Atmosphere />
           <SceneBackground variant="rays" intensity={0.5} fadeBottom={false} />
 
@@ -594,7 +594,7 @@ export default function Landing() {
                     <HeroCommandCenter />
                   </HexFloatFx>
                 </CanvasFxFrame>
-                <div className="mt-14 flex justify-center lg:justify-start">
+                <div className="mt-10 flex justify-center lg:justify-start">
                   <ScrollCue targetId="product" label="Continue" />
                 </div>
               </div>
@@ -1143,11 +1143,14 @@ export default function Landing() {
 
         {/* ----------------------------------- faq ------------------------------ */}
         <Section id="faq" className="border-t border-border/60">
-          <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-14">
-            <Reveal className="space-y-5">
+          <div className="grid items-start gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:gap-14">
+            {/* Sticky so the short heading column tracks the accordion instead
+                of leaving a tall dead area beside it on wide screens. */}
+            <Reveal className="space-y-5 lg:sticky lg:top-28">
               <Eyebrow>FAQ</Eyebrow>
               <Heading>Questions, answered directly.</Heading>
             </Reveal>
+
             <Reveal delay={80}>
               <Accordion type="single" collapsible className="w-full">
                 {FAQS.map(([q, a], i) => (
@@ -1168,7 +1171,7 @@ export default function Landing() {
         {/* -------------------------------- final CTA --------------------------- */}
         <Section className="border-t border-border/60">
           <ScrollFloat distance={56}>
-          <Reveal className="relative overflow-hidden rounded-3xl border border-primary/25 bg-card px-6 py-14 text-center sm:px-12 sm:py-20">
+          <Reveal className="relative overflow-hidden rounded-3xl border border-primary/25 bg-card px-6 py-10 text-center sm:px-12 sm:py-14">
             <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-primary/10 to-transparent" aria-hidden />
             <Text variant="h2" className="relative mx-auto max-w-3xl text-balance">
               Your next opportunity deserves more than another resume.
@@ -1195,7 +1198,7 @@ export default function Landing() {
       </main>
 
       {/* --------------------------------- footer ------------------------------ */}
-      <footer className="border-t border-border bg-card/40 py-14">
+      <footer className="border-t border-border bg-card/40 py-10">
         <div className="page-shell grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_repeat(3,1fr)]">
           <div className="space-y-5">
             <div className="flex items-center gap-2">

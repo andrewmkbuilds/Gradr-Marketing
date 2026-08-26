@@ -12,6 +12,9 @@ import {
   Sparkles,
   Target,
 } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Text } from "@/design-system/gradr-9b9b95";
+import { buttonVariants } from "@/design-system/gradr-9b9b95/gradr/components/button";
 import { PublicShell } from "@/components/PublicShell";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { FaqBlock } from "@/components/seo/FaqBlock";
@@ -177,9 +180,9 @@ export default function JobApplicationTracker() {
         <p className="text-xs font-medium uppercase tracking-wider text-primary">
           Free tool · Application Engine
         </p>
-        <h1 className="mt-3 text-balance text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
+        <Text as="h1" variant="h1" className="mt-3 text-balance">
           Job Application Tracker
-        </h1>
+        </Text>
         <p className="mt-5 text-pretty text-lg leading-relaxed text-muted-foreground">
           Stop losing the job search in a spreadsheet. Gradr keeps every role, resume version,
           follow-up and interview in one intelligent pipeline — and tells you which applications
@@ -189,7 +192,7 @@ export default function JobApplicationTracker() {
           <a
             href={ctaHref(appSignupHref(), "hero_primary")}
             onClick={trackCta("hero_primary", "/auth")}
-            className="inline-flex h-11 items-center gap-2 rounded-xl bg-primary px-5 text-sm font-medium text-primary-foreground transition-transform hover:scale-[1.02] motion-reduce:transform-none"
+            className={cn(buttonVariants({ size: "lg" }), "transition-transform hover:scale-[1.02] motion-reduce:transform-none")}
           >
             <KanbanSquare className="h-4 w-4" aria-hidden="true" />
             Start tracking free
@@ -197,7 +200,7 @@ export default function JobApplicationTracker() {
           <Link
             to={ctaHref("/ats-resume-checker", "hero_secondary")}
             onClick={trackCta("hero_secondary", "/ats-resume-checker")}
-            className="inline-flex h-11 items-center gap-2 rounded-xl border border-border px-5 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+            className={buttonVariants({ variant: "outline", size: "lg" })}
           >
             Score your resume first
             <ArrowRight className="h-4 w-4" aria-hidden="true" />
@@ -208,7 +211,7 @@ export default function JobApplicationTracker() {
         </p>
       </section>
 
-      <section className="mt-16" aria-labelledby="workflow">
+      <section className="section-gap" aria-labelledby="workflow">
         <h2 id="workflow" className="text-2xl font-semibold tracking-tight text-foreground">
           The AI job domination workflow
         </h2>
@@ -238,7 +241,7 @@ export default function JobApplicationTracker() {
         </ol>
       </section>
 
-      <section className="mt-16" aria-labelledby="stages">
+      <section className="section-gap" aria-labelledby="stages">
         <h2 id="stages" className="text-2xl font-semibold tracking-tight text-foreground">
           Every application, in a stage that means something
         </h2>
@@ -270,7 +273,7 @@ export default function JobApplicationTracker() {
         </div>
       </section>
 
-      <section className="mt-16" aria-labelledby="vs-spreadsheet">
+      <section className="section-gap" aria-labelledby="vs-spreadsheet">
         <h2
           id="vs-spreadsheet"
           className="flex items-center gap-2 text-2xl font-semibold tracking-tight text-foreground"
@@ -288,11 +291,11 @@ export default function JobApplicationTracker() {
         </div>
       </section>
 
-      <section className="mt-16">
+      <section className="section-gap">
         <FaqBlock items={FAQS} source="job-application-tracker" />
       </section>
 
-      <section className="mt-16 rounded-2xl border border-border bg-card p-6 sm:p-8">
+      <section className="section-gap rounded-2xl border border-border bg-card p-6 sm:p-8">
         <h2 className="text-xl font-semibold text-foreground">Keep reading</h2>
         <p className="mt-1 text-sm text-muted-foreground">
           The tracker works best alongside the rest of the workflow.
@@ -320,7 +323,7 @@ export default function JobApplicationTracker() {
         </ul>
       </section>
 
-      <section className="mt-12 text-center">
+      <section className="section-gap text-center">
         <h2 className="text-2xl font-semibold tracking-tight text-foreground">
           Run your next fifty applications properly
         </h2>

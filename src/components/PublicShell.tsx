@@ -106,7 +106,7 @@ export function PublicShell({ children, source }: PublicShellProps) {
             <a
               href={appSignupHref()}
               onClick={() => trackSignupCta({ location: "navbar", text: "Get started", authenticated: false, destination: appSignupHref() })}
-              className={cn(buttonVariants({ size: "md" }), "gap-1.5")}
+              className={buttonVariants({ size: "md" })}
             >
               Get started
               <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
@@ -142,9 +142,9 @@ export function PublicShell({ children, source }: PublicShellProps) {
         )}
       </header>
 
-      <main className="page-shell py-12 sm:py-16">{children}</main>
+      <main className="page-shell section-y-sm">{children}</main>
 
-      <footer className="border-t border-border/60 py-12">
+      <footer className="border-t border-border/60 py-10">
         <div className="page-shell grid gap-8 sm:grid-cols-2 lg:grid-cols-5">
           <div className="space-y-3">
             <Link to="/" className="flex items-center gap-2 font-semibold text-foreground">

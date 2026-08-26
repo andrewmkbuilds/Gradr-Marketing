@@ -185,7 +185,7 @@ export default function AiCoverLetterGenerator() {
         </p>
       </section>
 
-      <section className="mt-16" aria-labelledby="how-it-works">
+      <section className="section-gap" aria-labelledby="how-it-works">
         <h2 id="how-it-works" className="text-2xl font-semibold tracking-tight text-foreground">
           How the AI cover letter generator works
         </h2>
@@ -209,7 +209,7 @@ export default function AiCoverLetterGenerator() {
         </div>
       </section>
 
-      <section className="mt-16" aria-labelledby="what-makes-it-different">
+      <section className="section-gap" aria-labelledby="what-makes-it-different">
         <h2
           id="what-makes-it-different"
           className="text-2xl font-semibold tracking-tight text-foreground"
@@ -233,7 +233,7 @@ export default function AiCoverLetterGenerator() {
         </div>
       </section>
 
-      <section className="mt-16" aria-labelledby="structure">
+      <section className="section-gap" aria-labelledby="structure">
         <h2 id="structure" className="text-2xl font-semibold tracking-tight text-foreground">
           The structure Gradr writes to
         </h2>
@@ -270,7 +270,7 @@ export default function AiCoverLetterGenerator() {
         </div>
       </section>
 
-      <section className="mt-16" aria-labelledby="faq">
+      <section className="section-gap" aria-labelledby="faq">
         <h2 id="faq" className="text-2xl font-semibold tracking-tight text-foreground">
           AI cover letter generator FAQ
         </h2>
@@ -284,7 +284,7 @@ export default function AiCoverLetterGenerator() {
         </dl>
       </section>
 
-      <section className="mt-16" aria-labelledby="keep-reading">
+      <section className="section-gap" aria-labelledby="keep-reading">
         <h2 id="keep-reading" className="text-2xl font-semibold tracking-tight text-foreground">
           Keep reading
         </h2>
@@ -328,7 +328,7 @@ export default function AiCoverLetterGenerator() {
         </div>
       </section>
 
-      <section className="mt-16 rounded-2xl border border-primary/25 bg-primary/5 p-8 text-center">
+      <section className="section-gap rounded-2xl border border-primary/25 bg-primary/5 p-8 text-center">
         <h2 className="text-2xl font-semibold tracking-tight text-foreground">
           Stop rewriting the same letter
         </h2>

@@ -115,7 +115,7 @@ const DEMOS = [
 
 function Hero() {
   return (
-    <section className="page-shell py-20">
+    <section className="page-shell section-y">
       <p className="inline-flex items-center gap-2 rounded-full border border-brand-secondary/40 px-3 py-1 text-xs font-medium text-brand-secondary">
         <Sparkles className="h-3 w-3" aria-hidden="true" />
         The Gradr product
@@ -167,7 +167,7 @@ function Overview() {
 
 function Features() {
   return (
-    <div className="page-shell py-14">
+    <div className="page-shell section-y-sm">
       <h1 className="text-4xl font-semibold tracking-tight text-foreground">Features</h1>
       <p className="mt-3 max-w-2xl text-muted-foreground">
         Every module shares the same data, so improving your resume immediately improves your match
@@ -201,7 +201,7 @@ function Features() {
 
 function UseCases() {
   return (
-    <div className="page-shell py-14">
+    <div className="page-shell section-y-sm">
       <h1 className="text-4xl font-semibold tracking-tight text-foreground">Use cases</h1>
       <p className="mt-3 max-w-2xl text-muted-foreground">
         The same workspace, tuned to where you are in your career.
@@ -230,7 +230,7 @@ function UseCases() {
 
 function Testimonials() {
   return (
-    <div className="page-shell py-14">
+    <div className="page-shell section-y-sm">
       <h1 className="text-4xl font-semibold tracking-tight text-foreground">Testimonials</h1>
       <p className="mt-3 max-w-2xl text-muted-foreground">
         What changes when the feedback loop is objective and immediate.
@@ -253,7 +253,7 @@ function Testimonials() {
 
 function Demos() {
   return (
-    <div className="page-shell py-14">
+    <div className="page-shell section-y-sm">
       <h1 className="text-4xl font-semibold tracking-tight text-foreground">Product demos</h1>
       <p className="mt-3 max-w-2xl text-muted-foreground">
         Three short paths through the product. Each one works on the free plan.
@@ -282,7 +282,7 @@ function Demos() {
 
 function About() {
   return (
-    <div className="page-shell py-14">
+    <div className="page-shell section-y-sm">
       <h1 className="text-4xl font-semibold tracking-tight text-foreground">About Gradr</h1>
       <div className="mt-6 max-w-2xl space-y-4 text-muted-foreground">
         <p>

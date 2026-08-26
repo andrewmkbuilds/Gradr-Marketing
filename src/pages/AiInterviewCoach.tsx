@@ -11,6 +11,9 @@ import {
   Sparkles,
   Timer,
 } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Text } from "@/design-system/gradr-9b9b95";
+import { buttonVariants } from "@/design-system/gradr-9b9b95/gradr/components/button";
 import { PublicShell } from "@/components/PublicShell";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { trackEvent, withUtm } from "@/lib/analytics";
@@ -216,9 +219,9 @@ export default function AiInterviewCoach() {
         <p className="text-xs font-medium uppercase tracking-wider text-primary">
           Live voice practice · Interview Engine
         </p>
-        <h1 className="mt-3 text-balance text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
+        <Text as="h1" variant="h1" className="mt-3 text-balance">
           AI Interview Coach
-        </h1>
+        </Text>
         <p className="mt-5 text-pretty text-lg leading-relaxed text-muted-foreground">
           Practice a real spoken interview for the exact role you are chasing. Gradr's AI
           interviewer asks, listens, follows up on what you actually said, and hands back a
@@ -228,7 +231,7 @@ export default function AiInterviewCoach() {
           <a
             href={ctaHref(appSignupHref(), "hero_primary")}
             onClick={trackCta("hero_primary", "/auth")}
-            className="inline-flex h-11 items-center gap-2 rounded-xl bg-primary px-5 text-sm font-medium text-primary-foreground transition-transform hover:scale-[1.02] motion-reduce:transform-none"
+            className={cn(buttonVariants({ size: "lg" }), "transition-transform hover:scale-[1.02] motion-reduce:transform-none")}
           >
             <Mic className="h-4 w-4" aria-hidden="true" />
             Start a free mock interview
@@ -236,7 +239,7 @@ export default function AiInterviewCoach() {
           <Link
             to={ctaHref("/pricing", "hero_secondary")}
             onClick={trackCta("hero_secondary", "/pricing")}
-            className="inline-flex h-11 items-center gap-2 rounded-xl border border-border px-5 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+            className={buttonVariants({ variant: "outline", size: "lg" })}
           >
             See plans and limits
             <ArrowRight className="h-4 w-4" aria-hidden="true" />
@@ -247,7 +250,7 @@ export default function AiInterviewCoach() {
         </p>
       </section>
 
-      <section className="mt-16" aria-labelledby="how-it-works">
+      <section className="section-gap" aria-labelledby="how-it-works">
         <h2 id="how-it-works" className="text-2xl font-semibold tracking-tight text-foreground">
           How the AI interview coach works
         </h2>
@@ -271,7 +274,7 @@ export default function AiInterviewCoach() {
         </ol>
       </section>
 
-      <section className="mt-16" aria-labelledby="scoring">
+      <section className="section-gap" aria-labelledby="scoring">
         <h2 id="scoring" className="flex items-center gap-2 text-2xl font-semibold tracking-tight text-foreground">
           <Bot className="h-5 w-5 text-primary" aria-hidden="true" />
           How answers are scored
@@ -334,7 +337,7 @@ export default function AiInterviewCoach() {
         </div>
       </section>
 
-      <section className="mt-16" aria-labelledby="what-you-get">
+      <section className="section-gap" aria-labelledby="what-you-get">
         <h2 id="what-you-get" className="text-2xl font-semibold tracking-tight text-foreground">
           What you get after every session
         </h2>
@@ -368,7 +371,7 @@ export default function AiInterviewCoach() {
         </div>
       </section>
 
-      <section className="mt-16" aria-labelledby="faq">
+      <section className="section-gap" aria-labelledby="faq">
         <h2 id="faq" className="flex items-center gap-2 text-2xl font-semibold tracking-tight text-foreground">
           <MessageSquareQuote className="h-5 w-5 text-primary" aria-hidden="true" />
           AI interview coach FAQ
@@ -383,7 +386,7 @@ export default function AiInterviewCoach() {
         </dl>
       </section>
 
-      <section className="mt-16" aria-labelledby="keep-reading">
+      <section className="section-gap" aria-labelledby="keep-reading">
         <h2 id="keep-reading" className="text-2xl font-semibold tracking-tight text-foreground">
           Keep reading
         </h2>
@@ -427,7 +430,7 @@ export default function AiInterviewCoach() {
         </div>
       </section>
 
-      <section className="mt-16 rounded-2xl border border-primary/25 bg-primary/5 p-8 text-center">
+      <section className="section-gap rounded-2xl border border-primary/25 bg-primary/5 p-8 text-center">
         <h2 className="text-2xl font-semibold tracking-tight text-foreground">
           Walk in already having had the conversation
         </h2>

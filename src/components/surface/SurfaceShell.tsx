@@ -161,7 +161,7 @@ export function SurfaceShell({ nav = [], eyebrow, children }: SurfaceShellProps)
 
       <main className="flex-1">{children}</main>
 
-      <footer className="mt-24 border-t border-border/60 bg-card/40">
+      <footer className="mt-16 border-t border-border/60 bg-card/40">
         <div className="page-shell flex flex-col gap-6 py-10">
           <nav aria-label="Gradr ecosystem" className="flex flex-wrap items-center gap-x-6 gap-y-2">
             {ECOSYSTEM.map((item) => (

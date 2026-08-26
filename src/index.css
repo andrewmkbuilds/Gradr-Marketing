@@ -849,7 +849,25 @@
   .pad-panel {
     padding: clamp(1rem, 0.75rem + 1.2vw, 1.5rem);
   }
+
+  /* ---------- Vertical rhythm ----------
+     One scale for the whole site so sections flow into each other instead of
+     stacking 80–112px of dead space at every breakpoint. `.section-y` is the
+     padded band variant; `.section-gap` separates sibling sections that carry
+     their own padding. Values come from the Tailwind spacing scale via @apply
+     so no raw lengths enter the stylesheet. */
+  .section-y {
+    @apply py-10 sm:py-14 lg:py-16;
+  }
+  .section-y-sm {
+    @apply py-8 sm:py-10 lg:py-12;
+  }
+  .section-gap {
+    @apply mt-9 sm:mt-12 lg:mt-16;
+  }
+
 }
+
 
 /* Small screens: tighten tracking on display type and stop tap targets
    from collapsing below the 44px accessibility floor. */
