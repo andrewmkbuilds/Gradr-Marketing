@@ -132,7 +132,7 @@ export const EmailLayout = ({
                     Gradr
                   </Link>
                   <span style={styles.dot}>·</span>
-                  <Link style={styles.footerLink} href={marketingLink('/blog', campaign)}>
+                  <Link style={styles.footerLink} href={marketingLink('/career-advice', campaign)}>
                     Blog
                   </Link>
                 </>

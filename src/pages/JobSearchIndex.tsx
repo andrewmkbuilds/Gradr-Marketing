@@ -5,8 +5,7 @@ import { PublicShell } from "@/components/PublicShell";
 import { MarketingHero } from "@/components/marketing/MarketingHero";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { FaqBlock } from "@/components/seo/FaqBlock";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Button, Input, Text } from "@/design-system/gradr-9b9b95";
 import {
   JOB_LANDINGS,
   JOB_LOCATIONS,
@@ -102,22 +101,21 @@ export default function JobSearchIndex() {
         />
 
         <section aria-label="Filters" className="space-y-4 rounded-xl border border-border bg-card p-4">
-          <div className="relative">
-            <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" aria-hidden="true" />
+          <div className="flex items-center gap-2">
+            <Search className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
             <Input
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search role, city, or skill"
               aria-label="Search job pages by role, city, or skill"
-              className="h-11 pl-10"
             />
           </div>
 
           <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by role">
             <Button
               size="sm"
-              variant={role === "all" ? "default" : "outline"}
+              variant={role === "all" ? "primary" : "outline"}
               aria-pressed={role === "all"}
               onClick={() => setRole("all")}
             >
@@ -127,7 +125,7 @@ export default function JobSearchIndex() {
               <Button
                 key={r.id}
                 size="sm"
-                variant={role === r.id ? "default" : "outline"}
+                variant={role === r.id ? "primary" : "outline"}
                 aria-pressed={role === r.id}
                 onClick={() => {
                   setRole(r.id);
@@ -145,7 +143,7 @@ export default function JobSearchIndex() {
 
           <Button
             size="sm"
-            variant={remoteOnly ? "default" : "outline"}
+            variant={remoteOnly ? "primary" : "outline"}
             aria-pressed={remoteOnly}
             onClick={() => {
               setRemoteOnly((v) => !v);
@@ -189,7 +187,9 @@ export default function JobSearchIndex() {
                 )}
                 {landing.location.name}
               </p>
-              <h2 className="mt-1 font-medium text-foreground">{landing.title}</h2>
+              <div className="mt-1">
+                <Text variant="h6">{landing.title}</Text>
+              </div>
               <span className="mt-2 inline-flex items-center gap-1 text-sm text-primary">
                 View page
                 <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 motion-reduce:transition-none" />
@@ -206,7 +206,7 @@ export default function JobSearchIndex() {
         <FaqBlock items={INDEX_FAQS} source="job-search-index" />
 
         <section className="rounded-xl border border-border bg-card p-6">
-          <h2 className="text-lg font-semibold text-foreground">Not sure how to present your experience?</h2>
+          <Text variant="h5">Not sure how to present your experience?</Text>
           <p className="mt-1 text-sm text-muted-foreground">
             Read the resume, cover letter, and interview guides before you apply.
           </p>

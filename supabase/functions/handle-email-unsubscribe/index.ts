@@ -81,7 +81,7 @@ Deno.serve(async (req) => {
 
   // GET: Validate token (the app's unsubscribe page calls this on load)
   if (req.method === 'GET') {
-    return jsonResponse({ valid: true })
+    return jsonResponse({ valid: true, email: tokenRecord.email })
   }
 
   // POST: Process the unsubscribe
@@ -117,6 +117,32 @@ Deno.serve(async (req) => {
       email: tokenRecord.email,
     })
     return jsonResponse({ error: 'Failed to process unsubscribe' }, 500)
+  }
+
+  // Landing list: mark the subscriber unsubscribed and cancel any follow-up
+  // still queued for them, so one click ends every future landing email.
+  const normalizedEmail = tokenRecord.email.toLowerCase()
+  const { data: subscriber, error: subscriberError } = await supabase
+    .from('newsletter_subscribers')
+    .update({ status: 'unsubscribed', unsubscribed_at: new Date().toISOString() })
+    .eq('email', normalizedEmail)
+    .neq('status', 'unsubscribed')
+    .select('id')
+    .maybeSingle()
+
+  if (subscriberError) {
+    console.error('Failed to update newsletter subscriber', { error: subscriberError })
+  }
+
+  if (subscriber?.id) {
+    const { error: cancelError } = await supabase
+      .from('newsletter_followups')
+      .update({ status: 'canceled', last_error: 'Recipient unsubscribed' })
+      .eq('subscriber_id', subscriber.id)
+      .eq('status', 'scheduled')
+    if (cancelError) {
+      console.error('Failed to cancel scheduled follow-ups', { error: cancelError })
+    }
   }
 
   console.log('Email unsubscribed', { email: tokenRecord.email })

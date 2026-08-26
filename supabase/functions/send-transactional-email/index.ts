@@ -6,7 +6,9 @@ import {
   TEMPLATES,
   RETIRED_TO_APP_TEMPLATES,
   AUTH_TEMPLATE_NAMES,
+  TRACKED_TEMPLATES,
 } from '../_shared/transactional-email-templates/registry.ts'
+import { withEngagementTracking } from '../_shared/emailTracking.ts'
 
 // Configuration baked in at scaffold time — do NOT change these manually.
 // To update, re-run the email domain setup flow.
@@ -368,6 +370,13 @@ Deno.serve(async (req) => {
   }
   if (!plainText) plainText = 'View this message in an HTML-capable email client.'
 
+  // 4b. Add open/click tracking to opt-in landing mail. Applied after render so
+  // templates stay free of tracking concerns; the unsubscribe footer is appended
+  // downstream by the email API and is never rewritten here.
+  const trackedHtml = (TRACKED_TEMPLATES as readonly string[]).includes(templateName)
+    ? withEngagementTracking(html, messageId, supabaseUrl)
+    : html
+
   // Resolve subject — supports static string or dynamic function
   const resolvedSubject =
     typeof template.subject === 'function'
@@ -400,7 +409,7 @@ Deno.serve(async (req) => {
       from: `${FROM_NAME} <noreply@${FROM_DOMAIN}>`,
       sender_domain: SENDER_DOMAIN,
       subject: resolvedSubject,
-      html,
+      html: trackedHtml,
       text: plainText,
       purpose: 'transactional',
       label: templateName,
