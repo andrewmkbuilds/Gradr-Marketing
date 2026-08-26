@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { AlertCircle, ShieldCheck } from "lucide-react";
 import { Button, FormField, Input, Text } from "@/design-system/gradr-9b9b95";
-import { MINIMUM_AGE, checkDateOfBirth, recordAgeGate } from "@/lib/compliance/coppa";
+import { MINIMUM_AGE, checkDateOfBirth, clearAgeGate, recordAgeGate } from "@/lib/compliance/coppa";
 import { SELLER_CONTACT_EMAIL } from "@/content/legal";
 
 /**
@@ -91,7 +91,14 @@ export function AgeGate({
 }
 
 /** Shown after an under-13 date of birth. Existing account sign-in remains available. */
-export function AgeBlockedNotice({ onSignIn }: { onSignIn: () => void }) {
+export function AgeBlockedNotice({
+  onSignIn,
+  onRecheck,
+}: {
+  onSignIn: () => void;
+  /** Clears the local age-block marker and re-opens the neutral age screen. */
+  onRecheck: () => void;
+}) {
   return (
     <div className="space-y-5">
       <div className="flex h-10 w-10 items-center justify-center rounded-full bg-destructive/15">
@@ -127,6 +134,25 @@ export function AgeBlockedNotice({ onSignIn }: { onSignIn: () => void }) {
       <Button type="button" size="lg" className="w-full" onClick={onSignIn}>
         Sign in to an existing account
       </Button>
+      <div className="space-y-2">
+        <Button
+          type="button"
+          variant="outline"
+          size="lg"
+          className="w-full"
+          onClick={() => {
+            clearAgeGate();
+            onRecheck();
+          }}
+        >
+          I entered the wrong date — check again
+        </Button>
+        <Text variant="caption" tone="muted">
+          This only clears the answer stored in this browser. You'll be asked for your date of
+          birth again, and nothing is unlocked until it passes.
+        </Text>
+      </div>
+
       <div className="flex flex-wrap gap-3 text-sm">
         <Link to="/childrens-privacy" className="text-primary underline underline-offset-2">
           Children's Privacy Notice

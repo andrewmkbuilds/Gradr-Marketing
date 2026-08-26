@@ -18,7 +18,7 @@ import { OAuthHostMismatchNotice } from "@/components/auth/OAuthHostMismatchNoti
 import { toast } from "sonner";
 import { reportAuthFailure } from "@/lib/monitoring/reliability";
 import { AgeBlockedNotice, AgeGate } from "@/components/auth/AgeGate";
-import { isKnownChildDevice, readAgeGate } from "@/lib/compliance/coppa";
+import { clearAgeGate, isKnownChildDevice, readAgeGate } from "@/lib/compliance/coppa";
 import { z } from "zod";
 import { emailSchema, friendlyAuthError } from "@/lib/authErrors";
 
@@ -41,6 +41,9 @@ export default function Auth() {
   const location = useLocation();
   const { user } = useAuth();
   const isGuest = user?.is_anonymous === true;
+  // Anyone already carrying a session passed the screen when the account was
+  // made, so signing in / upgrading never re-runs the age gate for them.
+  const isReturningUser = Boolean(user);
   const [isSignUp, setIsSignUp] = useState(
     () => searchParams.get("mode") === "signup" || user?.is_anonymous === true,
   );
@@ -185,7 +188,7 @@ export default function Auth() {
     const valid = validateForm();
     if (!valid) return;
     // New accounts must clear the age screen first; existing sign-ins do not.
-    if (isSignUp && !isGuest && !ageOk) {
+    if (isSignUp && !isReturningUser && !ageOk) {
       setPendingAction(() => () => void runEmailAuth(valid));
       return;
     }
@@ -245,7 +248,7 @@ export default function Auth() {
   const handleOAuth = async (provider: "google" | "apple" | "microsoft") => {
     // Existing members may sign in regardless of a device-level age marker.
     // Sign-up mode still screens before an OAuth request that could create an account.
-    if (isSignUp && !ageOk) {
+    if (isSignUp && !ageOk && !isReturningUser) {
       requireAge(() => void handleOAuth(provider));
       return;
     }
@@ -290,7 +293,8 @@ export default function Auth() {
   };
 
   const handleGuest = async () => {
-    if (!ageOk) {
+    // A returning member (or an existing guest session) has already been screened.
+    if (!ageOk && !isReturningUser) {
       requireAge(() => void handleGuest());
       return;
     }
@@ -316,8 +320,17 @@ export default function Auth() {
       <AuthLayout>
         <AgeBlockedNotice
           onSignIn={() => {
+            // Safe reset: drop the local block and land on the sign-in form.
+            clearAgeGate();
             setPendingAction(null);
+            setAgeBlocked(false);
             setIsSignUp(false);
+          }}
+          onRecheck={() => {
+            // `clearAgeGate()` already ran in the notice; re-open the screen.
+            setAgeBlocked(false);
+            setAgeOk(false);
+            setPendingAction(() => () => setIsSignUp(true));
           }}
         />
       </AuthLayout>
