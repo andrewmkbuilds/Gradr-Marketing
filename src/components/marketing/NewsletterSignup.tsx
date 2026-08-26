@@ -68,7 +68,7 @@ export function NewsletterSignup({ source = "landing", topic, className }: Newsl
 
   return (
     <form onSubmit={submit} className={className} noValidate>
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
         <FormField
           className="flex-1"
           label="Email address"
