@@ -1,68 +1,62 @@
 import { supabase } from "@/integrations/supabase/client";
-import { getPaddleEnvironment } from "@/lib/paddle";
-import { toVoiceErrorCode, toVoiceProviderReason, type VoiceErrorCode, type VoiceProviderReason } from "./voiceErrors";
+import type { VoiceProviderReason } from "@/lib/interview/voiceErrors";
 
 /**
- * Voice provider health as the candidate-facing widget sees it: configuration,
- * entitlement and the exact last failure — no log-diving required.
+ * Server-reported health of the interviewer voice provider.
+ *
+ * Read-only status: whether the backend holds a working voice credential,
+ * whether the caller's plan includes voice, and the last success/failure so a
+ * silent turn can be explained without digging through logs.
  */
-
 export interface VoiceHealth {
+  /** The backend has a usable voice provider credential. */
   configured: boolean;
+  /** The caller's plan includes the interviewer voice. */
   entitled: boolean;
-  tier: string;
+  /** Last known stream attempt succeeded (or none has failed yet). */
   healthy: boolean;
+  /** Plan tier the entitlement decision was made against. */
+  tier: string;
+  /** ISO timestamp of the last successful voice stream, when known. */
+  lastSuccessAt: string | null;
   lastFailure: {
-    code: VoiceErrorCode;
+    /** Machine-readable failure code from the voice edge function. */
+    code: string | null;
     reason: VoiceProviderReason | null;
+    /** HTTP status the upstream provider returned, when there was one. */
     upstreamStatus: number | null;
     at: string;
   } | null;
-  lastSuccessAt: string | null;
 }
 
-export async function fetchVoiceHealth(): Promise<VoiceHealth | null> {
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session?.access_token) return null;
-
-  const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/voice-status`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${session.access_token}`,
-      apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
-    },
-    body: JSON.stringify({ environment: getPaddleEnvironment() }),
-  });
-  if (!res.ok) return null;
-
-  const payload = await res.json().catch(() => null);
-  if (!payload) return null;
-
-  return {
-    configured: Boolean(payload.configured),
-    entitled: Boolean(payload.entitled),
-    tier: String(payload.tier ?? "free"),
-    healthy: Boolean(payload.healthy),
-    lastFailure: payload.lastFailure
-      ? {
-        code: toVoiceErrorCode(payload.lastFailure.code),
-        reason: toVoiceProviderReason(payload.lastFailure.reason),
-        upstreamStatus: payload.lastFailure.upstreamStatus ?? null,
-        at: String(payload.lastFailure.at),
-      }
-      : null,
-    lastSuccessAt: payload.lastSuccessAt ?? null,
-  };
-}
+const FALLBACK: VoiceHealth = {
+  configured: false,
+  entitled: false,
+  healthy: false,
+  tier: "free",
+  lastSuccessAt: null,
+  lastFailure: null,
+};
 
 /**
- * Re-establishes the app session before a voice retry.
- *
- * "Reconnect" never swaps provider — it refreshes the Supabase session so a
- * stale token can't be mistaken for a provider outage, then re-reads health.
+ * Reads voice health from the backend. Never throws: a failed read is itself a
+ * degraded signal, so callers get the conservative fallback instead of an
+ * exception that would break an in-progress interview.
  */
-export async function reconnectVoiceSession(): Promise<VoiceHealth | null> {
-  await supabase.auth.refreshSession().catch(() => null);
-  return fetchVoiceHealth();
+export async function fetchVoiceHealth(): Promise<VoiceHealth> {
+  try {
+    const { data, error } = await supabase.functions.invoke("interview-voice-health");
+    if (error || !data) return FALLBACK;
+    const raw = data as Partial<VoiceHealth> & { last_success_at?: string | null };
+    return {
+      configured: Boolean(raw.configured),
+      entitled: Boolean(raw.entitled),
+      healthy: Boolean(raw.healthy),
+      tier: typeof raw.tier === "string" ? raw.tier : "free",
+      lastSuccessAt: raw.lastSuccessAt ?? raw.last_success_at ?? null,
+      lastFailure: raw.lastFailure ?? null,
+    };
+  } catch {
+    return FALLBACK;
+  }
 }

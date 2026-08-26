@@ -437,7 +437,7 @@ export default function Auth() {
         <Button
           variant="outline"
           size="lg"
-          className="w-full justify-center"
+          className="w-full"
           onClick={() => handleOAuth("google")}
         >
           <svg className="h-4 w-4" viewBox="0 0 24 24">
@@ -451,7 +451,7 @@ export default function Auth() {
         <Button
           variant="outline"
           size="lg"
-          className="w-full justify-center"
+          className="w-full"
           onClick={() => handleOAuth("apple")}
         >
           <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
@@ -462,7 +462,7 @@ export default function Auth() {
         <Button
           variant="outline"
           size="lg"
-          className="w-full justify-center"
+          className="w-full"
           onClick={() => handleOAuth("microsoft")}
         >
           <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
