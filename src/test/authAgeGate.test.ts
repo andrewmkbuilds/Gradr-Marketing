@@ -15,7 +15,7 @@ describe("auth age-gate guardrails", () => {
   });
 
   it("gates social authentication only when it may create an account", () => {
-    expect(AUTH_SOURCE).toContain("if (isSignUp && !ageOk)");
+    expect(AUTH_SOURCE).toContain("if (isSignUp && !ageOk && !isReturningUser)");
   });
 
   it("offers an existing-account sign-in path from the blocked notice", () => {
