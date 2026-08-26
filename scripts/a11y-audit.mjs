@@ -93,7 +93,15 @@ try {
       for (const route of ROUTES) {
         await page.goto(`${BASE}${route}`, { waitUntil: "domcontentloaded" });
         await page.waitForTimeout(1800);
-        await page.addScriptTag({ content: AXE });
+        // Client-side redirects (and dev-server reloads) can destroy the
+        // execution context mid-injection — settle, then retry once.
+        try {
+          await page.addScriptTag({ content: AXE });
+        } catch {
+          await page.waitForLoadState("domcontentloaded");
+          await page.waitForTimeout(1200);
+          await page.addScriptTag({ content: AXE });
+        }
         const run = await page.evaluate(async () => {
           // eslint-disable-next-line no-undef
           return await window.axe.run(document, {
