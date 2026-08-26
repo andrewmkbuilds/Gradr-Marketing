@@ -33,9 +33,9 @@ export function ThemeToggle({ className }: { className?: string }) {
           variant="ghost"
           size="icon"
           aria-label={`Theme: ${theme}. Change theme`}
-          className={cn("interactive press-scale min-h-11 min-w-11 text-muted-foreground hover:text-foreground", className)}
+          className={cn("interactive press-scale min-h-11 min-w-11", className)}
         >
-          <Icon className="h-[1.1rem] w-[1.1rem]" />
+          <Icon className="size-5" aria-hidden="true" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-40">
