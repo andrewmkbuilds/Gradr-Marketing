@@ -11,6 +11,9 @@ import {
   Sparkles,
   Timer,
 } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Text } from "@/design-system/gradr-9b9b95";
+import { buttonVariants } from "@/design-system/gradr-9b9b95/gradr/components/button";
 import { PublicShell } from "@/components/PublicShell";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { trackEvent, withUtm } from "@/lib/analytics";
@@ -216,9 +219,9 @@ export default function AiInterviewCoach() {
         <p className="text-xs font-medium uppercase tracking-wider text-primary">
           Live voice practice · Interview Engine
         </p>
-        <h1 className="mt-3 text-balance text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
+        <Text as="h1" variant="h1" className="mt-3 text-balance">
           AI Interview Coach
-        </h1>
+        </Text>
         <p className="mt-5 text-pretty text-lg leading-relaxed text-muted-foreground">
           Practice a real spoken interview for the exact role you are chasing. Gradr's AI
           interviewer asks, listens, follows up on what you actually said, and hands back a
@@ -228,7 +231,7 @@ export default function AiInterviewCoach() {
           <a
             href={ctaHref(appSignupHref(), "hero_primary")}
             onClick={trackCta("hero_primary", "/auth")}
-            className="inline-flex h-11 items-center gap-2 rounded-xl bg-primary px-5 text-sm font-medium text-primary-foreground transition-transform hover:scale-[1.02] motion-reduce:transform-none"
+            className={cn(buttonVariants({ size: "lg" }), "transition-transform hover:scale-[1.02] motion-reduce:transform-none")}
           >
             <Mic className="h-4 w-4" aria-hidden="true" />
             Start a free mock interview
@@ -236,7 +239,7 @@ export default function AiInterviewCoach() {
           <Link
             to={ctaHref("/pricing", "hero_secondary")}
             onClick={trackCta("hero_secondary", "/pricing")}
-            className="inline-flex h-11 items-center gap-2 rounded-xl border border-border px-5 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+            className={buttonVariants({ variant: "outline", size: "lg" })}
           >
             See plans and limits
             <ArrowRight className="h-4 w-4" aria-hidden="true" />
