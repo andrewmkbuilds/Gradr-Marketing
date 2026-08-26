@@ -273,7 +273,7 @@ export default function MarketingEmailOps() {
               <select
                 id={id}
                 aria-describedby={describedBy}
-                className="h-10 rounded-control border border-border bg-surface px-3 text-body-sm text-foreground"
+                className="h-10 rounded-control border border-border bg-surface px-3 font-sans text-body-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 value={templateFilter}
                 onChange={(e) => setTemplateFilter(e.target.value)}
               >
@@ -291,7 +291,7 @@ export default function MarketingEmailOps() {
               <select
                 id={id}
                 aria-describedby={describedBy}
-                className="h-10 rounded-control border border-border bg-surface px-3 text-body-sm text-foreground"
+                className="h-10 rounded-control border border-border bg-surface px-3 font-sans text-body-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
               >
@@ -324,8 +324,10 @@ export default function MarketingEmailOps() {
               <thead>
                 <tr className="border-b border-border">
                   {["Template", "Version", "Recipient", "Status", "Sent"].map((h) => (
-                    <th key={h} className="px-5 py-3 text-caption text-muted-foreground">
-                      {h}
+                    <th key={h} className="px-5 py-3">
+                      <Text variant="caption" tone="muted">
+                        {h}
+                      </Text>
                     </th>
                   ))}
                 </tr>
@@ -333,18 +335,24 @@ export default function MarketingEmailOps() {
               <tbody>
                 {loading ? (
                   <tr>
-                    <td colSpan={5} className="px-5 py-10 text-center text-muted-foreground">
+                    <td colSpan={5} className="px-5 py-10 text-center">
                       <Loader2 className="mx-auto size-5 animate-spin" aria-hidden />
                     </td>
                   </tr>
                 ) : log?.rows.length ? (
                   log.rows.map((row) => (
                     <tr key={`${row.message_id}-${row.created_at}`} className="border-b border-border">
-                      <td className="px-5 py-3 text-body-sm">{row.template_name}</td>
-                      <td className="px-5 py-3 text-body-sm text-muted-foreground">
-                        {String(row.metadata?.template_version ?? "—")}
+                      <td className="px-5 py-3">
+                        <Text variant="body-sm">{row.template_name}</Text>
                       </td>
-                      <td className="px-5 py-3 text-body-sm">{row.recipient_email}</td>
+                      <td className="px-5 py-3">
+                        <Text variant="body-sm" tone="muted">
+                          {String(row.metadata?.template_version ?? "—")}
+                        </Text>
+                      </td>
+                      <td className="px-5 py-3">
+                        <Text variant="body-sm">{row.recipient_email}</Text>
+                      </td>
                       <td className="px-5 py-3">
                         <Badge variant={statusVariant(row.status)}>{row.status}</Badge>
                         {row.error_message ? (
@@ -353,8 +361,10 @@ export default function MarketingEmailOps() {
                           </Text>
                         ) : null}
                       </td>
-                      <td className="px-5 py-3 text-body-sm text-muted-foreground">
-                        {formatDate(row.created_at)}
+                      <td className="px-5 py-3">
+                        <Text variant="body-sm" tone="muted">
+                          {formatDate(row.created_at)}
+                        </Text>
                       </td>
                     </tr>
                   ))
@@ -373,8 +383,8 @@ export default function MarketingEmailOps() {
           </Card>
         </section>
       ) : (
-        <section className="mt-8 grid gap-6 lg:grid-cols-[260px_1fr]">
-          <nav aria-label="Marketing templates" className="space-y-2">
+        <section className="mt-8 grid gap-6 lg:grid-cols-4">
+          <nav aria-label="Marketing templates" className="space-y-2 lg:col-span-1">
             {previews?.map((preview) => (
               <button
                 key={preview.templateName}
@@ -395,7 +405,7 @@ export default function MarketingEmailOps() {
             ))}
           </nav>
 
-          <Card className="p-0">
+          <Card className="p-0 lg:col-span-3">
             {loading ? (
               <div className="flex h-96 items-center justify-center">
                 <Loader2 className="size-6 animate-spin text-muted-foreground" aria-hidden />
@@ -416,7 +426,7 @@ export default function MarketingEmailOps() {
                   <iframe
                     title={`${active.displayName} preview`}
                     srcDoc={active.html}
-                    className="h-[720px] w-full rounded-b-card border-0 bg-surface"
+                    className="h-screen w-full rounded-b-card border-0 bg-surface"
                   />
                 </div>
               )
