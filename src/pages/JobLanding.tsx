@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { ArrowLeft, ArrowRight, CheckCircle2, MapPin, Wifi } from "lucide-react";
-import { Badge } from "@/design-system/gradr-9b9b95";
+import { Badge, Text } from "@/design-system/gradr-9b9b95";
 import { buttonVariants } from "@/design-system/gradr-9b9b95/gradr/components/button";
 import { PublicShell } from "@/components/PublicShell";
 import { MarketingHero } from "@/components/marketing/MarketingHero";
@@ -91,9 +91,9 @@ export default function JobLanding() {
         />
 
         <section className="space-y-3">
-          <h2 className="type-h2 text-foreground">
+          <Text variant="h2">
             Skills employers look for in {role.plural}
-          </h2>
+          </Text>
           <div className="flex flex-wrap gap-2">
             {role.skills.map((skill) => (
               <Badge key={skill} variant="outline">
@@ -109,9 +109,9 @@ export default function JobLanding() {
         </section>
 
         <section className="space-y-3">
-          <h2 className="type-h2 text-foreground">
+          <Text variant="h2">
             What the role involves day to day
-          </h2>
+          </Text>
           <ul className="space-y-2">
             {role.responsibilities.map((item) => (
               <li key={item} className="flex gap-2.5 text-muted-foreground">
@@ -123,9 +123,9 @@ export default function JobLanding() {
         </section>
 
         <section className="space-y-3">
-          <h2 className="type-h2 text-foreground">
+          <Text variant="h2">
             Searching {location.remote ? "remote roles" : `in ${location.name}`}
-          </h2>
+          </Text>
           <p className="text-muted-foreground">{location.blurb}</p>
           <p className="text-muted-foreground">
             Gradr pulls live listings that fit your profile, scores each one against your resume, and
@@ -140,9 +140,9 @@ export default function JobLanding() {
 
         {siblings.length > 0 && (
           <section className="space-y-3" aria-labelledby="other-locations">
-            <h2 id="other-locations" className="type-h2 text-foreground">
+            <Text id="other-locations" variant="h2">
               {role.name} jobs elsewhere
-            </h2>
+            </Text>
             <div className="flex flex-wrap gap-2">
               {siblings.map((sib) => (
                 <Link
