@@ -126,18 +126,33 @@ export const EmailLayout = ({
             <Hr style={styles.hr} />
             {footerNote ? <Text style={styles.footerNote}>{footerNote}</Text> : null}
             <Text style={styles.footerLinks}>
-              <Link style={styles.footerLink} href={link('/', campaign)}>
-                Dashboard
-              </Link>
-              <span style={styles.dot}>·</span>
-              <Link style={styles.footerLink} href={link('/settings', campaign)}>
-                Email preferences
-              </Link>
+              {audience === 'marketing' ? (
+                <>
+                  <Link style={styles.footerLink} href={marketingLink('/', campaign)}>
+                    Gradr
+                  </Link>
+                  <span style={styles.dot}>·</span>
+                  <Link style={styles.footerLink} href={marketingLink('/blog', campaign)}>
+                    Blog
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link style={styles.footerLink} href={appLink('/', campaign)}>
+                    Dashboard
+                  </Link>
+                  <span style={styles.dot}>·</span>
+                  <Link style={styles.footerLink} href={appLink('/settings', campaign)}>
+                    Email preferences
+                  </Link>
+                </>
+              )}
               <span style={styles.dot}>·</span>
               <Link style={styles.footerLink} href={`mailto:${SUPPORT_EMAIL}`}>
                 Support
               </Link>
             </Text>
+
             <Text style={styles.footerLinks}>
               <Link style={styles.footerLinkMuted} href={link('/privacy', campaign)}>
                 Privacy
