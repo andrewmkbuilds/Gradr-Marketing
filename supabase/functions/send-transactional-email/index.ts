@@ -2,7 +2,11 @@ import * as React from 'npm:react@18.3.1'
 import { renderAsync } from 'npm:@react-email/components@0.0.22'
 import { createClient } from 'npm:@supabase/supabase-js@2'
 import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors'
-import { TEMPLATES } from '../_shared/transactional-email-templates/registry.ts'
+import {
+  TEMPLATES,
+  RETIRED_TO_APP_TEMPLATES,
+  AUTH_TEMPLATE_NAMES,
+} from '../_shared/transactional-email-templates/registry.ts'
 
 // Configuration baked in at scaffold time — do NOT change these manually.
 // To update, re-run the email domain setup flow.
@@ -105,6 +109,23 @@ Deno.serve(async (req) => {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       }
+    )
+  }
+
+  // Billing, payment, verification, security and auth mail is owned by the
+  // app.gradr.me project. If a stale caller still points here, fail loudly with
+  // the new owner instead of silently sending from the marketing domain.
+  const appOwned =
+    (RETIRED_TO_APP_TEMPLATES as readonly string[]).includes(templateName) ||
+    (AUTH_TEMPLATE_NAMES as readonly string[]).includes(templateName)
+  if (appOwned) {
+    console.error('Refusing app-owned template on the marketing surface', { templateName })
+    return new Response(
+      JSON.stringify({
+        error: `Template '${templateName}' is owned by app.gradr.me and is no longer sent from the marketing surface.`,
+        owner: 'app.gradr.me',
+      }),
+      { status: 410, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
   }
 
