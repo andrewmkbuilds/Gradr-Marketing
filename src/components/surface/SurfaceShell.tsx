@@ -106,13 +106,13 @@ export function SurfaceShell({ nav = [], eyebrow, children }: SurfaceShellProps)
           <div className="flex items-center gap-2">
             <ThemeToggle />
             <a
-              href={urlFor("app", "/auth")}
+              href={appLoginHref()}
               className="hidden h-10 items-center rounded-lg px-3 text-sm text-muted-foreground transition-colors hover:text-foreground sm:inline-flex"
             >
               Sign in
             </a>
             <a
-              href={urlFor("app", "/auth?mode=signup")}
+              href={appSignupHref()}
               className="inline-flex h-10 items-center gap-1.5 rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground shadow-sm transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transform-none"
             >
               Get started
