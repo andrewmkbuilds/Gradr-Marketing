@@ -16,6 +16,7 @@ import {
 } from "@/content/jobLandings";
 import { jobLandingJsonLd } from "@/lib/structuredData";
 import { trackEvent, withUtm } from "@/lib/analytics";
+import { appSignupHref } from "@/lib/appLinks";
 import { useReadTracking } from "@/hooks/useReadTracking";
 
 export default function JobLanding() {
@@ -73,8 +74,8 @@ export default function JobLanding() {
           title={landing.title}
           description={role.summary}
           actions={
-            <Link
-              to={ctaHref}
+            <a
+              href={ctaHref}
               onClick={() =>
                 trackEvent("job_landing_cta_click", {
                   article: landing.slug,
