@@ -904,27 +904,18 @@
 }
 
 /* ============================================================
-   Text selection — Yacht Club mahogany, never the browser blue.
-   Applies globally (light + dark, inputs, and rich text).
+   Text selection — extends the base rule to inputs and rich text.
+   Colors come from the mahogany tokens, never a literal.
    ============================================================ */
 @layer base {
-  ::selection {
-    background-color: #733e24;
-    color: #ffffff;
-    text-shadow: none;
-  }
-
-  ::-moz-selection {
-    background-color: #733e24;
-    color: #ffffff;
-    text-shadow: none;
-  }
-
+  ::selection,
+  ::-moz-selection,
   input::selection,
   textarea::selection,
   [contenteditable]::selection {
-    background-color: #733e24;
-    color: #ffffff;
+    background-color: hsl(var(--mahogany));
+    color: hsl(var(--mahogany-foreground));
+    text-shadow: none;
   }
 }
 
