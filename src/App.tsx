@@ -209,6 +209,8 @@ function AppRoutes() {
         <Route path="/job-search/:slug" element={<AnimatedPage><JobLanding /></AnimatedPage>} />
         {/* Internal, noindexed component gallery used by the visual suites. */}
         <Route path="/design-system" element={<DesignSystemGallery />} />
+        <Route path="/connect" element={<AnimatedPage><Connect /></AnimatedPage>} />
+
         {/* Internal, noindexed marketing email console (admin-gated server-side). */}
         <Route path="/ops/marketing-emails" element={<MarketingEmailOps />} />
         <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
