@@ -12,6 +12,7 @@ import {
   Upload,
 } from "lucide-react";
 import { PublicShell } from "@/components/PublicShell";
+import { Card } from "@/design-system/gradr-9b9b95";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { trackEvent, withUtm } from "@/lib/analytics";
 import {
