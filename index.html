@@ -26,8 +26,8 @@
     <link rel="apple-touch-startup-image" href="/splash/splash-1668x2388.png" media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2)" />
     <link rel="apple-touch-startup-image" href="/splash/splash-2048x2732.png" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2)" />
 
-    <meta name="theme-color" content="#0b1c22" media="(prefers-color-scheme: dark)" />
-    <meta name="theme-color" content="#faf8f6" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#10191d" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f9f7f6" media="(prefers-color-scheme: light)" />
     <script>
       // Paint the correct theme before first render so there is no flash.
       (function () {
@@ -146,8 +146,8 @@
     <style>
       /* Splash screen: painted before any JS bundle so there is never a flash
          of unstyled SEO markup. Removed by src/main.tsx once React mounts. */
-      html, body { margin: 0; background: #faf8f6; }
-      html.dark, html.dark body { background: #0b1c22; }
+      html, body { margin: 0; background: #f9f7f6; }
+      html.dark, html.dark body { background: #10191d; }
       #app-splash {
         position: fixed;
         inset: 0;
@@ -157,12 +157,12 @@
         align-items: center;
         justify-content: center;
         gap: 1.25rem;
-        background: #faf8f6;
+        background: #f9f7f6;
         color: #245f73;
         font-family: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
         transition: opacity 260ms ease;
       }
-      html.dark #app-splash { background: #0b1c22; color: #f2f0ef; }
+      html.dark #app-splash { background: #10191d; color: #f2f0ef; }
       #app-splash[data-hiding="true"] { opacity: 0; pointer-events: none; }
       #app-splash img { width: 56px; height: 56px; animation: splash-pulse 1.8s ease-in-out infinite; }
       #app-splash .splash-word {

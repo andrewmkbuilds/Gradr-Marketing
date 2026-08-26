@@ -555,19 +555,10 @@ export default function Auth() {
           type="submit"
           size="lg"
           className="w-full"
-          disabled={loading}
+          loading={loading}
         >
-          {loading ? (
-            <span className="flex items-center gap-2">
-              <span className="h-4 w-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
-              Processing...
-            </span>
-          ) : (
-            <>
-              {isSignUp ? "Create account" : "Sign in"}
-              <ArrowRight className="h-4 w-4" />
-            </>
-          )}
+          {isSignUp ? "Create account" : "Sign in"}
+          <ArrowRight className="h-4 w-4" />
         </Button>
 
         {isSignUp && (
