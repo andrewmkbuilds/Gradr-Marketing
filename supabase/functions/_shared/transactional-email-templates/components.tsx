@@ -16,7 +16,20 @@ import {
   Section,
   Text,
 } from 'npm:@react-email/components@0.0.22'
-import { LOGO_URL, SITE_URL, SUPPORT_EMAIL, brand, displayStack, fontStack, link, Tone, tonePalette } from './theme.ts'
+import {
+  LOGO_URL,
+  SITE_URL,
+  SUPPORT_EMAIL,
+  appLink,
+  brand,
+  displayStack,
+  fontStack,
+  link,
+  marketingLink,
+  Tone,
+  tonePalette,
+} from './theme.ts'
+
 
 /* ------------------------------------------------------------------ */
 /* Shell                                                               */
