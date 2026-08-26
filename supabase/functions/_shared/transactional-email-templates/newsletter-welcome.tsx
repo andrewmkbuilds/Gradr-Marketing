@@ -30,9 +30,9 @@ const Email = ({ firstName, topic }: Props) => (
         'Short product notes when we ship something worth your time',
       ]}
     />
-    <Cta href={marketingLink('/blog', 'newsletter-welcome')}>Read the latest guides</Cta>
-    <SecondaryLink href={marketingLink('/product', 'newsletter-welcome')}>
-      See what Gradr does
+    <Cta href={marketingLink('/career-advice', 'newsletter-welcome')}>Read the latest guides</Cta>
+    <SecondaryLink href={marketingLink('/ats-resume-checker', 'newsletter-welcome')}>
+      Check a resume against an ATS
     </SecondaryLink>
   </EmailLayout>
 )

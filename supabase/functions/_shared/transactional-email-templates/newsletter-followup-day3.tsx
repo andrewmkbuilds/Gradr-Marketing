@@ -35,8 +35,8 @@ const Email = ({ firstName, topic }: Props) => (
         'Repeat with a second question — two per session is plenty',
       ]}
     />
-    <Cta href={marketingLink('/interview-preparation', 'newsletter-followup-day3')}>
-      See the interview playbook
+    <Cta href={marketingLink('/ai-interview-coach', 'newsletter-followup-day3')}>
+      See the AI interview coach
     </Cta>
     <SecondaryLink href={marketingLink('/career-advice', 'newsletter-followup-day3')}>
       Browse all career guides
