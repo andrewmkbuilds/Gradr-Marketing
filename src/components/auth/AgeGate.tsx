@@ -134,6 +134,25 @@ export function AgeBlockedNotice({
       <Button type="button" size="lg" className="w-full" onClick={onSignIn}>
         Sign in to an existing account
       </Button>
+      <div className="space-y-2">
+        <Button
+          type="button"
+          variant="outline"
+          size="lg"
+          className="w-full"
+          onClick={() => {
+            clearAgeGate();
+            onRecheck();
+          }}
+        >
+          I entered the wrong date — check again
+        </Button>
+        <Text variant="caption" tone="muted">
+          This only clears the answer stored in this browser. You'll be asked for your date of
+          birth again, and nothing is unlocked until it passes.
+        </Text>
+      </div>
+
       <div className="flex flex-wrap gap-3 text-sm">
         <Link to="/childrens-privacy" className="text-primary underline underline-offset-2">
           Children's Privacy Notice
