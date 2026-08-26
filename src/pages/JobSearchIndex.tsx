@@ -188,8 +188,9 @@ export default function JobSearchIndex() {
                 {landing.location.name}
               </p>
               <div className="mt-1">
-                <Text variant="h6">{landing.title}</Text>
+                <Text variant="h6" as="h2">{landing.title}</Text>
               </div>
+
               <span className="mt-2 inline-flex items-center gap-1 text-sm text-primary">
                 View page
                 <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 motion-reduce:transition-none" />
@@ -206,7 +207,7 @@ export default function JobSearchIndex() {
         <FaqBlock items={INDEX_FAQS} source="job-search-index" />
 
         <section className="rounded-xl border border-border bg-card p-6">
-          <Text variant="h5">Not sure how to present your experience?</Text>
+          <Text variant="h5" as="h2">Not sure how to present your experience?</Text>
           <p className="mt-1 text-sm text-muted-foreground">
             Read the resume, cover letter, and interview guides before you apply.
           </p>

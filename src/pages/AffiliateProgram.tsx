@@ -69,7 +69,7 @@ export default function AffiliateProgram() {
         ].map((b) => (
           <Card key={b.title} variant="raised" padding="lg" className="animate-fade-in">
             <b.icon className="mb-3 h-5 w-5 text-primary" aria-hidden />
-            <Text variant="h6" as="h3">{b.title}</Text>
+            <Text variant="h6" as="h2">{b.title}</Text>
             <Text variant="caption" className="mt-1">{b.desc}</Text>
           </Card>
         ))}

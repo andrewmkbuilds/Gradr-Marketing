@@ -1219,7 +1219,7 @@ export default function Landing() {
                   <li key={label}>
                     <a
                       href={href}
-                      className="rounded text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      className="link-tap rounded text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     >
                       {label}
                     </a>

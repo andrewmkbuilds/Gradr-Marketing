@@ -162,7 +162,7 @@ export function PublicShell({ children, source }: PublicShellProps) {
             <ul className="space-y-2">
               {NAV.map((item) => (
                 <li key={item.to}>
-                  <Link to={item.to} className="text-muted-foreground hover:text-foreground">
+                  <Link to={item.to} className="link-tap text-muted-foreground hover:text-foreground">
                     {item.label}
                   </Link>
                 </li>
@@ -177,7 +177,7 @@ export function PublicShell({ children, source }: PublicShellProps) {
                 <li key={item.path}>
                   <a
                     href={appHref(item.path)}
-                    className="text-muted-foreground hover:text-foreground"
+                    className="link-tap text-muted-foreground hover:text-foreground"
                   >
                     {item.label}
                   </a>
@@ -191,7 +191,7 @@ export function PublicShell({ children, source }: PublicShellProps) {
             <ul className="space-y-2">
               {TOOL_LINKS.map((item) => (
                 <li key={item.to}>
-                  <Link to={item.to} className="text-muted-foreground hover:text-foreground">
+                  <Link to={item.to} className="link-tap text-muted-foreground hover:text-foreground">
                     {item.label}
                   </Link>
                 </li>
@@ -206,18 +206,18 @@ export function PublicShell({ children, source }: PublicShellProps) {
             <ul className="space-y-2">
               {LEGAL_PAGES.map((page) => (
                 <li key={page.path}>
-                  <Link to={page.path} className="text-muted-foreground hover:text-foreground">
+                  <Link to={page.path} className="link-tap text-muted-foreground hover:text-foreground">
                     {page.label}
                   </Link>
                 </li>
               ))}
               <li>
-                <Link to="/legal" className="text-muted-foreground hover:text-foreground">
+                <Link to="/legal" className="link-tap text-muted-foreground hover:text-foreground">
                   Legal &amp; contact
                 </Link>
               </li>
               <li>
-                <a href={appLoginHref()} className="text-muted-foreground hover:text-foreground">
+                <a href={appLoginHref()} className="link-tap text-muted-foreground hover:text-foreground">
                   Sign in
                 </a>
               </li>
