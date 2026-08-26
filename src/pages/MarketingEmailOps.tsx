@@ -46,7 +46,9 @@ const RANGE_OPTIONS = [
   { label: "30 days", days: 30 },
 ];
 
-const STATUS_TONE: Record<string, "primary" | "danger" | "accent" | "neutral"> = {
+type BadgeTone = "primary" | "danger" | "accent" | "neutral" | "outline";
+
+const STATUS_TONE: Record<string, BadgeTone> = {
   sent: "primary",
   dlq: "danger",
   failed: "danger",
@@ -54,9 +56,9 @@ const STATUS_TONE: Record<string, "primary" | "danger" | "accent" | "neutral"> =
   complained: "danger",
   suppressed: "accent",
   pending: "outline",
-} as Record<string, "primary" | "danger" | "accent" | "neutral">;
+};
 
-function statusVariant(status: string) {
+function statusVariant(status: string): BadgeTone {
   return STATUS_TONE[status] ?? "neutral";
 }
 
@@ -178,7 +180,7 @@ export default function MarketingEmailOps() {
   if (!signedIn) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-background p-6">
-        <Seo title="Marketing email console" description="Internal Gradr tool." noindex />
+        <Seo title="Marketing email console" description="Internal Gradr tool." path="/ops/marketing-emails" noindex />
         <Card className="w-full max-w-md p-8">
           <CardTitle>Marketing email console</CardTitle>
           <CardDescription>Admin access only. Sign in to continue.</CardDescription>
@@ -217,7 +219,7 @@ export default function MarketingEmailOps() {
 
   return (
     <main className="mx-auto min-h-screen w-full max-w-6xl bg-background px-6 py-12">
-      <Seo title="Marketing email console" description="Internal Gradr tool." noindex />
+      <Seo title="Marketing email console" description="Internal Gradr tool." path="/ops/marketing-emails" noindex />
 
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
