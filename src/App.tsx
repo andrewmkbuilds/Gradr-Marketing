@@ -70,6 +70,7 @@ const GuideArticle = lazy(() => import("./pages/GuideArticle"));
 const JobSearchIndex = lazy(() => import("./pages/JobSearchIndex"));
 const JobLanding = lazy(() => import("./pages/JobLanding"));
 const Unsubscribe = lazy(() => import("./pages/Unsubscribe"));
+const NewsletterConfirm = lazy(() => import("./pages/NewsletterConfirm"));
 const OAuthConsent = lazy(() => import("./pages/OAuthConsent"));
 
 const queryClient = new QueryClient();

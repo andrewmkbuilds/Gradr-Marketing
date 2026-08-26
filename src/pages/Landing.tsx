@@ -21,6 +21,7 @@ import {
   Accordion, AccordionContent, AccordionItem, AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useAuth } from "@/hooks/useAuth";
+import { NewsletterSignup } from "@/components/marketing/NewsletterSignup";
 import { BrandLogo } from "@/components/BrandLogo";
 import { Reveal } from "@/components/landing/Reveal";
 import { LandingScrollProgress } from "@/components/landing/LandingScrollProgress";
@@ -1196,7 +1197,7 @@ export default function Landing() {
       {/* --------------------------------- footer ------------------------------ */}
       <footer className="border-t border-border bg-card/40 py-14">
         <div className="page-shell grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_repeat(3,1fr)]">
-          <div className="space-y-3">
+          <div className="space-y-5">
             <div className="flex items-center gap-2">
               <BrandLogo size={28} />
               <span className="text-base font-bold tracking-[0.24em]">GRADR</span>
@@ -1204,6 +1205,7 @@ export default function Landing() {
             <p className="max-w-xs text-sm leading-relaxed text-muted-foreground">
               An AI career operating system for the whole path from resume to offer.
             </p>
+            <NewsletterSignup source="landing-footer" topic="career guides" />
           </div>
 
           {FOOTER.map((col) => (
