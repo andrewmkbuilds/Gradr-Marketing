@@ -3,15 +3,17 @@
  *
  * Flow:
  *  1. captureReferralFromUrl()  — runs on app load. If `?ref=CODE` present,
- *     validates the code via `lookup_affiliate_by_code`, sets a cookie for
- *     `affiliate_settings.cookie_duration_days` days (default 90), and writes
- *     an `affiliate_clicks` row.
+ *     the `affiliate-track-click` edge function validates the code, logs the
+ *     click as service_role and reports back the cookie window from
+ *     `affiliate_settings.cookie_duration_days` (default 90). Logged-out
+ *     visitors have no direct database access to affiliate data at all.
  *  2. getReferralCookie() / getClickId() — read current tracking values.
  *  3. attributeSignupReferral() — called right after a user successfully
  *     signs up, calls `attribute_signup_referral` RPC and clears the cookie.
  */
 import { supabase } from "@/integrations/supabase/client";
 import { safeStorage } from "@/lib/safeStorage";
+
 
 const COOKIE_NAME = "cf_ref";
 const CLICK_COOKIE_NAME = "cf_ref_click";
