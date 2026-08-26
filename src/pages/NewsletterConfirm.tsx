@@ -66,7 +66,7 @@ export default function NewsletterConfirm() {
             <Text as="h1" variant="h4">
               We could not confirm this link
             </Text>
-            <Text as="p" variant="body" className="text-muted-foreground">
+            <Text as="p" variant="body" tone="muted">
               {message}
             </Text>
           </>
@@ -76,7 +76,7 @@ export default function NewsletterConfirm() {
             <Text as="h1" variant="h4">
               {state === "already" ? "You're already subscribed" : "You're subscribed"}
             </Text>
-            <Text as="p" variant="body" className="text-muted-foreground">
+            <Text as="p" variant="body" tone="muted">
               {state === "already"
                 ? "This address is already on the Gradr list. Nothing else to do."
                 : "Thanks for confirming. The next issue lands in your inbox — every email has a one-click unsubscribe."}
