@@ -5,6 +5,7 @@ import { BrandLogo } from "@/components/BrandLogo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { cn } from "@/lib/utils";
 import { type Surface, urlFor } from "@/config/domains";
+import { appLoginHref, appSignupHref } from "@/lib/appLinks";
 import { CrossLink, SLink, useSurface, useSurfacePath } from "@/components/surface/SurfaceLink";
 
 export interface SurfaceNavItem {
