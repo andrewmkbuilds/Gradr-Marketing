@@ -267,9 +267,10 @@ export default function MarketingEmailOps() {
               ))}
             </div>
             <FormField label="Template">
-              {(control) => (
+              {({ id, "aria-describedby": describedBy }) => (
               <select
-                {...control}
+                id={id}
+                aria-describedby={describedBy}
                 className="h-10 rounded-control border border-border bg-surface px-3 text-body-sm text-foreground"
                 value={templateFilter}
                 onChange={(e) => setTemplateFilter(e.target.value)}
@@ -284,9 +285,10 @@ export default function MarketingEmailOps() {
               )}
             </FormField>
             <FormField label="Status">
-              {(control) => (
+              {({ id, "aria-describedby": describedBy }) => (
               <select
-                {...control}
+                id={id}
+                aria-describedby={describedBy}
                 className="h-10 rounded-control border border-border bg-surface px-3 text-body-sm text-foreground"
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
