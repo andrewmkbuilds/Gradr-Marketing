@@ -62,7 +62,25 @@ const APP_ONLY_TITLES = [
 const failures = [];
 const fail = (msg) => failures.push(msg);
 
+/**
+ * Wait for the route's client-side head to take over.
+ *
+ * index.html ships a static SEO head for non-JS crawlers; on mount the app
+ * removes those copies and react-helmet-async writes per-route tags marked
+ * with `data-rh`. Reading before that swap lands would audit the static
+ * homepage head on every route, so the audit blocks on the Helmet-owned
+ * canonical (and on lazy route chunks resolving).
+ */
+async function waitForRouteHead(page) {
+  await page
+    .waitForFunction(() => !!document.querySelector('link[rel="canonical"][data-rh]'), null, {
+      timeout: 10000,
+    })
+    .catch(() => {});
+}
+
 async function readMeta(page) {
+  await waitForRouteHead(page);
   return page.evaluate(() => {
     const attr = (sel, name) => document.querySelector(sel)?.getAttribute(name) ?? null;
     return {
@@ -77,6 +95,7 @@ async function readMeta(page) {
     };
   });
 }
+
 
 function auditShared(label, meta, { origin, path, indexable }) {
   if (!meta.title || /Lovable/i.test(meta.title)) fail(`${label}: missing or template <title>`);
