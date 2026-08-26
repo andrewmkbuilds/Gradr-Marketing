@@ -148,11 +148,14 @@ Deno.serve(async (req) => {
   }
 
   // Enforce the trust model described at the top of this file.
-  const claims = decodeJwtClaims(
-    (req.headers.get('Authorization') || '').replace(/^Bearer\s+/i, '')
-  )
+  const bearer = (req.headers.get('Authorization') || '').replace(/^Bearer\s+/i, '').trim()
+  const claims = decodeJwtClaims(bearer)
   const callerRole = String(claims?.role ?? '')
-  const isService = callerRole === 'service_role'
+  // The service-role credential is a JWT on legacy projects and an opaque
+  // `sb_secret_...` string on projects migrated to the new API keys, which has
+  // no decodable claims — compare it directly as well.
+  const isService =
+    callerRole === 'service_role' || (bearer.length > 0 && bearer === supabaseServiceKey)
 
   if (!isService) {
     if (!USER_SENDABLE.has(templateName)) {

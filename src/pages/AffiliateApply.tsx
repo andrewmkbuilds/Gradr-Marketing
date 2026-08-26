@@ -40,6 +40,19 @@ export default function AffiliateApply() {
     navigate("/affiliate/resources", { replace: true });
     return null;
   }
+  if (!user) {
+    return (
+      <Card variant="raised" padding="lg" className="mx-auto max-w-2xl text-center">
+        <Text variant="h5" as="h1" className="mb-2">Sign in to apply</Text>
+        <Text variant="body-sm" tone="muted" className="mb-6">
+          Applications are tied to a Gradr account so we can track referrals and pay you out.
+        </Text>
+        <Button onClick={() => navigate("/affiliate/login?next=%2Faffiliate%2Fjoin")}>
+          Sign in to continue
+        </Button>
+      </Card>
+    );
+  }
   if (my?.application?.status === "pending") {
     return (
       <Card variant="raised" padding="lg" className="mx-auto max-w-2xl text-center">
@@ -51,6 +64,11 @@ export default function AffiliateApply() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!user) {
+      toast.error("Please sign in to submit your application");
+      navigate("/affiliate/login?next=%2Faffiliate%2Fjoin");
+      return;
+    }
     const fd = new FormData(e.currentTarget);
     const raw = Object.fromEntries(fd.entries());
     const parsed = schema.safeParse({ ...raw, agreed_to_terms: fd.get("agreed_to_terms") === "on" });
@@ -61,7 +79,7 @@ export default function AffiliateApply() {
     setSubmitting(true);
     const v = parsed.data;
     const { error } = await supabase.from("affiliate_applications").insert({
-      user_id: user!.id,
+      user_id: user.id,
       full_name: v.full_name,
       email: v.email,
       brand_name: v.brand_name || null,

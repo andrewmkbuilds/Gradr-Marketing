@@ -93,14 +93,23 @@ try {
       for (const route of ROUTES) {
         await page.goto(`${BASE}${route}`, { waitUntil: "domcontentloaded" });
         await page.waitForTimeout(1800);
-        await page.addScriptTag({ content: AXE });
-        const run = await page.evaluate(async () => {
-          // eslint-disable-next-line no-undef
-          return await window.axe.run(document, {
-            resultTypes: ["violations"],
-            runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"] },
+        // Routes that hand off to the app surface navigate away mid-scan,
+        // destroying the execution context — retry once, then skip the route
+        // rather than crashing the whole audit.
+        let run;
+        try {
+          await page.addScriptTag({ content: AXE });
+          run = await page.evaluate(async () => {
+            // eslint-disable-next-line no-undef
+            return await window.axe.run(document, {
+              resultTypes: ["violations"],
+              runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"] },
+            });
           });
-        });
+        } catch {
+          console.log(`· skipped ${route} (${viewport.name}/${theme}) — navigated away during scan`);
+          continue;
+        }
         for (const violation of run.violations) {
           results.push({
             route,

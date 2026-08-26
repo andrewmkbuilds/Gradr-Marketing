@@ -12,6 +12,7 @@ import {
   Upload,
 } from "lucide-react";
 import { PublicShell } from "@/components/PublicShell";
+import { Card, Text } from "@/design-system/gradr-9b9b95";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { trackEvent, withUtm } from "@/lib/analytics";
 import {
@@ -277,10 +278,10 @@ export default function AtsResumeChecker() {
         </h2>
         <dl className="mt-6 space-y-5">
           {FAQS.map((faq) => (
-            <div key={faq.question} className="rounded-xl border border-border/70 p-5">
-              <dt className="font-medium text-foreground">{faq.question}</dt>
-              <dd className="mt-2 text-sm leading-relaxed text-muted-foreground">{faq.answer}</dd>
-            </div>
+            <Card key={faq.question} variant="outline" padding="md">
+              <Text variant="h6" as="dt">{faq.question}</Text>
+              <Text variant="body-sm" tone="muted" as="dd" className="mt-2">{faq.answer}</Text>
+            </Card>
           ))}
         </dl>
       </section>
