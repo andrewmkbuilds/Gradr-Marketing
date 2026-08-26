@@ -26,6 +26,10 @@ jobs:
       - name: Brand asset integrity (hash manifest)
         run: node scripts/check-brand-assets.mjs
 
+      # Static analysis of the email templates — no build or browser needed.
+      - name: Email links stay on the right domain (and no auth templates here)
+        run: node scripts/check-email-links.mjs
+
       - name: Build
         run: bun run build
 

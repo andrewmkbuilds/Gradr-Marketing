@@ -1,6 +1,6 @@
 /// <reference types="npm:@types/react@18.3.1" />
 import * as React from 'npm:react@18.3.1'
-import { Badge, Bullets, Cta, DetailTable, EmailLayout, Paragraph, link } from './components.tsx'
+import { Badge, Bullets, Cta, DetailTable, EmailLayout, Paragraph, appLink, link } from './components.tsx'
 import type { TemplateEntry } from './registry.ts'
 
 interface Props {
@@ -17,7 +17,7 @@ interface Props {
 const toneFor = (s?: string) => (s === 'critical' || s === 'high' ? 'danger' : s === 'medium' ? 'warning' : 'teal')
 
 const Email = ({ title, severity, summary, detectedAt, source, affected, actions, reviewUrl }: Props) => {
-  const href = reviewUrl || link('/admin/security', 'security-alert')
+  const href = reviewUrl || appLink('/admin/security', 'security-alert')
   return (
     <EmailLayout
       preview={title || 'Security alert from Gradr'}

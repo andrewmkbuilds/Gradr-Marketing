@@ -1,6 +1,6 @@
 /// <reference types="npm:@types/react@18.3.1" />
 import * as React from 'npm:react@18.3.1'
-import { Bullets, Card, Cta, DetailTable, EmailLayout, Paragraph, greeting } from './components.tsx'
+import { Bullets, Card, Cta, DetailTable, EmailLayout, Paragraph, appLink, greeting } from './components.tsx'
 import type { TemplateEntry } from './registry.ts'
 
 interface Props {
@@ -40,7 +40,7 @@ const Email = ({ firstName, verificationType, reviewerNotes, reviewedAt }: Props
         ]}
       />
     </Card>
-    <Cta href="https://app.gradr.me/settings#eligibility">Update my request</Cta>
+    <Cta href={appLink('/settings#eligibility', 'verification-needs-info')}>Update my request</Cta>
   </EmailLayout>
 )
 

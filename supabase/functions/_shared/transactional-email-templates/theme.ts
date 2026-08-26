@@ -43,12 +43,58 @@ export const LOGO_URL =
   'https://gradr.me/__l5e/assets-v1/adf77cc0-3a55-4a03-98ba-9db489f75c22/gradr-email-logo-144.png'
 export const SUPPORT_EMAIL = 'support@gradr.me'
 
-/** Append UTM params so email traffic is attributable in analytics. */
+/**
+ * Paths that only exist behind authentication. They live on app.gradr.me and
+ * must NEVER be linked at the marketing apex — gradr.me/billing is a dead
+ * legacy route since the product split. `scripts/check-email-links.mjs`
+ * enforces this at CI time.
+ */
+export const AUTHENTICATED_PATH_PREFIXES = [
+  '/dashboard',
+  '/billing',
+  '/credits',
+  '/settings',
+  '/account',
+  '/profile',
+  '/admin',
+  '/resume',
+  '/match',
+  '/jobs',
+  '/apply',
+  '/interview',
+  '/pipeline',
+  '/onboarding',
+  '/auth',
+  '/login',
+  '/signup',
+  '/subscription',
+  '/upgrade',
+  '/checkout',
+] as const
+
+function withUtm(base: string, campaign: string, medium: string): string {
+  const sep = base.includes('?') ? '&' : '?'
+  return `${base}${sep}utm_source=email&utm_medium=${medium}&utm_campaign=${encodeURIComponent(campaign)}`
+}
+
+/** Marketing / public link on gradr.me. Append UTM params for attribution. */
 export function link(path: string, campaign: string): string {
   const base = path.startsWith('http') ? path : `${SITE_URL}${path.startsWith('/') ? path : `/${path}`}`
-  const sep = base.includes('?') ? '&' : '?'
-  return `${base}${sep}utm_source=email&utm_medium=lifecycle&utm_campaign=${encodeURIComponent(campaign)}`
+  return withUtm(base, campaign, 'lifecycle')
 }
+
+/** Authenticated product link on app.gradr.me. */
+export function appLink(path: string, campaign: string): string {
+  const base = path.startsWith('http') ? path : `${APP_URL}${path.startsWith('/') ? path : `/${path}`}`
+  return withUtm(base, campaign, 'lifecycle')
+}
+
+/** Marketing-campaign link (newsletter, announcements) on gradr.me. */
+export function marketingLink(path: string, campaign: string): string {
+  const base = path.startsWith('http') ? path : `${SITE_URL}${path.startsWith('/') ? path : `/${path}`}`
+  return withUtm(base, campaign, 'marketing')
+}
+
 
 export type Tone = 'teal' | 'mahogany' | 'success' | 'warning' | 'danger' | 'neutral'
 

@@ -48,6 +48,7 @@ const MarketingSurface = lazy(() => import("./surfaces/MarketingSurface"));
 import { AppPricingRedirect } from "@/components/surface/AppPricingRedirect";
 import { LegacyAppRedirect } from "@/components/surface/LegacyAppRedirect";
 const DesignSystemGallery = lazy(() => import("./pages/DesignSystemGallery"));
+const MarketingEmailOps = lazy(() => import("./pages/MarketingEmailOps"));
 const NewsSurface = lazy(() => import("./surfaces/NewsSurface"));
 const DocsSurface = lazy(() => import("./surfaces/DocsSurface"));
 const AffiliatesSurface = lazy(() => import("./surfaces/AffiliatesSurface"));
@@ -195,6 +196,8 @@ function AppRoutes() {
         <Route path="/job-search/:slug" element={<AnimatedPage><JobLanding /></AnimatedPage>} />
         {/* Internal, noindexed component gallery used by the visual suites. */}
         <Route path="/design-system" element={<DesignSystemGallery />} />
+        {/* Internal, noindexed marketing email console (admin-gated server-side). */}
+        <Route path="/ops/marketing-emails" element={<MarketingEmailOps />} />
         <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
         {/* Legacy product URLs (/login, /signup, /dashboard, …) forward to
             their real home on app.gradr.me; anything else is a genuine 404. */}

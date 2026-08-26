@@ -16,7 +16,20 @@ import {
   Section,
   Text,
 } from 'npm:@react-email/components@0.0.22'
-import { LOGO_URL, SITE_URL, SUPPORT_EMAIL, brand, displayStack, fontStack, link, Tone, tonePalette } from './theme.ts'
+import {
+  LOGO_URL,
+  SITE_URL,
+  SUPPORT_EMAIL,
+  appLink,
+  brand,
+  displayStack,
+  fontStack,
+  link,
+  marketingLink,
+  Tone,
+  tonePalette,
+} from './theme.ts'
+
 
 /* ------------------------------------------------------------------ */
 /* Shell                                                               */
@@ -34,6 +47,11 @@ export interface LayoutProps {
   /** Rendered under the body, above the footer. */
   outro?: React.ReactNode
   footerNote?: string
+  /**
+   * `product` footers point at the authenticated app (app.gradr.me).
+   * `marketing` footers stay entirely on the public site.
+   */
+  audience?: 'product' | 'marketing'
 }
 
 export const EmailLayout = ({
@@ -45,7 +63,9 @@ export const EmailLayout = ({
   children,
   outro,
   footerNote,
+  audience = 'product',
 }: LayoutProps) => {
+
   const accent = tonePalette[tone]
   return (
     <Html lang="en" dir="ltr">
@@ -106,18 +126,33 @@ export const EmailLayout = ({
             <Hr style={styles.hr} />
             {footerNote ? <Text style={styles.footerNote}>{footerNote}</Text> : null}
             <Text style={styles.footerLinks}>
-              <Link style={styles.footerLink} href={link('/', campaign)}>
-                Dashboard
-              </Link>
-              <span style={styles.dot}>·</span>
-              <Link style={styles.footerLink} href={link('/settings', campaign)}>
-                Email preferences
-              </Link>
+              {audience === 'marketing' ? (
+                <>
+                  <Link style={styles.footerLink} href={marketingLink('/', campaign)}>
+                    Gradr
+                  </Link>
+                  <span style={styles.dot}>·</span>
+                  <Link style={styles.footerLink} href={marketingLink('/blog', campaign)}>
+                    Blog
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link style={styles.footerLink} href={appLink('/', campaign)}>
+                    Dashboard
+                  </Link>
+                  <span style={styles.dot}>·</span>
+                  <Link style={styles.footerLink} href={appLink('/settings', campaign)}>
+                    Email preferences
+                  </Link>
+                </>
+              )}
               <span style={styles.dot}>·</span>
               <Link style={styles.footerLink} href={`mailto:${SUPPORT_EMAIL}`}>
                 Support
               </Link>
             </Text>
+
             <Text style={styles.footerLinks}>
               <Link style={styles.footerLinkMuted} href={link('/privacy', campaign)}>
                 Privacy
@@ -632,4 +667,4 @@ const styles: Record<string, React.CSSProperties> = {
   fallbackLink: { color: brand.teal },
 }
 
-export { link, brand }
+export { link, appLink, marketingLink, brand }
