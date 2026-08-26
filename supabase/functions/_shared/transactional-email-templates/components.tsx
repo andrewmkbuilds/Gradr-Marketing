@@ -47,6 +47,11 @@ export interface LayoutProps {
   /** Rendered under the body, above the footer. */
   outro?: React.ReactNode
   footerNote?: string
+  /**
+   * `product` footers point at the authenticated app (app.gradr.me).
+   * `marketing` footers stay entirely on the public site.
+   */
+  audience?: 'product' | 'marketing'
 }
 
 export const EmailLayout = ({
@@ -58,7 +63,9 @@ export const EmailLayout = ({
   children,
   outro,
   footerNote,
+  audience = 'product',
 }: LayoutProps) => {
+
   const accent = tonePalette[tone]
   return (
     <Html lang="en" dir="ltr">
