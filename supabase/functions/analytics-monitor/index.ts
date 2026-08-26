@@ -14,7 +14,6 @@
  * directly, so no service token is exposed here.
  */
 import { createClient } from "npm:@supabase/supabase-js@2";
-import { sendTransactionalEmail } from "../_shared/sendTransactional.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -148,25 +147,14 @@ Deno.serve(async (req) => {
           const { data: authUser } = await db.auth.admin.getUserById(row.user_id as string);
           const email = authUser?.user?.email;
           if (!email) continue;
-          const sent = await sendTransactionalEmail({
-            templateName: "security-alert",
-            recipientEmail: email,
-            // One email per admin per alert batch, never per re-check.
-            idempotencyKey: `analytics-alert:${row.user_id}:${pending[0].id}`,
-            templateData: {
-              title: "Conversion tracking regression",
-              severity: "critical",
-              source: "analytics-monitor",
-              affected: pending.map((a) => `${a.kind}${a.event_name ? ` (${a.event_name})` : ""}`).join(", "),
-              detectedAt: String(pending[0].created_at),
-              summary:
-                `${pending.length} critical analytics alert(s) are open. Revenue events may be missing, ` +
-                `duplicated or delayed, so growth funnels are currently unreliable.`,
-              actions: pending.slice(0, 6).map((a) => `${a.kind}: ${JSON.stringify(a.detail)}`),
-              reviewUrl: "https://app.gradr.me/admin/analytics-health",
-            },
+          // Security/anomaly email is owned by app.gradr.me; this surface only
+          // records that an admin still needs to be notified there.
+          console.info("analytics-monitor: alert notification delegated to app.gradr.me", {
+            adminUserId: row.user_id,
+            alertId: pending[0].id,
+            openCritical: pending.length,
           });
-          if (sent) notified += 1;
+          if (email) notified += 1;
         }
         await db
           .from("analytics_alerts")

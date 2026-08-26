@@ -12,7 +12,6 @@
  */
 import { createClient } from 'npm:@supabase/supabase-js@2'
 import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors'
-import { sendTransactionalEmail } from '../_shared/sendTransactional.ts'
 
 const CODE_TTL_MINUTES = 15
 const MAX_ATTEMPTS = 5
@@ -147,22 +146,17 @@ Deno.serve(async (req) => {
       })
       if (insertError) throw insertError
 
-      const sent = await sendTransactionalEmail({
-        templateName: 'student-verification-code',
-        recipientEmail: email,
-        idempotencyKey: `student-code:${user.id}:${Date.now()}`,
-        templateData: {
-          firstName: (user.user_metadata?.full_name as string | undefined)?.split(' ')[0],
-          code,
-          email,
-          expiresInMinutes: CODE_TTL_MINUTES,
+      // The student verification code email is sent by app.gradr.me, which owns
+      // every verification flow. This surface must not mail product codes.
+      console.error('verify-academic-email invoked on the marketing surface', { userId: user.id })
+      return json(
+        {
+          ok: false,
+          error: 'Verification codes are sent from app.gradr.me. Continue there to verify your email.',
+          owner: 'app.gradr.me',
         },
-      })
-      if (!sent) {
-        return json({ ok: false, error: "We couldn't send the code. Please try again shortly." }, 502)
-      }
-
-      return json({ ok: true, sent: true, email, expiresInMinutes: CODE_TTL_MINUTES, ...info })
+        410,
+      )
     }
 
     if (action === 'confirm') {

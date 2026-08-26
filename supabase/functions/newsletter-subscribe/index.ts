@@ -1,0 +1,176 @@
+/**
+ * Landing-list opt-in for the marketing surface (gradr.me).
+ *
+ * Double opt-in only:
+ *  - `subscribe` stores a `pending` row and mails a single-use confirm link.
+ *  - `confirm` validates the token, flips the row to `confirmed` and sends the
+ *    welcome email.
+ *
+ * This is a per-recipient transactional flow triggered by that recipient's own
+ * action. It never sends to a list.
+ */
+import { createClient } from 'npm:@supabase/supabase-js@2'
+import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors'
+import { sendTransactionalEmail } from '../_shared/sendTransactional.ts'
+
+const CONFIRM_TTL_DAYS = 7
+const MAX_SIGNUPS_PER_IP_PER_HOUR = 5
+
+const json = (body: unknown, status = 200) =>
+  new Response(JSON.stringify(body), {
+    status,
+    headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+  })
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
+
+async function sha256(value: string): Promise<string> {
+  const bytes = new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value)))
+  return Array.from(bytes).map((b) => b.toString(16).padStart(2, '0')).join('')
+}
+
+function clientIp(req: Request): string {
+  return (req.headers.get('x-forwarded-for') ?? '').split(',')[0].trim() || 'unknown'
+}
+
+Deno.serve(async (req) => {
+  if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders })
+  if (req.method !== 'POST') return json({ error: 'Method not allowed' }, 405)
+
+  const url = Deno.env.get('SUPABASE_URL')
+  const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
+  if (!url || !serviceKey) return json({ error: 'Server configuration error' }, 500)
+  const db = createClient(url, serviceKey, { auth: { persistSession: false } })
+
+  let payload: Record<string, unknown>
+  try {
+    payload = await req.json()
+  } catch {
+    return json({ error: 'Invalid request body' }, 400)
+  }
+
+  const action = String(payload.action ?? 'subscribe')
+
+  /* ---------------------------------------------------------------- */
+  /* subscribe                                                         */
+  /* ---------------------------------------------------------------- */
+  if (action === 'subscribe') {
+    const email = String(payload.email ?? '').trim().toLowerCase()
+    const firstName = String(payload.firstName ?? '').trim().slice(0, 80) || null
+    const topic = String(payload.topic ?? '').trim().slice(0, 80) || null
+    const source = String(payload.source ?? 'landing').trim().slice(0, 40) || 'landing'
+
+    if (!email || email.length > 254 || !EMAIL_RE.test(email)) {
+      return json({ error: 'Enter a valid email address.' }, 400)
+    }
+
+    const ipHash = await sha256(`newsletter:${clientIp(req)}`)
+    const hourAgo = new Date(Date.now() - 3_600_000).toISOString()
+    const { count } = await db
+      .from('newsletter_subscribers')
+      .select('id', { count: 'exact', head: true })
+      .eq('ip_hash', ipHash)
+      .gte('created_at', hourAgo)
+    if ((count ?? 0) >= MAX_SIGNUPS_PER_IP_PER_HOUR) {
+      return json({ error: 'Too many signups from this network. Try again in an hour.' }, 429)
+    }
+
+    // Never reveal whether the address already exists — the response is the
+    // same either way, and a confirmed subscriber is not re-mailed.
+    const { data: existing } = await db
+      .from('newsletter_subscribers')
+      .select('id, status')
+      .eq('email', email)
+      .maybeSingle()
+
+    if (existing?.status === 'confirmed') {
+      return json({ ok: true, status: 'pending' })
+    }
+
+    const token = crypto.randomUUID().replace(/-/g, '') + crypto.randomUUID().replace(/-/g, '')
+    const tokenHash = await sha256(token)
+    const now = new Date().toISOString()
+
+    const row = {
+      email,
+      first_name: firstName,
+      topic,
+      source,
+      status: 'pending',
+      confirm_token_hash: tokenHash,
+      confirm_sent_at: now,
+      unsubscribed_at: null,
+      ip_hash: ipHash,
+    }
+
+    const { error: writeError } = existing
+      ? await db.from('newsletter_subscribers').update(row).eq('id', existing.id)
+      : await db.from('newsletter_subscribers').insert(row)
+    if (writeError) {
+      console.error('newsletter-subscribe: write failed', writeError)
+      return json({ error: 'We could not save your subscription. Please try again.' }, 500)
+    }
+
+    const sent = await sendTransactionalEmail({
+      templateName: 'newsletter-confirm',
+      recipientEmail: email,
+      idempotencyKey: `newsletter-confirm:${tokenHash.slice(0, 24)}`,
+      templateData: { firstName: firstName ?? undefined, confirmToken: token, topic: topic ?? undefined },
+    })
+    if (!sent) {
+      return json({ error: 'We could not send the confirmation email. Please try again shortly.' }, 502)
+    }
+
+    return json({ ok: true, status: 'pending' })
+  }
+
+  /* ---------------------------------------------------------------- */
+  /* confirm                                                           */
+  /* ---------------------------------------------------------------- */
+  if (action === 'confirm') {
+    const token = String(payload.token ?? '').trim()
+    if (!token || token.length > 128) return json({ error: 'This confirmation link is invalid.' }, 400)
+
+    const tokenHash = await sha256(token)
+    const { data: row } = await db
+      .from('newsletter_subscribers')
+      .select('id, email, first_name, topic, status, confirm_sent_at')
+      .eq('confirm_token_hash', tokenHash)
+      .maybeSingle()
+
+    if (!row) return json({ error: 'This confirmation link is invalid or has already been used.' }, 404)
+    if (row.status === 'confirmed') return json({ ok: true, status: 'confirmed', alreadyConfirmed: true })
+
+    const sentAt = row.confirm_sent_at ? new Date(row.confirm_sent_at).getTime() : 0
+    if (!sentAt || Date.now() - sentAt > CONFIRM_TTL_DAYS * 86_400_000) {
+      return json({ error: 'This confirmation link has expired. Please subscribe again.' }, 410)
+    }
+
+    const { error: updateError } = await db
+      .from('newsletter_subscribers')
+      .update({
+        status: 'confirmed',
+        confirmed_at: new Date().toISOString(),
+        confirm_token_hash: null,
+      })
+      .eq('id', row.id)
+    if (updateError) {
+      console.error('newsletter-subscribe: confirm failed', updateError)
+      return json({ error: 'We could not confirm your subscription. Please try again.' }, 500)
+    }
+
+    await sendTransactionalEmail({
+      templateName: 'newsletter-welcome',
+      recipientEmail: row.email as string,
+      idempotencyKey: `newsletter-welcome:${row.id}`,
+      templateData: {
+        firstName: (row.first_name as string | null) ?? undefined,
+        topic: (row.topic as string | null) ?? undefined,
+      },
+    })
+
+    return json({ ok: true, status: 'confirmed' })
+  }
+
+  return json({ error: 'Unknown action' }, 400)
+})

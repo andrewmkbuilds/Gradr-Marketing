@@ -1,17 +1,9 @@
 /// <reference types="npm:@types/react@18.3.1" />
 import type * as React from 'npm:react@18.3.1'
 
-import { template as securityAlert } from './security-alert.tsx'
-import { template as subscriptionStarted } from './subscription-started.tsx'
 import { template as subscriptionUpgraded } from './subscription-upgraded.tsx'
 import { template as subscriptionDowngraded } from './subscription-downgraded.tsx'
-import { template as subscriptionCancelled } from './subscription-cancelled.tsx'
-import { template as paymentSuccessful } from './payment-successful.tsx'
-import { template as paymentFailed } from './payment-failed.tsx'
-import { template as verificationApproved } from './verification-approved.tsx'
-import { template as verificationRejected } from './verification-rejected.tsx'
-import { template as verificationNeedsInfo } from './verification-needs-info.tsx'
-import { template as studentVerificationCode } from './student-verification-code.tsx'
+import { template as newsletterConfirm } from './newsletter-confirm.tsx'
 import { template as newsletterWelcome } from './newsletter-welcome.tsx'
 import { template as contactFormReceived } from './contact-form-received.tsx'
 import { template as marketingAnnouncement } from './marketing-announcement.tsx'
@@ -43,17 +35,9 @@ export interface TemplateEntry {
  * `template satisfies TemplateEntry` and registering it here.
  */
 export const TEMPLATES: Record<string, TemplateEntry> = {
-  'security-alert': securityAlert,
-  'subscription-started': subscriptionStarted,
   'subscription-upgraded': subscriptionUpgraded,
   'subscription-downgraded': subscriptionDowngraded,
-  'subscription-cancelled': subscriptionCancelled,
-  'payment-successful': paymentSuccessful,
-  'payment-failed': paymentFailed,
-  'verification-approved': verificationApproved,
-  'verification-rejected': verificationRejected,
-  'verification-needs-info': verificationNeedsInfo,
-  'student-verification-code': studentVerificationCode,
+  'newsletter-confirm': newsletterConfirm,
   'newsletter-welcome': newsletterWelcome,
   'contact-form-received': contactFormReceived,
   'marketing-announcement': marketingAnnouncement,
@@ -68,6 +52,24 @@ export const MARKETING_TEMPLATES = Object.keys(TEMPLATES).filter(
  * Auth email actions. This project must never register a template for any of
  * them — Supabase auth mail is rendered and sent by the app.gradr.me project.
  */
+/**
+ * Billing, payment, verification and security emails were retired from this
+ * marketing project on 2026-08-26: app.gradr.me owns every live send. They are
+ * kept here only so `send-transactional-email` can reject a stale caller with a
+ * clear message instead of a generic "unknown template".
+ */
+export const RETIRED_TO_APP_TEMPLATES = [
+  'security-alert',
+  'subscription-started',
+  'subscription-cancelled',
+  'payment-successful',
+  'payment-failed',
+  'verification-approved',
+  'verification-rejected',
+  'verification-needs-info',
+  'student-verification-code',
+] as const
+
 export const AUTH_TEMPLATE_NAMES = [
   'signup',
   'magiclink',
