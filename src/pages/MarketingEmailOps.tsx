@@ -268,41 +268,38 @@ export default function MarketingEmailOps() {
                 </Button>
               ))}
             </div>
-            <FormField label="Template">
-              {({ id, "aria-describedby": describedBy }) => (
-              <select
-                id={id}
-                aria-describedby={describedBy}
-                className="h-10 rounded-control border border-border bg-surface px-3 font-sans text-body-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                value={templateFilter}
-                onChange={(e) => setTemplateFilter(e.target.value)}
+            <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by template">
+              <Button
+                size="sm"
+                variant={templateFilter === "" ? "primary" : "outline"}
+                onClick={() => setTemplateFilter("")}
               >
-                <option value="">All templates</option>
-                {log?.templates.map((t) => (
-                  <option key={t.templateName} value={t.templateName}>
-                    {t.displayName}
-                  </option>
-                ))}
-              </select>
-              )}
-            </FormField>
-            <FormField label="Status">
-              {({ id, "aria-describedby": describedBy }) => (
-              <select
-                id={id}
-                aria-describedby={describedBy}
-                className="h-10 rounded-control border border-border bg-surface px-3 font-sans text-body-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-              >
-                <option value="">All statuses</option>
-                <option value="sent">Sent</option>
-                <option value="pending">Pending</option>
-                <option value="dlq">Failed</option>
-                <option value="suppressed">Suppressed</option>
-              </select>
-              )}
-            </FormField>
+                All templates
+              </Button>
+              {log?.templates.map((t) => (
+                <Button
+                  key={t.templateName}
+                  size="sm"
+                  variant={templateFilter === t.templateName ? "primary" : "outline"}
+                  onClick={() => setTemplateFilter(t.templateName)}
+                >
+                  {t.displayName}
+                </Button>
+              ))}
+            </div>
+            <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by status">
+              {STATUS_OPTIONS.map((option) => (
+                <Button
+                  key={option.value}
+                  size="sm"
+                  variant={statusFilter === option.value ? "primary" : "outline"}
+                  onClick={() => setStatusFilter(option.value)}
+                >
+                  {option.label}
+                </Button>
+              ))}
+            </div>
+
             <Button variant="outline" size="sm" onClick={() => void loadLog()} disabled={loading}>
               <RefreshCw className="size-4" aria-hidden /> Refresh
             </Button>
