@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { getPaddleEnvironment } from "@/lib/paddle";
+import { currentPaymentsEnvironment } from "@/lib/paymentsConfig";
 import { reportApiFailure } from "@/lib/monitoring/reliability";
 import type { VerificationStatus } from "@/config/eligibility";
 
@@ -136,7 +136,7 @@ export async function resolveCheckoutDiscount(
   interval: string,
 ): Promise<ResolvedDiscount> {
   const { data, error } = await supabase.functions.invoke("resolve-discount", {
-    body: { plan, interval, environment: getPaddleEnvironment() },
+    body: { plan, interval, environment: currentPaymentsEnvironment() },
   });
   if (error || !data) return { percentage: 0 };
   return data as ResolvedDiscount;

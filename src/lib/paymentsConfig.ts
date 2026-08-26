@@ -3,7 +3,7 @@
  *
  * Kept free of side effects and of `import.meta.env` reads at module scope so
  * it can be unit-tested and reused by the pricing banner, the admin payments
- * status page and `src/lib/paddle.ts` itself.
+ * status page and the eligibility hook.
  */
 
 export type PaddleEnvName = "sandbox" | "live";
