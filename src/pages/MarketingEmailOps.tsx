@@ -48,6 +48,14 @@ const RANGE_OPTIONS = [
 
 type BadgeTone = "primary" | "danger" | "accent" | "neutral" | "outline";
 
+const STATUS_OPTIONS = [
+  { label: "All statuses", value: "" },
+  { label: "Sent", value: "sent" },
+  { label: "Pending", value: "pending" },
+  { label: "Failed", value: "dlq" },
+  { label: "Suppressed", value: "suppressed" },
+];
+
 const STATUS_TONE: Record<string, BadgeTone> = {
   sent: "primary",
   dlq: "danger",
