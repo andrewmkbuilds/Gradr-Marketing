@@ -217,10 +217,16 @@ export function PublicShell({ children, source }: PublicShellProps) {
                 </Link>
               </li>
               <li>
+                <Link to="/connect" className="link-tap text-muted-foreground hover:text-foreground">
+                  Connect an AI assistant
+                </Link>
+              </li>
+              <li>
                 <a href={appLoginHref()} className="link-tap text-muted-foreground hover:text-foreground">
                   Sign in
                 </a>
               </li>
+
 
             </ul>
           </nav>
