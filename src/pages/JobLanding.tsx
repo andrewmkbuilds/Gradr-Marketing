@@ -16,6 +16,7 @@ import {
 } from "@/content/jobLandings";
 import { jobLandingJsonLd } from "@/lib/structuredData";
 import { trackEvent, withUtm } from "@/lib/analytics";
+import { appSignupHref } from "@/lib/appLinks";
 import { useReadTracking } from "@/hooks/useReadTracking";
 
 export default function JobLanding() {
@@ -37,7 +38,7 @@ export default function JobLanding() {
     (l) => l.role.id === role.id && l.slug !== landing.slug,
   ).slice(0, 4);
 
-  const ctaHref = withUtm("/auth?mode=signup", {
+  const ctaHref = withUtm(appSignupHref("/match"), {
     source: "job-search",
     medium: "landing",
     campaign: landing.slug,
@@ -73,8 +74,8 @@ export default function JobLanding() {
           title={landing.title}
           description={role.summary}
           actions={
-            <Link
-              to={ctaHref}
+            <a
+              href={ctaHref}
               onClick={() =>
                 trackEvent("job_landing_cta_click", {
                   article: landing.slug,
@@ -86,7 +87,7 @@ export default function JobLanding() {
             >
               Match my resume to these roles
               <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </Link>
+            </a>
           }
         />
 
