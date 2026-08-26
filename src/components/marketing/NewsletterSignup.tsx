@@ -96,6 +96,15 @@ export function NewsletterSignup({ source = "landing", topic, className }: Newsl
           {status === "submitting" ? "Subscribing…" : "Subscribe"}
         </Button>
       </div>
+      <Text as="p" variant="caption" tone="muted" className="mt-3">
+        Subscribing signs you up for Gradr marketing emails only — it does not create an account.
+        You can unsubscribe from any email. See our{" "}
+        <Link to="/privacy" className="underline underline-offset-2">
+          Privacy Notice
+        </Link>
+        .
+      </Text>
+
     </form>
   );
 }
