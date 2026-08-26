@@ -552,7 +552,322 @@ export default function MarketingEmailOps() {
             </table>
           </Card>
         </section>
+      ) : tab === "subscribers" ? (
+        <section className="mt-8 space-y-6">
+          <div className="flex flex-wrap items-end gap-3">
+            <div className="flex gap-2">
+              {RANGE_OPTIONS.map((option) => (
+                <Button
+                  key={option.days}
+                  size="sm"
+                  variant={days === option.days ? "primary" : "outline"}
+                  onClick={() => setDays(option.days)}
+                >
+                  {option.label}
+                </Button>
+              ))}
+            </div>
+            <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by subscriber status">
+              {SUBSCRIBER_STATUS_OPTIONS.map((option) => (
+                <Button
+                  key={option.value}
+                  size="sm"
+                  variant={subscriberStatus === option.value ? "primary" : "outline"}
+                  onClick={() => setSubscriberStatus(option.value)}
+                >
+                  {option.label}
+                </Button>
+              ))}
+            </div>
+            <form
+              className="flex items-end gap-2"
+              onSubmit={(event) => {
+                event.preventDefault();
+                void loadSubscribers();
+              }}
+            >
+              <FormField label="Search email or name">
+                {(control) => (
+                  <Input
+                    {...control}
+                    type="search"
+                    value={subscriberSearch}
+                    placeholder="amara@"
+                    onChange={(event) => setSubscriberSearch(event.target.value)}
+                  />
+                )}
+              </FormField>
+              <Button type="submit" size="sm" variant="outline" disabled={loading}>
+                <Search className="size-4" aria-hidden /> Search
+              </Button>
+            </form>
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={!subscribers?.rows.length}
+              onClick={() =>
+                downloadFile(
+                  `gradr-subscribers-${new Date().toISOString().slice(0, 10)}.csv`,
+                  "text/csv",
+                  toCsv(subscribers?.rows ?? []),
+                )
+              }
+            >
+              <Download className="size-4" aria-hidden /> CSV
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={!subscribers?.rows.length}
+              onClick={() =>
+                downloadFile(
+                  `gradr-subscribers-${new Date().toISOString().slice(0, 10)}.json`,
+                  "application/json",
+                  JSON.stringify(subscribers?.rows ?? [], null, 2),
+                )
+              }
+            >
+              <Download className="size-4" aria-hidden /> JSON
+            </Button>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-4">
+            {[
+              { key: "total", label: "Total" },
+              { key: "pending", label: "Pending confirm" },
+              { key: "confirmed", label: "Confirmed" },
+              { key: "unsubscribed", label: "Unsubscribed" },
+            ].map((stat) => (
+              <Card key={stat.key} className="p-5">
+                <Text variant="overline" tone="muted">
+                  {stat.label}
+                </Text>
+                <Text variant="h3">{subscribers?.stats?.[stat.key] ?? 0}</Text>
+              </Card>
+            ))}
+          </div>
+
+          <Card className="overflow-x-auto p-0">
+            <table className="w-full border-collapse text-left">
+              <caption className="sr-only">Landing page newsletter subscribers</caption>
+              <thead>
+                <tr className="border-b border-border">
+                  {["Email", "Status", "Signed up", "Last email sent", "Follow-ups"].map((header) => (
+                    <th key={header} scope="col" className="px-5 py-3">
+                      <Text variant="caption" tone="muted">
+                        {header}
+                      </Text>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {loading ? (
+                  <tr>
+                    <td colSpan={5} className="px-5 py-10 text-center">
+                      <Loader2 className="mx-auto size-5 animate-spin" aria-hidden />
+                    </td>
+                  </tr>
+                ) : subscribers?.rows.length ? (
+                  subscribers.rows.map((row) => (
+                    <tr key={row.id} className="border-b border-border">
+                      <td className="px-5 py-3">
+                        <Text variant="body-sm">{row.email}</Text>
+                        {row.first_name ? (
+                          <Text variant="caption" tone="muted">
+                            {row.first_name}
+                            {row.topic ? ` · ${row.topic}` : ""}
+                          </Text>
+                        ) : null}
+                      </td>
+                      <td className="px-5 py-3">
+                        <Badge variant={SUBSCRIBER_TONE[row.status] ?? "neutral"}>
+                          {row.status === "pending" ? "pending confirm" : row.status}
+                        </Badge>
+                      </td>
+                      <td className="px-5 py-3">
+                        <Text variant="body-sm" tone="muted">
+                          {formatDate(row.created_at)}
+                        </Text>
+                      </td>
+                      <td className="px-5 py-3">
+                        {row.lastEmail ? (
+                          <>
+                            <Text variant="body-sm">{row.lastEmail.templateName}</Text>
+                            <Text variant="caption" tone="muted">
+                              {row.lastEmail.status} · {formatDate(row.lastEmail.createdAt)}
+                            </Text>
+                          </>
+                        ) : (
+                          <Text variant="body-sm" tone="muted">
+                            —
+                          </Text>
+                        )}
+                      </td>
+                      <td className="px-5 py-3">
+                        <Text variant="body-sm">
+                          {row.followupsSent} sent · {row.followupsPending} queued
+                        </Text>
+                        {row.nextFollowupAt ? (
+                          <Text variant="caption" tone="muted">
+                            next {formatDate(row.nextFollowupAt)}
+                          </Text>
+                        ) : null}
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={5} className="px-5 py-10 text-center">
+                      <Text variant="body-sm" tone="muted">
+                        <Mail className="mx-auto mb-2 size-5" aria-hidden />
+                        No subscribers in this range.
+                      </Text>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </Card>
+        </section>
+      ) : tab === "engagement" ? (
+        <section className="mt-8 space-y-6">
+          <div className="flex flex-wrap items-end gap-3">
+            <div className="flex gap-2">
+              {RANGE_OPTIONS.map((option) => (
+                <Button
+                  key={option.days}
+                  size="sm"
+                  variant={days === option.days ? "primary" : "outline"}
+                  onClick={() => setDays(option.days)}
+                >
+                  {option.label}
+                </Button>
+              ))}
+            </div>
+            <Button variant="outline" size="sm" onClick={() => void loadEngagement()} disabled={loading}>
+              <RefreshCw className="size-4" aria-hidden /> Refresh
+            </Button>
+          </div>
+
+          <Text variant="body-sm" tone="muted">
+            Opens are measured with a tracking pixel, so image blocking makes them a floor, not a
+            count. Clicks are exact. Rates are unique recipients per delivered email.
+          </Text>
+
+          <Card className="overflow-x-auto p-0">
+            <table className="w-full border-collapse text-left">
+              <caption className="sr-only">Open and click rates per email template</caption>
+              <thead>
+                <tr className="border-b border-border">
+                  {["Template", "Delivered", "Opens", "Open rate", "Clicks", "Click rate"].map((header) => (
+                    <th key={header} scope="col" className="px-5 py-3">
+                      <Text variant="caption" tone="muted">
+                        {header}
+                      </Text>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {loading ? (
+                  <tr>
+                    <td colSpan={6} className="px-5 py-10 text-center">
+                      <Loader2 className="mx-auto size-5 animate-spin" aria-hidden />
+                    </td>
+                  </tr>
+                ) : engagement?.templates.length ? (
+                  engagement.templates.map((row) => (
+                    <tr key={row.templateName} className="border-b border-border">
+                      <td className="px-5 py-3">
+                        <Text variant="body-sm">{row.displayName}</Text>
+                      </td>
+                      <td className="px-5 py-3">
+                        <Text variant="body-sm">{row.sent}</Text>
+                      </td>
+                      <td className="px-5 py-3">
+                        <Text variant="body-sm">{row.opens}</Text>
+                      </td>
+                      <td className="px-5 py-3">
+                        <Text variant="body-sm">{formatRate(row.openRate)}</Text>
+                      </td>
+                      <td className="px-5 py-3">
+                        <Text variant="body-sm">{row.clicks}</Text>
+                      </td>
+                      <td className="px-5 py-3">
+                        <Text variant="body-sm">{formatRate(row.clickRate)}</Text>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={6} className="px-5 py-10 text-center">
+                      <Text variant="body-sm" tone="muted">
+                        No tracked activity in this range.
+                      </Text>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </Card>
+
+          <Card className="overflow-x-auto p-0">
+            <table className="w-full border-collapse text-left">
+              <caption className="sr-only">Recent open and click events</caption>
+              <thead>
+                <tr className="border-b border-border">
+                  {["When", "Event", "Template", "Recipient", "Link"].map((header) => (
+                    <th key={header} scope="col" className="px-5 py-3">
+                      <Text variant="caption" tone="muted">
+                        {header}
+                      </Text>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {engagement?.events.length ? (
+                  engagement.events.slice(0, 100).map((event, index) => (
+                    <tr key={`${event.message_id}-${event.created_at}-${index}`} className="border-b border-border">
+                      <td className="px-5 py-3">
+                        <Text variant="body-sm" tone="muted">
+                          {formatDate(event.created_at)}
+                        </Text>
+                      </td>
+                      <td className="px-5 py-3">
+                        <Badge variant={event.event_type === "click" ? "primary" : "outline"}>
+                          {event.event_type}
+                        </Badge>
+                      </td>
+                      <td className="px-5 py-3">
+                        <Text variant="body-sm">{event.template_name}</Text>
+                      </td>
+                      <td className="px-5 py-3">
+                        <Text variant="body-sm">{event.recipient_email}</Text>
+                      </td>
+                      <td className="px-5 py-3">
+                        <Text variant="caption" tone="muted">
+                          {event.target_url ?? "—"}
+                        </Text>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={5} className="px-5 py-10 text-center">
+                      <Text variant="body-sm" tone="muted">
+                        No events yet.
+                      </Text>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </Card>
+        </section>
       ) : (
+
         <section className="mt-8 grid gap-6 lg:grid-cols-4">
           <nav aria-label="Marketing templates" className="space-y-2 lg:col-span-1">
             {previews?.map((preview) => (
