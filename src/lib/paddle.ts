@@ -1,4 +1,4 @@
-import { initializePaddle as loadPaddle, type Paddle } from "@paddle/paddle-js";
+import type { Paddle } from "@paddle/paddle-js";
 import { supabase } from "@/integrations/supabase/client";
 import { currentPaymentsDiagnostics } from "@/lib/paymentsConfig";
 import { reportApiFailure } from "@/lib/monitoring/reliability";
