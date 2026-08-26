@@ -46,15 +46,15 @@ const RANGE_OPTIONS = [
   { label: "30 days", days: 30 },
 ];
 
-const STATUS_TONE: Record<string, "success" | "danger" | "warning" | "neutral"> = {
-  sent: "success",
+const STATUS_TONE: Record<string, "primary" | "danger" | "accent" | "neutral"> = {
+  sent: "primary",
   dlq: "danger",
   failed: "danger",
   bounced: "danger",
   complained: "danger",
-  suppressed: "warning",
-  pending: "neutral",
-};
+  suppressed: "accent",
+  pending: "outline",
+} as Record<string, "primary" | "danger" | "accent" | "neutral">;
 
 function statusVariant(status: string) {
   return STATUS_TONE[status] ?? "neutral";
@@ -183,27 +183,29 @@ export default function MarketingEmailOps() {
           <CardTitle>Marketing email console</CardTitle>
           <CardDescription>Admin access only. Sign in to continue.</CardDescription>
           <form className="mt-6 space-y-4" onSubmit={signIn}>
-            <FormField label="Email" htmlFor="ops-email">
-              <Input
-                id="ops-email"
-                type="email"
-                autoComplete="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
+            <FormField label="Email" required>
+              {(control) => (
+                <Input
+                  {...control}
+                  type="email"
+                  autoComplete="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              )}
             </FormField>
-            <FormField label="Password" htmlFor="ops-password">
-              <Input
-                id="ops-password"
-                type="password"
-                autoComplete="current-password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
+            <FormField label="Password" required>
+              {(control) => (
+                <Input
+                  {...control}
+                  type="password"
+                  autoComplete="current-password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              )}
             </FormField>
-            {authError ? <Alert variant="destructive">{authError}</Alert> : null}
+            {authError ? <Alert variant="danger">{authError}</Alert> : null}
             <Button type="submit" disabled={authBusy} className="w-full">
               {authBusy ? "Signing in…" : "Sign in"}
             </Button>
@@ -219,10 +221,10 @@ export default function MarketingEmailOps() {
 
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <Text as="h1" size="h2">
+          <Text as="h1" variant="h2">
             Marketing emails
           </Text>
-          <Text size="body-sm" className="text-muted-foreground">
+          <Text variant="body-sm" tone="muted">
             Preview marketing templates and review delivery for gradr.me sends. Auth emails are
             owned by app.gradr.me and never appear here.
           </Text>
@@ -244,7 +246,7 @@ export default function MarketingEmailOps() {
       </header>
 
       {error ? (
-        <Alert variant="destructive" className="mt-6">
+        <Alert variant="danger" className="mt-6">
           <ShieldAlert className="size-4" aria-hidden /> {error}
         </Alert>
       ) : null}
@@ -264,9 +266,10 @@ export default function MarketingEmailOps() {
                 </Button>
               ))}
             </div>
-            <FormField label="Template" htmlFor="ops-template">
+            <FormField label="Template">
+              {(control) => (
               <select
-                id="ops-template"
+                {...control}
                 className="h-10 rounded-control border border-border bg-surface px-3 text-body-sm text-foreground"
                 value={templateFilter}
                 onChange={(e) => setTemplateFilter(e.target.value)}
@@ -278,10 +281,12 @@ export default function MarketingEmailOps() {
                   </option>
                 ))}
               </select>
+              )}
             </FormField>
-            <FormField label="Status" htmlFor="ops-status">
+            <FormField label="Status">
+              {(control) => (
               <select
-                id="ops-status"
+                {...control}
                 className="h-10 rounded-control border border-border bg-surface px-3 text-body-sm text-foreground"
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
@@ -292,6 +297,7 @@ export default function MarketingEmailOps() {
                 <option value="dlq">Failed</option>
                 <option value="suppressed">Suppressed</option>
               </select>
+              )}
             </FormField>
             <Button variant="outline" size="sm" onClick={() => void loadLog()} disabled={loading}>
               <RefreshCw className="size-4" aria-hidden /> Refresh
@@ -301,10 +307,10 @@ export default function MarketingEmailOps() {
           <div className="grid gap-4 sm:grid-cols-4">
             {["total", "sent", "pending", "dlq"].map((key) => (
               <Card key={key} className="p-5">
-                <Text size="overline" className="text-muted-foreground">
+                <Text variant="overline" tone="muted">
                   {key === "dlq" ? "Failed" : key}
                 </Text>
-                <Text size="h3">{log?.stats?.[key] ?? 0}</Text>
+                <Text variant="h3">{log?.stats?.[key] ?? 0}</Text>
               </Card>
             ))}
           </div>
@@ -338,7 +344,7 @@ export default function MarketingEmailOps() {
                       <td className="px-5 py-3">
                         <Badge variant={statusVariant(row.status)}>{row.status}</Badge>
                         {row.error_message ? (
-                          <Text size="caption" className="text-muted-foreground">
+                          <Text variant="caption" tone="muted">
                             {row.error_message}
                           </Text>
                         ) : null}
@@ -351,7 +357,7 @@ export default function MarketingEmailOps() {
                 ) : (
                   <tr>
                     <td colSpan={5} className="px-5 py-10 text-center">
-                      <Text size="body-sm" className="text-muted-foreground">
+                      <Text variant="body-sm" tone="muted">
                         <Mail className="mx-auto mb-2 size-5" aria-hidden />
                         No marketing emails in this range.
                       </Text>
@@ -377,8 +383,8 @@ export default function MarketingEmailOps() {
                 }`}
                 aria-current={selectedPreview === preview.templateName}
               >
-                <Text size="body-sm">{preview.displayName}</Text>
-                <Text size="caption" className="text-muted-foreground">
+                <Text variant="body-sm">{preview.displayName}</Text>
+                <Text variant="caption" tone="muted">
                   v{preview.version}
                 </Text>
               </button>
@@ -392,16 +398,16 @@ export default function MarketingEmailOps() {
               </div>
             ) : active ? (
               active.status === "render_failed" ? (
-                <Alert variant="destructive" className="m-6">
+                <Alert variant="danger" className="m-6">
                   {active.errorMessage ?? "This template failed to render."}
                 </Alert>
               ) : (
                 <div>
                   <div className="border-b border-border px-6 py-4">
-                    <Text size="body-sm" className="text-muted-foreground">
+                    <Text variant="body-sm" tone="muted">
                       Subject
                     </Text>
-                    <Text size="body">{active.subject}</Text>
+                    <Text variant="body">{active.subject}</Text>
                   </div>
                   <iframe
                     title={`${active.displayName} preview`}
@@ -412,7 +418,7 @@ export default function MarketingEmailOps() {
               )
             ) : (
               <div className="p-6">
-                <Text size="body-sm" className="text-muted-foreground">
+                <Text variant="body-sm" tone="muted">
                   Select a template to preview it.
                 </Text>
               </div>
