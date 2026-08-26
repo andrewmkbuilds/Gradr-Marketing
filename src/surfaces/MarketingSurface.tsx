@@ -153,11 +153,11 @@ function Overview() {
       <section className="page-shell pb-16">
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {FEATURES.map((feature) => (
-            <div key={feature.title} className="rounded-xl border border-border/60 bg-card p-5 elev-1">
-              <feature.icon className="h-5 w-5 text-brand-secondary" aria-hidden="true" />
-              <h2 className="mt-3 text-base font-semibold text-foreground">{feature.title}</h2>
-              <p className="mt-1.5 text-sm text-muted-foreground">{feature.body}</p>
-            </div>
+            <Card key={feature.title} variant="raised" padding="md">
+              <feature.icon className="h-5 w-5 text-primary" aria-hidden="true" />
+              <Text variant="h6" as="h2" className="mt-3">{feature.title}</Text>
+              <Text variant="body-sm" tone="muted" className="mt-1.5">{feature.body}</Text>
+            </Card>
           ))}
         </div>
       </section>
