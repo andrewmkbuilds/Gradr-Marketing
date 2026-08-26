@@ -279,7 +279,7 @@ export default function Connect() {
                   rel="noreferrer"
                 >
                   Open Claude with the details prefilled
-                  <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+                  <ExternalLink className="h-4 w-4" aria-hidden="true" />
                 </a>
               )}
             </div>
