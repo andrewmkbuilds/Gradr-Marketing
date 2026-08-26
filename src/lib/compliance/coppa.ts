@@ -90,3 +90,20 @@ export function isKnownChildDevice(): boolean {
   const record = readAgeGate();
   return record ? record.eligible === false : false;
 }
+
+/**
+ * Removes the device-level age marker so the neutral screen can be answered
+ * again. Used when someone mis-typed their birth year: the block is a local
+ * convenience, never an identity claim, so clearing it only resets this device
+ * and never grants eligibility by itself — the screen must be passed again.
+ */
+export function clearAgeGate(): void {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.removeItem(AGE_GATE_KEY);
+  } catch {
+    /* private mode — nothing was stored to begin with */
+  }
+  window.dispatchEvent(new CustomEvent("gradr:age-gate", { detail: null }));
+}
+
