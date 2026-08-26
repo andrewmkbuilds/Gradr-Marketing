@@ -1,6 +1,6 @@
 /// <reference types="npm:@types/react@18.3.1" />
 import * as React from 'npm:react@18.3.1'
-import { Bullets, Card, Cta, DetailTable, EmailLayout, Paragraph, greeting, link } from './components.tsx'
+import { Bullets, Card, Cta, DetailTable, EmailLayout, Paragraph, appLink, greeting, link } from './components.tsx'
 import type { TemplateEntry } from './registry.ts'
 
 interface Props {
@@ -54,7 +54,7 @@ const Email = ({
         }
       />
     </Card>
-    <Cta href={link('/', 'subscription-upgraded')}>Use my new limits</Cta>
+    <Cta href={appLink('/', 'subscription-upgraded')}>Use my new limits</Cta>
   </EmailLayout>
 )
 

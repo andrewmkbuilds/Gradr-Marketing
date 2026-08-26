@@ -1,6 +1,6 @@
 /// <reference types="npm:@types/react@18.3.1" />
 import * as React from 'npm:react@18.3.1'
-import { Bullets, Card, Cta, DetailTable, EmailLayout, Paragraph, SecondaryLink, greeting, link } from './components.tsx'
+import { Bullets, Card, Cta, DetailTable, EmailLayout, Paragraph, SecondaryLink, appLink, greeting, link } from './components.tsx'
 import type { TemplateEntry } from './registry.ts'
 
 interface Props {
@@ -44,7 +44,7 @@ const Email = ({ firstName, planName, accessUntil, cancelledAt, reason }: Props)
     <Cta href={link('/pricing', 'subscription-cancelled')} tone="mahogany">
       Reactivate my plan
     </Cta>
-    <SecondaryLink href={link('/settings', 'subscription-cancelled')}>Export my data</SecondaryLink>
+    <SecondaryLink href={appLink('/settings', 'subscription-cancelled')}>Export my data</SecondaryLink>
   </EmailLayout>
 )
 
