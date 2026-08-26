@@ -33,8 +33,9 @@ Deno.serve(async (req) => {
     const { data, error } = await db
       .from("affiliate_settings")
       .select(PUBLIC_COLUMNS)
-      .limit(1)
+      .eq("id", 1)
       .maybeSingle();
+
     if (error) throw error;
     return json({ settings: data ?? null });
   } catch (e) {
