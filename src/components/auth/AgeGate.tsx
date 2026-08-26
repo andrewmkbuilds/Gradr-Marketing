@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { AlertCircle, ShieldCheck } from "lucide-react";
 import { Button, FormField, Input, Text } from "@/design-system/gradr-9b9b95";
-import { MINIMUM_AGE, checkDateOfBirth, recordAgeGate } from "@/lib/compliance/coppa";
+import { MINIMUM_AGE, checkDateOfBirth, clearAgeGate, recordAgeGate } from "@/lib/compliance/coppa";
 import { SELLER_CONTACT_EMAIL } from "@/content/legal";
 
 /**
