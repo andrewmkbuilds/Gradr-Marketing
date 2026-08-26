@@ -230,3 +230,131 @@ export function suggestRoutes(
     .sort((a, b) => b.score - a.score)
     .slice(0, limit);
 }
+
+/* ------------------------------------------------------------------ *
+ * Suggestion cache
+ *
+ * Ranking is cheap but not free (Levenshtein over every destination), and a
+ * miss frequently repeats: a broken link is retried, a reload happens on a
+ * flaky connection, a crawler walks several dead URLs. Results are memoised in
+ * memory for the session and mirrored into sessionStorage so a reload while
+ * the network is degraded renders "did you mean" instantly, before any JS
+ * chunk or API call would have resolved.
+ *
+ * Staleness is impossible by construction: only destination keys are stored,
+ * and they are re-resolved against the live registry on read. If the registry
+ * changes (new page, renamed route, different app origin) the signature no
+ * longer matches and the entry is discarded rather than rendered.
+ * ------------------------------------------------------------------ */
+
+const CACHE_KEY = "gradr.notfound.suggestions.v1";
+const CACHE_LIMIT = 24;
+
+export type SuggestionSource = "memory" | "storage" | "computed";
+
+interface CacheEntry {
+  /** Destination keys (`to`), highest ranked first. */
+  keys: string[];
+  /** Registry signature the keys were ranked against. */
+  signature: string;
+}
+
+const memoryCache = new Map<string, CacheEntry>();
+
+/** Cheap, order-sensitive fingerprint of the destination registry. */
+function registrySignature(destinations: NotFoundDestination[]): string {
+  return `${destinations.length}:${destinations.map((d) => d.to).join("|")}`;
+}
+
+function readStorage(): Record<string, CacheEntry> {
+  try {
+    const raw = window.sessionStorage.getItem(CACHE_KEY);
+    const parsed = raw ? (JSON.parse(raw) as Record<string, CacheEntry>) : {};
+    return parsed && typeof parsed === "object" ? parsed : {};
+  } catch {
+    // Private mode, disabled storage or corrupt JSON — cache is best-effort.
+    return {};
+  }
+}
+
+function writeStorage(entries: Record<string, CacheEntry>): void {
+  try {
+    const keys = Object.keys(entries);
+    if (keys.length > CACHE_LIMIT) {
+      for (const key of keys.slice(0, keys.length - CACHE_LIMIT)) delete entries[key];
+    }
+    window.sessionStorage.setItem(CACHE_KEY, JSON.stringify(entries));
+  } catch {
+    /* Storage full or unavailable — ranking still works, just uncached. */
+  }
+}
+
+/** Rehydrates cached keys against the live registry; null when anything moved. */
+function resolve(
+  entry: CacheEntry | undefined,
+  destinations: NotFoundDestination[],
+  signature: string,
+): RouteSuggestion[] | null {
+  if (!entry || entry.signature !== signature) return null;
+  const byKey = new Map(destinations.map((d) => [d.to, d]));
+  const resolved: RouteSuggestion[] = [];
+  for (const key of entry.keys) {
+    const destination = byKey.get(key);
+    if (!destination) return null;
+    // Rank order is preserved by position; the numeric score is not persisted.
+    resolved.push({ ...destination, score: entry.keys.length - resolved.length });
+  }
+  return resolved;
+}
+
+export interface CachedSuggestions {
+  suggestions: RouteSuggestion[];
+  source: SuggestionSource;
+}
+
+/**
+ * `suggestRoutes` with a session-scoped cache. Same inputs, same output — the
+ * only difference is `source`, which callers use for telemetry.
+ */
+export function suggestRoutesCached(
+  requestedPath: string,
+  destinations: NotFoundDestination[] = NOT_FOUND_DESTINATIONS,
+  limit = 3,
+): CachedSuggestions {
+  const signature = registrySignature(destinations);
+  const cacheKey = `${limit}:${requestedPath}`;
+
+  const fromMemory = resolve(memoryCache.get(cacheKey), destinations, signature);
+  if (fromMemory) return { suggestions: fromMemory, source: "memory" };
+
+  const hasStorage = typeof window !== "undefined" && "sessionStorage" in window;
+  const stored = hasStorage ? readStorage() : {};
+  const fromStorage = hasStorage ? resolve(stored[cacheKey], destinations, signature) : null;
+  if (fromStorage) {
+    memoryCache.set(cacheKey, { keys: fromStorage.map((s) => s.to), signature });
+    return { suggestions: fromStorage, source: "storage" };
+  }
+
+  const suggestions = suggestRoutes(requestedPath, destinations, limit);
+  const entry: CacheEntry = { keys: suggestions.map((s) => s.to), signature };
+  memoryCache.set(cacheKey, entry);
+  if (memoryCache.size > CACHE_LIMIT) {
+    memoryCache.delete(memoryCache.keys().next().value as string);
+  }
+  if (hasStorage) {
+    delete stored[cacheKey];
+    stored[cacheKey] = entry;
+    writeStorage(stored);
+  }
+  return { suggestions, source: "computed" };
+}
+
+/** Test helper — drops both cache layers. */
+export function clearSuggestionCache(): void {
+  memoryCache.clear();
+  try {
+    window.sessionStorage.removeItem(CACHE_KEY);
+  } catch {
+    /* nothing to clear */
+  }
+}
