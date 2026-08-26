@@ -1,5 +1,6 @@
 import { PublicShell } from "@/components/PublicShell";
-import { LEGAL_PAGES, POLICIES_UPDATED } from "@/content/legal";
+import { LEGAL_PAGES } from "@/content/legal";
+import { legalEffectiveDate } from "@/content/legalRegistry";
 import { Link, useLocation } from "react-router-dom";
 
 interface LegalPageProps {
@@ -19,7 +20,7 @@ export function LegalPage({ title, intro, lastUpdated, children }: LegalPageProp
         <header className="mb-8 space-y-3">
           <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{title}</h1>
           <p className="text-muted-foreground">{intro}</p>
-          <p className="text-xs text-muted-foreground">Last updated {lastUpdated || POLICIES_UPDATED}</p>
+          <p className="text-xs text-muted-foreground">Last updated {lastUpdated || legalEffectiveDate(pathname)}</p>
           <nav aria-label="Policies" className="flex flex-wrap gap-3 pt-1 text-sm">
             {LEGAL_PAGES.map((page) => (
               <Link

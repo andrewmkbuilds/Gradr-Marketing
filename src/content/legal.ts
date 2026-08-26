@@ -17,6 +17,8 @@ export const SELLER_DOMAIN = "gradr.me";
 export const SELLER_WEBSITE_URL = "https://gradr.me";
 export const REFUND_WINDOW_DAYS = 30;
 export const POLICIES_UPDATED = "2026-08-12";
+/** Effective date of the currently published Refund Policy. */
+export const REFUND_POLICY_EFFECTIVE = "2026-08-12";
 
 export const LEGAL_PAGES = [
   { path: "/terms", label: "Terms" },

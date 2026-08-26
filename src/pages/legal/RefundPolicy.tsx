@@ -1,11 +1,17 @@
 import { LegalPage, LegalSection } from "@/components/legal/LegalPage";
-import { REFUND_WINDOW_DAYS, SELLER_CONTACT_EMAIL, SELLER_LEGAL_NAME } from "@/content/legal";
+import {
+  REFUND_POLICY_EFFECTIVE,
+  REFUND_WINDOW_DAYS,
+  SELLER_CONTACT_EMAIL,
+  SELLER_LEGAL_NAME,
+} from "@/content/legal";
 
 export default function RefundPolicy() {
   return (
     <LegalPage
       title="Refund Policy"
       intro={`How refunds work for Gradr subscriptions and credit packs sold by ${SELLER_LEGAL_NAME}.`}
+      lastUpdated={REFUND_POLICY_EFFECTIVE}
     >
       <LegalSection heading={`${REFUND_WINDOW_DAYS}-day refund window`}>
         <p>
