@@ -18,7 +18,7 @@ const db = createClient(
 );
 
 const PUBLIC_COLUMNS =
-  "default_commission_rate, cookie_duration_days, minimum_payout_cents, payout_schedule, terms_url";
+  "program_enabled, cookie_duration_days, default_commission_type, default_commission_rate, minimum_payout_threshold, affiliate_terms";
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
