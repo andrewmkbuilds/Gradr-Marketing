@@ -101,15 +101,14 @@ export default function JobSearchIndex() {
         />
 
         <section aria-label="Filters" className="space-y-4 rounded-xl border border-border bg-card p-4">
-          <div className="relative">
-            <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" aria-hidden="true" />
+          <div className="flex items-center gap-2">
+            <Search className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
             <Input
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search role, city, or skill"
               aria-label="Search job pages by role, city, or skill"
-              className="pl-10"
             />
           </div>
 
@@ -188,7 +187,9 @@ export default function JobSearchIndex() {
                 )}
                 {landing.location.name}
               </p>
-              <Text variant="h6" className="mt-1">{landing.title}</Text>
+              <div className="mt-1">
+                <Text variant="h6">{landing.title}</Text>
+              </div>
               <span className="mt-2 inline-flex items-center gap-1 text-sm text-primary">
                 View page
                 <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 motion-reduce:transition-none" />
