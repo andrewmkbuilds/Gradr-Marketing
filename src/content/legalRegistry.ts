@@ -11,14 +11,14 @@
  * RouteSeo.tsx, add a sitemap entry, and add a row here. `legalRegistry.test`
  * fails the build if any of those are missing.
  */
-import { LEGAL_PAGES, POLICIES_UPDATED, REFUND_POLICY_EFFECTIVE } from "@/content/legal";
-import { PRIVACY_V1_EFFECTIVE, TERMS_V1_EFFECTIVE } from "@/content/legalDocs";
+import { LEGAL_PAGES, POLICIES_UPDATED, REFUND_POLICY_EFFECTIVE } from "./legal";
+import { PRIVACY_V1_EFFECTIVE, TERMS_V1_EFFECTIVE } from "./legalDocs";
 import {
   CHILDRENS_PRIVACY_EFFECTIVE,
   COOKIE_POLICY_EFFECTIVE,
   DPA_EFFECTIVE,
-} from "@/content/legalExtra";
-import { POLICIES_V1_EFFECTIVE } from "@/content/legalPolicies";
+} from "./legalExtra";
+import { POLICIES_V1_EFFECTIVE } from "./legalPolicies";
 
 export interface LegalPageMeta {
   path: string;
