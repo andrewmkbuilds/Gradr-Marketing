@@ -37,7 +37,7 @@ export default function JobLanding() {
     (l) => l.role.id === role.id && l.slug !== landing.slug,
   ).slice(0, 4);
 
-  const ctaHref = withUtm("/auth?mode=signup", {
+  const ctaHref = withUtm(appSignupHref("/match"), {
     source: "job-search",
     medium: "landing",
     campaign: landing.slug,
