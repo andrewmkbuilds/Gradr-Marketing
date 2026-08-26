@@ -124,7 +124,7 @@ const NotFound = () => {
         noindex
       />
 
-      <section className="page-shell py-20" data-page="not-found">
+      <section className="page-shell section-y" data-page="not-found">
         <div className="mx-auto max-w-3xl text-center">
           <Badge variant="outline">Error 404</Badge>
           <Text variant="h1" className="mt-6">
@@ -215,7 +215,7 @@ const NotFound = () => {
           ) : null}
         </div>
 
-        <div className="mt-16">
+        <div className="section-gap">
           <Text
             variant="overline"
             as="p"

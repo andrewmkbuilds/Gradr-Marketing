@@ -208,7 +208,7 @@ export default function JobApplicationTracker() {
         </p>
       </section>
 
-      <section className="mt-16" aria-labelledby="workflow">
+      <section className="section-gap" aria-labelledby="workflow">
         <h2 id="workflow" className="text-2xl font-semibold tracking-tight text-foreground">
           The AI job domination workflow
         </h2>
@@ -238,7 +238,7 @@ export default function JobApplicationTracker() {
         </ol>
       </section>
 
-      <section className="mt-16" aria-labelledby="stages">
+      <section className="section-gap" aria-labelledby="stages">
         <h2 id="stages" className="text-2xl font-semibold tracking-tight text-foreground">
           Every application, in a stage that means something
         </h2>
@@ -270,7 +270,7 @@ export default function JobApplicationTracker() {
         </div>
       </section>
 
-      <section className="mt-16" aria-labelledby="vs-spreadsheet">
+      <section className="section-gap" aria-labelledby="vs-spreadsheet">
         <h2
           id="vs-spreadsheet"
           className="flex items-center gap-2 text-2xl font-semibold tracking-tight text-foreground"
@@ -288,11 +288,11 @@ export default function JobApplicationTracker() {
         </div>
       </section>
 
-      <section className="mt-16">
+      <section className="section-gap">
         <FaqBlock items={FAQS} source="job-application-tracker" />
       </section>
 
-      <section className="mt-16 rounded-2xl border border-border bg-card p-6 sm:p-8">
+      <section className="section-gap rounded-2xl border border-border bg-card p-6 sm:p-8">
         <h2 className="text-xl font-semibold text-foreground">Keep reading</h2>
         <p className="mt-1 text-sm text-muted-foreground">
           The tracker works best alongside the rest of the workflow.
@@ -320,7 +320,7 @@ export default function JobApplicationTracker() {
         </ul>
       </section>
 
-      <section className="mt-12 text-center">
+      <section className="section-gap text-center">
         <h2 className="text-2xl font-semibold tracking-tight text-foreground">
           Run your next fifty applications properly
         </h2>
