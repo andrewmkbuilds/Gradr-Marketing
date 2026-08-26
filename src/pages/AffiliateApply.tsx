@@ -7,7 +7,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useMyAffiliate } from "@/hooks/useAffiliate";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
-import { Button, Card, Input, Label, Text, Textarea } from "@/design-system/gradr-9b9b95";
+import { Button, Card, FormField, Input, Text, Textarea } from "@/design-system/gradr-9b9b95";
 
 const schema = z.object({
   full_name: z.string().trim().min(2).max(120),
@@ -98,33 +98,47 @@ export default function AffiliateApply() {
       <Card variant="raised" padding="lg">
         <form onSubmit={handleSubmit} className="space-y-5">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div><Label className="mb-1.5 block">Full name *</Label><Input name="full_name" required defaultValue={user?.user_metadata?.full_name || ""} /></div>
-          <div><Label className="mb-1.5 block">Contact email *</Label><Input name="email" type="email" required defaultValue={user?.email || ""} /></div>
-          <div><Label className="mb-1.5 block">Brand / company</Label><Input name="brand_name" /></div>
-          <div><Label className="mb-1.5 block">Website</Label><Input name="website" placeholder="https://" /></div>
-          <div><Label className="mb-1.5 block">Twitter / X</Label><Input name="twitter" placeholder="@handle or url" /></div>
-          <div><Label className="mb-1.5 block">LinkedIn</Label><Input name="linkedin" /></div>
-          <div><Label className="mb-1.5 block">YouTube / TikTok</Label><Input name="youtube" /></div>
-          <div><Label className="mb-1.5 block">Audience type *</Label><Input name="audience_type" required placeholder="e.g. career coach, student creator" /></div>
-          <div><Label className="mb-1.5 block">Audience size *</Label><Input name="audience_size" required placeholder="e.g. 12k newsletter, 50k YT" /></div>
-          <div><Label className="mb-1.5 block">Payout email *</Label><Input name="payout_email" type="email" required defaultValue={user?.email || ""} /></div>
-          <div>
-            <Label className="mb-1.5 block">Payout method *</Label>
-            <select name="payout_method" defaultValue="paypal" className={selectCls}>
-              <option value="paypal">PayPal</option>
-              <option value="wise">Wise</option>
-              <option value="bank">Bank transfer</option>
-            </select>
-          </div>
+          <FormField label="Full name *">
+            {(control) => <Input {...control} name="full_name" required defaultValue={user?.user_metadata?.full_name || ""} />}
+          </FormField>
+          <FormField label="Contact email *">
+            {(control) => <Input {...control} name="email" type="email" required defaultValue={user?.email || ""} />}
+          </FormField>
+          <FormField label="Brand / company">{(control) => <Input {...control} name="brand_name" />}</FormField>
+          <FormField label="Website">{(control) => <Input {...control} name="website" placeholder="https://" />}</FormField>
+          <FormField label="Twitter / X">
+            {(control) => <Input {...control} name="twitter" placeholder="@handle or url" />}
+          </FormField>
+          <FormField label="LinkedIn">{(control) => <Input {...control} name="linkedin" />}</FormField>
+          <FormField label="YouTube / TikTok">{(control) => <Input {...control} name="youtube" />}</FormField>
+          <FormField label="Audience type *">
+            {(control) => <Input {...control} name="audience_type" required placeholder="e.g. career coach, student creator" />}
+          </FormField>
+          <FormField label="Audience size *">
+            {(control) => <Input {...control} name="audience_size" required placeholder="e.g. 12k newsletter, 50k YT" />}
+          </FormField>
+          <FormField label="Payout email *">
+            {(control) => <Input {...control} name="payout_email" type="email" required defaultValue={user?.email || ""} />}
+          </FormField>
+          <FormField label="Payout method *">
+            {(control) => (
+              <select {...control} name="payout_method" defaultValue="paypal" className={selectCls}>
+                <option value="paypal">PayPal</option>
+                <option value="wise">Wise</option>
+                <option value="bank">Bank transfer</option>
+              </select>
+            )}
+          </FormField>
         </div>
-        <div>
-          <Label className="mb-1.5 block">How will you promote Gradr? *</Label>
-          <Textarea name="promotion_plan" required rows={4}  placeholder="Newsletter feature, YouTube review, course bonus, etc." />
-        </div>
-        <div>
-          <Label className="mb-1.5 block">Why do you want to join? *</Label>
-          <Textarea name="why_join" required rows={3}  />
-        </div>
+        <FormField label="How will you promote Gradr? *">
+          {(control) => (
+            <Textarea {...control} name="promotion_plan" required rows={4} placeholder="Newsletter feature, YouTube review, course bonus, etc." />
+          )}
+        </FormField>
+        <FormField label="Why do you want to join? *">
+          {(control) => <Textarea {...control} name="why_join" required rows={3} />}
+        </FormField>
+
         <label className="flex items-start gap-2 text-sm text-muted-foreground">
           <input type="checkbox" name="agreed_to_terms" required className="mt-1" />
           <span>I agree to the Gradr affiliate terms, including no self-referrals, no brand-keyword paid search, and commission reversal on refunds.</span>

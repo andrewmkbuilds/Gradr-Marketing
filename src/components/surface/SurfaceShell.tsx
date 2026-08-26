@@ -171,7 +171,7 @@ export function SurfaceShell({ nav = [], eyebrow, children }: SurfaceShellProps)
                 to={item.to}
                 aria-current={item.surface === surface ? "page" : undefined}
                 className={cn(
-                  "text-sm transition-colors hover:text-foreground",
+                  "link-tap text-sm transition-colors hover:text-foreground",
                   item.surface === surface ? "text-foreground" : "text-muted-foreground",
                 )}
               >
@@ -180,22 +180,22 @@ export function SurfaceShell({ nav = [], eyebrow, children }: SurfaceShellProps)
             ))}
             <CrossLink
               surface="app"
-              className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+              className="link-tap text-sm text-muted-foreground transition-colors hover:text-foreground"
             >
               Open the app
             </CrossLink>
           </nav>
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
-            <CrossLink surface="home" to="/privacy" className="text-xs text-muted-foreground hover:text-foreground">
+            <CrossLink surface="home" to="/privacy" className="link-tap text-xs text-muted-foreground hover:text-foreground">
               Privacy
             </CrossLink>
-            <CrossLink surface="home" to="/terms" className="text-xs text-muted-foreground hover:text-foreground">
+            <CrossLink surface="home" to="/terms" className="link-tap text-xs text-muted-foreground hover:text-foreground">
               Terms
             </CrossLink>
-            <CrossLink surface="home" to="/cookie-policy" className="text-xs text-muted-foreground hover:text-foreground">
+            <CrossLink surface="home" to="/cookie-policy" className="link-tap text-xs text-muted-foreground hover:text-foreground">
               Cookies
             </CrossLink>
-            <CrossLink surface="home" to="/childrens-privacy" className="text-xs text-muted-foreground hover:text-foreground">
+            <CrossLink surface="home" to="/childrens-privacy" className="link-tap text-xs text-muted-foreground hover:text-foreground">
               Children's privacy
             </CrossLink>
             <span className="text-xs text-muted-foreground">

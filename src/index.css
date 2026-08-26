@@ -1180,6 +1180,20 @@ html[data-motion="full"] *::after {
    consistent, reusable vocabulary for emphasis across the app.
    ============================================================ */
 @layer utilities {
+  /* Footer/legal links: comfortable touch height on small screens, inline on desktop. */
+  .link-tap {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+  }
+
+  @media (min-width: 640px) {
+    .link-tap {
+      min-height: 0;
+    }
+  }
+
+
   /* Tinted panel: warm wash + hairline. Use for insight/recommendation blocks. */
   .accent-panel {
     background-color: hsl(var(--mahogany-tint));
