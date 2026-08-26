@@ -22,7 +22,12 @@ export const LEGAL_PAGES = [
   { path: "/terms", label: "Terms" },
   { path: "/privacy", label: "Privacy" },
   { path: "/cookie-policy", label: "Cookies" },
+  { path: "/acceptable-use", label: "Acceptable use" },
+  { path: "/ai-disclaimer", label: "AI disclaimer" },
+  { path: "/disclaimer", label: "Disclaimer" },
+  { path: "/refund-policy", label: "Refunds" },
+  { path: "/affiliate-disclosure", label: "Affiliate disclosure" },
   { path: "/childrens-privacy", label: "Children's privacy" },
   { path: "/dpa", label: "DPA" },
-  { path: "/refund-policy", label: "Refunds" },
 ] as const;
+

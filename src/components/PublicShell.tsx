@@ -212,10 +212,16 @@ export function PublicShell({ children, source }: PublicShellProps) {
                 </li>
               ))}
               <li>
+                <Link to="/legal" className="text-muted-foreground hover:text-foreground">
+                  Legal &amp; contact
+                </Link>
+              </li>
+              <li>
                 <a href={appLoginHref()} className="text-muted-foreground hover:text-foreground">
                   Sign in
                 </a>
               </li>
+
             </ul>
           </nav>
         </div>

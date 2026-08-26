@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useState, type FormEvent } from "react";
 import { CheckCircle2, Loader2, Mail } from "lucide-react";
 import { Button, FormField, Input, Text } from "@/design-system/gradr-9b9b95";
@@ -96,6 +97,15 @@ export function NewsletterSignup({ source = "landing", topic, className }: Newsl
           {status === "submitting" ? "Subscribing…" : "Subscribe"}
         </Button>
       </div>
+      <Text as="p" variant="caption" tone="muted" className="mt-3">
+        Subscribing signs you up for Gradr marketing emails only — it does not create an account.
+        You can unsubscribe from any email. See our{" "}
+        <Link to="/privacy" className="underline underline-offset-2">
+          Privacy Notice
+        </Link>
+        .
+      </Text>
+
     </form>
   );
 }
