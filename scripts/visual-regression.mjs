@@ -2,15 +2,16 @@
 /**
  * Visual regression suite.
  *
- * Captures every public route at three widths and diffs each capture against a
- * committed baseline, so design-system drift (old surfaces, stray palettes,
- * broken spacing) is caught before it ships.
+ * Captures every public route at three widths, in both light and dark mode,
+ * and diffs each capture against a committed baseline, so design-system drift
+ * (old surfaces, stray palettes, broken spacing) is caught before it ships.
  *
  * Baselines live in tests/visual/baseline/. Diffs are written to
  * tests/visual/diff/ for inspection.
  *
  *   node scripts/visual-regression.mjs --update   # (re)write baselines
  *   node scripts/visual-regression.mjs            # compare against baselines
+ *   node scripts/visual-regression.mjs --viewports=mobile,desktop --themes=dark
  */
 import { chromium } from "playwright";
 import sharp from "sharp";
@@ -27,8 +28,12 @@ const DIFF_TOLERANCE = Number(process.env.VISUAL_TOLERANCE ?? 0.03); // 3% of pi
 const ROUTES = [
   ["landing", "/landing"],
   ["design-system", "/design-system"],
-  ["pricing", "/pricing"],
-  ["auth", "/auth"],
+  // NOTE: /pricing and /auth are retired product paths here — they render the
+  // app hand-off screen and navigate away mid-capture, so they are not stable
+  // marketing surfaces to diff. Their coverage lives in check-marketing-hosts.
+  ["interview-coach", "/ai-interview-coach"],
+  ["cover-letter", "/ai-cover-letter-generator"],
+  ["legal", "/legal"],
   ["job-search", "/job-search"],
   ["ats", "/ats-resume-checker"],
   ["career-advice", "/career-advice"],
@@ -52,6 +57,21 @@ const viewportFilter = (process.argv.find((a) => a.startsWith("--viewports=")) ?
 const VIEWPORTS = viewportFilter.length
   ? ALL_VIEWPORTS.filter(([name]) => viewportFilter.includes(name))
   : ALL_VIEWPORTS;
+
+const ALL_THEMES = ["light", "dark"];
+// `--themes=dark` narrows the run; by default both colour schemes are captured
+// so a token change that only lands in one theme still fails the gate.
+const themeFilter = (process.argv.find((a) => a.startsWith("--themes=")) ?? "")
+  .replace("--themes=", "")
+  .split(",")
+  .map((t) => t.trim())
+  .filter(Boolean);
+const THEMES = themeFilter.length ? ALL_THEMES.filter((t) => themeFilter.includes(t)) : ALL_THEMES;
+
+if (!THEMES.length) {
+  console.error(`No themes matched "${themeFilter.join(",")}". Known: light, dark.`);
+  process.exit(1);
+}
 
 if (!VIEWPORTS.length) {
   console.error(`No viewports matched "${viewportFilter.join(",")}". Known: mobile, tablet, desktop.`);
@@ -125,15 +145,25 @@ mkdirSync(CURRENT_DIR, { recursive: true });
 const failures = [];
 const browser = await launch();
 try {
+  for (const theme of THEMES) {
   for (const [vpName, width, height] of VIEWPORTS) {
     const context = await browser.newContext({
       viewport: { width, height },
-      colorScheme: "light",
+      colorScheme: theme,
       reducedMotion: "reduce", // deterministic captures
     });
+    // Pin the in-app theme preference too: the app resolves "system" from the
+    // colour scheme, but an explicit choice keeps captures free of first-paint
+    // flips between the stored value and the media query.
+    await context.addInitScript(
+      (value) => window.localStorage.setItem("gradr-theme", value),
+      theme,
+    );
     const page = await context.newPage();
     for (const [name, path] of ROUTES) {
-      const file = `${name}-${vpName}.png`;
+      // Light baselines keep their historical filenames so existing snapshots
+      // stay valid; dark captures get their own suffixed set.
+      const file = theme === "light" ? `${name}-${vpName}.png` : `${name}-${vpName}-${theme}.png`;
       await page.goto(`${BASE}${path}`, { waitUntil: "domcontentloaded" });
       await page.waitForTimeout(1200);
       const shot = await page.screenshot();
@@ -155,6 +185,7 @@ try {
     }
     await context.close();
   }
+  }
 } finally {
   await browser.close();
 }
@@ -167,4 +198,6 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log("\n✓ Visual regression clean.");
+console.log(
+  `\n✓ Visual regression clean (${ROUTES.length} routes × ${VIEWPORTS.length} viewport(s) × ${THEMES.length} theme(s)).`,
+);
