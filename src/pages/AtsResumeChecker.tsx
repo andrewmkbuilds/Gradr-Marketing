@@ -279,8 +279,8 @@ export default function AtsResumeChecker() {
         <dl className="mt-6 space-y-5">
           {FAQS.map((faq) => (
             <Card key={faq.question} variant="outline" padding="md">
-              <dt className="font-medium text-foreground">{faq.question}</dt>
-              <dd className="mt-2 text-sm leading-relaxed text-muted-foreground">{faq.answer}</dd>
+              <Text variant="h6" as="dt">{faq.question}</Text>
+              <Text variant="body-sm" tone="muted" as="dd" className="mt-2">{faq.answer}</Text>
             </Card>
           ))}
         </dl>
