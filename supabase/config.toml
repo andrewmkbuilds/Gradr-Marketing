@@ -5,9 +5,13 @@ project_id = "xaeyjrekewnwjujnrqgu"
     verify_jwt = true
   [functions.handle-email-suppression]
     verify_jwt = false
+  [functions.email-track]
+    verify_jwt = false
   [functions.handle-email-unsubscribe]
     verify_jwt = false
   [functions.marketing-email-admin]
+    verify_jwt = true
+  [functions.newsletter-followups]
     verify_jwt = true
   [functions.newsletter-subscribe]
     verify_jwt = false

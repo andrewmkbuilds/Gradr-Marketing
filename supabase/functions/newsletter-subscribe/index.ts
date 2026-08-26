@@ -12,6 +12,7 @@
 import { createClient } from 'npm:@supabase/supabase-js@2'
 import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors'
 import { sendTransactionalEmail } from '../_shared/sendTransactional.ts'
+import { NEWSLETTER_FOLLOWUPS } from '../_shared/transactional-email-templates/registry.ts'
 
 const CONFIRM_TTL_DAYS = 7
 const MAX_SIGNUPS_PER_IP_PER_HOUR = 5
@@ -157,6 +158,23 @@ Deno.serve(async (req) => {
     if (updateError) {
       console.error('newsletter-subscribe: confirm failed', updateError)
       return json({ error: 'We could not confirm your subscription. Please try again.' }, 500)
+    }
+
+    // Schedule the finite opt-in welcome sequence (day 1, day 3). Rows are only
+    // ever created here, i.e. after this recipient completed double opt-in, and
+    // the dispatcher re-checks opt-in state before each send.
+    const scheduled = NEWSLETTER_FOLLOWUPS.map((step) => ({
+      subscriber_id: row.id,
+      template_name: step.templateName,
+      scheduled_at: new Date(Date.now() + step.delayHours * 3_600_000).toISOString(),
+      status: 'scheduled',
+    }))
+    const { error: scheduleError } = await db
+      .from('newsletter_followups')
+      .upsert(scheduled, { onConflict: 'subscriber_id,template_name', ignoreDuplicates: true })
+    if (scheduleError) {
+      // A missing follow-up must not fail the confirmation itself.
+      console.error('newsletter-subscribe: follow-up scheduling failed', scheduleError)
     }
 
     await sendTransactionalEmail({
