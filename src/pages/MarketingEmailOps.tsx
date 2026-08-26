@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Loader2, Mail, RefreshCw, ShieldAlert } from "lucide-react";
+import { Download, Loader2, Mail, RefreshCw, Search, ShieldAlert } from "lucide-react";
 import {
   Alert,
   Badge,
@@ -40,6 +40,60 @@ type LogResponse = {
   templates: { templateName: string; displayName: string; version: string }[];
 };
 
+type SubscriberRow = {
+  id: string;
+  email: string;
+  first_name: string | null;
+  topic: string | null;
+  source: string | null;
+  status: string;
+  created_at: string;
+  confirmed_at: string | null;
+  unsubscribed_at: string | null;
+  lastEmail: { templateName: string; status: string; createdAt: string } | null;
+  followupsPending: number;
+  followupsSent: number;
+  nextFollowupAt: string | null;
+};
+
+type SubscriberResponse = {
+  rows: SubscriberRow[];
+  stats: Record<string, number>;
+};
+
+type EngagementResponse = {
+  templates: {
+    templateName: string;
+    displayName: string;
+    sent: number;
+    opens: number;
+    clicks: number;
+    openRate: number | null;
+    clickRate: number | null;
+  }[];
+  events: {
+    message_id: string;
+    template_name: string;
+    recipient_email: string;
+    event_type: "open" | "click";
+    target_url: string | null;
+    created_at: string;
+  }[];
+};
+
+const SUBSCRIBER_STATUS_OPTIONS = [
+  { label: "All", value: "" },
+  { label: "Pending confirm", value: "pending" },
+  { label: "Confirmed", value: "confirmed" },
+  { label: "Unsubscribed", value: "unsubscribed" },
+];
+
+const SUBSCRIBER_TONE: Record<string, BadgeTone> = {
+  confirmed: "primary",
+  pending: "outline",
+  unsubscribed: "accent",
+};
+
 const RANGE_OPTIONS = [
   { label: "24 hours", days: 1 },
   { label: "7 days", days: 7 },
@@ -70,6 +124,67 @@ function statusVariant(status: string): BadgeTone {
   return STATUS_TONE[status] ?? "neutral";
 }
 
+function formatRate(value: number | null) {
+  if (value === null) return "—";
+  return `${Math.round(value * 100)}%`;
+}
+
+/** Download the current subscriber view without leaving the console. */
+function downloadFile(filename: string, mime: string, contents: string) {
+  const url = URL.createObjectURL(new Blob([contents], { type: mime }));
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+function toCsv(rows: SubscriberRow[]): string {
+  const headers = [
+    "email",
+    "first_name",
+    "topic",
+    "source",
+    "status",
+    "created_at",
+    "confirmed_at",
+    "unsubscribed_at",
+    "last_email_template",
+    "last_email_status",
+    "last_email_at",
+    "followups_sent",
+    "followups_pending",
+    "next_followup_at",
+  ];
+  const escape = (value: unknown) => {
+    const text = value === null || value === undefined ? "" : String(value);
+    // Guard against spreadsheet formula injection in exported cells.
+    const safe = /^[=+\-@]/.test(text) ? `'${text}` : text;
+    return `"${safe.replace(/"/g, '""')}"`;
+  };
+  const lines = rows.map((row) =>
+    [
+      row.email,
+      row.first_name,
+      row.topic,
+      row.source,
+      row.status,
+      row.created_at,
+      row.confirmed_at,
+      row.unsubscribed_at,
+      row.lastEmail?.templateName ?? null,
+      row.lastEmail?.status ?? null,
+      row.lastEmail?.createdAt ?? null,
+      row.followupsSent,
+      row.followupsPending,
+      row.nextFollowupAt,
+    ]
+      .map(escape)
+      .join(","),
+  );
+  return [headers.join(","), ...lines].join("\n");
+}
+
 function formatDate(value: string) {
   return new Date(value).toLocaleString(undefined, {
     dateStyle: "medium",
@@ -93,7 +208,7 @@ export default function MarketingEmailOps() {
   const [authError, setAuthError] = useState<string | null>(null);
   const [authBusy, setAuthBusy] = useState(false);
 
-  const [tab, setTab] = useState<"log" | "previews">("log");
+  const [tab, setTab] = useState<"log" | "subscribers" | "engagement" | "previews">("log");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [log, setLog] = useState<LogResponse | null>(null);
@@ -102,6 +217,10 @@ export default function MarketingEmailOps() {
   const [days, setDays] = useState(30);
   const [templateFilter, setTemplateFilter] = useState<string>("");
   const [statusFilter, setStatusFilter] = useState<string>("");
+  const [subscribers, setSubscribers] = useState<SubscriberResponse | null>(null);
+  const [subscriberStatus, setSubscriberStatus] = useState<string>("");
+  const [subscriberSearch, setSubscriberSearch] = useState("");
+  const [engagement, setEngagement] = useState<EngagementResponse | null>(null);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -156,11 +275,45 @@ export default function MarketingEmailOps() {
     }
   }, [call]);
 
+  const loadSubscribers = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      setSubscribers(
+        await call({
+          action: "subscribers",
+          days,
+          status: subscriberStatus || undefined,
+          search: subscriberSearch || undefined,
+          limit: 1000,
+        }),
+      );
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to load subscribers");
+    } finally {
+      setLoading(false);
+    }
+  }, [call, days, subscriberStatus, subscriberSearch]);
+
+  const loadEngagement = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      setEngagement(await call({ action: "engagement", days }));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to load engagement");
+    } finally {
+      setLoading(false);
+    }
+  }, [call, days]);
+
   useEffect(() => {
     if (!signedIn) return;
     if (tab === "log") void loadLog();
+    else if (tab === "subscribers") void loadSubscribers();
+    else if (tab === "engagement") void loadEngagement();
     else void loadPreviews();
-  }, [signedIn, tab, loadLog, loadPreviews]);
+  }, [signedIn, tab, loadLog, loadPreviews, loadSubscribers, loadEngagement]);
 
   const signIn = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -245,6 +398,18 @@ export default function MarketingEmailOps() {
             onClick={() => setTab("log")}
           >
             Send log
+          </Button>
+          <Button
+            variant={tab === "subscribers" ? "primary" : "outline"}
+            onClick={() => setTab("subscribers")}
+          >
+            Subscribers
+          </Button>
+          <Button
+            variant={tab === "engagement" ? "primary" : "outline"}
+            onClick={() => setTab("engagement")}
+          >
+            Engagement
           </Button>
           <Button
             variant={tab === "previews" ? "primary" : "outline"}
