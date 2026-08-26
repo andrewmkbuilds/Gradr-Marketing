@@ -32,9 +32,11 @@ import NotFound from "./pages/NotFound";
 import Landing from "./pages/Landing";
 import {
   type Surface,
+  PRODUCTION_ORIGIN,
   SURFACE_PATH_PREFIX,
   currentSurface,
   isMultiSurfaceHost,
+  isProduction,
   isWwwHost,
   ROOT_DOMAIN,
   urlFor,
