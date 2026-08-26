@@ -70,6 +70,10 @@ jobs:
       - name: No new console or runtime errors on marketing pages
         run: node scripts/check-console-errors.mjs http://localhost:8080
 
+      - name: No new React ref warnings beyond the baseline
+        run: node scripts/check-ref-warnings.mjs http://localhost:8080
+
+
       - name: Marketing forms (loading, success and error states)
         run: node scripts/e2e-marketing-forms.mjs http://localhost:8080
 
