@@ -53,10 +53,10 @@ export function NewsletterSignup({ source = "landing", topic, className }: Newsl
         <div className="flex items-start gap-3 rounded-card border border-border bg-surface p-6">
           <CheckCircle2 className="mt-1 size-5 shrink-0 text-primary" aria-hidden />
           <div className="space-y-1">
-            <Text as="p" role="body" className="font-medium">
+            <Text as="p" variant="body" className="font-medium">
               Check your inbox
             </Text>
-            <Text as="p" role="body-sm" className="text-muted-foreground">
+            <Text as="p" variant="body-sm" className="text-muted-foreground">
               We sent a confirmation link to {email}. Click it to finish subscribing — we only add
               confirmed addresses to the list.
             </Text>

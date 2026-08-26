@@ -164,6 +164,7 @@ function AppRoutes() {
           ),
         )}
 
+        <Route path="/newsletter/confirm" element={<AnimatedPage><NewsletterConfirm /></AnimatedPage>} />
         <Route path="/unsubscribe" element={<AnimatedPage><Unsubscribe /></AnimatedPage>} />
         <Route path="/landing" element={<AnimatedPage><Landing /></AnimatedPage>} />
         <Route path="/" element={<AnimatedPage><Landing /></AnimatedPage>} />

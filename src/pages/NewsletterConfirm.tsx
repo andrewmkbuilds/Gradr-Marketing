@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { AlertTriangle, ArrowRight, CheckCircle2, Loader2 } from "lucide-react";
-import { Button, Card, Text } from "@/design-system/gradr-9b9b95";
+import { Card, Text } from "@/design-system/gradr-9b9b95";
+import { buttonVariants } from "@/design-system/gradr-9b9b95/gradr/components/button";
+import { cn } from "@/lib/utils";
 import { Seo } from "@/components/Seo";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -54,39 +56,40 @@ export default function NewsletterConfirm() {
         {state === "loading" ? (
           <>
             <Loader2 className="mx-auto size-8 animate-spin text-muted-foreground" aria-hidden />
-            <Text as="h1" role="h4">
+            <Text as="h1" variant="h4">
               Confirming your subscription…
             </Text>
           </>
         ) : state === "invalid" ? (
           <>
             <AlertTriangle className="mx-auto size-8 text-destructive" aria-hidden />
-            <Text as="h1" role="h4">
+            <Text as="h1" variant="h4">
               We could not confirm this link
             </Text>
-            <Text as="p" role="body" className="text-muted-foreground">
+            <Text as="p" variant="body" className="text-muted-foreground">
               {message}
             </Text>
           </>
         ) : (
           <>
             <CheckCircle2 className="mx-auto size-8 text-primary" aria-hidden />
-            <Text as="h1" role="h4">
+            <Text as="h1" variant="h4">
               {state === "already" ? "You're already subscribed" : "You're subscribed"}
             </Text>
-            <Text as="p" role="body" className="text-muted-foreground">
+            <Text as="p" variant="body" className="text-muted-foreground">
               {state === "already"
                 ? "This address is already on the Gradr list. Nothing else to do."
                 : "Thanks for confirming. The next issue lands in your inbox — every email has a one-click unsubscribe."}
             </Text>
           </>
         )}
-        <Button asChild variant="secondary">
-          <Link to="/career-advice">
-            Read the latest guides
-            <ArrowRight className="size-4" aria-hidden />
-          </Link>
-        </Button>
+        <Link
+          to="/career-advice"
+          className={cn(buttonVariants({ variant: "outline" }), "mx-auto w-fit")}
+        >
+          Read the latest guides
+          <ArrowRight className="size-4" aria-hidden />
+        </Link>
       </Card>
     </main>
   );
