@@ -38,7 +38,7 @@ const IGNORE_PATTERNS = [
 /** Collapse volatile parts (URLs, ids, numbers) so fingerprints stay stable. */
 function fingerprint(text) {
   return text
-    .replace(/https?:\/\/[^\s"')]+/g, "<url>")
+    .replace(/(?:https?|wss?):\/\/[^\s"')]+/g, "<url>")
     .replace(/\b[0-9a-f]{8,}\b/gi, "<hash>")
     .replace(/\d+/g, "<n>")
     .replace(/\s+/g, " ")
