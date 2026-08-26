@@ -48,6 +48,7 @@ const MarketingSurface = lazy(() => import("./surfaces/MarketingSurface"));
 import { AppPricingRedirect } from "@/components/surface/AppPricingRedirect";
 import { LegacyAppRedirect } from "@/components/surface/LegacyAppRedirect";
 const DesignSystemGallery = lazy(() => import("./pages/DesignSystemGallery"));
+const Connect = lazy(() => import("./pages/Connect"));
 const MarketingEmailOps = lazy(() => import("./pages/MarketingEmailOps"));
 const NewsSurface = lazy(() => import("./surfaces/NewsSurface"));
 const DocsSurface = lazy(() => import("./surfaces/DocsSurface"));
