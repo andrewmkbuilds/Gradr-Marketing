@@ -61,23 +61,10 @@ export async function captureReferralFromUrl() {
     const code = params.get("ref");
     if (!code) return;
 
-    // Validate the code (RPC returns array)
-    const { data: lookup } = await supabase.rpc("lookup_affiliate_by_code", { _code: code });
-    const hit = Array.isArray(lookup) ? lookup[0] : null;
-    if (!hit || !hit.is_active) return;
-
-    // Pull cookie duration from public settings, fall back to 90.
-    let days = DEFAULT_DAYS;
-    const { data: settingsRows } = await supabase.rpc("get_affiliate_public_settings");
-    const settings = Array.isArray(settingsRows) ? settingsRows[0] : settingsRows;
-    if (settings?.cookie_duration_days) days = settings.cookie_duration_days;
-
-    setCookie(COOKIE_NAME, code, days);
-
-    // Log the click server-side. The browser only reports the referral code —
-    // the edge function resolves which affiliate gets credited, so a visitor
-    // can never attribute their own click to an arbitrary affiliate, and the
-    // table stays closed to client writes.
+    // Validate + log the click server-side in one call. The browser only
+    // reports the referral code — the edge function resolves which affiliate
+    // gets credited, so a visitor can never attribute their own click to an
+    // arbitrary affiliate, and no affiliate data is readable without a session.
     const { data: click } = await supabase.functions.invoke("affiliate-track-click", {
       body: {
         code,
@@ -88,6 +75,18 @@ export async function captureReferralFromUrl() {
         visitor_key: getVisitorKey(),
       },
     });
+
+    // An unknown or suspended code is not attributed at all.
+    if (!click?.tracked) return;
+
+    const days =
+      typeof click.cookie_duration_days === "number" && click.cookie_duration_days > 0
+        ? click.cookie_duration_days
+        : DEFAULT_DAYS;
+
+    setCookie(COOKIE_NAME, code, days);
+    if (click.click_id) setCookie(CLICK_COOKIE_NAME, click.click_id, days);
+
 
     if (click?.click_id) setCookie(CLICK_COOKIE_NAME, click.click_id, days);
   } catch (e) {
