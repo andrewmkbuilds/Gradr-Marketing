@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/design-system/gradr-9b9b95";
 import { Input } from "@/components/ui/input";
 import { AuthLayout } from "@/components/AuthLayout";
 import { Mail, ArrowLeft, ArrowRight, CheckCircle, AlertCircle } from "lucide-react";
@@ -105,14 +105,14 @@ export default function ForgotPassword() {
           <div className="space-y-3">
             <Button
               variant="outline"
-              className="h-11 w-full border-border"
+              size="lg" className="w-full"
               onClick={handleResend}
               disabled={loading || cooldown > 0}
             >
               {cooldown > 0 ? `Resend in ${cooldown}s` : loading ? "Sending…" : "Resend reset link"}
             </Button>
             <Link to={authPath(nextParam)}>
-              <Button variant="ghost" className="h-11 w-full gap-2">
+              <Button variant="ghost" size="lg" className="w-full">
                 <ArrowLeft className="h-4 w-4" aria-hidden="true" />
                 Back to sign in
               </Button>
@@ -149,7 +149,7 @@ export default function ForgotPassword() {
             </div>
             <Button
               type="submit"
-              className="h-11 w-full gap-2 bg-primary font-medium text-primary-foreground"
+              size="lg" className="w-full"
               disabled={loading}
             >
               {loading ? (

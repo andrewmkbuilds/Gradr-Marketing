@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/design-system/gradr-9b9b95";
 import { AuthLayout } from "@/components/AuthLayout";
 import { Shield, CheckCircle2 } from "lucide-react";
 
@@ -136,14 +136,14 @@ export default function OAuthConsent() {
         <div className="flex gap-3">
           <Button
             variant="outline"
-            className="flex-1 h-11"
+            size="lg" className="flex-1"
             onClick={() => decide(false)}
             disabled={busy}
           >
             Cancel
           </Button>
           <Button
-            className="flex-1 h-11 bg-primary text-primary-foreground"
+            size="lg" className="flex-1"
             onClick={() => decide(true)}
             disabled={busy}
           >

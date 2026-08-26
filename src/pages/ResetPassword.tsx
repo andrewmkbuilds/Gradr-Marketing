@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/design-system/gradr-9b9b95";
 import { Input } from "@/components/ui/input";
 import { AuthLayout } from "@/components/AuthLayout";
 import { Lock, ArrowRight } from "lucide-react";
@@ -102,7 +102,7 @@ export default function ResetPassword() {
         </div>
         <Button
           type="submit"
-          className="w-full h-11 bg-primary text-primary-foreground font-medium gap-2"
+          size="lg" className="w-full"
           disabled={loading}
         >
           {loading ? (
