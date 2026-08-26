@@ -4,6 +4,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { SurfaceShell } from "@/components/surface/SurfaceShell";
 import { CrossLink, SLink, SurfaceNotFound } from "@/components/surface/SurfaceLink";
 import { RouteSkeleton } from "@/components/states/PageSkeletons";
+import { Card, Text } from "@/design-system/gradr-9b9b95";
 import {
   ArrowRight,
   BarChart3,
