@@ -1,5 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
-import type { VoiceFailureReason } from "@/lib/interview/voiceErrors";
+import type { VoiceProviderReason } from "@/lib/interview/voiceErrors";
 
 /**
  * Server-reported health of the interviewer voice provider.
@@ -22,7 +22,7 @@ export interface VoiceHealth {
   lastFailure: {
     /** Machine-readable failure code from the voice edge function. */
     code: string | null;
-    reason: VoiceFailureReason | null;
+    reason: VoiceProviderReason | null;
     /** HTTP status the upstream provider returned, when there was one. */
     upstreamStatus: number | null;
     at: string;
