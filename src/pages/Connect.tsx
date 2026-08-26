@@ -40,7 +40,7 @@ function CopyButton({ value, label }: { value: string; label: string }) {
   return (
     <Button
       type="button"
-      variant="secondary"
+      variant="outline"
       size="md"
       onClick={async () => {
         try {
