@@ -1,4 +1,4 @@
-import { initializePaddle as loadPaddle, type Paddle } from "@paddle/paddle-js";
+import type { Paddle } from "@paddle/paddle-js";
 import { supabase } from "@/integrations/supabase/client";
 import { currentPaymentsDiagnostics } from "@/lib/paymentsConfig";
 import { reportApiFailure } from "@/lib/monitoring/reliability";
@@ -31,10 +31,19 @@ const config = {
   reason: diagnostics.reason ?? undefined,
 };
 
-if (!config.ok) {
-  // Loud in the console, silent in the UI — checkout surfaces the error when used.
-  console.error(`[payments] disabled: ${config.reason}`);
+/**
+ * Not being configured is a legitimate state: this surface only sells through
+ * app.gradr.me, and the payments integration can be disconnected entirely. So
+ * the diagnostic is emitted once, lazily, the first time something actually
+ * asks for payments — never as an error on every page load.
+ */
+let reasonLogged = false;
+function logPaymentsUnavailable(): void {
+  if (config.ok || reasonLogged) return;
+  reasonLogged = true;
+  console.info(`[payments] not configured: ${config.reason}`);
 }
+
 
 /** True when payments are usable. Gate any payment UI on this. */
 export function isPaymentsConfigured(): boolean {
@@ -61,6 +70,7 @@ export function getPaddleEnvironment(): PaddleEnv {
 /** Throws when payments are misconfigured — only call from user actions. */
 function requireConfig(): { token: string; env: PaddleEnv } {
   if (!config.ok || !config.token || !config.env) {
+    logPaymentsUnavailable();
     throw new Error(`Payments are unavailable: ${config.reason ?? "not configured"}`);
   }
   return { token: config.token, env: config.env };
@@ -72,16 +82,27 @@ let paddlePromise: Promise<Paddle> | null = null;
 export async function getPaddle(): Promise<Paddle> {
   if (!paddlePromise) {
     const { token, env } = requireConfig();
-    paddlePromise = loadPaddle({
-      environment: env === "sandbox" ? "sandbox" : "production",
-      token,
-    }).then((instance) => {
-      if (!instance) throw new Error("Paddle.js failed to initialize");
-      return instance;
-    });
+    // Loaded on demand so a disconnected payments integration never ships the
+    // checkout SDK to visitors who can't buy anything here.
+    paddlePromise = import("@paddle/paddle-js")
+      .then(({ initializePaddle: loadPaddle }) =>
+        loadPaddle({
+          environment: env === "sandbox" ? "sandbox" : "production",
+          token,
+        }),
+      )
+      .then((instance) => {
+        if (!instance) throw new Error("Paddle.js failed to initialize");
+        return instance;
+      })
+      .catch((error) => {
+        paddlePromise = null; // let a later attempt retry a transient chunk failure
+        throw error;
+      });
   }
   return paddlePromise;
 }
+
 
 /** Back-compat helper used by the billing provider. */
 export async function initializePaddle() {
