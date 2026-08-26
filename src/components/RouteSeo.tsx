@@ -80,6 +80,27 @@ const META: Record<string, { title: string; description: string }> = {
     title: "Data Processing Addendum",
     description: "Gradr's DPA for universities, bootcamps, and employers — processing roles, sub-processors, security measures, international transfers, and deletion terms.",
   },
+  "/legal": {
+    title: "Legal Center",
+    description: "Every Gradr policy in one place: terms, privacy, cookies, refunds, acceptable use, AI disclosures, the DPA, and our children's privacy notice.",
+  },
+  "/acceptable-use": {
+    title: "Acceptable Use Policy",
+    description: "What you may and may not do with Gradr — prohibited content, automated scraping, resume misrepresentation, abuse of AI features, and how we enforce the rules.",
+  },
+  "/ai-disclaimer": {
+    title: "AI Disclaimer",
+    description: "How Gradr uses AI for resume scoring, job matching, and mock interviews — what the models can and cannot do, and why every output needs your review.",
+  },
+  "/disclaimer": {
+    title: "General Disclaimer",
+    description: "Gradr provides career tooling, not employment, legal, or financial advice. What our scores, matches, and interview feedback do and do not guarantee.",
+  },
+  "/affiliate-disclosure": {
+    title: "Affiliate Disclosure",
+    description: "How Gradr's affiliate and referral programs work, when we earn a commission from a link, and how that never changes what we recommend to you.",
+  },
+
   "/resume": {
     title: "Resume Engine",
     description: "Upload your resume for AI scoring, ATS analysis, and rewrite suggestions tailored to your goals.",

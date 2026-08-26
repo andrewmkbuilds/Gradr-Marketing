@@ -181,7 +181,14 @@
     "check:email-links": "node scripts/check-email-links.mjs",
     "brand:assets:update": "node scripts/check-brand-assets.mjs --update",
     "test:visual:brand": "node scripts/brand-visual.mjs",
-    "test:visual:brand:update": "node scripts/brand-visual.mjs --update"
+    "test:visual:brand:update": "node scripts/brand-visual.mjs --update",
+    "seo:audit": "node scripts/seo-deploy-audit.mjs",
+    "check:console": "node scripts/check-console-errors.mjs",
+    "check:console:update": "node scripts/check-console-errors.mjs --update",
+    "check:hosts": "node scripts/check-marketing-hosts.mjs",
+    "test:e2e:forms": "node scripts/e2e-marketing-forms.mjs",
+    "test:visual:themes": "node scripts/visual-regression.mjs --viewports=mobile,desktop",
+    "test:visual:themes:update": "node scripts/visual-regression.mjs --viewports=mobile,desktop --update"
   },
   "type": "module",
   "version": "0.0.0"
