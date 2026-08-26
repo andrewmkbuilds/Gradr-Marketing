@@ -100,15 +100,25 @@ function ExternalSurfaceRedirect({ surface, strip }: { surface: Surface; strip: 
 }
 
 /**
- * Anything product-shaped belongs to the app project. In production we hand the
- * visitor over to app.gradr.me; on shared hosts (dev + preview) there is no app
- * bundle to hand off to, so we render the 404 instead of bouncing off-site.
+ * Anything product-shaped belongs to the app project. In production we always
+ * hand the visitor over to the absolute app.gradr.me URL — never a same-origin
+ * path — so "Log in" / "Get started" can never dead-end on the marketing site,
+ * even while subdomains still 302 at the edge. On dev + preview hosts there is
+ * no app bundle to hand off to, so we render the 404 instead of bouncing
+ * off-site.
  */
 function AppSurfaceHandoff() {
-  if (isMultiSurfaceHost()) {
+  const location = useLocation();
+  useEffect(() => {
+    if (!isProduction()) return;
+    window.location.replace(
+      `${PRODUCTION_ORIGIN.app}${location.pathname}${location.search}${location.hash}`,
+    );
+  }, [location.pathname, location.search, location.hash]);
+  if (!isProduction()) {
     return <AnimatedPage><NotFound /></AnimatedPage>;
   }
-  return <ExternalSurfaceRedirect surface="app" strip="" />;
+  return null;
 }
 
 function SurfaceOutlet({ surface }: { surface: Surface }) {
