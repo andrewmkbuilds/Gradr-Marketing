@@ -90,8 +90,8 @@ export function AgeGate({
   );
 }
 
-/** Shown after an under-13 date of birth. No account, no data, no retry loop. */
-export function AgeBlockedNotice() {
+/** Shown after an under-13 date of birth. Existing account sign-in remains available. */
+export function AgeBlockedNotice({ onSignIn }: { onSignIn: () => void }) {
   return (
     <div className="space-y-5">
       <div className="flex h-10 w-10 items-center justify-center rounded-full bg-destructive/15">
@@ -99,12 +99,13 @@ export function AgeBlockedNotice() {
       </div>
       <div className="space-y-2">
         <Text variant="h4" as="h1">
-          You need to be {MINIMUM_AGE} to use Gradr
+          We can't create this account
         </Text>
         <Text variant="body-sm" tone="muted">
           Gradr is a career platform built for people aged {MINIMUM_AGE} and over, so we can't
-          create an account for you right now. Nothing you typed was saved or sent, and we've
-          switched off all optional analytics on this device.
+          create a new account for you right now. Nothing you typed was saved or sent, and we've
+          switched off all optional analytics on this device. If you already have an account,
+          you can still sign in.
         </Text>
         <Text variant="body-sm" tone="muted">
           Come back when you're {MINIMUM_AGE} — your future job search will still be here.
@@ -123,6 +124,9 @@ export function AgeBlockedNotice() {
           and we'll delete it and confirm when it's done.
         </Text>
       </div>
+      <Button type="button" size="lg" className="w-full" onClick={onSignIn}>
+        Sign in to an existing account
+      </Button>
       <div className="flex flex-wrap gap-3 text-sm">
         <Link to="/childrens-privacy" className="text-primary underline underline-offset-2">
           Children's Privacy Notice
