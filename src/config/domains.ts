@@ -234,6 +234,20 @@ export function surfaceBase(surface: Surface, host: string = currentHost()): str
 }
 
 /**
+ * Surfaces that are *never* served by this (public) bundle: the authenticated
+ * product and the Earn portal each live on their own hostname. A link to one of
+ * them must resolve to that hostname in production, even while the primary
+ * domain still answers for everything else — resolving it to the current origin
+ * is what let gradr.me pretend to be the product.
+ */
+export const DEDICATED_SURFACES: Surface[] = ["app", "earn"];
+
+/** True when `surface` has its own hostname and must never resolve locally. */
+export function isDedicatedSurface(surface: Surface): boolean {
+  return DEDICATED_SURFACES.includes(surface);
+}
+
+/**
  * Origin a surface is served from on the current host.
  * Returns the real subdomain only when hosting actually serves it; otherwise
  * (dev, preview, or production-with-redirecting-subdomains) the current origin.
@@ -246,10 +260,29 @@ export function surfaceOrigin(surface: Surface, host: string = currentHost()): s
   if (pinned && surface === pinned && typeof window !== "undefined") {
     return window.location.origin;
   }
+  // In production the product and Earn surfaces always resolve to their own
+  // canonical origin, whatever host this bundle happens to be answering on.
+  if (isProduction(host) && isDedicatedSurface(surface)) return PRODUCTION_ORIGIN[surface];
   if (!isMultiSurfaceHost(host)) return PRODUCTION_ORIGIN[surface];
   if (typeof window === "undefined") return PRODUCTION_ORIGIN[surface];
   return window.location.origin;
 }
+
+/** Absolute origin of the authenticated product. Never the current host. */
+export function productOrigin(): string {
+  return PRODUCTION_ORIGIN.app;
+}
+
+/** Absolute origin of the Earn portal. Never the current host. */
+export function earnOrigin(): string {
+  return PRODUCTION_ORIGIN.earn;
+}
+
+/** True when this bundle is genuinely serving the authenticated product. */
+export function isProductHost(host: string = currentHost()): boolean {
+  return pinnedSurface() === "app" || (isProduction(host) && surfaceFromHost(host) === "app");
+}
+
 
 
 /**
