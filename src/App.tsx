@@ -13,6 +13,7 @@ import { CANONICAL_ALIASES } from "@/lib/seo/canonical";
 import { CookieConsent } from "@/components/CookieConsent";
 import { CursorEffects } from "@/components/effects/CursorEffects";
 import { AuthHandoffFallback } from "@/components/AuthHandoffFallback";
+import { ProductSessionGuard } from "@/components/surface/ProductSessionGuard";
 
 import { OfflineBanner } from "@/components/OfflineBanner";
 import { RouteSkeleton } from "@/components/states/PageSkeletons";
@@ -129,9 +130,10 @@ function SurfaceOutlet({ surface }: { surface: Surface }) {
     news: NewsSurface,
     docs: DocsSurface,
     affiliates: AffiliatesSurface,
+    earn: AffiliatesSurface,
     status: StatusSurface,
     support: SupportSurface,
-  }[surface as "marketing" | "news" | "docs" | "affiliates" | "status" | "support"];
+  }[surface as "marketing" | "news" | "docs" | "affiliates" | "earn" | "status" | "support"];
   return (
     <SurfaceProvider surface={surface}>
       <Component />
@@ -144,6 +146,7 @@ const SATELLITE_SURFACES: Surface[] = [
   "news",
   "docs",
   "affiliates",
+  "earn",
   "status",
   "support",
 ];
@@ -189,6 +192,14 @@ function AppRoutes() {
         <Route path="/" element={<AnimatedPage><Landing /></AnimatedPage>} />
         {/* Sign-in and account recovery belong to the app project. */}
         <Route path="/auth" element={<AppSurfaceHandoff />} />
+        <Route path="/auth/*" element={<AppSurfaceHandoff />} />
+        {/* OAuth can only ever finish inside the product: if a provider lands a
+            callback on a public host, hand the whole URL (code, state, hash)
+            straight over to app.gradr.me instead of establishing a session
+            here. */}
+        <Route path="/~oauth/callback" element={<AppSurfaceHandoff />} />
+        <Route path="/oauth/callback" element={<AppSurfaceHandoff />} />
+        <Route path="/auth/callback" element={<AppSurfaceHandoff />} />
         <Route path="/forgot-password" element={<AppSurfaceHandoff />} />
         <Route path="/reset-password" element={<AppSurfaceHandoff />} />
         <Route path="/blog/ai-resume-optimization" element={<AnimatedPage><AiResumeOptimization /></AnimatedPage>} />
@@ -316,6 +327,7 @@ const App = () => (
           <ScrollToTop />
           <ReferralCapture />
           <AuthProvider>
+            <ProductSessionGuard />
             <TelemetryRouteTracker />
             <AnalyticsProvider />
             <RouteSeo />
