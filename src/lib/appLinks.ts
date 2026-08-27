@@ -19,6 +19,7 @@ import {
   surfaceFromHost,
 } from "@/config/domains";
 
+
 /** Pricing route inside the product — the only place checkout may start. */
 export const APP_PRICING_PATH = "/pricing";
 
