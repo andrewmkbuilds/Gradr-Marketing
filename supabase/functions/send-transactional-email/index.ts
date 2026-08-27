@@ -153,9 +153,15 @@ Deno.serve(async (req) => {
   const callerRole = String(claims?.role ?? '')
   // The service-role credential is a JWT on legacy projects and an opaque
   // `sb_secret_...` string on projects migrated to the new API keys, which has
-  // no decodable claims — compare it directly as well.
+  // no decodable claims — compare it directly as well. The gateway can also
+  // rewrite the Authorization header before the request reaches this code, so
+  // the `apikey` header (which it forwards untouched) is checked too.
+  const apiKeyHeader = (req.headers.get('apikey') || '').trim()
   const isService =
-    callerRole === 'service_role' || (bearer.length > 0 && bearer === supabaseServiceKey)
+    callerRole === 'service_role' ||
+    (bearer.length > 0 && bearer === supabaseServiceKey) ||
+    (apiKeyHeader.length > 0 && apiKeyHeader === supabaseServiceKey)
+
 
   if (!isService) {
     if (!USER_SENDABLE.has(templateName)) {
