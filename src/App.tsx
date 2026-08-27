@@ -78,7 +78,6 @@ const CareerAdvice = lazy(() => import("./pages/CareerAdvice"));
 const GuideArticle = lazy(() => import("./pages/GuideArticle"));
 const JobSearchIndex = lazy(() => import("./pages/JobSearchIndex"));
 const JobLanding = lazy(() => import("./pages/JobLanding"));
-const Unsubscribe = lazy(() => import("./pages/Unsubscribe"));
 const NewsletterConfirm = lazy(() => import("./pages/NewsletterConfirm"));
 const OAuthConsent = lazy(() => import("./pages/OAuthConsent"));
 
@@ -187,7 +186,6 @@ function AppRoutes() {
         )}
 
         <Route path="/newsletter/confirm" element={<AnimatedPage><NewsletterConfirm /></AnimatedPage>} />
-        <Route path="/unsubscribe" element={<AnimatedPage><Unsubscribe /></AnimatedPage>} />
         <Route path="/landing" element={<AnimatedPage><Landing /></AnimatedPage>} />
         <Route path="/" element={<AnimatedPage><Landing /></AnimatedPage>} />
         {/* Sign-in and account recovery belong to the app project. */}
