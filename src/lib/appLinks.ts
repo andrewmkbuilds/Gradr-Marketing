@@ -125,11 +125,32 @@ export function appProductHref(path: string): string {
   return appAuthHref(path);
 }
 
+/** Canonical entry point into the authenticated product. */
+export const APP_DASHBOARD_PATH = "/dashboard";
+
+/** Absolute URL of the product dashboard (or a deep link inside the product). */
+export function appDashboardHref(path: string = APP_DASHBOARD_PATH): string {
+  return `${PRODUCTION_ORIGIN.app}${path.startsWith("/") ? path : `/${path}`}`;
+}
+
+/**
+ * Absolute URL inside the Earn portal. Earn lives on its own hostname, so this
+ * never resolves to the marketing origin.
+ */
+export function earnHref(path: string = "/"): string {
+  const normalized = path.startsWith("/") ? path : `/${path}`;
+  if (pinnedSurface() === "earn") return normalized;
+  return `${PRODUCTION_ORIGIN.earn}${normalized}`;
+}
+
 const PRODUCT_ROUTES = [
   "/resume",
+  "/resumes",
   "/match",
   "/apply",
+  "/applications",
   "/interview",
+  "/interviews",
   "/jobs",
   "/pipeline",
   "/growth",
@@ -137,6 +158,11 @@ const PRODUCT_ROUTES = [
   "/billing",
   "/credits",
   "/settings",
+  "/profile",
+  "/account",
+  "/admin",
+  "/onboarding",
+  "/welcome",
 ];
 
 /** True when a path is served by the product, not by this marketing bundle. */
@@ -144,3 +170,4 @@ export function isProductPath(path: string): boolean {
   const clean = path.split("?")[0];
   return PRODUCT_ROUTES.some((route) => clean === route || clean.startsWith(`${route}/`));
 }
+
