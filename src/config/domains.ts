@@ -27,6 +27,7 @@ export type Surface =
   | "news"
   | "docs"
   | "affiliates"
+  | "earn"
   | "status"
   | "support";
 
@@ -37,6 +38,7 @@ export const SURFACES: Surface[] = [
   "news",
   "docs",
   "affiliates",
+  "earn",
   "status",
   "support",
 ];
@@ -51,6 +53,7 @@ export const PRODUCTION_ORIGIN: Record<Surface, string> = {
   news: `https://news.${ROOT_DOMAIN}`,
   docs: `https://docs.${ROOT_DOMAIN}`,
   affiliates: `https://affiliates.${ROOT_DOMAIN}`,
+  earn: `https://earn.${ROOT_DOMAIN}`,
   status: `https://status.${ROOT_DOMAIN}`,
   support: `https://support.${ROOT_DOMAIN}`,
 };
@@ -62,6 +65,7 @@ const SUBDOMAIN_TO_SURFACE: Record<string, Surface> = {
   news: "news",
   docs: "docs",
   affiliates: "affiliates",
+  earn: "earn",
   status: "status",
   support: "support",
 };
@@ -79,6 +83,7 @@ export const SURFACE_PATH_PREFIX: Record<Surface, string> = {
   news: "/news",
   docs: "/docs",
   affiliates: "/affiliate",
+  earn: "/earn",
   status: "/status",
   support: "/support",
 };
@@ -196,6 +201,7 @@ export function surfaceFromPath(pathname: string): Surface | null {
     "news",
     "docs",
     "affiliates",
+    "earn",
     "status",
     "support",
   ] as Surface[]) {
