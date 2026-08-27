@@ -23,6 +23,7 @@ export type GradrEvent =
   | "auth_handoff_started"
   | "auth_handoff_failed"
   | "auth_handoff_retried"
+  | "authenticated_marketing_handoff"
   | "legacy_url_hit"
   | "legacy_url_redirected"
   | "legacy_url_not_found"

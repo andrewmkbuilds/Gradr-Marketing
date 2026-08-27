@@ -27,6 +27,7 @@ export type Surface =
   | "news"
   | "docs"
   | "affiliates"
+  | "earn"
   | "status"
   | "support";
 
@@ -37,6 +38,7 @@ export const SURFACES: Surface[] = [
   "news",
   "docs",
   "affiliates",
+  "earn",
   "status",
   "support",
 ];
@@ -51,6 +53,7 @@ export const PRODUCTION_ORIGIN: Record<Surface, string> = {
   news: `https://news.${ROOT_DOMAIN}`,
   docs: `https://docs.${ROOT_DOMAIN}`,
   affiliates: `https://affiliates.${ROOT_DOMAIN}`,
+  earn: `https://earn.${ROOT_DOMAIN}`,
   status: `https://status.${ROOT_DOMAIN}`,
   support: `https://support.${ROOT_DOMAIN}`,
 };
@@ -62,6 +65,7 @@ const SUBDOMAIN_TO_SURFACE: Record<string, Surface> = {
   news: "news",
   docs: "docs",
   affiliates: "affiliates",
+  earn: "earn",
   status: "status",
   support: "support",
 };
@@ -79,6 +83,7 @@ export const SURFACE_PATH_PREFIX: Record<Surface, string> = {
   news: "/news",
   docs: "/docs",
   affiliates: "/affiliate",
+  earn: "/earn",
   status: "/status",
   support: "/support",
 };
@@ -196,6 +201,7 @@ export function surfaceFromPath(pathname: string): Surface | null {
     "news",
     "docs",
     "affiliates",
+    "earn",
     "status",
     "support",
   ] as Surface[]) {
@@ -224,7 +230,24 @@ export function currentSurface(pathname?: string): Surface {
 
 /** Base path every in-surface link must be prefixed with on the current host. */
 export function surfaceBase(surface: Surface, host: string = currentHost()): string {
+  // Dedicated surfaces (app, earn) are served at the root of their own
+  // hostname in production, so they never carry a path prefix there.
+  if (isProduction(host) && isDedicatedSurface(surface)) return "";
   return isMultiSurfaceHost(host) ? SURFACE_PATH_PREFIX[surface] : "";
+}
+
+/**
+ * Surfaces that are *never* served by this (public) bundle: the authenticated
+ * product and the Earn portal each live on their own hostname. A link to one of
+ * them must resolve to that hostname in production, even while the primary
+ * domain still answers for everything else — resolving it to the current origin
+ * is what let gradr.me pretend to be the product.
+ */
+export const DEDICATED_SURFACES: Surface[] = ["app", "earn"];
+
+/** True when `surface` has its own hostname and must never resolve locally. */
+export function isDedicatedSurface(surface: Surface): boolean {
+  return DEDICATED_SURFACES.includes(surface);
 }
 
 /**
@@ -240,10 +263,29 @@ export function surfaceOrigin(surface: Surface, host: string = currentHost()): s
   if (pinned && surface === pinned && typeof window !== "undefined") {
     return window.location.origin;
   }
+  // In production the product and Earn surfaces always resolve to their own
+  // canonical origin, whatever host this bundle happens to be answering on.
+  if (isProduction(host) && isDedicatedSurface(surface)) return PRODUCTION_ORIGIN[surface];
   if (!isMultiSurfaceHost(host)) return PRODUCTION_ORIGIN[surface];
   if (typeof window === "undefined") return PRODUCTION_ORIGIN[surface];
   return window.location.origin;
 }
+
+/** Absolute origin of the authenticated product. Never the current host. */
+export function productOrigin(): string {
+  return PRODUCTION_ORIGIN.app;
+}
+
+/** Absolute origin of the Earn portal. Never the current host. */
+export function earnOrigin(): string {
+  return PRODUCTION_ORIGIN.earn;
+}
+
+/** True when this bundle is genuinely serving the authenticated product. */
+export function isProductHost(host: string = currentHost()): boolean {
+  return pinnedSurface() === "app" || (isProduction(host) && surfaceFromHost(host) === "app");
+}
+
 
 
 /**
