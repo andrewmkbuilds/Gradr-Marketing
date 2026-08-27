@@ -230,6 +230,9 @@ export function currentSurface(pathname?: string): Surface {
 
 /** Base path every in-surface link must be prefixed with on the current host. */
 export function surfaceBase(surface: Surface, host: string = currentHost()): string {
+  // Dedicated surfaces (app, earn) are served at the root of their own
+  // hostname in production, so they never carry a path prefix there.
+  if (isProduction(host) && isDedicatedSurface(surface)) return "";
   return isMultiSurfaceHost(host) ? SURFACE_PATH_PREFIX[surface] : "";
 }
 
