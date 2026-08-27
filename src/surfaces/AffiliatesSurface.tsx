@@ -6,13 +6,12 @@ import { SurfaceHome, SurfaceNotFound, SurfaceRedirect } from "@/components/surf
 import { RouteSkeleton } from "@/components/states/PageSkeletons";
 import { useAuth } from "@/hooks/useAuth";
 import { BrandLogo } from "@/components/BrandLogo";
+import { PortalAuthHandoff } from "@/components/surface/PortalAuthHandoff";
 
 const AffiliateProgram = lazy(() => import("@/pages/AffiliateProgram"));
 const AffiliateApply = lazy(() => import("@/pages/AffiliateApply"));
 const AffiliateResources = lazy(() => import("@/pages/AffiliateResources"));
-const Auth = lazy(() => import("@/pages/Auth"));
-const ForgotPassword = lazy(() => import("@/pages/ForgotPassword"));
-const ResetPassword = lazy(() => import("@/pages/ResetPassword"));
+
 
 /**
  * Affiliate-portal auth gate.
@@ -75,10 +74,14 @@ export default function AffiliatesSurface() {
               </RequirePartner>
             }
           />
-          <Route path="login" element={<Auth />} />
-          <Route path="auth" element={<SurfaceRedirect to="/login" />} />
-          <Route path="forgot-password" element={<ForgotPassword />} />
-          <Route path="reset-password" element={<ResetPassword />} />
+          {/* Credential entry never happens in this project: the portal hands
+              partners to the product's /auth route and they come back signed
+              in. No sign-in form, OAuth callback or password reset runs here. */}
+          <Route path="login" element={<PortalAuthHandoff />} />
+          <Route path="auth" element={<PortalAuthHandoff />} />
+          <Route path="signup" element={<PortalAuthHandoff mode="signup" />} />
+          <Route path="forgot-password" element={<PortalAuthHandoff mode="reset" />} />
+          <Route path="reset-password" element={<PortalAuthHandoff mode="reset" />} />
           {/* Legacy in-app paths (gradr.me/affiliate/...) resolved in-portal. */}
           <Route path="affiliate" element={<SurfaceHome />} />
           <Route path="affiliate/*" element={<LegacyAffiliateRedirect />} />
