@@ -37,15 +37,22 @@ describe("cross-surface navigation", () => {
     }
   });
 
-  it("keeps cross-surface links on the same origin while subdomains are aliased", () => {
+  it("sends product links to app.gradr.me even from the marketing apex", () => {
     setHost("https://gradr.me/docs");
     for (const { path } of entryPoints) {
       const link = urlFor("app", "/dashboard");
-      // No bounce to another hostname: hosting would 302 it straight back.
-      expect(new URL(link).hostname).toBe("gradr.me");
+      // The product is never served by this bundle: a product link from the
+      // marketing host must cross to the app hostname, never resolve locally.
+      expect(new URL(link).hostname).toBe("app.gradr.me");
       expect(surfaceFromPath(path)).not.toBeNull();
     }
   });
+
+  it("sends Earn links to earn.gradr.me from the marketing apex", () => {
+    setHost("https://gradr.me/");
+    expect(new URL(urlFor("earn", "/")).hostname).toBe("earn.gradr.me");
+  });
+
 
   it("links from a satellite host straight into the app host when it is served", () => {
     setHost("https://docs.gradr.me/start");
