@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { Loader2 } from "lucide-react";
-import { appLoginHref, appSignupHref } from "@/lib/appLinks";
+import { appLoginHref, appResetHref, appSignupHref } from "@/lib/appLinks";
 import { handoffToApp } from "@/lib/authHandoff";
 
 type Mode = "login" | "signup" | "reset";
@@ -18,15 +18,11 @@ export function PortalAuthHandoff({ mode = "login" }: { mode?: Mode }) {
   const location = useLocation();
   const next = new URLSearchParams(location.search).get("next") ?? undefined;
   const href =
-    mode === "signup"
-      ? appSignupHref(next)
-      : mode === "reset"
-        ? appLoginHref(next).replace("/auth", "/auth?mode=reset").replace("?mode=reset?", "?mode=reset&")
-        : appLoginHref(next);
+    mode === "signup" ? appSignupHref(next) : mode === "reset" ? appResetHref(next) : appLoginHref(next);
 
   useEffect(() => {
-    handoffToApp(href, { source: "portal_auth", mode });
-  }, [href, mode]);
+    handoffToApp(href, { location: `portal_auth_${mode}`, next });
+  }, [href, mode, next]);
 
   return (
     <div className="page-shell section-y flex flex-col items-center gap-4 text-center">

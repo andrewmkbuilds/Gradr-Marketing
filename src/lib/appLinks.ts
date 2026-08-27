@@ -110,6 +110,12 @@ export function appLoginHref(next?: string): string {
   return appAuthHref(query ? `${APP_LOGIN_PATH}?${query.slice(1)}` : APP_LOGIN_PATH);
 }
 
+/** Absolute app URL for the product's password-recovery screen. */
+export function appResetHref(next?: string): string {
+  const query = next ? `&next=${encodeURIComponent(next)}` : "";
+  return appAuthHref(`/auth?mode=reset${query}`);
+}
+
 /** Absolute app URL for "Get started" / "Sign up" CTAs. */
 export function appSignupHref(next?: string): string {
   const query = next ? `&next=${encodeURIComponent(next)}` : "";
