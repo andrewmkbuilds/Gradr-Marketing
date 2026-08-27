@@ -418,7 +418,7 @@ export default function Connect() {
           </FormField>
 
           <FormField label="Assistant" help="We'll show the matching setup steps below.">
-            {(control) => (
+            {({ invalid: _invalid, required: _required, ...control }) => (
               <select
                 {...control}
                 value={tab}
