@@ -83,12 +83,12 @@ export function maskMcpUrl(raw: string): string {
   }
   const host = labels.join(".");
 
-  const params = new URLSearchParams(parsed.search);
-  for (const key of Array.from(params.keys())) {
-    params.set(key, maskSegment(params.get(key) ?? ""));
-  }
-  const query = params.toString() ? `?${decodeURIComponent(params.toString())}` : "";
+  const entries = Array.from(new URLSearchParams(parsed.search).entries()).map(
+    ([key, value]) => `${key}=${maskSegment(value)}`,
+  );
+  const query = entries.length ? `?${entries.join("&")}` : "";
   const port = parsed.port ? `:${parsed.port}` : "";
+
 
   return `${parsed.protocol}//${host}${port}${parsed.pathname}${query}`;
 }
