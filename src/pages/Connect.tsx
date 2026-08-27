@@ -1,9 +1,42 @@
-import { useMemo, useState } from "react";
-import { Check, Copy, ExternalLink } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import {
+  AlertCircle,
+  Check,
+  CheckCircle2,
+  Copy,
+  Eye,
+  EyeOff,
+  ExternalLink,
+  Loader2,
+  ShieldCheck,
+} from "lucide-react";
 import { PublicShell } from "@/components/PublicShell";
-import { Button } from "@/design-system/gradr-9b9b95";
-import { Card, CardDescription, CardTitle, Text } from "@/design-system/gradr-9b9b95";
+import {
+  Alert,
+  Badge,
+  Button,
+  Card,
+  CardDescription,
+  CardTitle,
+  FormField,
+  Input,
+  Text,
+} from "@/design-system/gradr-9b9b95";
 import { cn } from "@/lib/utils";
+import {
+  MCP_CLIENTS,
+  clearProfile,
+  loadChecklist,
+  loadProfile,
+  maskMcpUrl,
+  saveChecklist,
+  saveProfile,
+  testMcpConnection,
+  validateMcpUrl,
+  type ConnectionTestResult,
+  type McpClientId,
+  type McpConnectionProfile,
+} from "@/lib/mcp/connectionProfile";
 
 const APP_NAME = "Gradr";
 const SERVER_SLUG = "gradr";
@@ -35,12 +68,20 @@ function resolveMcpUrl(): string {
   return `${dataPlaneUrl}/functions/v1/mcp`;
 }
 
-function CopyButton({ value, label }: { value: string; label: string }) {
+function CopyButton({
+  value,
+  label,
+  variant = "outline",
+}: {
+  value: string;
+  label: string;
+  variant?: "outline" | "ghost";
+}) {
   const [copied, setCopied] = useState(false);
   return (
     <Button
       type="button"
-      variant="outline"
+      variant={variant}
       size="md"
       onClick={async () => {
         try {
@@ -74,19 +115,82 @@ function Steps({ items }: { items: React.ReactNode[] }) {
   );
 }
 
-const CLIENTS = ["ChatGPT", "Claude", "Claude Code", "Other assistants"] as const;
-type ClientId = (typeof CLIENTS)[number];
+const CHECKLIST: { id: string; title: string; detail: string }[] = [
+  {
+    id: "url",
+    title: "Confirm your server URL",
+    detail: "Paste or keep the URL below and make sure it validates.",
+  },
+  {
+    id: "test",
+    title: "Test the connection",
+    detail: "Run the reachability check so you know the endpoint answers before you add it.",
+  },
+  {
+    id: "save",
+    title: "Save your connection",
+    detail: "Store the URL and your assistant so this page is ready next time.",
+  },
+  {
+    id: "add",
+    title: "Add the connector in your assistant",
+    detail: "Follow the steps for your assistant below and finish any sign-in prompt.",
+  },
+  {
+    id: "verify",
+    title: "Run a tool",
+    detail: `Ask your assistant to use ${APP_NAME} and confirm it returns your data.`,
+  },
+];
 
 export default function Connect() {
-  const [tab, setTab] = useState<ClientId>("ChatGPT");
-
-  const mcpUrl = useMemo(() => {
+  const defaultUrl = useMemo(() => {
     try {
       return resolveMcpUrl();
     } catch {
       return "";
     }
   }, []);
+
+  const [profile, setProfile] = useState<McpConnectionProfile | null>(null);
+  const [urlInput, setUrlInput] = useState(defaultUrl);
+  const [urlTouched, setUrlTouched] = useState(false);
+  const [tab, setTab] = useState<McpClientId>("ChatGPT");
+  const [revealed, setRevealed] = useState(false);
+  const [testing, setTesting] = useState(false);
+  const [testResult, setTestResult] = useState<ConnectionTestResult | null>(null);
+  const [done, setDone] = useState<string[]>([]);
+  const [hydrated, setHydrated] = useState(false);
+
+  // Restore the saved profile and checklist progress on first paint.
+  useEffect(() => {
+    const saved = loadProfile();
+    if (saved) {
+      setProfile(saved);
+      setUrlInput(saved.url);
+      setTab(saved.client);
+    }
+    setDone(loadChecklist());
+    setHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (hydrated) saveChecklist(done);
+  }, [done, hydrated]);
+
+  const validation = validateMcpUrl(urlInput);
+  const mcpUrl = validation.ok ? validation.url : "";
+  const displayUrl = mcpUrl ? (revealed ? mcpUrl : maskMcpUrl(mcpUrl)) : "";
+  const isSaved = Boolean(profile && profile.url === mcpUrl && profile.client === tab);
+
+  const markDone = (id: string) => setDone((prev) => (prev.includes(id) ? prev : [...prev, id]));
+  const toggleDone = (id: string) =>
+    setDone((prev) => (prev.includes(id) ? prev.filter((v) => v !== id) : [...prev, id]));
+
+  useEffect(() => {
+    if (validation.ok) markDone("url");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [validation.ok]);
 
   const claudeUrl = `https://claude.ai/customize/connectors?modal=add-custom-connector&connectorName=${encodeURIComponent(
     APP_NAME,
@@ -96,7 +200,16 @@ export default function Connect() {
     "'\\''",
   )}'`;
 
-  const connectSteps: Record<ClientId, React.ReactNode[]> = {
+  async function runTest() {
+    setTesting(true);
+    setTestResult(null);
+    const result = await testMcpConnection(mcpUrl);
+    setTestResult(result);
+    setTesting(false);
+    if (result.state !== "error") markDone("test");
+  }
+
+  const connectSteps: Record<McpClientId, React.ReactNode[]> = {
     ChatGPT: [
       <>
         Open{" "}
@@ -165,7 +278,7 @@ export default function Connect() {
     ],
   };
 
-  const refreshSteps: Record<ClientId, React.ReactNode[]> = {
+  const refreshSteps: Record<McpClientId, React.ReactNode[]> = {
     ChatGPT: [
       <>Open ChatGPT's Plugins page and select {APP_NAME}.</>,
       <>Scroll to “Information” and click Refresh.</>,
@@ -201,6 +314,8 @@ export default function Connect() {
     ],
   };
 
+  const completed = CHECKLIST.filter((item) => done.includes(item.id)).length;
+
   return (
     <PublicShell source="connect">
       <div className="section-y-sm mx-auto max-w-3xl space-y-8">
@@ -215,32 +330,223 @@ export default function Connect() {
           </Text>
         </header>
 
+        {/* Guided checklist ------------------------------------------------ */}
         <Card variant="raised" padding="lg" className="space-y-4">
-          <div className="space-y-1">
-            <CardTitle>Server URL</CardTitle>
-            <CardDescription>Paste this into your assistant's connector settings.</CardDescription>
-          </div>
-          {mcpUrl ? (
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-              <code className="flex-1 overflow-x-auto rounded-control border border-border bg-surface-muted px-4 py-3 text-code text-foreground">
-                {mcpUrl}
-              </code>
-              <CopyButton value={mcpUrl} label="Copy URL" />
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="space-y-1">
+              <CardTitle>Setup checklist</CardTitle>
+              <CardDescription>
+                Your progress is remembered on this device, so you can pick up where you left off.
+              </CardDescription>
             </div>
-          ) : (
-            <Text variant="body-sm" className="text-muted-foreground">
-              The server URL isn't available in this environment.
-            </Text>
-          )}
+            <Badge variant={completed === CHECKLIST.length ? "primary" : "outline"}>
+              {completed} of {CHECKLIST.length} done
+            </Badge>
+          </div>
+
+          <ul className="space-y-2">
+            {CHECKLIST.map((item) => {
+              const checked = done.includes(item.id);
+              return (
+                <li key={item.id}>
+                  <button
+                    type="button"
+                    aria-pressed={checked}
+                    onClick={() => toggleDone(item.id)}
+                    className={cn(
+                      "flex w-full items-start gap-3 rounded-control border px-4 py-3 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                      checked ? "border-primary bg-primary/5" : "border-border hover:bg-surface-muted",
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        "mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border",
+                        checked ? "border-primary bg-primary text-primary-foreground" : "border-border",
+                      )}
+                      aria-hidden="true"
+                    >
+                      {checked && <Check className="h-3 w-3" />}
+                    </span>
+                    <span className="space-y-1">
+                      <Text
+                        variant="body-sm"
+                        className={cn(checked ? "text-foreground" : "text-foreground")}
+                      >
+                        {item.title}
+                      </Text>
+                      <Text variant="caption" className="block text-muted-foreground">
+                        {item.detail}
+                      </Text>
+                    </span>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
         </Card>
 
+        {/* Server URL ------------------------------------------------------ */}
+        <Card variant="raised" padding="lg" className="space-y-5">
+          <div className="space-y-1">
+            <CardTitle>Your MCP server</CardTitle>
+            <CardDescription>
+              Save the endpoint and the assistant you use so reconnecting later takes one glance.
+            </CardDescription>
+          </div>
+
+          <FormField
+            label="Server URL"
+            help="Must be an https:// endpoint — usually ending in /functions/v1/mcp."
+            error={urlTouched && !validation.ok ? validation.error : undefined}
+          >
+            {(control) => (
+              <Input
+                {...control}
+                type="url"
+                inputMode="url"
+                autoComplete="off"
+                spellCheck={false}
+                placeholder="https://example.supabase.co/functions/v1/mcp"
+                value={urlInput}
+                onChange={(event) => {
+                  setUrlInput(event.target.value);
+                  setUrlTouched(true);
+                  setTestResult(null);
+                }}
+              />
+            )}
+          </FormField>
+
+          <FormField label="Assistant" help="We'll show the matching setup steps below.">
+            {({ invalid: _invalid, required: _required, ...control }) => (
+              <select
+                {...control}
+                value={tab}
+                onChange={(event) => setTab(event.target.value as McpClientId)}
+                className="h-10 w-full rounded-control border border-border bg-surface px-3 text-body-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                {MCP_CLIENTS.map((client) => (
+                  <option key={client} value={client}>
+                    {client}
+                  </option>
+                ))}
+              </select>
+            )}
+          </FormField>
+
+          {mcpUrl && (
+            <div className="space-y-3">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                <code className="flex-1 overflow-x-auto rounded-control border border-border bg-surface-muted px-4 py-3 text-code text-foreground">
+                  {displayUrl}
+                </code>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  aria-label={revealed ? "Hide the full server URL" : "Reveal the full server URL"}
+                  onClick={() => setRevealed((value) => !value)}
+                >
+                  {revealed ? (
+                    <EyeOff className="h-4 w-4" aria-hidden="true" />
+                  ) : (
+                    <Eye className="h-4 w-4" aria-hidden="true" />
+                  )}
+                </Button>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <CopyButton value={mcpUrl} label="Copy URL" />
+                <CopyButton value={maskMcpUrl(mcpUrl)} label="Copy masked" variant="ghost" />
+              </div>
+              <Text variant="caption" className="block text-muted-foreground">
+                The project identifier is hidden by default. “Copy masked” is safe to paste into a
+                screenshot or a support thread; your assistant needs the full URL.
+              </Text>
+            </div>
+          )}
+
+          <div className="flex flex-wrap items-center gap-2 border-t border-border pt-5">
+            <Button type="button" variant="outline" disabled={!mcpUrl || testing} onClick={runTest}>
+              {testing ? (
+                <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+              ) : (
+                <ShieldCheck className="h-4 w-4" aria-hidden="true" />
+              )}
+              {testing ? "Testing…" : "Test connection"}
+            </Button>
+            <Button
+              type="button"
+              disabled={!mcpUrl || isSaved}
+              onClick={() => {
+                const saved = saveProfile(mcpUrl, tab);
+                if (saved) {
+                  setProfile(saved);
+                  markDone("save");
+                }
+              }}
+            >
+              {isSaved ? "Saved" : "Save connection"}
+            </Button>
+            {profile && (
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => {
+                  clearProfile();
+                  setProfile(null);
+                  setUrlInput(defaultUrl);
+                  setTestResult(null);
+                }}
+              >
+                Forget
+              </Button>
+            )}
+          </div>
+
+          {profile && (
+            <Text variant="caption" className="block text-muted-foreground">
+              Saved for {profile.client} on {new Date(profile.savedAt).toLocaleString()}.
+            </Text>
+          )}
+
+          <div aria-live="polite">
+            {testing && (
+              <Text variant="body-sm" className="text-muted-foreground">
+                Contacting your MCP server…
+              </Text>
+            )}
+            {!testing && testResult && (
+              <Alert
+                variant={
+                  testResult.state === "error"
+                    ? "danger"
+                    : testResult.state === "warning"
+                      ? "info"
+                      : "primary"
+                }
+                title={testResult.title}
+              >
+                <span className="flex items-start gap-2">
+                  {testResult.state === "error" || testResult.state === "warning" ? (
+                    <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+                  ) : (
+                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+                  )}
+                  <span>{testResult.detail}</span>
+                </span>
+              </Alert>
+            )}
+          </div>
+        </Card>
+
+        {/* Per-assistant instructions -------------------------------------- */}
         <div className="space-y-4">
           <Text as="h2" variant="h3">
             Connect your assistant
           </Text>
 
           <div role="tablist" aria-label="Assistant" className="flex flex-wrap gap-2">
-            {CLIENTS.map((c) => (
+            {MCP_CLIENTS.map((c) => (
               <button
                 key={c}
                 type="button"
