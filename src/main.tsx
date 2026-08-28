@@ -1,6 +1,12 @@
 // Must stay first: guarantees Web Storage exists before any module (including
 // the Supabase client) touches localStorage.
 import "./lib/storagePolyfill";
+// Must stay ahead of every Supabase-touching import: an OAuth response that
+// landed on a marketing host is handed to app.gradr.me before a session can be
+// established here.
+import { enforceOAuthCallbackHandoff } from "./lib/auth/oauthCallbackGuard";
+
+const handedOff = enforceOAuthCallbackHandoff();
 import { createRoot } from "react-dom/client";
 import { HelmetProvider } from "react-helmet-async";
 import App from "./App.tsx";
@@ -18,6 +24,7 @@ initCspReporting();
 initReliabilityMonitors();
 registerServiceWorker();
 
+if (!handedOff)
 createRoot(document.getElementById("root")!).render(
   <RootErrorBoundary>
     <HelmetProvider>
