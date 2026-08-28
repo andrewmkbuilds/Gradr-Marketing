@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import { isProduction, isProductHost, productOrigin } from "@/config/domains";
+import { isProduction, isProductHost, productOrigin, currentSurface } from "@/config/domains";
 import { isProductPath } from "@/lib/appLinks";
 import { track } from "@/lib/telemetry/events";
 import { redirectToSurface } from "@/lib/routing/surfaceRedirectLog";
@@ -33,7 +33,14 @@ export function ProductSessionGuard() {
 
     const path = `${location.pathname}${location.search}${location.hash}`;
     const productShaped = isProductPath(location.pathname);
-    if (!productShaped && location.pathname !== "/") return;
+    // The root handoff only applies to the marketing site itself. Portal
+    // surfaces (partners, earn, docs, news, …) serve their own landing page at
+    // "/" on their own hostname, and a signed-in partner must be able to read
+    // it instead of being thrown at the product dashboard.
+    const surface = currentSurface(location.pathname);
+    const marketingRoot =
+      location.pathname === "/" && (surface === "marketing" || surface === "home");
+    if (!productShaped && !marketingRoot) return;
 
     const destination = `${productOrigin()}${productShaped ? path : "/dashboard"}`;
     track("authenticated_marketing_handoff", {
