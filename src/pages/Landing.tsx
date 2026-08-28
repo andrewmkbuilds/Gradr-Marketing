@@ -557,7 +557,7 @@ export default function Landing() {
                     >
                       Get started free
                       <ArrowRight
-                        className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
+                        className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
                         aria-hidden
                       />
                     </AuthCta>
@@ -1226,7 +1226,7 @@ export default function Landing() {
             <div className="relative mt-8 flex flex-col justify-center gap-3 sm:flex-row">
               <AuthCta href={appSignInHref()} onActivate={start("final_cta", "Get started free")} size="lg">
                 Get started free
-                <ArrowRight className="ml-2 h-4 w-4" aria-hidden />
+                <ArrowRight className="h-4 w-4" aria-hidden />
               </AuthCta>
 
               <Button
