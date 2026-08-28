@@ -464,13 +464,16 @@ export default function Landing() {
             </motion.ul>
             <div className="mt-3 flex gap-2">
               {user ? (
-                <Button className="flex-1" onClick={openApp}>Open Gradr</Button>
+                <AuthCta href={appSignInHref("/")} onActivate={openApp} className="flex-1">Open Gradr</AuthCta>
               ) : (
                 <>
-                  <Button variant="outline" className="flex-1" onClick={login}>Log in</Button>
-                  <Button className="flex-1" onClick={start("mobile_menu", "Get started")}>Get started</Button>
+                  <AuthCta href={appSignInHref()} onActivate={login} variant="outline" className="flex-1">Log in</AuthCta>
+                  <AuthCta href={appSignInHref()} onActivate={start("mobile_menu", "Get started")} className="flex-1">
+                    Get started
+                  </AuthCta>
                 </>
               )}
+
             </div>
           </motion.div>
         )}
