@@ -13,7 +13,7 @@
     <loc>https://docs.gradr.me/sitemap-docs.xml</loc>
   </sitemap>
   <sitemap>
-    <loc>undefined/sitemap-affiliates.xml</loc>
+    <loc>https://partners.gradr.me/sitemap-partners.xml</loc>
   </sitemap>
   <sitemap>
     <loc>https://status.gradr.me/sitemap-status.xml</loc>
