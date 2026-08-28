@@ -1,6 +1,7 @@
 import { DollarSign, Users, TrendingUp, Clock, Sparkles, CheckCircle2, ArrowRight } from "lucide-react";
 import { useAffiliateSettings } from "@/hooks/useAffiliate";
-import { Button, Card, Text } from "@/design-system/gradr-9b9b95";
+import { Card, Text } from "@/design-system/gradr-9b9b95";
+import { buttonVariants } from "@/design-system/gradr-9b9b95/gradr/components/button";
 import { PARTNER_PATHS, partnersHref } from "@/lib/partnerLinks";
 
 /**
@@ -35,14 +36,15 @@ export default function PartnerProgram() {
           journey.
         </Text>
         <div className="flex flex-wrap items-center justify-center gap-3 pt-4">
-          <Button asChild size="lg">
-            <a href={partnersHref(PARTNER_PATHS.apply)}>
-              Apply to the Partner Program <ArrowRight className="h-4 w-4" aria-hidden />
-            </a>
-          </Button>
-          <Button asChild size="lg" variant="secondary">
-            <a href={partnersHref(PARTNER_PATHS.login)}>Partner sign in</a>
-          </Button>
+          <a href={partnersHref(PARTNER_PATHS.apply)} className={buttonVariants({ size: "lg" })}>
+            Apply to the Partner Program <ArrowRight className="h-4 w-4" aria-hidden />
+          </a>
+          <a
+            href={partnersHref(PARTNER_PATHS.login)}
+            className={buttonVariants({ size: "lg", variant: "outline" })}
+          >
+            Partner sign in
+          </a>
         </div>
         <Text variant="caption" className="mx-auto max-w-xl">
           Applications are reviewed manually. Once approved, you manage referral links, conversions,
