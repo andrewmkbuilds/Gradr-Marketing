@@ -408,12 +408,15 @@ export default function Landing() {
           <div className="hidden shrink-0 items-center gap-2 md:flex">
             <ThemeToggle className="min-h-9 min-w-9" />
             {user ? (
-              <Button size="sm" onClick={openApp}>Open Gradr</Button>
+              <AuthCta href={appSignInHref("/")} onActivate={openApp} size="sm">Open Gradr</AuthCta>
             ) : (
               <>
-                <Button variant="ghost" size="sm" onClick={login}>Log in</Button>
-                <MagneticButton size="sm" strength={6} onClick={start("navbar", "Get started")}>Get started</MagneticButton>
+                <AuthCta href={appSignInHref()} onActivate={login} variant="ghost" size="sm">Log in</AuthCta>
+                <AuthCta href={appSignInHref()} onActivate={start("navbar", "Get started")} size="sm">
+                  Get started
+                </AuthCta>
               </>
+
             )}
           </div>
 
