@@ -3,7 +3,7 @@ import { useReducedMotionPref } from "@/hooks/useMotionPreference";
 import { useScrollSpy } from "@/hooks/useScrollSpy";
 import { useEffect, useState } from "react";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   ArrowRight, Check, FileText, Target, Mic, LineChart, Briefcase, Users,
   GraduationCap, Rocket, Compass, Award, Menu, X, Sparkles, ShieldCheck,
@@ -20,6 +20,7 @@ import { Button, Card, Text } from "@/design-system/gradr-9b9b95";
 import {
   Accordion, AccordionContent, AccordionItem, AccordionTrigger,
 } from "@/components/ui/accordion";
+import { useMobileMenu } from "@/hooks/useMobileMenu";
 import { useAuth } from "@/hooks/useAuth";
 import { NewsletterSignup } from "@/components/marketing/NewsletterSignup";
 import { BrandLogo } from "@/components/BrandLogo";
@@ -286,7 +287,7 @@ export default function Landing() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
+  const { open: menuOpen, setOpen: setMenuOpen, toggle: toggleMenu } = useMobileMenu();
   const [billing, setBilling] = useState<"monthly" | "annual">("annual");
 
   // Hero scroll choreography: the composition lifts and dissolves as you scroll away.
@@ -305,10 +306,6 @@ export default function Landing() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  useEffect(() => {
-    document.body.style.overflow = menuOpen ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
-  }, [menuOpen]);
 
   /**
    * Primary "create account" CTA. Every call site names where it sits and what
@@ -324,7 +321,7 @@ export default function Landing() {
   const openApp = () => goToAppAuth({ location: "navbar", next: "/", authenticated: Boolean(user) }, navigate);
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-background text-foreground">
+    <div className="min-h-dvh overflow-x-hidden bg-background text-foreground">
 
 
       <a
@@ -394,7 +391,7 @@ export default function Landing() {
             className="grid h-11 w-11 place-items-center rounded-lg text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring lg:hidden"
             aria-label={menuOpen ? "Close menu" : "Open menu"}
             aria-expanded={menuOpen}
-            onClick={() => setMenuOpen((v) => !v)}
+            onClick={toggleMenu}
           >
             {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
@@ -1215,16 +1212,26 @@ export default function Landing() {
             <nav key={col.title} aria-label={col.title}>
               <h3 className="text-xs font-semibold uppercase tracking-[0.18em] text-foreground">{col.title}</h3>
               <ul className="mt-4 space-y-2.5">
-                {col.links.map(([label, href]) => (
-                  <li key={label}>
-                    <a
-                      href={href}
-                      className="link-tap rounded text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                    >
-                      {label}
-                    </a>
-                  </li>
-                ))}
+                {col.links.map(([label, href]) => {
+                  const linkClass =
+                    "link-tap rounded text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
+                  // In-app routes stay client-side; hashes and mailto links do not.
+                  const internal = href.startsWith("/");
+                  return (
+                    <li key={label}>
+                      {internal ? (
+                        <Link to={href} className={linkClass}>
+                          {label}
+                        </Link>
+                      ) : (
+                        <a href={href} className={linkClass}>
+                          {label}
+                        </a>
+                      )}
+                    </li>
+                  );
+                })}
+
               </ul>
             </nav>
           ))}

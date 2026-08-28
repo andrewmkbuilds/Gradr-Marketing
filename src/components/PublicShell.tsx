@@ -1,6 +1,6 @@
 import { appHref, appLoginHref, appSignupHref } from "@/lib/appLinks";
-import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { useMobileMenu } from "@/hooks/useMobileMenu";
 import { ArrowRight, Menu, X } from "lucide-react";
 import { BrandLogo } from "@/components/BrandLogo";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -45,12 +45,12 @@ const TOOL_LINKS = [
 /** Chrome for public, indexable pages (guides + job landing pages). */
 export function PublicShell({ children, source }: PublicShellProps) {
   const { pathname } = useLocation();
-  const [menuOpen, setMenuOpen] = useState(false);
+  const { open: menuOpen, setOpen: setMenuOpen, toggle: toggleMenu } = useMobileMenu();
 
   const isActive = (to: string) => pathname === to || pathname.startsWith(`${to}/`);
 
   return (
-    <div className="relative min-h-screen bg-background">
+    <div className="relative min-h-dvh bg-background">
       {/* Ambient Ocean Teal wash — decorative, sits behind everything. */}
       <div
         aria-hidden="true"
@@ -113,7 +113,7 @@ export function PublicShell({ children, source }: PublicShellProps) {
             </a>
             <button
               type="button"
-              onClick={() => setMenuOpen((v) => !v)}
+              onClick={toggleMenu}
               aria-expanded={menuOpen}
               aria-label={menuOpen ? "Close menu" : "Open menu"}
               className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-border text-foreground md:hidden"
