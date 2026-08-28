@@ -19,6 +19,7 @@ import { OfflineBanner } from "@/components/OfflineBanner";
 import { RouteSkeleton } from "@/components/states/PageSkeletons";
 
 import { ScrollToTop } from "@/components/ScrollToTop";
+import { legacyAffiliateDestination } from "@/lib/partnerLinks";
 import { AnimatePresence } from "motion/react";
 import { captureReferralFromUrl } from "@/lib/affiliateTracking";
 import { SentryErrorBoundary, addBreadcrumb } from "@/lib/telemetry/sentry";
@@ -55,7 +56,7 @@ const Connect = lazy(() => import("./pages/Connect"));
 const MarketingEmailOps = lazy(() => import("./pages/MarketingEmailOps"));
 const NewsSurface = lazy(() => import("./surfaces/NewsSurface"));
 const DocsSurface = lazy(() => import("./surfaces/DocsSurface"));
-const AffiliatesSurface = lazy(() => import("./surfaces/AffiliatesSurface"));
+const PartnersSurface = lazy(() => import("./surfaces/PartnersSurface"));
 const StatusSurface = lazy(() => import("./surfaces/StatusSurface"));
 const SupportSurface = lazy(() => import("./surfaces/SupportSurface"));
 const Privacy = lazy(() => import("./pages/legal/Privacy"));
@@ -123,16 +124,24 @@ function AppSurfaceHandoff() {
   return null;
 }
 
+/** `/affiliate/<rest>` → the Partner Program pitch or the partner portal. */
+function LegacyAffiliateRedirect() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.location.replace(legacyAffiliateDestination(pathname));
+  }, [pathname]);
+  return null;
+}
+
 function SurfaceOutlet({ surface }: { surface: Surface }) {
   const Component = {
     marketing: MarketingSurface,
     news: NewsSurface,
     docs: DocsSurface,
-    affiliates: AffiliatesSurface,
-    earn: AffiliatesSurface,
+    partners: PartnersSurface,
     status: StatusSurface,
     support: SupportSurface,
-  }[surface as "marketing" | "news" | "docs" | "affiliates" | "earn" | "status" | "support"];
+  }[surface as "marketing" | "news" | "docs" | "partners" | "status" | "support"];
   return (
     <SurfaceProvider surface={surface}>
       <Component />
@@ -144,8 +153,7 @@ const SATELLITE_SURFACES: Surface[] = [
   "marketing",
   "news",
   "docs",
-  "affiliates",
-  "earn",
+  "partners",
   "status",
   "support",
 ];
@@ -184,6 +192,15 @@ function AppRoutes() {
             />
           ),
         )}
+
+        {/* Gradr Earn is a separate product on earn.gradr.me — this bundle
+            never renders it, it only hands the visitor over. */}
+        <Route path="/earn/*" element={<ExternalSurfaceRedirect surface="earn" strip="/earn" />} />
+        <Route path="/earn" element={<ExternalSurfaceRedirect surface="earn" strip="/earn" />} />
+        {/* Legacy affiliate paths — the program is now "Partners". */}
+        <Route path="/affiliate" element={<Navigate to="/partners" replace />} />
+        <Route path="/affiliate/*" element={<LegacyAffiliateRedirect />} />
+
 
         <Route path="/newsletter/confirm" element={<AnimatedPage><NewsletterConfirm /></AnimatedPage>} />
         <Route path="/landing" element={<AnimatedPage><Landing /></AnimatedPage>} />

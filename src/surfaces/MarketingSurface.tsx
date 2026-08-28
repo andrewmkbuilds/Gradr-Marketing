@@ -5,6 +5,7 @@ import { SurfaceShell } from "@/components/surface/SurfaceShell";
 import { CrossLink, SLink, SurfaceNotFound } from "@/components/surface/SurfaceLink";
 import { RouteSkeleton } from "@/components/states/PageSkeletons";
 import { Card, Text } from "@/design-system/gradr-9b9b95";
+import { buttonVariants } from "@/design-system/gradr-9b9b95/gradr/components/button";
 import {
   ArrowRight,
   BarChart3,
@@ -129,10 +130,7 @@ function Hero() {
         interview anxiety with a single AI career workspace.
       </p>
       <div className="mt-8 flex flex-wrap gap-3">
-        <a
-          href={appSignupHref()}
-          className="inline-flex h-11 items-center gap-1.5 rounded-lg bg-primary px-5 text-sm font-medium text-primary-foreground"
-        >
+        <a href={appSignupHref()} className={buttonVariants({ size: "lg" })}>
           Start free
           <ArrowRight className="h-4 w-4" aria-hidden="true" />
         </a>
@@ -176,16 +174,13 @@ function Features() {
       </p>
       <div className="mt-10 space-y-4">
         {FEATURES.map((feature) => (
-          <section
-            key={feature.title}
-            className="flex gap-4 rounded-xl border border-border/60 bg-card p-6 elev-1"
-          >
+          <Card key={feature.title} variant="raised" padding="md" className="flex gap-4">
             <feature.icon className="mt-0.5 h-5 w-5 shrink-0 text-brand-secondary" aria-hidden="true" />
             <div>
-              <h2 className="text-lg font-semibold text-foreground">{feature.title}</h2>
-              <p className="mt-1.5 text-sm text-muted-foreground">{feature.body}</p>
+              <Text variant="h6" as="h2">{feature.title}</Text>
+              <Text variant="body-sm" tone="muted" className="mt-1.5">{feature.body}</Text>
             </div>
-          </section>
+          </Card>
         ))}
       </div>
       <div className="mt-10">
@@ -305,7 +300,7 @@ function About() {
           Read the newsroom
         </CrossLink>
         <CrossLink
-          surface="affiliates"
+          surface="partners"
           className="text-sm text-brand-secondary underline underline-offset-4"
         >
           Partner with us

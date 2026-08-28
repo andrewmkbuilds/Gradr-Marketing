@@ -19,7 +19,8 @@ const ECOSYSTEM: { label: string; surface: Surface; to?: string }[] = [
   { label: "Product", surface: "marketing" },
   { label: "News", surface: "news" },
   { label: "Docs", surface: "docs" },
-  { label: "Affiliates", surface: "affiliates" },
+  { label: "Earn", surface: "earn" },
+  { label: "Partners", surface: "partners" },
   { label: "Status", surface: "status" },
   { label: "Support", surface: "support" },
 ];
@@ -126,7 +127,7 @@ export function SurfaceShell({ nav = [], eyebrow, children }: SurfaceShellProps)
               aria-label={menuOpen ? "Close menu" : "Open menu"}
               className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-border text-foreground lg:hidden"
             >
-              {menuOpen ? <Menu className="h-4 w-4" aria-hidden="true" /> : <X className="h-4 w-4 rotate-45" aria-hidden="true" />}
+              {menuOpen ? <X className="h-4 w-4" aria-hidden="true" /> : <Menu className="h-4 w-4" aria-hidden="true" />}
             </button>
           </div>
         </div>
