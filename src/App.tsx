@@ -183,6 +183,15 @@ function AppRoutes() {
           ),
         )}
 
+        {/* Gradr Earn is a separate product on earn.gradr.me — this bundle
+            never renders it, it only hands the visitor over. */}
+        <Route path="/earn/*" element={<ExternalSurfaceRedirect surface="earn" strip="/earn" />} />
+        <Route path="/earn" element={<ExternalSurfaceRedirect surface="earn" strip="/earn" />} />
+        {/* Legacy affiliate paths — the program is now "Partners". */}
+        <Route path="/affiliate" element={<Navigate to="/partners" replace />} />
+        <Route path="/affiliate/*" element={<LegacyAffiliateRedirect />} />
+
+
         <Route path="/newsletter/confirm" element={<AnimatedPage><NewsletterConfirm /></AnimatedPage>} />
         <Route path="/landing" element={<AnimatedPage><Landing /></AnimatedPage>} />
         <Route path="/" element={<AnimatedPage><Landing /></AnimatedPage>} />
