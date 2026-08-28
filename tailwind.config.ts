@@ -14,8 +14,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['"Geist"', '"Inter var"', "Inter", "system-ui", "sans-serif"],
-        display: ['"Bricolage Grotesque"', '"Geist"', "system-ui", "sans-serif"],
+        sans: ["var(--font-sans)", "system-ui", "sans-serif"],
+        display: ["var(--font-display)", "system-ui", "sans-serif"],
       },
       colors: {
         border: {

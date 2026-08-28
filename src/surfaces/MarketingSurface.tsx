@@ -129,10 +129,7 @@ function Hero() {
         interview anxiety with a single AI career workspace.
       </p>
       <div className="mt-8 flex flex-wrap gap-3">
-        <a
-          href={appSignupHref()}
-          className="inline-flex h-11 items-center gap-1.5 rounded-lg bg-primary px-5 text-sm font-medium text-primary-foreground"
-        >
+        <a href={appSignupHref()} className={buttonVariants({ size: "lg" })}>
           Start free
           <ArrowRight className="h-4 w-4" aria-hidden="true" />
         </a>
@@ -176,16 +173,13 @@ function Features() {
       </p>
       <div className="mt-10 space-y-4">
         {FEATURES.map((feature) => (
-          <section
-            key={feature.title}
-            className="flex gap-4 rounded-xl border border-border/60 bg-card p-6 elev-1"
-          >
+          <Card key={feature.title} as="section" variant="raised" padding="md" className="flex gap-4">
             <feature.icon className="mt-0.5 h-5 w-5 shrink-0 text-brand-secondary" aria-hidden="true" />
             <div>
               <h2 className="text-lg font-semibold text-foreground">{feature.title}</h2>
               <p className="mt-1.5 text-sm text-muted-foreground">{feature.body}</p>
             </div>
-          </section>
+          </Card>
         ))}
       </div>
       <div className="mt-10">
