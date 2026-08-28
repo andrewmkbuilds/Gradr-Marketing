@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { ArrowRight, Menu, X } from "lucide-react";
 import { BrandLogo } from "@/components/BrandLogo";
@@ -7,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { type Surface, urlFor } from "@/config/domains";
 import { appLoginHref, appSignupHref } from "@/lib/appLinks";
 import { CrossLink, SLink, useSurface, useSurfacePath } from "@/components/surface/SurfaceLink";
+import { useMobileMenu } from "@/hooks/useMobileMenu";
 
 export interface SurfaceNavItem {
   label: string;
@@ -43,7 +43,7 @@ export function SurfaceShell({ nav = [], eyebrow, children }: SurfaceShellProps)
   const { surface } = useSurface();
   const path = useSurfacePath();
   const { pathname } = useLocation();
-  const [menuOpen, setMenuOpen] = useState(false);
+  const { open: menuOpen, setOpen: setMenuOpen, toggle: toggleMenu } = useMobileMenu();
 
   const isActive = (to: string) => {
     const full = path(to);
@@ -51,7 +51,7 @@ export function SurfaceShell({ nav = [], eyebrow, children }: SurfaceShellProps)
   };
 
   return (
-    <div className="relative flex min-h-screen flex-col bg-background">
+    <div className="relative flex min-h-dvh flex-col bg-background">
       <div
         aria-hidden="true"
         className="pointer-events-none fixed inset-x-0 top-0 -z-10 h-[32rem] opacity-[0.14]"
@@ -122,7 +122,7 @@ export function SurfaceShell({ nav = [], eyebrow, children }: SurfaceShellProps)
             </a>
             <button
               type="button"
-              onClick={() => setMenuOpen((v) => !v)}
+              onClick={toggleMenu}
               aria-expanded={menuOpen}
               aria-label={menuOpen ? "Close menu" : "Open menu"}
               className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-border text-foreground lg:hidden"
@@ -133,7 +133,7 @@ export function SurfaceShell({ nav = [], eyebrow, children }: SurfaceShellProps)
         </div>
 
         {menuOpen && (
-          <div className="border-t border-border/60 bg-background lg:hidden">
+          <nav aria-label="Mobile" className="border-t border-border/60 bg-background lg:hidden">
             <div className="page-shell flex flex-col py-3">
               {nav.map((item) => (
                 <SLink
@@ -157,7 +157,7 @@ export function SurfaceShell({ nav = [], eyebrow, children }: SurfaceShellProps)
                 </CrossLink>
               ))}
             </div>
-          </div>
+          </nav>
         )}
       </header>
 
