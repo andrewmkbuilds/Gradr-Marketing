@@ -143,7 +143,7 @@
     "lint": "eslint .",
     "og:check": "node scripts/generate-og-images.mjs --check",
     "og:generate": "node scripts/generate-og-images.mjs",
-    "prebuild": "node scripts/generate-app-icons.mjs --check && node scripts/check-no-tanstack.mjs && node scripts/check-tailwind-classes.mjs && node scripts/check-legacy-design.mjs && node scripts/check-theme-tokens.mjs && node scripts/check-rpc-access.mjs && node scripts/check-brand-assets.mjs && bun run scripts/generate-sitemap.ts",
+    "prebuild": "node scripts/generate-app-icons.mjs --check && node scripts/check-no-tanstack.mjs && node scripts/check-tailwind-classes.mjs && node scripts/check-legacy-design.mjs && node scripts/check-theme-tokens.mjs && node scripts/check-rpc-access.mjs && node scripts/check-product-routes.mjs && node scripts/check-brand-assets.mjs && bun run scripts/generate-sitemap.ts",
     "predev": "bun run scripts/generate-sitemap.ts",
     "prepare": "node scripts/install-git-hooks.mjs",
     "preview": "vite preview",
@@ -187,7 +187,9 @@
     "check:hosts": "node scripts/check-marketing-hosts.mjs",
     "test:e2e:forms": "node scripts/e2e-marketing-forms.mjs",
     "test:visual:themes": "node scripts/visual-regression.mjs --viewports=mobile,desktop",
-    "test:visual:themes:update": "node scripts/visual-regression.mjs --viewports=mobile,desktop --update"
+    "test:visual:themes:update": "node scripts/visual-regression.mjs --viewports=mobile,desktop --update",
+    "check:product-routes": "node scripts/check-product-routes.mjs",
+    "test:e2e:auth": "node scripts/e2e-auth-handoff.mjs"
   },
   "type": "module",
   "version": "0.0.0"
