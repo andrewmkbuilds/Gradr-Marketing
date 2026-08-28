@@ -28,6 +28,8 @@ import { AnalyticsProvider } from "@/components/AnalyticsProvider";
 import { captureAttribution } from "@/lib/telemetry/attribution";
 import { trackOnce } from "@/lib/telemetry/events";
 import { clearRequestId, pendingRequestId, recordOAuthHop } from "@/lib/oauth/forensics";
+import { redirectToSurface } from "@/lib/routing/surfaceRedirectLog";
+import { callbackHandoffUrl, isOAuthCallbackUrl } from "@/lib/auth/oauthCallbackGuard";
 
 import NotFound from "./pages/NotFound";
 
@@ -97,7 +99,10 @@ function ExternalSurfaceRedirect({ surface, strip }: { surface: Surface; strip: 
   const location = useLocation();
   useEffect(() => {
     const rest = location.pathname.slice(strip.length) || "/";
-    window.location.replace(urlFor(surface, `${rest}${location.search}`));
+    redirectToSurface(urlFor(surface, `${rest}${location.search}`), {
+      reason: surface === "earn" ? "earn_portal" : "satellite_surface",
+      from: location.pathname,
+    });
   }, [location.pathname, location.search, strip, surface]);
   return null;
 }
@@ -114,8 +119,18 @@ function AppSurfaceHandoff() {
   const location = useLocation();
   useEffect(() => {
     if (!isProduction()) return;
-    window.location.replace(
+    // An auth response never continues on its original path here: it is folded
+    // into the product's /auth route with the query and hash preserved.
+    if (isOAuthCallbackUrl(window.location.href)) {
+      redirectToSurface(callbackHandoffUrl(window.location.href), {
+        reason: "oauth_callback",
+        from: location.pathname,
+      });
+      return;
+    }
+    redirectToSurface(
       `${PRODUCTION_ORIGIN.app}${location.pathname}${location.search}${location.hash}`,
+      { reason: "auth_handoff", from: location.pathname },
     );
   }, [location.pathname, location.search, location.hash]);
   if (!isProduction()) {
@@ -128,7 +143,10 @@ function AppSurfaceHandoff() {
 function LegacyAffiliateRedirect() {
   const { pathname } = useLocation();
   useEffect(() => {
-    window.location.replace(legacyAffiliateDestination(pathname));
+    redirectToSurface(legacyAffiliateDestination(pathname), {
+      reason: "legacy_affiliate",
+      from: pathname,
+    });
   }, [pathname]);
   return null;
 }
@@ -266,7 +284,10 @@ function WwwRedirect() {
   useEffect(() => {
     if (!isWwwHost()) return;
     const { pathname, search, hash } = window.location;
-    window.location.replace(`https://${ROOT_DOMAIN}${pathname}${search}${hash}`);
+    redirectToSurface(`https://${ROOT_DOMAIN}${pathname}${search}${hash}`, {
+      reason: "www_apex",
+      from: pathname,
+    });
   }, []);
   return null;
 }
