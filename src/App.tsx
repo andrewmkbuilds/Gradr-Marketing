@@ -19,6 +19,7 @@ import { OfflineBanner } from "@/components/OfflineBanner";
 import { RouteSkeleton } from "@/components/states/PageSkeletons";
 
 import { ScrollToTop } from "@/components/ScrollToTop";
+import { legacyAffiliateDestination } from "@/lib/partnerLinks";
 import { AnimatePresence } from "motion/react";
 import { captureReferralFromUrl } from "@/lib/affiliateTracking";
 import { SentryErrorBoundary, addBreadcrumb } from "@/lib/telemetry/sentry";
@@ -120,6 +121,15 @@ function AppSurfaceHandoff() {
   if (!isProduction()) {
     return <AnimatedPage><NotFound /></AnimatedPage>;
   }
+  return null;
+}
+
+/** `/affiliate/<rest>` → the Partner Program pitch or the partner portal. */
+function LegacyAffiliateRedirect() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.location.replace(legacyAffiliateDestination(pathname));
+  }, [pathname]);
   return null;
 }
 
