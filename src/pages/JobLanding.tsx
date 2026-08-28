@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Link, Navigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, ArrowRight, CheckCircle2, MapPin, Wifi } from "lucide-react";
 import { Badge, Text } from "@/design-system/gradr-9b9b95";
 import { buttonVariants } from "@/design-system/gradr-9b9b95/gradr/components/button";
@@ -18,6 +18,7 @@ import { jobLandingJsonLd } from "@/lib/structuredData";
 import { trackEvent, withUtm } from "@/lib/analytics";
 import { appSignupHref } from "@/lib/appLinks";
 import { useReadTracking } from "@/hooks/useReadTracking";
+import NotFound from "@/pages/NotFound";
 
 export default function JobLanding() {
   const { slug = "" } = useParams();
@@ -30,7 +31,9 @@ export default function JobLanding() {
 
   useReadTracking(landing?.slug ?? "");
 
-  if (!landing) return <Navigate to="/job-search" replace />;
+  // Unknown slug is a genuine miss: render the 404 experience instead of a
+  // silent redirect that would hide a broken link from users and crawlers.
+  if (!landing) return <NotFound />;
 
   const { role, location } = landing;
   const faqs = jobLandingFaqs(landing);

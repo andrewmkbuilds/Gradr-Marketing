@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Link, Navigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { appProductHref, isProductPath } from "@/lib/appLinks";
 import { ArrowLeft, ArrowRight, CalendarDays, Clock } from "lucide-react";
 import { PublicShell } from "@/components/PublicShell";
@@ -11,6 +11,7 @@ import { GUIDES_BY_SLUG, guidePath } from "@/content/guides";
 import { guideJsonLd } from "@/lib/structuredData";
 import { trackEvent, withUtm } from "@/lib/analytics";
 import { useReadTracking } from "@/hooks/useReadTracking";
+import NotFound from "@/pages/NotFound";
 
 export default function GuideArticle() {
   const { slug = "" } = useParams();
@@ -22,7 +23,9 @@ export default function GuideArticle() {
 
   useReadTracking(guide?.slug ?? "");
 
-  if (!guide) return <Navigate to="/career-advice" replace />;
+  // Unknown slug is a genuine miss: render the 404 experience instead of a
+  // silent redirect that would hide a broken link from users and crawlers.
+  if (!guide) return <NotFound />;
 
   const ctaHref = withUtm(guide.cta.href, {
     source: "career-advice",

@@ -17,6 +17,8 @@ import {
   planPriceLabel,
 } from "@/config/pricing";
 import { Button, Card, Text } from "@/design-system/gradr-9b9b95";
+import { buttonVariants } from "@/design-system/gradr-9b9b95/gradr/components/button";
+
 import {
   Accordion, AccordionContent, AccordionItem, AccordionTrigger,
 } from "@/components/ui/accordion";
@@ -34,7 +36,7 @@ import {
 } from "@/components/motion";
 import {
   AnimatedHeading, BlurText, GradientText, TextLoop, SpotlightCard,
-  MagneticButton, SceneBackground, ScrollFloat, MagicBento,
+  SceneBackground, ScrollFloat, MagicBento,
 } from "@/components/effects";
 import { HeroCommandCenter } from "@/components/landing/HeroCommandCenter";
 import { HexFloatFx, ParticleScrollFx } from "@/components/canvasui/CanvasFx";
@@ -320,6 +322,37 @@ export default function Landing() {
   const login = () => goToAppAuth({ location: "navbar", authenticated: Boolean(user) }, navigate);
   const openApp = () => goToAppAuth({ location: "navbar", next: "/", authenticated: Boolean(user) }, navigate);
 
+  /**
+   * Auth CTAs are real links, not bare buttons: a visitor can middle-click or
+   * ⌘-click them into a new tab, and crawlers see the destination. A plain
+   * left click still goes through the instrumented hand-off (telemetry +
+   * failure recovery) rather than the browser's default navigation.
+   */
+  const AuthCta = ({
+    href, onActivate, variant, size = "md", className = "", children,
+  }: {
+    href: string;
+    onActivate: () => void;
+    variant?: "primary" | "outline" | "ghost";
+    size?: "sm" | "md" | "lg";
+    className?: string;
+    children: React.ReactNode;
+  }) => (
+    <a
+      href={href}
+      className={`${buttonVariants({ variant, size })} ${className}`}
+      onClick={(e) => {
+        // Let the browser handle new-tab / new-window intents natively.
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+        e.preventDefault();
+        onActivate();
+      }}
+    >
+      {children}
+    </a>
+  );
+
+
   return (
     <div className="min-h-dvh overflow-x-hidden bg-background text-foreground">
 
@@ -377,12 +410,15 @@ export default function Landing() {
           <div className="hidden shrink-0 items-center gap-2 md:flex">
             <ThemeToggle className="min-h-9 min-w-9" />
             {user ? (
-              <Button size="sm" onClick={openApp}>Open Gradr</Button>
+              <AuthCta href={appSignInHref("/")} onActivate={openApp} size="sm">Open Gradr</AuthCta>
             ) : (
               <>
-                <Button variant="ghost" size="sm" onClick={login}>Log in</Button>
-                <MagneticButton size="sm" strength={6} onClick={start("navbar", "Get started")}>Get started</MagneticButton>
+                <AuthCta href={appSignInHref()} onActivate={login} variant="ghost" size="sm">Log in</AuthCta>
+                <AuthCta href={appSignInHref()} onActivate={start("navbar", "Get started")} size="sm">
+                  Get started
+                </AuthCta>
               </>
+
             )}
           </div>
 
@@ -430,13 +466,16 @@ export default function Landing() {
             </motion.ul>
             <div className="mt-3 flex gap-2">
               {user ? (
-                <Button className="flex-1" onClick={openApp}>Open Gradr</Button>
+                <AuthCta href={appSignInHref("/")} onActivate={openApp} className="flex-1">Open Gradr</AuthCta>
               ) : (
                 <>
-                  <Button variant="outline" className="flex-1" onClick={login}>Log in</Button>
-                  <Button className="flex-1" onClick={start("mobile_menu", "Get started")}>Get started</Button>
+                  <AuthCta href={appSignInHref()} onActivate={login} variant="outline" className="flex-1">Log in</AuthCta>
+                  <AuthCta href={appSignInHref()} onActivate={start("mobile_menu", "Get started")} className="flex-1">
+                    Get started
+                  </AuthCta>
                 </>
               )}
+
             </div>
           </motion.div>
         )}
@@ -509,13 +548,21 @@ export default function Landing() {
                   transition={{ duration: 0.7, ease: easeOut, delay: 0.62 }}
                   className="flex flex-col gap-3 sm:flex-row"
                 >
-                  <MagneticButton size="lg" className="group" onClick={start("hero", "Get started free")}>
-                    Get started free
-                    <ArrowRight
-                      className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
-                      aria-hidden
-                    />
-                  </MagneticButton>
+                  <Magnetic strength={6}>
+                    <AuthCta
+                      href={appSignInHref()}
+                      onActivate={start("hero", "Get started free")}
+                      size="lg"
+                      className="group"
+                    >
+                      Get started free
+                      <ArrowRight
+                        className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
+                        aria-hidden
+                      />
+                    </AuthCta>
+                  </Magnetic>
+
                   <Magnetic strength={6}>
                     <Button
                       size="lg"
@@ -1177,10 +1224,11 @@ export default function Landing() {
               Build a smarter career system with Gradr.
             </Text>
             <div className="relative mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-              <Button size="lg" onClick={start("final_cta", "Get started free")}>
+              <AuthCta href={appSignInHref()} onActivate={start("final_cta", "Get started free")} size="lg">
                 Get started free
-                <ArrowRight className="ml-2 h-4 w-4" aria-hidden />
-              </Button>
+                <ArrowRight className="h-4 w-4" aria-hidden />
+              </AuthCta>
+
               <Button
                 size="lg"
                 variant="outline"
