@@ -195,9 +195,18 @@ export function surfaceFromHost(host: string = currentHost()): Surface | null {
   return SUBDOMAIN_TO_SURFACE[label] ?? null;
 }
 
+/** Legacy path prefixes kept working after a surface was renamed. */
+const LEGACY_PATH_PREFIX: Record<string, Surface> = {
+  "/affiliate": "partners",
+};
+
 /** Surface implied by a path prefix on a shared host. */
 export function surfaceFromPath(pathname: string): Surface | null {
   const path = pathname.toLowerCase();
+  for (const [prefix, surface] of Object.entries(LEGACY_PATH_PREFIX)) {
+    if (path === prefix || path.startsWith(`${prefix}/`)) return surface;
+  }
+
   for (const surface of [
     "marketing",
     "news",
