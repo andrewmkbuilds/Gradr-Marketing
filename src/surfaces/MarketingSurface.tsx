@@ -177,8 +177,8 @@ function Features() {
           <Card key={feature.title} variant="raised" padding="md" className="flex gap-4">
             <feature.icon className="mt-0.5 h-5 w-5 shrink-0 text-brand-secondary" aria-hidden="true" />
             <div>
-              <h2 className="text-lg font-semibold text-foreground">{feature.title}</h2>
-              <p className="mt-1.5 text-sm text-muted-foreground">{feature.body}</p>
+              <Text variant="h6" as="h2">{feature.title}</Text>
+              <Text variant="body-sm" tone="muted" className="mt-1.5">{feature.body}</Text>
             </div>
           </Card>
         ))}
