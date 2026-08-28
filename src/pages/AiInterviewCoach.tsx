@@ -14,6 +14,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Text } from "@/design-system/gradr-9b9b95";
 import { buttonVariants } from "@/design-system/gradr-9b9b95/gradr/components/button";
+import { Card, cardVariants } from "@/design-system/gradr-9b9b95/gradr/components/card";
 import { PublicShell } from "@/components/PublicShell";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { trackEvent, withUtm } from "@/lib/analytics";
@@ -360,13 +361,13 @@ export default function AiInterviewCoach() {
               body: "A short, ordered list of questions to redo and stories to rebuild, carried into your next session automatically.",
             },
           ].map((item) => (
-            <div key={item.title} className="rounded-xl border border-border/70 p-5">
+            <Card key={item.title}>
               <h3 className="flex items-start gap-2 font-medium text-foreground">
                 <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
                 {item.title}
               </h3>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.body}</p>
-            </div>
+            </Card>
           ))}
         </div>
       </section>
@@ -378,10 +379,10 @@ export default function AiInterviewCoach() {
         </h2>
         <dl className="mt-6 space-y-5">
           {FAQS.map((faq) => (
-            <div key={faq.question} className="rounded-xl border border-border/70 p-5">
+            <Card key={faq.question}>
               <dt className="font-medium text-foreground">{faq.question}</dt>
               <dd className="mt-2 text-sm leading-relaxed text-muted-foreground">{faq.answer}</dd>
-            </div>
+            </Card>
           ))}
         </dl>
       </section>
@@ -421,7 +422,10 @@ export default function AiInterviewCoach() {
               key={item.to}
               to={ctaHref(item.to, item.location)}
               onClick={trackCta(item.location, item.to)}
-              className="rounded-xl border border-border/70 p-5 transition-colors hover:border-primary/50 hover:bg-muted/40"
+              className={cn(
+                cardVariants(),
+                "transition-colors hover:border-primary/50 hover:bg-surface-muted",
+              )}
             >
               <p className="font-medium text-foreground">{item.title}</p>
               <p className="mt-1.5 text-sm text-muted-foreground">{item.desc}</p>
@@ -441,7 +445,10 @@ export default function AiInterviewCoach() {
         <a
           href={ctaHref(appSignupHref(), "footer_cta")}
           onClick={trackCta("footer_cta", "/auth")}
-          className="mt-6 inline-flex h-11 items-center gap-2 rounded-xl bg-primary px-5 text-sm font-medium text-primary-foreground transition-transform hover:scale-[1.02] motion-reduce:transform-none"
+          className={cn(
+            buttonVariants({ size: "lg" }),
+            "mt-6 gap-2 transition-transform hover:scale-[1.02] motion-reduce:transform-none",
+          )}
         >
           <Sparkles className="h-4 w-4" aria-hidden="true" />
           Start practicing free

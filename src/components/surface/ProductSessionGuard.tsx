@@ -4,6 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { isProduction, isProductHost, productOrigin } from "@/config/domains";
 import { isProductPath } from "@/lib/appLinks";
 import { track } from "@/lib/telemetry/events";
+import { redirectToSurface } from "@/lib/routing/surfaceRedirectLog";
 
 /**
  * Last line of defence: this bundle must never behave like the authenticated
@@ -40,7 +41,11 @@ export function ProductSessionGuard() {
       destination,
       reason: productShaped ? "product_path" : "authenticated_root",
     });
-    window.location.replace(destination);
+    redirectToSurface(destination, {
+      reason: productShaped ? "product_path" : "authenticated_root",
+      from: location.pathname,
+      authenticated: true,
+    });
   }, [loading, user, location.pathname, location.search, location.hash]);
 
   return null;
