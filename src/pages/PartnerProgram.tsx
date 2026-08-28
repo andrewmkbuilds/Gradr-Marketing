@@ -24,7 +24,7 @@ export default function PartnerProgram() {
   return (
     <div className="mx-auto max-w-5xl space-y-8">
       <div className="space-y-4 text-center">
-        <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+        <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-caption text-primary">
           <Sparkles className="h-3 w-3" aria-hidden /> Gradr Partner Program
         </div>
         <Text variant="h2" as="h1">
@@ -86,7 +86,7 @@ export default function PartnerProgram() {
         <Text variant="h5" as="h2" className="mb-4 flex items-center gap-2">
           <TrendingUp className="h-4 w-4 text-primary" aria-hidden /> How it works
         </Text>
-        <ol className="space-y-3 text-sm">
+        <ol className="space-y-3 text-body-sm">
           {[
             "Apply with your audience details and promotion plan — every application is reviewed manually.",
             "Once approved, the partner portal issues your referral link and tracks clicks and conversions.",
@@ -95,7 +95,7 @@ export default function PartnerProgram() {
             "Track pending, approved, paid and reversed commission — and request payouts — in the partner portal.",
           ].map((step, i) => (
             <li key={step} className="flex gap-3">
-              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
+              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-caption text-primary">
                 {i + 1}
               </span>
               <span className="pt-0.5 text-muted-foreground">{step}</span>
@@ -108,7 +108,7 @@ export default function PartnerProgram() {
         <Text variant="h5" as="h2" className="mb-3">
           Terms summary
         </Text>
-        <ul className="space-y-2 text-sm text-muted-foreground">
+        <ul className="space-y-2 text-body-sm text-muted-foreground">
           {[
             "No self-referrals or incentivised fake signups.",
             "No paid search on Gradr branded keywords.",
@@ -122,7 +122,7 @@ export default function PartnerProgram() {
           ))}
         </ul>
         {settings?.affiliate_terms && (
-          <p className="mt-4 whitespace-pre-line border-t border-border pt-4 text-xs text-muted-foreground">
+          <p className="mt-4 whitespace-pre-line border-t border-border pt-4 text-caption text-muted-foreground">
             {settings.affiliate_terms}
           </p>
         )}
