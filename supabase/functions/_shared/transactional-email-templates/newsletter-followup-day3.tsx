@@ -10,17 +10,20 @@ import type { TemplateEntry } from './registry.ts'
  * the sequence ends here. Nothing else is scheduled automatically.
  */
 interface Props {
+  /** Absolute one-click unsubscribe URL for this recipient. */
+  unsubscribeUrl?: string
   firstName?: string
   topic?: string
 }
 
-const Email = ({ firstName, topic }: Props) => (
+const Email = ({ firstName, topic, unsubscribeUrl }: Props) => (
   <EmailLayout
     preview="How to get an interview-ready answer in one sitting"
     eyebrow="Day 3"
     headline="Practise the answer you keep fumbling"
     campaign="newsletter-followup-day3"
     audience="marketing"
+    unsubscribeHref={unsubscribeUrl}
     footerNote="Last email in the welcome sequence. You'll only hear from us once or twice a month after this."
   >
     <Paragraph>{greeting(firstName)}</Paragraph>

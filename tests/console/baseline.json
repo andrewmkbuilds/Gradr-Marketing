@@ -3,7 +3,7 @@
     {
       "key": "console.error: Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s at App at _a (<url>) at RootErrorBoundary (<url>)",
       "kind": "console.error",
-      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s  \n    at App\n    at _a (https://gradr.me/node_modules/.vite/deps/react-helmet-async.js?v=9e4bbfd0:627:5)\n    at RootErrorBoundary (https://gradr.me/src/components/Roo",
+      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s  \n    at App\n    at _a (https://gradr.me/node_modules/.vite/deps/react-helmet-async.js?v=7880b11e:627:5)\n    at RootErrorBoundary (https://gradr.me/src/components/Roo",
       "pages": [
         "/",
         "/ (interactions)",
@@ -183,7 +183,7 @@
     {
       "key": "console.error: Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s Check the render method of `App`. at AppRoutes (<url>) at Suspense at AuthProvider (<u",
       "kind": "console.error",
-      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `App`. \n    at AppRoutes (https://gradr.me/src/App.tsx:220:22)\n    at Suspense\n    at AuthProvider (https://gradr.me/src/hooks/useAuth.ts",
+      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `App`. \n    at AppRoutes (https://gradr.me/src/App.tsx?t=1787924473436:271:22)\n    at Suspense\n    at AuthProvider (https://gradr.me/src/",
       "pages": [
         "/",
         "/ (interactions)",
@@ -276,7 +276,7 @@
     {
       "key": "console.error: Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s Check the render method of `App`. at BrowserRouter (<url>) at Provider (<url>) at Tool",
       "kind": "console.error",
-      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `App`. \n    at BrowserRouter (https://gradr.me/node_modules/.vite/deps/react-router-dom.js?v=9e4bbfd0:5273:5)\n    at Provider (https://gr",
+      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `App`. \n    at BrowserRouter (https://gradr.me/node_modules/.vite/deps/react-router-dom.js?v=7880b11e:5273:5)\n    at Provider (https://gr",
       "pages": [
         "/",
         "/ (interactions)",
@@ -429,9 +429,40 @@
       ]
     },
     {
+      "key": "console.error: Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s Check the render method of `App`. at ProductSessionGuard (<url>) at AuthProvider (<url",
+      "kind": "console.error",
+      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `App`. \n    at ProductSessionGuard (https://gradr.me/src/components/surface/ProductSessionGuard.tsx:44:22)\n    at AuthProvider (https://g",
+      "pages": [
+        "/",
+        "/ (interactions)",
+        "/acceptable-use",
+        "/affiliate-disclosure",
+        "/ai-cover-letter-generator",
+        "/ai-disclaimer",
+        "/ai-interview-coach",
+        "/ats-resume-checker",
+        "/blog/ai-resume-optimization",
+        "/career-advice",
+        "/childrens-privacy",
+        "/cookie-policy",
+        "/disclaimer",
+        "/dpa",
+        "/job-application-tracker",
+        "/job-search",
+        "/landing",
+        "/legal",
+        "/newsletter/confirm",
+        "/privacy",
+        "/refund-policy",
+        "/terms",
+        "/this-route-does-not-exist",
+        "/unsubscribe"
+      ]
+    },
+    {
       "key": "console.error: Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s Check the render method of `App`. at QueryClientProvider (<url>) at ErrorBoundary (<ur",
       "kind": "console.error",
-      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `App`. \n    at QueryClientProvider (https://gradr.me/node_modules/.vite/deps/@tanstack_react-query.js?v=9e4bbfd0:2934:3)\n    at ErrorBoun",
+      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `App`. \n    at QueryClientProvider (https://gradr.me/node_modules/.vite/deps/@tanstack_react-query.js?v=7880b11e:2934:3)\n    at ErrorBoun",
       "pages": [
         "/",
         "/ (interactions)",
@@ -462,7 +493,7 @@
     {
       "key": "console.error: Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s Check the render method of `App`. at ReferralCapture (<url>) at Router (<url>) at Brow",
       "kind": "console.error",
-      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `App`. \n    at ReferralCapture (https://gradr.me/src/App.tsx:841:5)\n    at Router (https://gradr.me/node_modules/.vite/deps/react-router-",
+      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `App`. \n    at ReferralCapture (https://gradr.me/src/App.tsx?t=1787924473436:1018:5)\n    at Router (https://gradr.me/node_modules/.vite/d",
       "pages": [
         "/",
         "/ (interactions)",
@@ -493,7 +524,7 @@
     {
       "key": "console.error: Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s Check the render method of `App`. at RouteFallback (<url>) at Suspense at AuthProvider",
       "kind": "console.error",
-      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `App`. \n    at RouteFallback (https://gradr.me/src/App.tsx:124:22)\n    at Suspense\n    at AuthProvider (https://gradr.me/src/hooks/useAut",
+      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `App`. \n    at RouteFallback (https://gradr.me/src/App.tsx?t=1787924473436:130:22)\n    at Suspense\n    at AuthProvider (https://gradr.me/",
       "pages": [
         "/acceptable-use",
         "/affiliate-disclosure",
@@ -520,7 +551,7 @@
     {
       "key": "console.error: Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s Check the render method of `App`. at RouteSeo (<url>) at AuthProvider (<url>) at Route",
       "kind": "console.error",
-      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `App`. \n    at RouteSeo (https://gradr.me/src/components/RouteSeo.tsx:373:39)\n    at AuthProvider (https://gradr.me/src/hooks/useAuth.tsx",
+      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `App`. \n    at RouteSeo (https://gradr.me/src/components/RouteSeo.tsx:369:39)\n    at AuthProvider (https://gradr.me/src/hooks/useAuth.tsx",
       "pages": [
         "/",
         "/ (interactions)",
@@ -582,7 +613,7 @@
     {
       "key": "console.error: Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s Check the render method of `App`. at TelemetryRouteTracker (<url>) at AuthProvider (<u",
       "kind": "console.error",
-      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `App`. \n    at TelemetryRouteTracker (https://gradr.me/src/App.tsx:855:22)\n    at AuthProvider (https://gradr.me/src/hooks/useAuth.tsx:34",
+      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `App`. \n    at TelemetryRouteTracker (https://gradr.me/src/App.tsx?t=1787924473436:1032:22)\n    at AuthProvider (https://gradr.me/src/hoo",
       "pages": [
         "/",
         "/ (interactions)",
@@ -675,7 +706,7 @@
     {
       "key": "console.error: Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s Check the render method of `App`. at TooltipProvider (<url>) at MotionConfig (<url>) a",
       "kind": "console.error",
-      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `App`. \n    at TooltipProvider (https://gradr.me/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=9e4bbfd0:59:5)\n    at MotionConfig ",
+      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `App`. \n    at TooltipProvider (https://gradr.me/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=7880b11e:59:5)\n    at MotionConfig ",
       "pages": [
         "/",
         "/ (interactions)",
@@ -706,7 +737,7 @@
     {
       "key": "console.error: Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s Check the render method of `App`. at WwwRedirect (<url>) at Router (<url>) at BrowserR",
       "kind": "console.error",
-      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `App`. \n    at WwwRedirect (https://gradr.me/src/App.tsx:830:5)\n    at Router (https://gradr.me/node_modules/.vite/deps/react-router-dom.",
+      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `App`. \n    at WwwRedirect (https://gradr.me/src/App.tsx?t=1787924473436:1004:5)\n    at Router (https://gradr.me/node_modules/.vite/deps/",
       "pages": [
         "/",
         "/ (interactions)",
@@ -797,7 +828,7 @@
     {
       "key": "console.error: Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s Check the render method of `AppRoutes`. at AnimatePresence (<url>) at AppRoutes (<url>",
       "kind": "console.error",
-      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `AppRoutes`. \n    at AnimatePresence (https://gradr.me/node_modules/.vite/deps/motion_react.js?v=9e4bbfd0:8666:26)\n    at AppRoutes (http",
+      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `AppRoutes`. \n    at AnimatePresence (https://gradr.me/node_modules/.vite/deps/motion_react.js?v=7880b11e:8666:26)\n    at AppRoutes (http",
       "pages": [
         "/",
         "/ (interactions)",
@@ -836,7 +867,7 @@
     {
       "key": "console.error: Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s Check the render method of `AppRoutes`. at Routes (<url>) at PopChildMeasure (<url>) a",
       "kind": "console.error",
-      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `AppRoutes`. \n    at Routes (https://gradr.me/node_modules/.vite/deps/react-router-dom.js?v=9e4bbfd0:4592:5)\n    at PopChildMeasure (http",
+      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `AppRoutes`. \n    at Routes (https://gradr.me/node_modules/.vite/deps/react-router-dom.js?v=7880b11e:4592:5)\n    at PopChildMeasure (http",
       "pages": [
         "/",
         "/ (interactions)",
@@ -1041,7 +1072,7 @@
     {
       "key": "console.error: Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s Check the render method of `CookieConsent`. at Dialog (<url>) at CookieConsent (<url>)",
       "kind": "console.error",
-      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `CookieConsent`. \n    at Dialog (https://gradr.me/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=9e4bbfd0:51:5)\n    at CookieConsent",
+      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `CookieConsent`. \n    at Dialog (https://gradr.me/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=7880b11e:51:5)\n    at CookieConsent",
       "pages": [
         "/",
         "/ (interactions)",
@@ -1096,7 +1127,7 @@
     {
       "key": "console.error: Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s Check the render method of `CursorEffects`. at AnimatePresence (<url>) at div at Curso",
       "kind": "console.error",
-      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `CursorEffects`. \n    at AnimatePresence (https://gradr.me/node_modules/.vite/deps/motion_react.js?v=9e4bbfd0:8666:26)\n    at div\n    at ",
+      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `CursorEffects`. \n    at AnimatePresence (https://gradr.me/node_modules/.vite/deps/motion_react.js?v=7880b11e:8666:26)\n    at div\n    at ",
       "pages": [
         "/",
         "/ (interactions)",
@@ -1157,7 +1188,7 @@
     {
       "key": "console.error: Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s Check the render method of `DialogContent`. at DialogPortal (<url>) at _c<n> (<url>) a",
       "kind": "console.error",
-      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `DialogContent`. \n    at DialogPortal (https://gradr.me/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=9e4bbfd0:111:11)\n    at _c1 (",
+      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `DialogContent`. \n    at DialogPortal (https://gradr.me/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=7880b11e:111:11)\n    at _c1 (",
       "pages": [
         "/",
         "/ (interactions)",
@@ -1220,7 +1251,7 @@
     {
       "key": "console.error: Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s Check the render method of `DropdownMenuContent`. at DropdownMenuPortal (<url>) at _c<",
       "kind": "console.error",
-      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `DropdownMenuContent`. \n    at DropdownMenuPortal (https://gradr.me/node_modules/.vite/deps/@radix-ui_react-dropdown-menu.js?v=9e4bbfd0:1",
+      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `DropdownMenuContent`. \n    at DropdownMenuPortal (https://gradr.me/node_modules/.vite/deps/@radix-ui_react-dropdown-menu.js?v=7880b11e:1",
       "pages": [
         "/",
         "/ (interactions)",
@@ -1679,7 +1710,7 @@
     {
       "key": "console.error: Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s Check the render method of `Landing`. at Eyebrow (<url>) at div at MotionDOMComponent ",
       "kind": "console.error",
-      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `Landing`. \n    at Eyebrow (https://gradr.me/src/pages/Landing.tsx:394:20)\n    at div\n    at MotionDOMComponent (https://gradr.me/node_mo",
+      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `Landing`. \n    at Eyebrow (https://gradr.me/src/pages/Landing.tsx?t=1787924427603:427:20)\n    at div\n    at MotionDOMComponent (https://",
       "pages": [
         "/",
         "/ (interactions)",
@@ -1709,7 +1740,7 @@
     {
       "key": "console.error: Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s Check the render method of `Landing`. at Heading (<url>) at div at MotionDOMComponent ",
       "kind": "console.error",
-      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `Landing`. \n    at Heading (https://gradr.me/src/pages/Landing.tsx:440:20)\n    at div\n    at MotionDOMComponent (https://gradr.me/node_mo",
+      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `Landing`. \n    at Heading (https://gradr.me/src/pages/Landing.tsx?t=1787924427603:473:20)\n    at div\n    at MotionDOMComponent (https://",
       "pages": [
         "/",
         "/ (interactions)",
@@ -1769,7 +1800,7 @@
     {
       "key": "console.error: Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s Check the render method of `Landing`. at Lede (<url>) at div at MotionDOMComponent (<u",
       "kind": "console.error",
-      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `Landing`. \n    at Lede (https://gradr.me/src/pages/Landing.tsx:463:17)\n    at div\n    at MotionDOMComponent (https://gradr.me/node_modul",
+      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `Landing`. \n    at Lede (https://gradr.me/src/pages/Landing.tsx?t=1787924427603:496:17)\n    at div\n    at MotionDOMComponent (https://gra",
       "pages": [
         "/",
         "/ (interactions)",
@@ -1799,7 +1830,7 @@
     {
       "key": "console.error: Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s Check the render method of `Landing`. at NewsletterSignup (<url>) at div at div at foo",
       "kind": "console.error",
-      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `Landing`. \n    at NewsletterSignup (https://gradr.me/src/components/marketing/NewsletterSignup.tsx:32:40)\n    at div\n    at div\n    at f",
+      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `Landing`. \n    at NewsletterSignup (https://gradr.me/src/components/marketing/NewsletterSignup.tsx:33:40)\n    at div\n    at div\n    at f",
       "pages": [
         "/",
         "/ (interactions)",
@@ -1949,7 +1980,7 @@
     {
       "key": "console.error: Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s Check the render method of `Landing`. at Section (<url>) at div at MotionDOMComponent ",
       "kind": "console.error",
-      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `Landing`. \n    at Section (https://gradr.me/src/pages/Landing.tsx:375:102)\n    at div\n    at MotionDOMComponent (https://gradr.me/node_m",
+      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `Landing`. \n    at Section (https://gradr.me/src/pages/Landing.tsx?t=1787924427603:408:102)\n    at div\n    at MotionDOMComponent (https:/",
       "pages": [
         "/",
         "/ (interactions)",
@@ -1959,7 +1990,7 @@
     {
       "key": "console.error: Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s Check the render method of `Landing`. at Section (<url>) at main at div at Landing (<u",
       "kind": "console.error",
-      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `Landing`. \n    at Section (https://gradr.me/src/pages/Landing.tsx:375:102)\n    at main\n    at div\n    at Landing (https://gradr.me/src/p",
+      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `Landing`. \n    at Section (https://gradr.me/src/pages/Landing.tsx?t=1787924427603:408:102)\n    at main\n    at div\n    at Landing (https:",
       "pages": [
         "/",
         "/ (interactions)",
@@ -2205,7 +2236,7 @@
     {
       "key": "console.error: Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s Check the render method of `MotionPreferenceProvider`. at MotionConfig (<url>) at Moti",
       "kind": "console.error",
-      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `MotionPreferenceProvider`. \n    at MotionConfig (https://gradr.me/node_modules/.vite/deps/motion_react.js?v=9e4bbfd0:8890:25)\n    at Mot",
+      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `MotionPreferenceProvider`. \n    at MotionConfig (https://gradr.me/node_modules/.vite/deps/motion_react.js?v=7880b11e:8890:25)\n    at Mot",
       "pages": [
         "/",
         "/ (interactions)",
@@ -2260,7 +2291,7 @@
     {
       "key": "console.error: Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s Check the render method of `OfflineBanner`. at AnimatePresence (<url>) at OfflineBanne",
       "kind": "console.error",
-      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `OfflineBanner`. \n    at AnimatePresence (https://gradr.me/node_modules/.vite/deps/motion_react.js?v=9e4bbfd0:8666:26)\n    at OfflineBann",
+      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `OfflineBanner`. \n    at AnimatePresence (https://gradr.me/node_modules/.vite/deps/motion_react.js?v=7880b11e:8666:26)\n    at OfflineBann",
       "pages": [
         "/",
         "/ (interactions)",
@@ -2629,7 +2660,7 @@
     {
       "key": "console.error: Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s Check the render method of `TextLoop`. at AnimatePresence (<url>) at span at TextLoop ",
       "kind": "console.error",
-      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `TextLoop`. \n    at AnimatePresence (https://gradr.me/node_modules/.vite/deps/motion_react.js?v=9e4bbfd0:8666:26)\n    at span\n    at Text",
+      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `TextLoop`. \n    at AnimatePresence (https://gradr.me/node_modules/.vite/deps/motion_react.js?v=7880b11e:8666:26)\n    at span\n    at Text",
       "pages": [
         "/",
         "/ (interactions)",
@@ -2639,7 +2670,7 @@
     {
       "key": "console.error: Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s Check the render method of `ThemeToggle`. at DropdownMenu (<url>) at ThemeToggle (<url",
       "kind": "console.error",
-      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `ThemeToggle`. \n    at DropdownMenu (https://gradr.me/node_modules/.vite/deps/@radix-ui_react-dropdown-menu.js?v=9e4bbfd0:1117:5)\n    at ",
+      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `ThemeToggle`. \n    at DropdownMenu (https://gradr.me/node_modules/.vite/deps/@radix-ui_react-dropdown-menu.js?v=7880b11e:1117:5)\n    at ",
       "pages": [
         "/",
         "/ (interactions)",
@@ -2667,7 +2698,7 @@
     {
       "key": "console.error: Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s Check the render method of `Toaster`. at ToastProvider (<url>) at Toaster (<url>) at P",
       "kind": "console.error",
-      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `Toaster`. \n    at ToastProvider (https://gradr.me/node_modules/.vite/deps/@radix-ui_react-toast.js?v=9e4bbfd0:53:5)\n    at Toaster (http",
+      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `Toaster`. \n    at ToastProvider (https://gradr.me/node_modules/.vite/deps/@radix-ui_react-toast.js?v=7880b11e:53:5)\n    at Toaster (http",
       "pages": [
         "/",
         "/ (interactions)",
@@ -2696,22 +2727,6 @@
       ]
     },
     {
-      "key": "console.error: Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s Check the render method of `Unsubscribe`. at Heading (<url>) at div at _c (<url>) at m",
-      "kind": "console.error",
-      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `Unsubscribe`. \n    at Heading (https://gradr.me/src/pages/Unsubscribe.tsx:349:20)\n    at div\n    at _c (https://gradr.me/src/components/",
-      "pages": [
-        "/unsubscribe"
-      ]
-    },
-    {
-      "key": "console.error: Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s Check the render method of `Unsubscribe`. at Icon (<url>) at div at _c (<url>) at main",
-      "kind": "console.error",
-      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `Unsubscribe`. \n    at Icon (https://gradr.me/src/pages/Unsubscribe.tsx:340:17)\n    at div\n    at _c (https://gradr.me/src/components/ui/",
-      "pages": [
-        "/unsubscribe"
-      ]
-    },
-    {
       "key": "console.error: Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s Check the render method of `Unsubscribe`. at Seo (<url>) at main at Unsubscribe (<url>",
       "kind": "console.error",
       "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `Unsubscribe`. \n    at Seo (https://gradr.me/src/components/Seo.tsx:24:23)\n    at main\n    at Unsubscribe (https://gradr.me/src/pages/Uns",
@@ -2722,24 +2737,24 @@
     {
       "key": "console.error: WebSocket connection to '<url>' failed: Error during WebSocket handshake: Unexpected response code: <n>",
       "kind": "console.error",
-      "sample": "WebSocket connection to 'wss://gradr.me/?token=AONprOZMx6D3' failed: Error during WebSocket handshake: Unexpected response code: 200",
+      "sample": "WebSocket connection to 'wss://gradr.me/?token=liCcx8z4Zhq4' failed: Error during WebSocket handshake: Unexpected response code: 200",
       "pages": [
         "/",
         "/ (interactions)",
         "/affiliate-disclosure",
         "/ai-cover-letter-generator",
+        "/ai-disclaimer",
         "/ai-interview-coach",
         "/ats-resume-checker",
         "/career-advice",
         "/job-application-tracker",
-        "/job-search",
         "/landing"
       ]
     },
     {
       "key": "console.error: WebSocket connection to '<url>' failed: Error in connection establishment: net::ERR_SSL_PROTOCOL_ERROR",
       "kind": "console.error",
-      "sample": "WebSocket connection to 'wss://localhost:8080/?token=AONprOZMx6D3' failed: Error in connection establishment: net::ERR_SSL_PROTOCOL_ERROR",
+      "sample": "WebSocket connection to 'wss://localhost:8080/?token=liCcx8z4Zhq4' failed: Error in connection establishment: net::ERR_SSL_PROTOCOL_ERROR",
       "pages": [
         "/",
         "/ (interactions)",

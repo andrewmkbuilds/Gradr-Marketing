@@ -27,6 +27,7 @@ import {
   link,
   marketingLink,
   Tone,
+  unsubscribeUrl,
   tonePalette,
 } from './theme.ts'
 
@@ -47,6 +48,8 @@ export interface LayoutProps {
   /** Rendered under the body, above the footer. */
   outro?: React.ReactNode
   footerNote?: string
+  /** Absolute one-click unsubscribe URL; marketing emails must pass it. */
+  unsubscribeHref?: string
   /**
    * `product` footers point at the authenticated app (app.gradr.me).
    * `marketing` footers stay entirely on the public site.
@@ -63,6 +66,7 @@ export const EmailLayout = ({
   children,
   outro,
   footerNote,
+  unsubscribeHref,
   audience = 'product',
 }: LayoutProps) => {
 
@@ -134,6 +138,10 @@ export const EmailLayout = ({
                   <span style={styles.dot}>·</span>
                   <Link style={styles.footerLink} href={marketingLink('/career-advice', campaign)}>
                     Blog
+                  </Link>
+                  <span style={styles.dot}>·</span>
+                  <Link style={styles.footerLink} href={unsubscribeHref ?? unsubscribeUrl(null)}>
+                    Unsubscribe
                   </Link>
                 </>
               ) : (
@@ -667,4 +675,4 @@ const styles: Record<string, React.CSSProperties> = {
   fallbackLink: { color: brand.teal },
 }
 
-export { link, appLink, marketingLink, brand }
+export { link, appLink, marketingLink, unsubscribeUrl, brand }

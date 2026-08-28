@@ -1,7 +1,7 @@
 import { scrollIntoViewSafely } from "@/lib/motion/scroll";
 import { useReducedMotionPref } from "@/hooks/useMotionPreference";
 import { useScrollSpy } from "@/hooks/useScrollSpy";
-import { useEffect, useState } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -54,6 +54,44 @@ import {
 } from "@/components/landing/demos";
 
 /* ---------------------------------- data ---------------------------------- */
+
+/**
+ * Auth CTAs are real links, not bare buttons: a visitor can middle-click or
+ * ⌘-click them into a new tab, and crawlers see the destination. A plain left
+ * click still goes through the instrumented hand-off (telemetry + failure
+ * recovery) rather than the browser's default navigation.
+ *
+ * Declared at module scope and ref-forwarding so wrappers like `Magnetic` can
+ * attach to the underlying anchor without React warning about refs on a
+ * function component (and without remounting on every Landing render).
+ */
+const AuthCta = forwardRef<
+  HTMLAnchorElement,
+  {
+    href: string;
+    onActivate: () => void;
+    variant?: "primary" | "outline" | "ghost";
+    size?: "sm" | "md" | "lg";
+    className?: string;
+    children: React.ReactNode;
+  }
+>(({ href, onActivate, variant, size = "md", className = "", children, ...rest }, ref) => (
+  <a
+    ref={ref}
+    href={href}
+    className={`${buttonVariants({ variant, size })} ${className}`}
+    onClick={(e) => {
+      // Let the browser handle new-tab / new-window intents natively.
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+      e.preventDefault();
+      onActivate();
+    }}
+    {...rest}
+  >
+    {children}
+  </a>
+));
+AuthCta.displayName = "AuthCta";
 
 const NAV = [
   { label: "Product", href: "#product" },
@@ -322,35 +360,8 @@ export default function Landing() {
   const login = () => goToAppAuth({ location: "navbar", authenticated: Boolean(user) }, navigate);
   const openApp = () => goToAppAuth({ location: "navbar", next: "/", authenticated: Boolean(user) }, navigate);
 
-  /**
-   * Auth CTAs are real links, not bare buttons: a visitor can middle-click or
-   * ⌘-click them into a new tab, and crawlers see the destination. A plain
-   * left click still goes through the instrumented hand-off (telemetry +
-   * failure recovery) rather than the browser's default navigation.
-   */
-  const AuthCta = ({
-    href, onActivate, variant, size = "md", className = "", children,
-  }: {
-    href: string;
-    onActivate: () => void;
-    variant?: "primary" | "outline" | "ghost";
-    size?: "sm" | "md" | "lg";
-    className?: string;
-    children: React.ReactNode;
-  }) => (
-    <a
-      href={href}
-      className={`${buttonVariants({ variant, size })} ${className}`}
-      onClick={(e) => {
-        // Let the browser handle new-tab / new-window intents natively.
-        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
-        e.preventDefault();
-        onActivate();
-      }}
-    >
-      {children}
-    </a>
-  );
+
+
 
 
   return (

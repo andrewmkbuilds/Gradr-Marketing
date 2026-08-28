@@ -4,18 +4,21 @@ import { Bullets, Cta, EmailLayout, Paragraph, SecondaryLink, greeting, marketin
 import type { TemplateEntry } from './registry.ts'
 
 interface Props {
+  /** Absolute one-click unsubscribe URL for this recipient. */
+  unsubscribeUrl?: string
   firstName?: string
   /** Optional topic the reader opted into, shown in the intro. */
   topic?: string
 }
 
-const Email = ({ firstName, topic }: Props) => (
+const Email = ({ firstName, topic, unsubscribeUrl }: Props) => (
   <EmailLayout
     preview="You're on the Gradr list — here's what lands in your inbox"
     eyebrow="Newsletter"
     headline="Welcome to the Gradr newsletter"
     campaign="newsletter-welcome"
     audience="marketing"
+    unsubscribeHref={unsubscribeUrl}
     footerNote="You received this because you subscribed to the Gradr newsletter on gradr.me."
   >
     <Paragraph>{greeting(firstName)}</Paragraph>

@@ -19,6 +19,7 @@ import { createClient } from 'npm:@supabase/supabase-js@2'
 import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors'
 import { sendTransactionalEmail } from '../_shared/sendTransactional.ts'
 import { NEWSLETTER_FOLLOWUPS } from '../_shared/transactional-email-templates/registry.ts'
+import { unsubscribeUrl } from '../_shared/transactional-email-templates/theme.ts'
 
 const MAX_PER_RUN = 100
 const MAX_ATTEMPTS = 3
@@ -80,7 +81,7 @@ Deno.serve(async (req) => {
 
     const { data: subscriber } = await db
       .from('newsletter_subscribers')
-      .select('id, email, first_name, topic, status')
+      .select('id, email, first_name, topic, status, unsubscribe_token')
       .eq('id', row.subscriber_id)
       .maybeSingle()
 
@@ -120,6 +121,7 @@ Deno.serve(async (req) => {
       templateData: {
         firstName: (subscriber.first_name as string | null) ?? undefined,
         topic: (subscriber.topic as string | null) ?? undefined,
+        unsubscribeUrl: unsubscribeUrl(subscriber.unsubscribe_token as string | null),
       },
     })
 
