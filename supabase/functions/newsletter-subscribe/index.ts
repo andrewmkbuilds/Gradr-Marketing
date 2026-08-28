@@ -11,11 +11,19 @@
  */
 import { createClient } from 'npm:@supabase/supabase-js@2'
 import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors'
-import { sendTransactionalEmail } from '../_shared/sendTransactional.ts'
+import {
+  preflightTemplate,
+  sendTransactionalEmail,
+  sendTransactionalEmailDetailed,
+} from '../_shared/sendTransactional.ts'
 import { NEWSLETTER_FOLLOWUPS } from '../_shared/transactional-email-templates/registry.ts'
+import { createLogger } from '../_shared/opsLog.ts'
 
 const CONFIRM_TTL_DAYS = 7
 const MAX_SIGNUPS_PER_IP_PER_HOUR = 5
+const CONFIRM_TEMPLATE = 'newsletter-confirm'
+const log = createLogger('newsletter-subscribe')
+
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
@@ -65,6 +73,24 @@ Deno.serve(async (req) => {
       return json({ error: 'Enter a valid email address.' }, 400)
     }
 
+    // Preflight: the confirm template must be registered and allowed for this
+    // function's configuration before we take a signup we cannot confirm.
+    const preflight = preflightTemplate(CONFIRM_TEMPLATE)
+    if (!preflight.allowed) {
+      await log.alert({
+        event: 'confirm_template_preflight_failed',
+        severity: 'critical',
+        message: preflight.reason ?? 'Confirmation template is not sendable',
+        context: { templateName: CONFIRM_TEMPLATE, code: preflight.code },
+      })
+      return json(
+        { error: 'Newsletter signup is temporarily unavailable. Please try again later.' },
+        503,
+      )
+    }
+
+
+
     const ipHash = await sha256(`newsletter:${clientIp(req)}`)
     const hourAgo = new Date(Date.now() - 3_600_000).toISOString()
     const { count } = await db
@@ -108,22 +134,72 @@ Deno.serve(async (req) => {
       ? await db.from('newsletter_subscribers').update(row).eq('id', existing.id)
       : await db.from('newsletter_subscribers').insert(row)
     if (writeError) {
-      console.error('newsletter-subscribe: write failed', writeError)
+      await log.alert({
+        event: 'subscriber_write_failed',
+        message: `Could not persist newsletter subscription: ${writeError.message}`,
+        context: { code: writeError.code, email },
+      })
       return json({ error: 'We could not save your subscription. Please try again.' }, 500)
     }
 
-    const sent = await sendTransactionalEmail({
-      templateName: 'newsletter-confirm',
+    // The subscription itself is now recorded; delivery state is tracked
+    // separately so a failed confirmation email never loses the signup.
+    const result = await sendTransactionalEmailDetailed({
+      templateName: CONFIRM_TEMPLATE,
       recipientEmail: email,
       idempotencyKey: `newsletter-confirm:${tokenHash.slice(0, 24)}`,
       templateData: { firstName: firstName ?? undefined, confirmToken: token, topic: topic ?? undefined },
+      maxAttempts: 3,
     })
-    if (!sent) {
-      return json({ error: 'We could not send the confirmation email. Please try again shortly.' }, 502)
+
+    const deliveryStatus = result.ok
+      ? 'sent'
+      : result.reason === 'recipient_suppressed'
+        ? 'suppressed'
+        : 'failed'
+
+    const { error: stateError } = await db
+      .from('newsletter_subscribers')
+      .update({
+        confirm_delivery_status: deliveryStatus,
+        confirm_delivery_error: result.ok ? null : (result.error ?? result.reason ?? 'unknown').slice(0, 500),
+        confirm_attempts: result.attempts,
+        confirm_last_attempt_at: new Date().toISOString(),
+      })
+      .eq('email', email)
+    if (stateError) {
+      log.warn({ event: 'delivery_state_write_failed', error: stateError.message, email })
     }
 
-    return json({ ok: true, status: 'pending' })
+    if (!result.ok) {
+      await log.alert({
+        event: 'confirmation_email_failed',
+        severity: result.transient ? 'error' : 'critical',
+        message: `Newsletter confirmation email failed (${result.reason ?? 'unknown'}) after ${result.attempts} attempt(s).`,
+        context: {
+          templateName: CONFIRM_TEMPLATE,
+          reason: result.reason,
+          transient: result.transient ?? false,
+          attempts: result.attempts,
+          email,
+        },
+      })
+      // The signup is stored — report a degraded success so the reader knows
+      // their address is on file and the email is delayed, not lost.
+      return json({
+        ok: true,
+        status: 'pending',
+        emailDelivered: false,
+        deliveryStatus,
+        message:
+          'You are on the list, but we could not deliver the confirmation email just yet. We will retry shortly — check back or contact support if it does not arrive.',
+      })
+    }
+
+    log.info({ event: 'subscribe_ok', email, attempts: result.attempts, source })
+    return json({ ok: true, status: 'pending', emailDelivered: true, deliveryStatus })
   }
+
 
   /* ---------------------------------------------------------------- */
   /* confirm                                                           */

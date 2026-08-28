@@ -1,8 +1,9 @@
 import { Link } from "react-router-dom";
 import { useState, type FormEvent } from "react";
-import { CheckCircle2, Loader2, Mail } from "lucide-react";
+import { AlertTriangle, CheckCircle2, Loader2, Mail } from "lucide-react";
 import { Button, FormField, Input, Text } from "@/design-system/gradr-9b9b95";
 import { supabase } from "@/integrations/supabase/client";
+import { surfaceOrigin } from "@/config/domains";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
@@ -22,7 +23,7 @@ interface NewsletterSignupProps {
 export function NewsletterSignup({ source = "landing", topic, className }: NewsletterSignupProps) {
   const [email, setEmail] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [status, setStatus] = useState<"idle" | "submitting" | "sent">("idle");
+  const [status, setStatus] = useState<"idle" | "submitting" | "sent" | "saved-not-sent">("idle");
 
   const submit = async (event: FormEvent) => {
     event.preventDefault();
@@ -45,8 +46,36 @@ export function NewsletterSignup({ source = "landing", topic, className }: Newsl
       );
       return;
     }
-    setStatus("sent");
+    // The signup is stored even when the confirmation email could not be
+    // delivered — say so plainly instead of claiming the inbox has mail.
+    setStatus(data?.emailDelivered === false ? "saved-not-sent" : "sent");
   };
+
+  if (status === "saved-not-sent") {
+    return (
+      <div className={className} role="status">
+        <div className="flex items-start gap-3 rounded-card border border-border bg-surface-muted p-6">
+          <AlertTriangle className="mt-1 size-5 shrink-0 text-accent" aria-hidden />
+          <div className="space-y-1">
+            <Text as="p" variant="h6">
+              You are on the list — email delayed
+            </Text>
+            <Text as="p" variant="body-sm" tone="muted">
+              We saved {email}, but the confirmation email could not be delivered just yet. We are
+              retrying automatically. If it does not arrive shortly, try subscribing again or{" "}
+              <a
+                href={`${surfaceOrigin("support")}/contact`}
+                className="underline underline-offset-2"
+              >
+                contact support
+              </a>
+              .
+            </Text>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (status === "sent") {
     return (

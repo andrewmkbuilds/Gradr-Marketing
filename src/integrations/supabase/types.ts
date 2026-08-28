@@ -2575,6 +2575,10 @@ export type Database = {
       }
       newsletter_subscribers: {
         Row: {
+          confirm_attempts: number
+          confirm_delivery_error: string | null
+          confirm_delivery_status: string
+          confirm_last_attempt_at: string | null
           confirm_sent_at: string | null
           confirm_token_hash: string | null
           confirmed_at: string | null
@@ -2590,6 +2594,10 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          confirm_attempts?: number
+          confirm_delivery_error?: string | null
+          confirm_delivery_status?: string
+          confirm_last_attempt_at?: string | null
           confirm_sent_at?: string | null
           confirm_token_hash?: string | null
           confirmed_at?: string | null
@@ -2605,6 +2613,10 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          confirm_attempts?: number
+          confirm_delivery_error?: string | null
+          confirm_delivery_status?: string
+          confirm_last_attempt_at?: string | null
           confirm_sent_at?: string | null
           confirm_token_hash?: string | null
           confirmed_at?: string | null
@@ -2891,6 +2903,36 @@ export type Database = {
           state_valid?: boolean | null
           user_agent?: string | null
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      ops_alerts: {
+        Row: {
+          context: Json | null
+          created_at: string
+          event: string
+          id: string
+          message: string
+          severity: string
+          source: string
+        }
+        Insert: {
+          context?: Json | null
+          created_at?: string
+          event: string
+          id?: string
+          message: string
+          severity?: string
+          source: string
+        }
+        Update: {
+          context?: Json | null
+          created_at?: string
+          event?: string
+          id?: string
+          message?: string
+          severity?: string
+          source?: string
         }
         Relationships: []
       }
