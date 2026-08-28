@@ -36,7 +36,7 @@ import {
 } from "@/components/motion";
 import {
   AnimatedHeading, BlurText, GradientText, TextLoop, SpotlightCard,
-  MagneticButton, SceneBackground, ScrollFloat, MagicBento,
+  SceneBackground, ScrollFloat, MagicBento,
 } from "@/components/effects";
 import { HeroCommandCenter } from "@/components/landing/HeroCommandCenter";
 import { HexFloatFx, ParticleScrollFx } from "@/components/canvasui/CanvasFx";
