@@ -132,19 +132,20 @@ try {
     });
   }
 
-  // ------------------------------------------------------- CTA-driven signin
-  await step("landing 'Sign in' CTA navigates to app.gradr.me", async () => {
+  // ------------------------------------------------------- CTA-driven signup
+  await step("landing 'Get started' CTA navigates to app.gradr.me", async () => {
     const page = await context.newPage();
     await page.goto(`${MARKETING_ORIGIN}/`, { waitUntil: "domcontentloaded" });
-    await page.waitForTimeout(900);
-    const cta = page.getByRole("link", { name: /sign in|log in/i }).first();
-    const href = await cta.getAttribute("href");
-    assert(href?.startsWith(`${APP_ORIGIN}/auth`), `sign-in CTA points at ${href}`);
+    await page.waitForTimeout(1200);
+    const cta = page.getByRole("button", { name: /get started/i }).first();
     await cta.click();
-    await page.waitForTimeout(900);
+    await page.waitForTimeout(1500);
     assert(page.url().startsWith(APP_ORIGIN), `expected app origin, got ${page.url()}`);
+    const stub = await page.locator(`[data-${APP_STUB_MARKER}]`).count();
+    assert(stub === 1, "signup CTA did not reach the product");
     await page.close();
   });
+
 } finally {
   await browser.close();
 }
