@@ -25,7 +25,8 @@ const CALLBACK_PATHS = new Set([
   "/auth/v1/callback",
 ]);
 
-const CALLBACK_QUERY_KEYS = ["code", "state", "token_hash", "error", "error_description"];
+/** Query keys that only ever appear on an auth response. */
+const CALLBACK_QUERY_KEYS = ["code", "state", "token_hash"];
 const CALLBACK_HASH_KEYS = ["access_token", "refresh_token", "provider_token", "error"];
 
 /** True when this URL carries an OAuth / magic-link response. */
@@ -36,11 +37,16 @@ export function isOAuthCallbackUrl(url: string): boolean {
   } catch {
     return false;
   }
-  if (CALLBACK_PATHS.has(parsed.pathname.replace(/\/$/, "") || "/")) return true;
+  const path = parsed.pathname.replace(/\/$/, "") || "/";
+  if (CALLBACK_PATHS.has(path)) return true;
+  // `?error=` alone is ambiguous (marketing pages use it too) — it only counts
+  // as an auth response when the provider's `state` came back with it.
+  if (parsed.searchParams.has("error") && parsed.searchParams.has("state")) return true;
   if (CALLBACK_QUERY_KEYS.some((key) => parsed.searchParams.has(key))) return true;
   const hash = new URLSearchParams(parsed.hash.replace(/^#/, ""));
   return CALLBACK_HASH_KEYS.some((key) => hash.has(key));
 }
+
 
 /**
  * Destination for a callback that landed here: always the product's `/auth`
