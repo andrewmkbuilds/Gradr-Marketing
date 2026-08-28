@@ -320,6 +320,37 @@ export default function Landing() {
   const login = () => goToAppAuth({ location: "navbar", authenticated: Boolean(user) }, navigate);
   const openApp = () => goToAppAuth({ location: "navbar", next: "/", authenticated: Boolean(user) }, navigate);
 
+  /**
+   * Auth CTAs are real links, not bare buttons: a visitor can middle-click or
+   * ⌘-click them into a new tab, and crawlers see the destination. A plain
+   * left click still goes through the instrumented hand-off (telemetry +
+   * failure recovery) rather than the browser's default navigation.
+   */
+  const AuthCta = ({
+    href, onActivate, variant, size = "md", className = "", children,
+  }: {
+    href: string;
+    onActivate: () => void;
+    variant?: "primary" | "outline" | "ghost";
+    size?: "sm" | "md" | "lg";
+    className?: string;
+    children: React.ReactNode;
+  }) => (
+    <a
+      href={href}
+      className={`${buttonVariants({ variant, size })} ${className}`}
+      onClick={(e) => {
+        // Let the browser handle new-tab / new-window intents natively.
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+        e.preventDefault();
+        onActivate();
+      }}
+    >
+      {children}
+    </a>
+  );
+
+
   return (
     <div className="min-h-dvh overflow-x-hidden bg-background text-foreground">
 
