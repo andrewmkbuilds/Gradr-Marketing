@@ -146,7 +146,7 @@ const META: Record<string, { title: string; description: string }> = {
     description: "Manage your Gradr account, preferences, and digest settings.",
   },
   "/affiliate": {
-    title: "Affiliate Program",
+    title: "Partner Program",
     description: "Earn recurring commission by referring job seekers to Gradr — transparent rates and monthly payouts.",
   },
   "/affiliate/apply": {
@@ -259,7 +259,7 @@ function isNoIndex(pathname: string): boolean {
   return NOINDEX_PREFIXES.some((prefix) => pathname.startsWith(prefix));
 }
 
-/** Per-surface metadata for the marketing, news, docs and affiliate subdomains. */
+/** Per-surface metadata for the marketing, news, docs and partner subdomains. */
 const SURFACE_META: Partial<Record<Surface, Record<string, { title: string; description: string }>>> = {
   marketing: {
     "/": {
@@ -312,16 +312,11 @@ const SURFACE_META: Partial<Record<Surface, Record<string, { title: string; desc
         "Official Gradr documentation: quickstart, feature guides, AI Mock Interview reference, billing, API access and troubleshooting.",
     },
   },
-  affiliates: {
+  partners: {
     "/": {
-      title: "Gradr Affiliate Program — Earn Recurring Commission",
+      title: "Gradr Partner Program — Earn Recurring Commission",
       description:
-        "Join the Gradr affiliate program: recurring commission, transparent click and conversion tracking, monthly payouts and ready-made assets.",
-    },
-    "/join": {
-      title: "Apply to the Gradr Affiliate Program",
-      description:
-        "Tell us about your audience and apply to become a Gradr affiliate partner with recurring commission on every referred subscription.",
+        "Join the Gradr Partner Program: recurring commission on every referred subscription, a generous attribution window, transparent tracking and manual partner review.",
     },
   },
   status: {
@@ -381,7 +376,7 @@ function isSurfaceNoIndex(surface: Surface, path: string): boolean {
     // Unknown paths render the in-surface 404 — never let those be indexed.
     return resolveSurfaceMeta(surface, path) === null;
   }
-  if (surface === "affiliates") return !(path === "/" || path === "/join");
+  if (surface === "partners") return path !== "/";
   return isNoIndex(path);
 }
 

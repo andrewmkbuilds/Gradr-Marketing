@@ -305,7 +305,7 @@ function About() {
           Read the newsroom
         </CrossLink>
         <CrossLink
-          surface="affiliates"
+          surface="partners"
           className="text-sm text-brand-secondary underline underline-offset-4"
         >
           Partner with us
