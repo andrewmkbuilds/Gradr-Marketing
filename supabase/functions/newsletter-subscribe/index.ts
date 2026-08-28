@@ -73,6 +73,24 @@ Deno.serve(async (req) => {
       return json({ error: 'Enter a valid email address.' }, 400)
     }
 
+    // Preflight: the confirm template must be registered and allowed for this
+    // function's configuration before we take a signup we cannot confirm.
+    const preflight = preflightTemplate(CONFIRM_TEMPLATE)
+    if (!preflight.allowed) {
+      await log.alert({
+        event: 'confirm_template_preflight_failed',
+        severity: 'critical',
+        message: preflight.reason ?? 'Confirmation template is not sendable',
+        context: { templateName: CONFIRM_TEMPLATE, code: preflight.code },
+      })
+      return json(
+        { error: 'Newsletter signup is temporarily unavailable. Please try again later.' },
+        503,
+      )
+    }
+
+
+
     const ipHash = await sha256(`newsletter:${clientIp(req)}`)
     const hourAgo = new Date(Date.now() - 3_600_000).toISOString()
     const { count } = await db
