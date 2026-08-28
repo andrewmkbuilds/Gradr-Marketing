@@ -1224,10 +1224,11 @@ export default function Landing() {
               Build a smarter career system with Gradr.
             </Text>
             <div className="relative mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-              <Button size="lg" onClick={start("final_cta", "Get started free")}>
+              <AuthCta href={appSignInHref()} onActivate={start("final_cta", "Get started free")} size="lg">
                 Get started free
                 <ArrowRight className="ml-2 h-4 w-4" aria-hidden />
-              </Button>
+              </AuthCta>
+
               <Button
                 size="lg"
                 variant="outline"
