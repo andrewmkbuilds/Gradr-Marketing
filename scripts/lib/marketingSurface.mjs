@@ -47,7 +47,7 @@ export const MARKETING_HOSTS = [
   "https://docs.gradr.me",
   "https://support.gradr.me",
   "https://status.gradr.me",
-  "https://affiliates.gradr.me",
+  "https://partners.gradr.me",
 ];
 
 /** Retired product paths that must never resolve to product content here. */

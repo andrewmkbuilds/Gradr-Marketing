@@ -44,7 +44,7 @@ const HOSTS = [
   { origin: "https://docs.gradr.me" },
   { origin: "https://support.gradr.me" },
   { origin: "https://status.gradr.me" },
-  { origin: "https://affiliates.gradr.me", allowCredentialForm: true },
+  { origin: "https://partners.gradr.me", allowCredentialForm: true },
 ];
 
 /** Product path prefixes that may only appear as absolute app.gradr.me links. */
