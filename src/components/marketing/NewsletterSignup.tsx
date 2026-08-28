@@ -3,6 +3,7 @@ import { useState, type FormEvent } from "react";
 import { AlertTriangle, CheckCircle2, Loader2, Mail } from "lucide-react";
 import { Button, FormField, Input, Text } from "@/design-system/gradr-9b9b95";
 import { supabase } from "@/integrations/supabase/client";
+import { surfaceOrigin } from "@/config/domains";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
@@ -62,9 +63,12 @@ export function NewsletterSignup({ source = "landing", topic, className }: Newsl
             <Text as="p" variant="body-sm" tone="muted">
               We saved {email}, but the confirmation email could not be delivered just yet. We are
               retrying automatically. If it does not arrive shortly, try subscribing again or{" "}
-              <Link to="/contact" className="underline underline-offset-2">
+              <a
+                href={`${surfaceOrigin("support")}/contact`}
+                className="underline underline-offset-2"
+              >
                 contact support
-              </Link>
+              </a>
               .
             </Text>
           </div>
