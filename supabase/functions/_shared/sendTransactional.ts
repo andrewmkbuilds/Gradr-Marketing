@@ -70,39 +70,110 @@ function isRateLimited(error: unknown): error is EmailAPIError {
   return error instanceof EmailAPIError && error.status === 429
 }
 
-export async function sendTransactionalEmail(params: {
+/**
+ * Transient = worth retrying. Managed delivery surfaces upstream hiccups as
+ * 5xx (502/503/504) or 408; network hiccups arrive as TypeError.
+ */
+function isTransient(error: unknown): boolean {
+  if (error instanceof EmailAPIError) {
+    const status = error.status ?? 0
+    return status === 408 || status === 425 || (status >= 500 && status <= 599)
+  }
+  return error instanceof TypeError || /network|fetch failed|timed? ?out/i.test(String(error))
+}
+
+export interface TemplatePreflight {
+  allowed: boolean
+  /** Machine-readable reason when `allowed` is false. */
+  code?: 'app_owned_template' | 'template_not_registered' | 'missing_api_key'
+  reason?: string
+}
+
+/**
+ * Verifies a template can actually be sent by this function's configuration
+ * before any state is written or any network call is made: the template must
+ * be registered here, must not be owned by app.gradr.me, and the managed email
+ * API key must be present.
+ */
+export function preflightTemplate(templateName: string): TemplatePreflight {
+  if (
+    (RETIRED_TO_APP_TEMPLATES as readonly string[]).includes(templateName) ||
+    (AUTH_TEMPLATE_NAMES as readonly string[]).includes(templateName)
+  ) {
+    return {
+      allowed: false,
+      code: 'app_owned_template',
+      reason: `Template "${templateName}" is owned by the app surface and cannot be sent from marketing.`,
+    }
+  }
+  if (!TEMPLATES[templateName]) {
+    return {
+      allowed: false,
+      code: 'template_not_registered',
+      reason: `Template "${templateName}" is not registered in the marketing template registry.`,
+    }
+  }
+  if (!Deno.env.get('LOVABLE_API_KEY')) {
+    return {
+      allowed: false,
+      code: 'missing_api_key',
+      reason: 'LOVABLE_API_KEY is not configured for this function.',
+    }
+  }
+  return { allowed: true }
+}
+
+export interface SendOutcome {
+  ok: boolean
+  reason?:
+    | 'app_owned_template'
+    | 'template_not_registered'
+    | 'missing_api_key'
+    | 'no_recipient'
+    | 'render_failed'
+    | 'recipient_suppressed'
+    | 'send_failed'
+  error?: string
+  attempts: number
+  messageId?: string
+  /** True when the failure looked retryable (5xx/timeout/network). */
+  transient?: boolean
+}
+
+const DEFAULT_MAX_ATTEMPTS = 3
+const BASE_BACKOFF_MS = 600
+
+/** Full-detail send. `sendTransactionalEmail` wraps this for boolean callers. */
+export async function sendTransactionalEmailDetailed(params: {
   templateName: string
   recipientEmail: string
   idempotencyKey: string
   templateData?: Record<string, unknown>
-}): Promise<boolean> {
+  /** Total attempts for transient failures (default 3, retried with backoff). */
+  maxAttempts?: number
+}): Promise<SendOutcome> {
   const { templateName, idempotencyKey } = params
-  const apiKey = Deno.env.get('LOVABLE_API_KEY')
-  if (!apiKey) {
-    console.error('sendTransactionalEmail: LOVABLE_API_KEY is not configured')
-    return false
-  }
+  const log = createLogger('send-transactional-email')
+  const maxAttempts = Math.max(1, params.maxAttempts ?? DEFAULT_MAX_ATTEMPTS)
 
-  // Billing, payment, verification, security and auth mail is owned by the
-  // app.gradr.me project — never send it from the marketing surface.
-  const appOwned =
-    (RETIRED_TO_APP_TEMPLATES as readonly string[]).includes(templateName) ||
-    (AUTH_TEMPLATE_NAMES as readonly string[]).includes(templateName)
-  if (appOwned) {
-    console.error('Refusing app-owned template on the marketing surface', { templateName })
-    return false
+  const preflight = preflightTemplate(templateName)
+  if (!preflight.allowed) {
+    await log.alert({
+      event: 'template_rejected',
+      severity: preflight.code === 'missing_api_key' ? 'critical' : 'error',
+      message: preflight.reason ?? 'Template rejected by preflight',
+      context: { templateName, code: preflight.code, recipientEmail: params.recipientEmail },
+    })
+    return { ok: false, reason: preflight.code, error: preflight.reason, attempts: 0 }
   }
 
   const template = TEMPLATES[templateName]
-  if (!template) {
-    console.error('Template not found in registry', { templateName })
-    return false
-  }
+  const apiKey = Deno.env.get('LOVABLE_API_KEY') as string
 
   const recipient = template.to || params.recipientEmail
   if (!recipient) {
-    console.error('No recipient for template', { templateName })
-    return false
+    log.error({ event: 'no_recipient', templateName })
+    return { ok: false, reason: 'no_recipient', error: 'No recipient for template', attempts: 0 }
   }
 
   const messageId = crypto.randomUUID()
@@ -115,7 +186,11 @@ export async function sendTransactionalEmail(params: {
     html = await renderAsync(element)
     text = await renderAsync(element, { plainText: true })
   } catch (err) {
-    console.error('Template render failed', { templateName, err: String(err) })
+    await log.alert({
+      event: 'template_render_failed',
+      message: `Render failed for "${templateName}": ${String(err)}`,
+      context: { templateName, recipientEmail: recipient, messageId },
+    })
     await logSend({
       messageId,
       templateName,
@@ -123,7 +198,7 @@ export async function sendTransactionalEmail(params: {
       status: 'failed',
       errorMessage: `Render failed: ${String(err)}`.slice(0, 1000),
     })
-    return false
+    return { ok: false, reason: 'render_failed', error: String(err), attempts: 0, messageId }
   }
 
   // The email API rejects a send with `missing_parameter: text`, so never let
@@ -168,21 +243,42 @@ export async function sendTransactionalEmail(params: {
       { apiKey, sendUrl: Deno.env.get('LOVABLE_SEND_URL') },
     )
 
-  try {
+  let attempts = 0
+  let lastError: unknown = null
+
+  while (attempts < maxAttempts) {
+    attempts++
     try {
       await send()
+      lastError = null
+      break
     } catch (error) {
-      if (!isRateLimited(error)) throw error
-      // Managed delivery asks callers to wait before retrying a 429.
-      const waitSeconds = error.retryAfterSeconds ?? 60
-      console.warn('Email rate limited — waiting before one retry', {
+      lastError = error
+      if (error instanceof EmailAPIError && error.code === 'recipient_suppressed') break
+
+      const retryable = isRateLimited(error) || isTransient(error)
+      if (!retryable || attempts >= maxAttempts) break
+
+      // 429 carries an explicit wait; transient errors use exponential backoff
+      // with jitter (~0.6s, 1.2s, 2.4s …).
+      const waitMs = isRateLimited(error)
+        ? ((error as EmailAPIError).retryAfterSeconds ?? 60) * 1000
+        : BASE_BACKOFF_MS * 2 ** (attempts - 1) + Math.floor(Math.random() * 250)
+      log.warn({
+        event: 'send_retry_scheduled',
         templateName,
-        waitSeconds,
+        attempt: attempts,
+        maxAttempts,
+        waitMs,
+        status: error instanceof EmailAPIError ? error.status : undefined,
+        error: String(error instanceof Error ? error.message : error),
       })
-      await new Promise((r) => setTimeout(r, waitSeconds * 1000))
-      await send()
+      await new Promise((r) => setTimeout(r, waitMs))
     }
-  } catch (error) {
+  }
+
+  if (lastError) {
+    const error = lastError
     if (error instanceof EmailAPIError && error.code === 'recipient_suppressed') {
       await logSend({
         messageId,
@@ -191,20 +287,36 @@ export async function sendTransactionalEmail(params: {
         status: 'suppressed',
         errorMessage: 'Recipient is suppressed',
       })
-      console.log('Email suppressed', { templateName })
-      return false
+      log.info({ event: 'recipient_suppressed', templateName, recipientEmail: recipient })
+      return { ok: false, reason: 'recipient_suppressed', attempts, messageId }
     }
     const errorMsg = error instanceof Error ? error.message : String(error)
-    console.error('Email send failed', { templateName, error: errorMsg })
+    const transient = isTransient(error) || isRateLimited(error)
+    await log.alert({
+      event: 'email_send_failed',
+      severity: transient ? 'error' : 'critical',
+      message: `Send failed for "${templateName}" after ${attempts} attempt(s): ${errorMsg}`,
+      context: {
+        templateName,
+        recipientEmail: recipient,
+        messageId,
+        attempts,
+        transient,
+        status: error instanceof EmailAPIError ? error.status : undefined,
+        code: error instanceof EmailAPIError ? error.code : undefined,
+      },
+    })
     await logSend({
       messageId,
       templateName,
       recipientEmail: recipient,
       status: 'failed',
       errorMessage: errorMsg.slice(0, 1000),
+      metadata: { attempts, transient },
     })
-    return false
+    return { ok: false, reason: 'send_failed', error: errorMsg, attempts, messageId, transient }
   }
+
 
   await logSend({
     messageId,
