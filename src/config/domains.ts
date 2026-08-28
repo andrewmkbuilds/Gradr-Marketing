@@ -14,7 +14,7 @@
  *   marketing.gradr.me  → marketing /marketing
  *   news.gradr.me       → news      /news
  *   docs.gradr.me       → docs      /docs
- *   affiliates.gradr.me → affiliates/affiliate
+ *   partners.gradr.me   → partners  /partners
  *
  * Everything else (auth, Supabase client, design tokens, SEO helpers,
  * analytics) is shared — surfaces are route trees, not separate apps.
@@ -26,7 +26,7 @@ export type Surface =
   | "marketing"
   | "news"
   | "docs"
-  | "affiliates"
+  | "partners"
   | "earn"
   | "status"
   | "support";
@@ -37,7 +37,7 @@ export const SURFACES: Surface[] = [
   "marketing",
   "news",
   "docs",
-  "affiliates",
+  "partners",
   "earn",
   "status",
   "support",
@@ -52,7 +52,7 @@ export const PRODUCTION_ORIGIN: Record<Surface, string> = {
   marketing: `https://marketing.${ROOT_DOMAIN}`,
   news: `https://news.${ROOT_DOMAIN}`,
   docs: `https://docs.${ROOT_DOMAIN}`,
-  affiliates: `https://affiliates.${ROOT_DOMAIN}`,
+  partners: `https://partners.${ROOT_DOMAIN}`,
   earn: `https://earn.${ROOT_DOMAIN}`,
   status: `https://status.${ROOT_DOMAIN}`,
   support: `https://support.${ROOT_DOMAIN}`,
@@ -64,7 +64,9 @@ const SUBDOMAIN_TO_SURFACE: Record<string, Surface> = {
   marketing: "marketing",
   news: "news",
   docs: "docs",
-  affiliates: "affiliates",
+  partners: "partners",
+  // Legacy hostname — the affiliate portal is now the Partner program.
+  affiliates: "partners",
   earn: "earn",
   status: "status",
   support: "support",
@@ -82,7 +84,7 @@ export const SURFACE_PATH_PREFIX: Record<Surface, string> = {
   marketing: "/marketing",
   news: "/news",
   docs: "/docs",
-  affiliates: "/affiliate",
+  partners: "/partners",
   earn: "/earn",
   status: "/status",
   support: "/support",
@@ -108,7 +110,7 @@ export function isProduction(host: string = currentHost()): boolean {
 }
 
 /**
- * Whether the satellite subdomains (app/marketing/news/docs/affiliates) are
+ * Whether the satellite subdomains (app/marketing/news/docs/partners) are
  * actually *served* by hosting rather than redirected to the primary domain.
  *
  * Hosting serves exactly one primary custom domain per deployment and 302s
@@ -200,7 +202,7 @@ export function surfaceFromPath(pathname: string): Surface | null {
     "marketing",
     "news",
     "docs",
-    "affiliates",
+    "partners",
     "earn",
     "status",
     "support",
