@@ -11,11 +11,19 @@
  */
 import { createClient } from 'npm:@supabase/supabase-js@2'
 import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors'
-import { sendTransactionalEmail } from '../_shared/sendTransactional.ts'
+import {
+  preflightTemplate,
+  sendTransactionalEmail,
+  sendTransactionalEmailDetailed,
+} from '../_shared/sendTransactional.ts'
 import { NEWSLETTER_FOLLOWUPS } from '../_shared/transactional-email-templates/registry.ts'
+import { createLogger } from '../_shared/opsLog.ts'
 
 const CONFIRM_TTL_DAYS = 7
 const MAX_SIGNUPS_PER_IP_PER_HOUR = 5
+const CONFIRM_TEMPLATE = 'newsletter-confirm'
+const log = createLogger('newsletter-subscribe')
+
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
