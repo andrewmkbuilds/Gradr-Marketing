@@ -55,7 +55,7 @@ const Connect = lazy(() => import("./pages/Connect"));
 const MarketingEmailOps = lazy(() => import("./pages/MarketingEmailOps"));
 const NewsSurface = lazy(() => import("./surfaces/NewsSurface"));
 const DocsSurface = lazy(() => import("./surfaces/DocsSurface"));
-const AffiliatesSurface = lazy(() => import("./surfaces/AffiliatesSurface"));
+const PartnersSurface = lazy(() => import("./surfaces/PartnersSurface"));
 const StatusSurface = lazy(() => import("./surfaces/StatusSurface"));
 const SupportSurface = lazy(() => import("./surfaces/SupportSurface"));
 const Privacy = lazy(() => import("./pages/legal/Privacy"));
@@ -128,11 +128,10 @@ function SurfaceOutlet({ surface }: { surface: Surface }) {
     marketing: MarketingSurface,
     news: NewsSurface,
     docs: DocsSurface,
-    affiliates: AffiliatesSurface,
-    earn: AffiliatesSurface,
+    partners: PartnersSurface,
     status: StatusSurface,
     support: SupportSurface,
-  }[surface as "marketing" | "news" | "docs" | "affiliates" | "earn" | "status" | "support"];
+  }[surface as "marketing" | "news" | "docs" | "partners" | "status" | "support"];
   return (
     <SurfaceProvider surface={surface}>
       <Component />
@@ -144,8 +143,7 @@ const SATELLITE_SURFACES: Surface[] = [
   "marketing",
   "news",
   "docs",
-  "affiliates",
-  "earn",
+  "partners",
   "status",
   "support",
 ];
