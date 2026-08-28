@@ -23,7 +23,8 @@ describe("surface routing", () => {
     expect(surfaceFromHost("marketing.gradr.me")).toBe("marketing");
     expect(surfaceFromHost("news.gradr.me")).toBe("news");
     expect(surfaceFromHost("docs.gradr.me")).toBe("docs");
-    expect(surfaceFromHost("affiliates.gradr.me")).toBe("affiliates");
+    expect(surfaceFromHost("affiliates.gradr.me")).toBe("partners");
+    expect(surfaceFromHost("partners.gradr.me")).toBe("partners");
     expect(surfaceFromHost("status.gradr.me")).toBe("status");
     expect(surfaceFromHost("support.gradr.me")).toBe("support");
   });
