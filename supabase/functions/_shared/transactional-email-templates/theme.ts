@@ -96,6 +96,11 @@ export function marketingLink(path: string, campaign: string): string {
 }
 
 
+/** One-click unsubscribe link for a marketing recipient. */
+export function unsubscribeUrl(token: string | null | undefined): string {
+  return token ? `${SITE_URL}/unsubscribe?token=${encodeURIComponent(token)}` : `${SITE_URL}/unsubscribe`
+}
+
 export type Tone = 'teal' | 'mahogany' | 'success' | 'warning' | 'danger' | 'neutral'
 
 export const tonePalette: Record<Tone, { fg: string; bg: string; border: string }> = {

@@ -62,7 +62,12 @@ async function run() {
       route.fulfill({ status: 200, contentType: "text/html", body: "<html><body>app</body></html>" }),
     );
     await page.goto(BASE + "/", { waitUntil: "domcontentloaded" });
-    const button = page.getByRole("button", { name: cta.name, exact: true }).first();
+    // Auth CTAs are anchors (so they can be opened in a new tab); feature CTAs
+    // are still buttons. Accept either role.
+    const link = page.getByRole("link", { name: cta.name, exact: true }).first();
+    const button = (await link.count()) > 0
+      ? link
+      : page.getByRole("button", { name: cta.name, exact: true }).first();
     if ((await button.count()) === 0) {
       failures.push(`CTA not found: ${cta.name}`);
       await page.close();

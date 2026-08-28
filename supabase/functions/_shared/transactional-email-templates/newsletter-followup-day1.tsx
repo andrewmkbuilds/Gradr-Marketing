@@ -12,17 +12,20 @@ import type { TemplateEntry } from './registry.ts'
  * list immediately before sending. The platform appends the unsubscribe footer.
  */
 interface Props {
+  /** Absolute one-click unsubscribe URL for this recipient. */
+  unsubscribeUrl?: string
   firstName?: string
   topic?: string
 }
 
-const Email = ({ firstName }: Props) => (
+const Email = ({ firstName, unsubscribeUrl }: Props) => (
   <EmailLayout
     preview="Start here: the three guides subscribers read first"
     eyebrow="Day 1"
     headline="Start with these three guides"
     campaign="newsletter-followup-day1"
     audience="marketing"
+    unsubscribeHref={unsubscribeUrl}
     footerNote="You received this because you confirmed your subscription to the Gradr newsletter on gradr.me."
   >
     <Paragraph>{greeting(firstName)}</Paragraph>

@@ -17,6 +17,7 @@ import {
   sendTransactionalEmailDetailed,
 } from '../_shared/sendTransactional.ts'
 import { NEWSLETTER_FOLLOWUPS } from '../_shared/transactional-email-templates/registry.ts'
+import { unsubscribeUrl } from '../_shared/transactional-email-templates/theme.ts'
 import { createLogger } from '../_shared/opsLog.ts'
 
 const CONFIRM_TTL_DAYS = 7
@@ -116,6 +117,10 @@ Deno.serve(async (req) => {
 
     const token = crypto.randomUUID().replace(/-/g, '') + crypto.randomUUID().replace(/-/g, '')
     const tokenHash = await sha256(token)
+    // Opaque, stable per subscriber: this is what the unsubscribe link in
+    // every marketing email carries.
+    const unsubscribeToken =
+      crypto.randomUUID().replace(/-/g, '') + crypto.randomUUID().replace(/-/g, '')
     const now = new Date().toISOString()
 
     const row = {
@@ -126,6 +131,7 @@ Deno.serve(async (req) => {
       status: 'pending',
       confirm_token_hash: tokenHash,
       confirm_sent_at: now,
+      unsubscribe_token: unsubscribeToken,
       unsubscribed_at: null,
       ip_hash: ipHash,
     }
@@ -211,7 +217,7 @@ Deno.serve(async (req) => {
     const tokenHash = await sha256(token)
     const { data: row } = await db
       .from('newsletter_subscribers')
-      .select('id, email, first_name, topic, status, confirm_sent_at')
+      .select('id, email, first_name, topic, status, confirm_sent_at, unsubscribe_token')
       .eq('confirm_token_hash', tokenHash)
       .maybeSingle()
 
@@ -260,6 +266,7 @@ Deno.serve(async (req) => {
       templateData: {
         firstName: (row.first_name as string | null) ?? undefined,
         topic: (row.topic as string | null) ?? undefined,
+        unsubscribeUrl: unsubscribeUrl(row.unsubscribe_token as string | null),
       },
     })
 

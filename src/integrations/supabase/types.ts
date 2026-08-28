@@ -2590,6 +2590,7 @@ export type Database = {
           source: string
           status: string
           topic: string | null
+          unsubscribe_token: string | null
           unsubscribed_at: string | null
           updated_at: string
         }
@@ -2609,6 +2610,7 @@ export type Database = {
           source?: string
           status?: string
           topic?: string | null
+          unsubscribe_token?: string | null
           unsubscribed_at?: string | null
           updated_at?: string
         }
@@ -2628,6 +2630,7 @@ export type Database = {
           source?: string
           status?: string
           topic?: string | null
+          unsubscribe_token?: string | null
           unsubscribed_at?: string | null
           updated_at?: string
         }
