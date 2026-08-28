@@ -327,12 +327,26 @@ export async function sendTransactionalEmailDetailed(params: {
       template_version: template.version ?? 'unversioned',
       category: template.category ?? 'lifecycle',
       idempotency_key: idempotencyKey,
+      attempts,
     },
   })
 
-  console.log('Transactional email sent', { templateName })
-  return true
+  log.info({ event: 'email_sent', templateName, recipientEmail: recipient, attempts, messageId })
+  return { ok: true, attempts, messageId }
 }
+
+/** Boolean-returning wrapper kept for existing callers. */
+export async function sendTransactionalEmail(params: {
+  templateName: string
+  recipientEmail: string
+  idempotencyKey: string
+  templateData?: Record<string, unknown>
+  maxAttempts?: number
+}): Promise<boolean> {
+  const result = await sendTransactionalEmailDetailed(params)
+  return result.ok
+}
+
 
 /** Money formatting shared by the billing emails (Paddle sends minor units). */
 export function formatMoney(minorUnits: unknown, currency = "USD"): string {
