@@ -1,0 +1,18 @@
+{
+  "$comment": "Performance budgets enforced in CI. Raise a number only with a deliberate, reviewed reason — these exist to catch slowdowns, not to be rewritten when one is found.",
+  "bundle": {
+    "$comment": "Gzipped bytes of the production build in dist/.",
+    "entryJs": 260000,
+    "totalJs": 1250000,
+    "totalCss": 120000,
+    "largestChunk": 420000,
+    "totalAssets": 3800000
+  },
+  "vitals": {
+    "$comment": "Field-shaped lab thresholds measured on the built bundle, throttled.",
+    "lcpMs": 3200,
+    "cls": 0.1,
+    "tbtMs": 600,
+    "routes": ["/", "/landing", "/pricing", "/ats-resume-checker", "/career-advice"]
+  }
+}
