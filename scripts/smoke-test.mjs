@@ -3,13 +3,12 @@
  * Production smoke tests.
  *
  * Loads every critical route in a real browser, fails on runtime exceptions or
- * error fallbacks, and verifies that the Paddle checkout entrypoint is enabled
- * whenever the VITE_PAYMENTS_* variables are configured in the build.
+ * error fallbacks, and verifies that the auth and pricing routes hand the
+ * visitor over to the product instead of rendering it here.
  *
  * Usage:
  *   node scripts/smoke-test.mjs                      # against http://localhost:8080
  *   node scripts/smoke-test.mjs https://your.app     # against a deployed build
- *   SMOKE_EXPECT_PAYMENTS=1 node scripts/smoke-test.mjs <url>
  *
  * Exit code 0 = all checks passed, 1 = at least one failure.
  */
@@ -51,8 +50,6 @@ async function launchBrowser() {
 }
 
 const BASE = (process.argv[2] ?? process.env.SMOKE_BASE_URL ?? "http://localhost:8080").replace(/\/$/, "");
-/** When set, a disabled checkout entrypoint is a hard failure. */
-const EXPECT_PAYMENTS = ["1", "true", "yes"].includes(String(process.env.SMOKE_EXPECT_PAYMENTS).toLowerCase());
 
 /** Public routes that must render for anonymous visitors. */
 const PUBLIC_ROUTES = [
@@ -132,14 +129,6 @@ async function visit(page, route) {
   }
 }
 
-/** Payment config as inlined into the deployed bundle, read from the live page. */
-async function readPaymentsConfig(page) {
-  return page.evaluate(() => {
-    const scripts = Array.from(document.querySelectorAll("script[src]")).map((s) => s.src);
-    return { scripts };
-  });
-}
-
 /** Seller identity from the single source of truth (src/content/legal.ts). */
 function sellerIdentity() {
   const src = readFileSync(new URL("../src/content/legal.ts", import.meta.url), "utf8");
@@ -216,36 +205,19 @@ async function main() {
     );
   }
 
-  // ---- Auth hero headline must never clip ------------------------------
-  for (const width of [360, 768, 1280]) {
-    const heroCtx = await browser.newContext({ viewport: { width, height: 900 } });
-    const heroPage = await heroCtx.newPage();
-    try {
-      await heroPage.goto(`${BASE}/auth`, { waitUntil: "domcontentloaded", timeout: 45000 });
-      await heroPage.waitForSelector("[data-auth-hero]:visible", { timeout: 20000 });
-      await heroPage.waitForTimeout(1500);
-      const hero = await heroPage.evaluate(() => {
-        const node = Array.from(document.querySelectorAll("[data-auth-hero]")).find((n) => {
-          const r = n.getBoundingClientRect();
-          return r.width > 0 && r.height > 0;
-        });
-        if (!node) return null;
-        return {
-          text: (node.innerText || "").replace(/\u00a0/g, " ").replace(/\s+/g, " ").trim(),
-          clipped: node.scrollHeight - node.clientHeight > 1 || node.scrollWidth - node.clientWidth > 1,
-        };
-      });
-      const ok = Boolean(hero) && hero.text === "Your AI career command center." && !hero.clipped;
-      record(
-        `auth hero @${width}px`,
-        ok,
-        !hero ? "hero not rendered" : ok ? "full headline visible" : `text="${hero.text}" clipped=${hero.clipped}`,
-      );
-    } catch (err) {
-      record(`auth hero @${width}px`, false, err.message.split("\n")[0]);
-    } finally {
-      await heroCtx.close();
-    }
+  // ---- /auth is a hand-off, never a marketing-rendered sign-in form ------
+  // Sign-in lives in the app project (app.gradr.me/auth). This surface must
+  // either hand the visitor over (production) or render the 404 (dev/preview),
+  // and must never ship a credential form of its own.
+  {
+    const { body } = await visit(page, "/auth");
+    const hasForm = await page.locator('input[type="password"]').count();
+    const handsOff = /app\.gradr\.me/.test(body) || /page not found|can.t find that page/i.test(body);
+    record(
+      "/auth hands off to the product",
+      hasForm === 0 && handsOff,
+      hasForm ? "marketing surface renders a password field" : "no local sign-in form",
+    );
   }
 
   // ---- Auth-gated routes must not crash ------------------------------
@@ -262,38 +234,16 @@ async function main() {
     );
   }
 
-  // ---- Paddle checkout entrypoint ------------------------------------
-  await visit(page, "/pricing");
-  const bannerVisible = await page
-    .getByText(/payments are not configured/i)
-    .first()
-    .isVisible()
-    .catch(() => false);
-  const configured = !bannerVisible;
-
-  if (configured) {
-    record("paddle checkout entrypoint enabled", true, "no misconfiguration banner on /pricing");
-    // Paddle.js should be reachable and the CTA must be interactive.
-    const cta = page.getByRole("button", { name: /subscribe to|buy pack|current plan/i }).first();
-    const ctaOk = await cta.isEnabled().catch(() => false);
-    record(
-      "pricing CTA is interactive",
-      ctaOk,
-      ctaOk ? "checkout button enabled" : "no enabled subscribe CTA — prices failed to resolve",
-    );
-  } else {
-    record(
-      "paddle checkout entrypoint enabled",
-      !EXPECT_PAYMENTS,
-      EXPECT_PAYMENTS
-        ? "VITE_PAYMENTS_* expected but checkout is disabled (banner shown on /pricing)"
-        : "checkout disabled; banner shown correctly (set SMOKE_EXPECT_PAYMENTS=1 to require it)",
-    );
-    // When disabled, the banner is mandatory so users see why.
-    record("misconfiguration banner shown", bannerVisible, bannerVisible ? "visible on /pricing" : "banner missing");
+  // ---- /pricing hands off to the product's plans page -------------------
+  // Checkout is initialised only on app.gradr.me; this surface just forwards,
+  // with a crawlable link so the destination survives blocked navigation.
+  {
+    await visit(page, "/pricing");
+    const link = page.locator('a[href*="app.gradr.me/pricing"]').first();
+    const linked = await link.isVisible().catch(() => false);
+    record("pricing hands off to app.gradr.me", linked, linked ? "crawlable plans link present" : "no hand-off link on /pricing");
   }
 
-  await readPaymentsConfig(page).catch(() => null);
   await browser.close();
 
   const failed = results.filter((r) => !r.ok);

@@ -619,20 +619,20 @@ function patchHoverRules() {
               /:hover\b/g,
               HOVER_REWRITE,
             );
-          } catch {}
+          } catch { /* non-fatal */ }
         }
         if (rule.cssRules.length) walk(rule.cssRules);
       } else if ("cssRules" in rule) {
         try {
           walk((rule as CSSGroupingRule).cssRules);
-        } catch {}
+        } catch { /* non-fatal */ }
       }
     }
   };
   for (const sheet of Array.from(document.styleSheets)) {
     try {
       walk(sheet.cssRules);
-    } catch {}
+    } catch { /* non-fatal */ }
   }
   const style = document.createElement("style");
   style.textContent = `[${CONTENT_ATTR}], [${CONTENT_ATTR}] * { cursor: var(--canvasui-cursor, auto) !important; }`;
@@ -679,7 +679,7 @@ export function createHexFloat(
         sourceCtx!.drawElementImage!(content, 0, 0);
         contentDirty = true;
         wake();
-      } catch {}
+      } catch { /* non-fatal */ }
     };
   }
 

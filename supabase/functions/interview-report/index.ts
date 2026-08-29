@@ -1,6 +1,8 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { checkRateLimit as durableRateLimit } from "../_shared/rateLimit.ts";
+/** Minimal shape of a chat turn accepted from the client. */
+type ChatMessage = { role?: string; content?: unknown };
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -56,9 +58,9 @@ serve(async (req) => {
     const durationSec = Number.isFinite(body.durationSec) ? Math.max(0, Math.round(body.durationSec)) : 0;
 
     const transcript = messages
-      .filter((m: any) => m && typeof m.content === "string")
+      .filter((m: ChatMessage) => m && typeof m.content === "string")
       .slice(-60)
-      .map((m: any) => `${m.role === "assistant" ? "Interviewer" : "Candidate"}: ${String(m.content).slice(0, 3000)}`)
+      .map((m: ChatMessage) => `${m.role === "assistant" ? "Interviewer" : "Candidate"}: ${String(m.content).slice(0, 3000)}`)
       .join("\n\n");
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");

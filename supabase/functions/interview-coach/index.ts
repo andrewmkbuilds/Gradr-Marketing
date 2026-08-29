@@ -3,6 +3,8 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { checkRateLimit as durableRateLimit } from "../_shared/rateLimit.ts";
 import { consume, paymentRequired, resolveEnv } from "../_shared/entitlements.ts";
 import { logAiAuthorization } from "../_shared/securityAudit.ts";
+/** Minimal shape of a chat turn accepted from the client. */
+type ChatMessage = { role?: string; content?: unknown };
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -51,9 +53,9 @@ serve(async (req) => {
     }
     // Sanitize: only allow user/assistant roles + bounded content; cap message count
     const safeMessages = messages
-      .filter((m: any) => m && typeof m.content === "string")
+      .filter((m: ChatMessage) => m && typeof m.content === "string")
       .slice(-50)
-      .map((m: any) => ({
+      .map((m: ChatMessage) => ({
         role: m.role === "assistant" ? "assistant" : "user",
         content: String(m.content).slice(0, 4000),
       }));

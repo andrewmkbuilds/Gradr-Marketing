@@ -667,7 +667,8 @@
 
   /* Glass surface used across marketing panels and floating UI. */
   .glass-panel {
-    background: hsl(var(--surface) / 0.62);
+    /* Opaque enough that small text on glass keeps 4.5:1 over the hero art. */
+    background: hsl(var(--surface) / 0.93);
     backdrop-filter: blur(16px) saturate(140%);
     -webkit-backdrop-filter: blur(16px) saturate(140%);
     border: 1px solid hsl(var(--border) / 0.8);
@@ -721,7 +722,7 @@
      Bricolage Grotesque carries the editorial voice; Geist runs the
      interface. Never mix them within the same block of text. */
   .font-display {
-    font-family: "Bricolage Grotesque", "Geist", system-ui, sans-serif;
+    font-family: var(--font-display);
     font-optical-sizing: auto;
   }
   .type-hero {
@@ -1064,7 +1065,7 @@
 
   /* ---------- Glass surfaces ---------- */
   .glass-panel {
-    background: hsl(var(--surface) / 0.82);
+    background: hsl(var(--surface) / 0.93);
     backdrop-filter: blur(20px) saturate(150%);
     -webkit-backdrop-filter: blur(20px) saturate(150%);
     border: 1px solid hsl(var(--border));

@@ -105,7 +105,10 @@ const failures = [];
 /** Every product-shaped link on a page must be absolute and on app.gradr.me. */
 async function auditLinks(page, path) {
   await page.goto(BASE + path, { waitUntil: "domcontentloaded" });
-  await page.waitForTimeout(400);
+  // Some paths hand off client-side; let navigation settle before reading the
+  // DOM so the evaluate below cannot race a destroyed execution context.
+  await page.waitForLoadState("load").catch(() => {});
+  await page.waitForTimeout(1200);
   const hrefs = await page.$$eval("a[href]", (nodes) => nodes.map((n) => n.getAttribute("href")));
   for (const href of hrefs) {
     if (!href || href.startsWith("#") || href.startsWith("mailto:") || href.startsWith("tel:")) {

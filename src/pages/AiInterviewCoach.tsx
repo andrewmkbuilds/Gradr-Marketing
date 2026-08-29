@@ -217,9 +217,9 @@ export default function AiInterviewCoach() {
       />
 
       <section className="mx-auto max-w-3xl text-center">
-        <p className="text-xs font-medium uppercase tracking-wider text-primary">
+        <Text variant="overline" tone="primary">
           Live voice practice · Interview Engine
-        </p>
+        </Text>
         <Text as="h1" variant="h1" className="mt-3 text-balance">
           AI Interview Coach
         </Text>
@@ -232,7 +232,7 @@ export default function AiInterviewCoach() {
           <a
             href={ctaHref(appSignupHref(), "hero_primary")}
             onClick={trackCta("hero_primary", "/auth")}
-            className={cn(buttonVariants({ size: "lg" }), "transition-transform hover:scale-[1.02] motion-reduce:transform-none")}
+            className={buttonVariants({ size: "lg" })}
           >
             <Mic className="h-4 w-4" aria-hidden="true" />
             Start a free mock interview
@@ -259,7 +259,7 @@ export default function AiInterviewCoach() {
           {STEPS.map((step, i) => (
             <li
               key={step.name}
-              className="rounded-2xl border border-border/70 bg-card/60 p-5 backdrop-blur transition-colors hover:border-primary/40"
+              className={cn(cardVariants(), "transition-colors hover:border-primary/40")}
             >
               <div className="flex items-center gap-3">
                 <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary">

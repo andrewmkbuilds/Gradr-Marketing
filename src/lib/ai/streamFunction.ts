@@ -88,7 +88,7 @@ export async function streamEdgeFunction<TResult>(
   let failure: AiStreamError | null = null;
 
   const dispatch = (event: string, raw: string) => {
-    let data: any;
+    let data: Record<string, unknown>;
     try {
       data = raw ? JSON.parse(raw) : {};
     } catch {

@@ -84,7 +84,11 @@ try {
     for (const path of UNKNOWN_PATHS) {
       const label = `[${mode}] ${path}`;
       await page.goto(`${origin}${path}`, { waitUntil: "domcontentloaded" });
-      await page.waitForTimeout(700);
+      // The deployed bundle may still redirect an unknown path; let any such
+      // navigation finish before reading the DOM, or the evaluate below races
+      // a destroyed execution context.
+      await page.waitForLoadState("load").catch(() => {});
+      await page.waitForTimeout(1200);
       if (!(await isNotFound(page))) {
         failures.push(`${label}: did not render the branded 404 (url ${page.url()})`);
         continue;

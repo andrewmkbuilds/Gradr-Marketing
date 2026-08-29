@@ -80,7 +80,7 @@ serve(async (req) => {
 
     let systemPrompt = "";
     let toolName = "";
-    let toolParams: any = {};
+    let toolParams: Record<string, unknown> = {};
 
     if (type === "cover_letter") {
       systemPrompt = `You are an expert career writer. Write a compelling, personalized cover letter. Be specific, avoid generic phrases, and highlight relevant experience from the resume. Keep it under 400 words. Professional but warm tone.`;

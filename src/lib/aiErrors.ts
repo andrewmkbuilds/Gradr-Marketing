@@ -11,7 +11,11 @@ export function handleAiFunctionError(
   data?: { error?: string } | null,
 ): boolean {
   // supabase.functions.invoke surfaces non-2xx as FunctionsHttpError with .context.response
-  const anyErr = fnError as any;
+  const anyErr = fnError as {
+    message?: string;
+    status?: number;
+    context?: { status?: number; functionName?: string; response?: { status?: number } };
+  } | null | undefined;
   const status: number | undefined =
     anyErr?.context?.status ?? anyErr?.status ?? anyErr?.context?.response?.status;
   const message: string =

@@ -53,9 +53,12 @@ try {
   // ---------------------------------------------------------------- newsletter
   const newsletterForm = async (page) => {
     await page.goto(`${MARKETING_ORIGIN}/`, { waitUntil: "domcontentloaded" });
-    await page.waitForTimeout(900);
+    // Reveal wrappers mount their children after hydration: wait for the page
+    // to settle so the locator does not detach mid-action.
+    await page.waitForLoadState("load").catch(() => {});
+    await page.waitForTimeout(1600);
     const email = page.locator('input[type="email"]').first();
-    await email.scrollIntoViewIfNeeded();
+    await email.scrollIntoViewIfNeeded({ timeout: 5000 });
     // Match by role+type, not by label: the label flips to "Subscribing…" while
     // the request is in flight.
     return { email, submit: page.locator('form button[type="submit"]').first() };

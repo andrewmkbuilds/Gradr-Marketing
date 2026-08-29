@@ -6,7 +6,15 @@ import tseslint from "typescript-eslint";
 import { colorRuleExemptions, noHardcodedColorSyntax } from "./eslint-rules/no-hardcoded-colors.js";
 
 export default tseslint.config(
-  { ignores: ["dist"] },
+  {
+    ignores: [
+      "dist",
+      // Auto-generated artifacts: regenerated on build, hand-edits are discarded.
+      "supabase/functions/mcp/index.ts",
+      "src/integrations/supabase/types.ts",
+      "src/integrations/supabase/previewAuthStorage.ts",
+    ],
+  },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ["**/*.{ts,tsx}"],

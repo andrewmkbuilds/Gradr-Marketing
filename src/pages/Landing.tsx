@@ -332,6 +332,12 @@ export default function Landing() {
 
   // Hero scroll choreography: the composition lifts and dissolves as you scroll away.
   const heroReduced = useReducedMotionPref();
+  // Entrance fades settle instantly under reduced motion: a half-faded element
+  // also has half the text contrast, which fails WCAG for anyone who paused motion.
+  const heroFade = (from: Record<string, number>, transition: object) =>
+    heroReduced
+      ? { initial: { opacity: 1, y: 0 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0 } }
+      : { initial: from, animate: { opacity: 1, y: 0 }, transition };
   const { scrollY } = useScroll();
   const heroLift = useTransform(scrollY, [0, 600], [0, -60]);
   const heroOpacity = useTransform(scrollY, [0, 520], [1, 0.35]);
@@ -508,9 +514,7 @@ export default function Landing() {
             >
               <div className="space-y-7">
                 <motion.span
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, ease: easeOut }}
+                  {...heroFade({ opacity: 0, y: 10 }, { duration: 0.6, ease: easeOut })}
                   className="type-eyebrow inline-flex items-center gap-2 rounded-full border border-border/80 bg-surface/60 px-3 py-1.5 text-brand-secondary backdrop-blur"
                 >
                   <Sparkles className="h-3 w-3 text-primary" aria-hidden />
@@ -530,9 +534,7 @@ export default function Landing() {
                 </h1>
 
                 <motion.p
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, ease: easeOut, delay: 0.42 }}
+                  {...heroFade({ opacity: 0, y: 10 }, { duration: 0.6, ease: easeOut, delay: 0.42 })}
                   className="flex items-baseline gap-2 text-sm text-muted-foreground"
                 >
                   <span className="text-xs uppercase tracking-[0.22em] text-brand-secondary">Running now</span>
@@ -543,9 +545,7 @@ export default function Landing() {
                 </motion.p>
 
                 <motion.p
-                  initial={{ opacity: 0, y: 14 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.7, ease: easeOut, delay: 0.5 }}
+                  {...heroFade({ opacity: 0, y: 14 }, { duration: 0.7, ease: easeOut, delay: 0.5 })}
                   className="max-w-xl text-body-lg text-muted-foreground"
                 >
                   Gradr scores your resume, ranks live roles against your real skills, runs spoken mock
@@ -554,9 +554,7 @@ export default function Landing() {
                 </motion.p>
 
                 <motion.div
-                  initial={{ opacity: 0, y: 14 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.7, ease: easeOut, delay: 0.62 }}
+                  {...heroFade({ opacity: 0, y: 14 }, { duration: 0.7, ease: easeOut, delay: 0.62 })}
                   className="flex flex-col gap-3 sm:flex-row"
                 >
                   <Magnetic strength={6}>
@@ -587,9 +585,7 @@ export default function Landing() {
                 </motion.div>
 
                 <motion.dl
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.6, delay: 0.8 }}
+                  {...heroFade({ opacity: 0, y: 0 }, { duration: 0.6, delay: 0.8 })}
                   className="grid max-w-lg grid-cols-3 gap-4 border-t border-border/60 pt-6"
                 >
                   {[

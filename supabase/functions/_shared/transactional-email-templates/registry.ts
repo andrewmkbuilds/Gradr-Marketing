@@ -11,10 +11,8 @@ import { template as contactFormReceived } from './contact-form-received.tsx'
 import { template as marketingAnnouncement } from './marketing-announcement.tsx'
 
 export interface TemplateEntry {
-  // deno-lint-ignore no-explicit-any
-  component: React.ComponentType<any>
-  // deno-lint-ignore no-explicit-any
-  subject: string | ((data: Record<string, any>) => string)
+  component: React.ComponentType<Record<string, unknown>>
+  subject: string | ((data: Record<string, unknown>) => string)
   displayName?: string
   /**
    * `marketing` templates are owned by the gradr.me surface and may only link
@@ -26,8 +24,7 @@ export interface TemplateEntry {
   category?: 'marketing' | 'lifecycle'
   /** Bumped whenever the rendered content changes; recorded on every send. */
   version?: string
-  // deno-lint-ignore no-explicit-any
-  previewData?: Record<string, any>
+  previewData?: Record<string, unknown>
   to?: string
 }
 

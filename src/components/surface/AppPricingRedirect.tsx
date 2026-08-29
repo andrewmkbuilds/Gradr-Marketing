@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { appPricingHref, isCrossOrigin } from "@/lib/appLinks";
+import { isProduction } from "@/config/domains";
 import { Loader2 } from "lucide-react";
 
 /**
@@ -17,7 +18,10 @@ export function AppPricingRedirect() {
   const href = `${appPricingHref()}${search}`;
 
   useEffect(() => {
-    if (!isCrossOrigin(href)) return;
+    // Only production hands the visitor over: on dev and preview hosts there is
+    // no product deployment for this bundle, so bouncing to app.gradr.me would
+    // take previews (and CI smoke runs) off-site.
+    if (!isProduction() || !isCrossOrigin(href)) return;
     window.location.replace(href);
   }, [href]);
 

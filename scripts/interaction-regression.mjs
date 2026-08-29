@@ -7,7 +7,7 @@
  * profile screens live in the separate "Gradr (App)" project, so the equivalent
  * marketing-surface interactions are asserted here:
  *
- *   - affiliate application form  (multi-field onboarding-style form)
+ *   - legacy affiliate paths      (hand-off to the partners portal)
  *   - cookie consent preferences  (settings-style toggles + persistence)
  *   - auth entry point            (hand-off to app.gradr.me)
  *   - design-system gallery       (controls stay interactive / disabled states)
@@ -75,35 +75,68 @@ const context = await browser.newContext({
 });
 const page = await context.newPage();
 
-await check("affiliate application form accepts input and validates", async () => {
-  await page.goto(`${BASE}/affiliate/join`, { waitUntil: "domcontentloaded" });
-  await page.waitForTimeout(800);
-  const inputs = page.locator("form input:not([type=hidden]), form textarea");
-  const count = await inputs.count();
-  assert(count > 0, "no form controls rendered on /affiliate/join");
+await check("legacy affiliate paths hand off to the Partner Program", async () => {
+  // Use a throwaway page: the hand-off is a client-side redirect that can land
+  // after the check returns and would hijack the shared page.
+  const page = await context.newPage();
+  // The partners portal is a separate deployment: stub it so the hand-off can
+  // complete without depending on network egress.
+  await page.route("https://partners.gradr.me/**", (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: "text/html",
+      body: "<!doctype html><title>Partner Program</title><body>Partner Program</body>",
+    }),
+  );
+  // The application form itself now lives on the partners portal; marketing
+  // only owns the pitch page and the hand-off to it.
+  await page
+    .goto(`${BASE}/affiliate/join`, { waitUntil: "domcontentloaded" })
+    .catch((err) => {
+      if (!/ERR_ABORTED|ERR_NAME_NOT_RESOLVED|ERR_CONNECTION/.test(String(err))) throw err;
+    });
+  // The hand-off is a client-side redirect after hydration.
+  await page
+    .waitForURL(/partners/, { timeout: 10000 })
+    .catch(() => {});
+  await page.waitForTimeout(500);
 
-  const first = inputs.first();
-  await first.click();
-  await first.fill("https://example.com/creator");
-  assert((await first.inputValue()) === "https://example.com/creator", "input did not accept text");
-
-  const focused = await page.evaluate(() => document.activeElement?.tagName ?? "");
-  assert(["INPUT", "TEXTAREA"].includes(focused), `focus not on a control (${focused})`);
-
-  const submit = page.locator("form button[type=submit]").first();
-  assert(await submit.count(), "no submit button in the application form");
-  assert(await submit.isVisible(), "submit button is not visible");
+  const url = page.url();
+  const onPartners =
+    /partners\.gradr\.me/.test(url) ||
+    /\/partners/.test(url) ||
+    (await page.getByText(/Partner Program/i).count()) > 0;
+  assert(onPartners, `/affiliate/join did not reach the Partner Program (${url})`);
+  await page.close();
 });
 
 await check("cookie preferences persist across reload", async () => {
-  await context.clearCookies();
-  await page.goto(`${BASE}/`, { waitUntil: "domcontentloaded" });
+  // Fresh context: consent state must be evaluated from a clean visitor, free
+  // of any storage or pending navigation left by earlier checks.
+  const consentContext = await browser.newContext({
+    viewport: { width: 1280, height: 1000 },
+    reducedMotion: "reduce",
+  });
+  const page = await consentContext.newPage();
+  const openHome = async () => {
+    await page.goto(`${BASE}/`, { waitUntil: "domcontentloaded" });
+    // Lazy route chunks can leave the shell empty for a moment; wait for the
+    // real page before asserting on anything it renders.
+    await page.locator("main").waitFor({ state: "attached", timeout: 15000 }).catch(() => {});
+  };
+  await openHome();
   await page.evaluate(() => localStorage.clear());
   await page.reload({ waitUntil: "domcontentloaded" });
-  await page.waitForTimeout(1200);
+  await page.waitForLoadState("load").catch(() => {});
+  await page.locator("main").waitFor({ state: "attached", timeout: 15000 }).catch(() => {});
 
+  // The banner mounts after hydration and a short idle delay.
   const accept = page.getByRole("button", { name: /accept/i }).first();
-  assert(await accept.count(), "cookie consent banner did not render");
+  await accept.waitFor({ state: "visible", timeout: 10000 }).catch(() => {});
+  if (!(await accept.count())) {
+    const dbg = (await page.locator("body").innerText().catch(() => "")).slice(0, 200).replace(/\s+/g, " ");
+    throw new Error(`cookie consent banner did not render (url=${page.url()} body="${dbg}")`);
+  }
   await accept.click();
   await page.waitForTimeout(400);
 
@@ -118,6 +151,7 @@ await check("cookie preferences persist across reload", async () => {
     (await page.getByRole("button", { name: /accept all/i }).count()) === 0,
     "consent banner reappeared after a stored choice",
   );
+  await consentContext.close();
 });
 
 await check("auth entry point hands off without a dead end", async () => {
@@ -129,9 +163,12 @@ await check("auth entry point hands off without a dead end", async () => {
 });
 
 await check("design-system controls keep hover and disabled semantics", async () => {
-  await page.goto(`${BASE}/design-system`, { waitUntil: "domcontentloaded" });
-  await page.waitForTimeout(800);
+  await page.goto(`${BASE}/design-system`, { waitUntil: "domcontentloaded" }).catch((err) => {
+    if (!/interrupted by another navigation|ERR_ABORTED/.test(String(err))) throw err;
+  });
+  await page.waitForLoadState("load").catch(() => {});
   const gallery = page.locator('[data-testid="design-system-gallery"]');
+  await gallery.waitFor({ state: "attached", timeout: 10000 }).catch(() => {});
   assert(await gallery.count(), "gallery did not render");
 
   const disabled = page.locator("button[disabled]").first();

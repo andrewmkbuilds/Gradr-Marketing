@@ -37,7 +37,14 @@ export interface SetupDraft {
   jobDescription?: string;
 }
 
-const CONTROL_CHARS = /[\u0000-\u0008\u000e-\u001f]/;
+/** True when the string carries C0 control characters (excluding tab/newline/CR). */
+function hasControlChars(value: string): boolean {
+  for (let i = 0; i < value.length; i++) {
+    const code = value.charCodeAt(i);
+    if ((code >= 0x00 && code <= 0x08) || (code >= 0x0e && code <= 0x1f)) return true;
+  }
+  return false;
+}
 
 function validateName(
   value: string,
@@ -48,7 +55,7 @@ function validateName(
   if (value.length > limits.max) {
     return `${label} is ${value.length} characters — keep it under ${limits.max}.`;
   }
-  if (CONTROL_CHARS.test(value)) return `${label} contains characters we can't use.`;
+  if (hasControlChars(value)) return `${label} contains characters we can't use.`;
   if (value.includes("\n")) return `${label} should be a single line.`;
   if (!/[\p{L}\p{N}]/u.test(value)) return `${label} needs at least one letter or number.`;
   return undefined;

@@ -58,6 +58,8 @@ const failures = [];
 const browser = await chromium.launch({ headless: true, executablePath: findChromium() });
 const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
 await page.goto(BASE + "/", { waitUntil: "domcontentloaded" });
+await page.waitForLoadState("load").catch(() => {});
+await page.waitForTimeout(1000);
 await page.waitForFunction(() => typeof window.__gradrResolveNext === "function", null, {
   timeout: 15000,
 });

@@ -189,7 +189,6 @@ export default function Connect() {
 
   useEffect(() => {
     if (validation.ok) markDone("url");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [validation.ok]);
 
   const claudeUrl = `https://claude.ai/customize/connectors?modal=add-custom-connector&connectorName=${encodeURIComponent(

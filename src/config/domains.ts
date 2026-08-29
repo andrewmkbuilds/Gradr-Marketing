@@ -241,11 +241,14 @@ export function currentSurface(pathname?: string): Surface {
 
 /** Base path every in-surface link must be prefixed with on the current host. */
 export function surfaceBase(surface: Surface, host: string = currentHost()): string {
-  // Dedicated surfaces (app, earn) are served at the root of their own
-  // hostname, so they never carry a path prefix — not even on multi-surface
-  // dev/preview hosts, where a "/earn" prefix would resolve to this very URL
-  // and turn a hand-off redirect into a reload loop.
-  if (isDedicatedSurface(surface) && pinnedSurface() !== surface) return "";
+  // In production, dedicated surfaces (app, earn) are served at the root of
+  // their own hostname, so they never carry a path prefix — a "/earn" prefix
+  // would resolve to this very URL and turn a hand-off into a reload loop.
+  // On dev/preview hosts there is no separate deployment to hand off to, so the
+  // usual path prefixes apply and links stay on the current origin.
+  if (isDedicatedSurface(surface) && pinnedSurface() !== surface && isProduction(host)) {
+    return "";
+  }
   return isMultiSurfaceHost(host) ? SURFACE_PATH_PREFIX[surface] : "";
 }
 
@@ -277,9 +280,10 @@ export function surfaceOrigin(surface: Surface, host: string = currentHost()): s
   if (pinned && surface === pinned && typeof window !== "undefined") {
     return window.location.origin;
   }
-  // The product and Earn surfaces are never rendered by this bundle, on any
-  // host — they always resolve to their own canonical origin.
-  if (isDedicatedSurface(surface)) return PRODUCTION_ORIGIN[surface];
+  // The product and Earn surfaces are never rendered by this bundle in
+  // production — they always resolve to their own canonical origin, even while
+  // the primary domain still answers for everything else.
+  if (isDedicatedSurface(surface) && isProduction(host)) return PRODUCTION_ORIGIN[surface];
   if (!isMultiSurfaceHost(host)) return PRODUCTION_ORIGIN[surface];
   if (typeof window === "undefined") return PRODUCTION_ORIGIN[surface];
   return window.location.origin;

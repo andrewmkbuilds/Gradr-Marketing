@@ -6,6 +6,16 @@ import { useCallback, useEffect, useRef, useState } from "react";
  * Falls back gracefully to text-only when the browser lacks support.
  */
 
+type SpeechRecognitionResultLike = {
+  isFinal: boolean;
+  0: { transcript: string };
+};
+
+type SpeechRecognitionEventLike = {
+  resultIndex: number;
+  results: ArrayLike<SpeechRecognitionResultLike>;
+};
+
 type SpeechRecognitionLike = {
   lang: string;
   continuous: boolean;
@@ -13,13 +23,16 @@ type SpeechRecognitionLike = {
   start(): void;
   stop(): void;
   abort(): void;
-  onresult: ((e: any) => void) | null;
-  onerror: ((e: any) => void) | null;
+  onresult: ((e: SpeechRecognitionEventLike) => void) | null;
+  onerror: ((e: { error?: string }) => void) | null;
   onend: (() => void) | null;
 };
 
 function getRecognitionCtor(): (new () => SpeechRecognitionLike) | null {
-  const w = window as any;
+  const w = window as unknown as {
+    SpeechRecognition?: new () => SpeechRecognitionLike;
+    webkitSpeechRecognition?: new () => SpeechRecognitionLike;
+  };
   return w.SpeechRecognition ?? w.webkitSpeechRecognition ?? null;
 }
 
@@ -44,7 +57,7 @@ export function useVoiceSession() {
     rec.lang = "en-US";
     rec.continuous = true;
     rec.interimResults = true;
-    rec.onresult = (e: any) => {
+    rec.onresult = (e: SpeechRecognitionEventLike) => {
       let interim = "";
       for (let i = e.resultIndex; i < e.results.length; i++) {
         const chunk = e.results[i][0].transcript;

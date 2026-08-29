@@ -35,8 +35,47 @@ async function emailFor(userId: string, env: PaddleEnv): Promise<string> {
   return data?.user?.email ?? "unknown@gradr.local";
 }
 
+/**
+ * The subset of Paddle webhook payload fields this handler reads. Paddle's SDK
+ * types are event-specific unions; every handler below narrows to these shared
+ * fields, so we model them once instead of widening to `any`.
+ */
+type PaddleItem = {
+  price?: {
+    id?: string;
+    importMeta?: { externalId?: string } | null;
+    unitPrice?: { amount?: string | number } | null;
+  } | null;
+  quantity?: number;
+};
+
+type PaddleEventData = {
+  id?: string;
+  email?: string;
+  status?: string;
+  customerId?: string;
+  subscriptionId?: string;
+  transactionId?: string;
+  discountId?: string;
+  currencyCode?: string;
+  items?: PaddleItem[];
+  customData?: { userId?: string } | null;
+  scheduledChange?: { action?: string; effectiveAt?: string } | null;
+  currentBillingPeriod?: { endsAt?: string } | null;
+  details?: {
+    totals?: {
+      discount?: string | number;
+      subtotal?: string | number;
+      total?: string | number;
+      grandTotal?: string | number;
+    } | null;
+  } | null;
+};
+
+/** Narrow a Paddle SDK event payload to the fields this handler consumes. */
+const asEventData = (data: unknown): PaddleEventData => data as PaddleEventData;
+
 /** Billing emails are best-effort; a delivery problem never fails a webhook. */
-// deno-lint-ignore no-explicit-any
 async function billingEmail(
   template: string,
   recipient: string | null | undefined,
@@ -73,8 +112,7 @@ async function existingEmail(customerId: string): Promise<string | null> {
   return (data?.email as string | undefined) ?? null;
 }
 
-// deno-lint-ignore no-explicit-any
-async function mirrorCustomer(data: any, env: PaddleEnv, userId?: string | null) {
+async function mirrorCustomer(data: PaddleEventData, env: PaddleEnv, userId?: string | null) {
   if (!data?.id) return;
   const patch: Record<string, unknown> = {
     customer_id: data.id,
@@ -89,8 +127,7 @@ async function mirrorCustomer(data: any, env: PaddleEnv, userId?: string | null)
   await db().from("paddle_customers").upsert(patch, { onConflict: "customer_id" });
 }
 
-// deno-lint-ignore no-explicit-any
-async function mirrorSubscription(data: any, env: PaddleEnv) {
+async function mirrorSubscription(data: PaddleEventData, env: PaddleEnv) {
   if (!data?.id) return;
   const item = data.items?.[0];
   const userId = data?.customData?.userId ?? null;
@@ -137,15 +174,13 @@ function isEntitled(status: string, periodEnd: string | null): boolean {
   return false;
 }
 
-// deno-lint-ignore no-explicit-any
-function planFromItems(data: any) {
+function planFromItems(data: PaddleEventData) {
   const item = data?.items?.[0];
   const externalPriceId = item?.price?.importMeta?.externalId as string | undefined;
   return { externalPriceId, plan: externalPriceId ? PLAN_PRICES[externalPriceId] : undefined };
 }
 
-// deno-lint-ignore no-explicit-any
-async function upsertSubscription(data: any, env: PaddleEnv) {
+async function upsertSubscription(data: PaddleEventData, env: PaddleEnv) {
   const userId = data?.customData?.userId;
   if (!userId) {
     console.error("payments-webhook: no userId in customData");
@@ -204,8 +239,7 @@ async function upsertSubscription(data: any, env: PaddleEnv) {
 
 const TIER_RANK: Record<string, number> = { free: 0, starter: 1, pro: 2, advanced: 3 };
 
-// deno-lint-ignore no-explicit-any
-async function updateSubscription(data: any, env: PaddleEnv) {
+async function updateSubscription(data: PaddleEventData, env: PaddleEnv) {
   const status: string = data.status ?? "active";
   const periodEnd = data.currentBillingPeriod?.endsAt ?? null;
   const entitled = isEntitled(status, periodEnd);
@@ -311,8 +345,7 @@ async function sendCancellationEmail(
 }
 
 /** Dunning: a failed renewal marks the plan past_due and warns the customer. */
-// deno-lint-ignore no-explicit-any
-async function handlePaymentFailed(data: any, env: PaddleEnv) {
+async function handlePaymentFailed(data: PaddleEventData, env: PaddleEnv) {
   const subscriptionId = data?.subscriptionId ?? null;
   const userId = data?.customData?.userId ?? null;
 
@@ -343,8 +376,7 @@ async function handlePaymentFailed(data: any, env: PaddleEnv) {
 }
 
 /** Receipt for a subscription payment (first charge or renewal). */
-// deno-lint-ignore no-explicit-any
-async function sendSubscriptionReceipt(data: any, env: PaddleEnv) {
+async function sendSubscriptionReceipt(data: PaddleEventData, env: PaddleEnv) {
   const subscriptionId = data?.subscriptionId ?? null;
   if (!subscriptionId) return;
   const { data: row } = await db()
@@ -360,8 +392,7 @@ async function sendSubscriptionReceipt(data: any, env: PaddleEnv) {
 }
 
 /** A completed payment clears a prior dunning state. */
-// deno-lint-ignore no-explicit-any
-async function clearPaymentIssue(data: any, env: PaddleEnv) {
+async function clearPaymentIssue(data: PaddleEventData, env: PaddleEnv) {
   const subscriptionId = data?.subscriptionId ?? null;
   if (!subscriptionId) return;
   await db()
@@ -378,8 +409,7 @@ async function clearPaymentIssue(data: any, env: PaddleEnv) {
  * verified eligibility is logged as a denied security event so it can be
  * investigated — the sale is never blocked after the fact.
  */
-// deno-lint-ignore no-explicit-any
-async function recordDiscountUse(data: any, env: PaddleEnv) {
+async function recordDiscountUse(data: PaddleEventData, env: PaddleEnv) {
   const userId = data?.customData?.userId;
   const discountAmount = Number(data?.details?.totals?.discount ?? 0);
   if (!userId || !data?.id || discountAmount <= 0) return;
@@ -438,8 +468,7 @@ async function recordDiscountUse(data: any, env: PaddleEnv) {
  * create a second commission for the same source record, so webhook retries and
  * duplicate deliveries can never double-pay.
  */
-// deno-lint-ignore no-explicit-any
-async function recordAffiliateCommission(data: any, env: PaddleEnv) {
+async function recordAffiliateCommission(data: PaddleEventData, env: PaddleEnv) {
   const userId = data?.customData?.userId;
   if (!userId || !data?.id) return;
 
@@ -485,8 +514,7 @@ async function recordAffiliateCommission(data: any, env: PaddleEnv) {
 }
 
 /** Refunds, chargebacks and cancellations reverse the matching commission. */
-// deno-lint-ignore no-explicit-any
-async function reverseAffiliateCommission(data: any, env: PaddleEnv, reason: string) {
+async function reverseAffiliateCommission(data: PaddleEventData, env: PaddleEnv, reason: string) {
   const sourceId = data?.transactionId ?? data?.id;
   if (!sourceId) return;
   const { data: count, error } = await db().rpc("reverse_commission_for_source", {
@@ -513,8 +541,7 @@ async function reverseAffiliateCommission(data: any, env: PaddleEnv, reason: str
 
 
 /** One-off credit packs are granted from completed transactions. */
-// deno-lint-ignore no-explicit-any
-async function grantPackCredits(data: any, env: PaddleEnv) {
+async function grantPackCredits(data: PaddleEventData, env: PaddleEnv) {
   const userId = data?.customData?.userId;
   if (!userId) return;
 
@@ -589,11 +616,9 @@ async function handleRequest(req: Request): Promise<Response> {
 
   try {
     const event = await verifyWebhook(req, env);
-    // deno-lint-ignore no-explicit-any
-    const eventUserId = ((event.data as any)?.customData?.userId ?? null) as string | null;
+    const eventUserId = ((asEventData(event.data))?.customData?.userId ?? null) as string | null;
 
-    // deno-lint-ignore no-explicit-any
-    deliveryEventId = ((event as any)?.eventId ?? null) as string | null;
+    deliveryEventId = ((event as { eventId?: string })?.eventId ?? null) as string | null;
     if (deliveryEventId) {
       await db().from("webhook_deliveries").upsert(
         {
@@ -621,31 +646,24 @@ async function handleRequest(req: Request): Promise<Response> {
       env,
       source: "payments-webhook",
       details: {
-        // deno-lint-ignore no-explicit-any
-        event_id: (event as any)?.eventId ?? null,
-        // deno-lint-ignore no-explicit-any
-        status: (event.data as any)?.status ?? null,
-        // deno-lint-ignore no-explicit-any
-        customer_id: (event.data as any)?.customerId ?? (event.data as any)?.id ?? null,
-        // deno-lint-ignore no-explicit-any
-        subscription_id: (event.data as any)?.subscriptionId ?? null,
+        event_id: (event as { eventId?: string })?.eventId ?? null,
+        status: (asEventData(event.data))?.status ?? null,
+        customer_id: (asEventData(event.data))?.customerId ?? (asEventData(event.data))?.id ?? null,
+        subscription_id: (asEventData(event.data))?.subscriptionId ?? null,
       },
     });
 
     switch (event.eventType) {
       case EventName.SubscriptionCreated: {
-        await mirrorSubscription(event.data, env);
-        await upsertSubscription(event.data, env);
-        // deno-lint-ignore no-explicit-any
-        const created = planFromItems(event.data as any);
+        await mirrorSubscription(asEventData(event.data), env);
+        await upsertSubscription(asEventData(event.data), env);
+        const created = planFromItems(asEventData(event.data));
         const revenueProps = {
           plan: created.plan?.tier ?? "unknown",
           billing_period: created.plan?.interval ?? "unknown",
           environment: env,
-          // deno-lint-ignore no-explicit-any
-          amount: Number((event.data as any)?.items?.[0]?.price?.unitPrice?.amount ?? 0) / 100,
-          // deno-lint-ignore no-explicit-any
-          currency: (event.data as any)?.currencyCode ?? null,
+          amount: Number((asEventData(event.data))?.items?.[0]?.price?.unitPrice?.amount ?? 0) / 100,
+          currency: (asEventData(event.data))?.currencyCode ?? null,
         };
         // Ledgered against the Paddle event id so a missing or duplicated
         // conversion event is detectable, not just invisible.
@@ -664,24 +682,21 @@ async function handleRequest(req: Request): Promise<Response> {
       case EventName.SubscriptionUpdated:
         // A scheduled cancellation is NOT a cancellation: we mirror the
         // scheduled change but keep the status Paddle reports.
-        await mirrorSubscription(event.data, env);
-        await updateSubscription(event.data, env);
+        await mirrorSubscription(asEventData(event.data), env);
+        await updateSubscription(asEventData(event.data), env);
         break;
       case EventName.SubscriptionCanceled: {
-        await mirrorSubscription({ ...event.data, status: "canceled" }, env);
-        await updateSubscription({ ...event.data, status: "canceled" }, env);
-        // deno-lint-ignore no-explicit-any
-        const canceled = planFromItems(event.data as any);
+        await mirrorSubscription(asEventData({ ...event.data, status: "canceled" }), env);
+        await updateSubscription(asEventData({ ...event.data, status: "canceled" }), env);
+        const canceled = planFromItems(asEventData(event.data));
         if (eventUserId) {
           await sendCancellationEmail(
             eventUserId,
             env,
             canceled.plan?.tier ?? null,
             canceled.plan?.interval ?? null,
-            // deno-lint-ignore no-explicit-any
-            (event.data as any)?.currentBillingPeriod?.endsAt ?? null,
-            // deno-lint-ignore no-explicit-any
-            String((event.data as any)?.id ?? ""),
+            (asEventData(event.data))?.currentBillingPeriod?.endsAt ?? null,
+            String((asEventData(event.data))?.id ?? ""),
           );
         }
         await phCapture("subscription_cancelled", eventUserId, {
@@ -694,30 +709,27 @@ async function handleRequest(req: Request): Promise<Response> {
       }
       case EventName.CustomerCreated:
       case EventName.CustomerUpdated:
-        await mirrorCustomer(event.data, env);
+        await mirrorCustomer(asEventData(event.data), env);
         break;
       case EventName.TransactionCompleted:
-        await clearPaymentIssue(event.data, env);
-        await grantPackCredits(event.data, env);
-        await sendSubscriptionReceipt(event.data, env);
-        await recordDiscountUse(event.data, env);
-        await recordAffiliateCommission(event.data, env);
+        await clearPaymentIssue(asEventData(event.data), env);
+        await grantPackCredits(asEventData(event.data), env);
+        await sendSubscriptionReceipt(asEventData(event.data), env);
+        await recordDiscountUse(asEventData(event.data), env);
+        await recordAffiliateCommission(asEventData(event.data), env);
         await phCapture("payment_completed", eventUserId, {
           environment: env,
-          // deno-lint-ignore no-explicit-any
-          amount: Number((event.data as any)?.details?.totals?.grandTotal ?? 0) / 100,
-          // deno-lint-ignore no-explicit-any
-          currency: (event.data as any)?.currencyCode ?? null,
-          // deno-lint-ignore no-explicit-any
-          product_type: (event.data as any)?.subscriptionId ? "subscription" : "pack",
+          amount: Number((asEventData(event.data))?.details?.totals?.grandTotal ?? 0) / 100,
+          currency: (asEventData(event.data))?.currencyCode ?? null,
+          product_type: (asEventData(event.data))?.subscriptionId ? "subscription" : "pack",
         }, { providerEventId: deliveryEventId, source: "payments-webhook", environment: env });
         break;
       case EventName.TransactionPaymentFailed:
-        await handlePaymentFailed(event.data, env);
+        await handlePaymentFailed(asEventData(event.data), env);
         break;
       case EventName.AdjustmentCreated:
         // Refunds / chargebacks arrive as adjustments against a transaction.
-        await reverseAffiliateCommission(event.data, env, "refund_adjustment");
+        await reverseAffiliateCommission(asEventData(event.data), env, "refund_adjustment");
         break;
 
 

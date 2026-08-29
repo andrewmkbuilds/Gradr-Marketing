@@ -2,6 +2,9 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { checkRateLimit as durableRateLimit } from "../_shared/rateLimit.ts";
 
+/** Job payload the client sends for scoring. */
+type JobInput = { title?: string; company?: string; description?: string };
+
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
@@ -44,7 +47,7 @@ serve(async (req) => {
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY missing");
 
     // Truncate to keep prompt small
-    const compact = jobs.slice(0, 20).map((j: any, i: number) => ({
+    const compact = jobs.slice(0, 20).map((j: JobInput, i: number) => ({
       i,
       title: j.title,
       company: j.company,

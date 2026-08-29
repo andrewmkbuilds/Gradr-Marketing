@@ -95,16 +95,28 @@ function RouteFallback() {
   return <RouteSkeleton pathname={location.pathname} />;
 }
 
-/** Full-page redirect to another surface, preserving the remaining path. */
+/**
+ * Full-page redirect to another surface, preserving the remaining path.
+ *
+ * On hosts where the target surface resolves back to this very URL (dev and
+ * preview, where one origin serves every surface) there is nothing to hand off
+ * to, so the 404 renders instead of reloading the page forever.
+ */
 function ExternalSurfaceRedirect({ surface, strip }: { surface: Surface; strip: string }) {
   const location = useLocation();
+  const rest = location.pathname.slice(strip.length) || "/";
+  const target = urlFor(surface, `${rest}${location.search}`);
+  const isSelf =
+    typeof window !== "undefined" &&
+    target === `${window.location.origin}${location.pathname}${location.search}`;
   useEffect(() => {
-    const rest = location.pathname.slice(strip.length) || "/";
-    redirectToSurface(urlFor(surface, `${rest}${location.search}`), {
+    if (isSelf) return;
+    redirectToSurface(target, {
       reason: surface === "earn" ? "earn_portal" : "satellite_surface",
       from: location.pathname,
     });
-  }, [location.pathname, location.search, strip, surface]);
+  }, [isSelf, target, surface, location.pathname]);
+  if (isSelf) return <AnimatedPage><NotFound /></AnimatedPage>;
   return null;
 }
 
