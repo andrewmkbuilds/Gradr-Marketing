@@ -17,7 +17,7 @@
  */
 import { chromium } from "playwright";
 import { findChromium } from "./lib/browser.mjs";
-import { existsSync, readdirSync, readFileSync } from "fs";
+import { readFileSync } from "fs";
 import { createRequire } from "module";
 import { join } from "path";
 
@@ -25,7 +25,6 @@ const require = createRequire(import.meta.url);
 const BASE = (process.argv[2] ?? process.env.SMOKE_BASE_URL ?? "http://localhost:8080").replace(/\/$/, "");
 const AXE_SOURCE = readFileSync(require.resolve("axe-core/axe.min.js"), "utf8");
 const BLOCKING = new Set(["serious", "critical"]);
-
 
 async function launch() {
   try {

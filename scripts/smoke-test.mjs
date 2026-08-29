@@ -14,7 +14,7 @@
  */
 import { chromium } from "playwright";
 import { findChromium } from "./lib/browser.mjs";
-import { existsSync, readdirSync, readFileSync } from "fs";
+import { readFileSync } from "fs";
 import { join } from "path";
 
 /**

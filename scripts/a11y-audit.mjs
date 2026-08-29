@@ -12,7 +12,7 @@
  */
 import { chromium } from "playwright";
 import { findChromium } from "./lib/browser.mjs";
-import { existsSync, readdirSync, readFileSync } from "fs";
+import { readFileSync } from "fs";
 import { createRequire } from "module";
 import { join } from "path";
 
@@ -40,7 +40,6 @@ const VIEWPORTS = [
 ];
 
 const THEMES = ["light", "dark"];
-
 
 async function launch() {
   try {

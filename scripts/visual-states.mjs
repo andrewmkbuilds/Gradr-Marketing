@@ -17,7 +17,7 @@
 import { chromium } from "playwright";
 import { findChromium } from "./lib/browser.mjs";
 import sharp from "sharp";
-import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
 import { join } from "path";
 
 const BASE = (process.env.SMOKE_BASE_URL ?? "http://localhost:8080").replace(/\/$/, "");
@@ -51,7 +51,6 @@ const STATES = [
 ];
 
 const THEMES = ["light", "dark"];
-
 
 async function launch() {
   try {

@@ -19,7 +19,7 @@
  */
 import { chromium } from "playwright";
 import { findChromium } from "./lib/browser.mjs";
-import { mkdirSync, existsSync, readdirSync } from "fs";
+import { mkdirSync } from "fs";
 import { join } from "path";
 
 const BASE = (process.argv[2] ?? process.env.SMOKE_BASE_URL ?? "http://localhost:8080").replace(/\/$/, "");
@@ -34,7 +34,6 @@ const VIEWPORTS = [
   { name: "desktop-1920", width: 1920, height: 1080 },
 ];
 const THEMES = ["light", "dark"];
-
 
 async function launch() {
   try {

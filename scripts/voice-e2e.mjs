@@ -18,9 +18,8 @@
  */
 import { chromium } from "playwright";
 import { findChromium } from "./lib/browser.mjs";
-import { existsSync, readdirSync } from "fs";
-import { join } from "path";
 
+import { join } from "path";
 
 async function launchBrowser() {
   const args = ["--autoplay-policy=no-user-gesture-required", "--use-fake-ui-for-media-stream"];

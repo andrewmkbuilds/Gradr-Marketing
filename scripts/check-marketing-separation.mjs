@@ -16,7 +16,7 @@
  */
 import { chromium } from "playwright";
 import { findChromium } from "./lib/browser.mjs";
-import { existsSync, readdirSync } from "fs";
+
 import { join } from "path";
 
 const BASE = (process.argv[2] ?? process.env.SMOKE_BASE_URL ?? "http://localhost:8080").replace(
@@ -80,7 +80,6 @@ const PRODUCT_PREFIXES = [
   "/forgot-password",
   "/reset-password",
 ];
-
 
 const failures = [];
 
