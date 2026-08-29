@@ -220,6 +220,9 @@ export async function sendTransactionalEmailDetailed(params: {
   templateData?: Record<string, unknown>
   /** Total attempts for transient failures (default 3, retried with backoff). */
   maxAttempts?: number
+  /** Set by the dead-letter dispatcher so a retry does not re-park itself. */
+  skipDeadLetter?: boolean
+
 }): Promise<SendOutcome> {
   const { templateName, idempotencyKey } = params
   const log = createLogger('send-transactional-email')
