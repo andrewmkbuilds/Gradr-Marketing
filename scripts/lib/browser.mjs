@@ -37,14 +37,6 @@ export function findChromium() {
       }
     }
   }
-  // Nix-based dev sandboxes ship a self-contained Chromium instead of the
-  // dynamically linked download, which fails on missing system libraries.
-  if (existsSync("/nix/store")) {
-    for (const dir of readdirSync("/nix/store").filter((d) => d.endsWith("-playwright-chromium"))) {
-      const candidate = join("/nix/store", dir, "chrome-linux/chrome");
-      if (existsSync(candidate)) return candidate;
-    }
-  }
   return undefined;
 }
 
