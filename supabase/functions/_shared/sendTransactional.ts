@@ -70,6 +70,67 @@ async function logSend(params: {
   }
 }
 
+/** Backoff schedule for dead-letter retries: 5m, 15m, 1h, 6h, 24h. */
+const DEAD_LETTER_BACKOFF_MINUTES = [5, 15, 60, 360, 1440]
+
+export function deadLetterNextRetryAt(retryCount: number): string {
+  const minutes =
+    DEAD_LETTER_BACKOFF_MINUTES[Math.min(retryCount, DEAD_LETTER_BACKOFF_MINUTES.length - 1)]
+  return new Date(Date.now() + minutes * 60_000).toISOString()
+}
+
+/**
+ * Parks a permanently-failed send in `email_dead_letters` so it can be
+ * inspected in the ops console and retried automatically by the
+ * `email-dead-letter-retry` dispatcher. Never throws.
+ */
+async function recordDeadLetter(params: {
+  templateName: string
+  recipientEmail: string
+  idempotencyKey: string
+  templateData?: Record<string, unknown>
+  messageId?: string
+  failureReason: string
+  errorMessage: string
+  transient: boolean
+  attempts: number
+}): Promise<void> {
+  const client = db()
+  if (!client) return
+  const { error } = await client.from('email_dead_letters').upsert(
+    {
+      template_name: params.templateName,
+      recipient_email: params.recipientEmail,
+      idempotency_key: params.idempotencyKey,
+      template_data: params.templateData ?? {},
+      message_id: params.messageId ?? null,
+      failure_reason: params.failureReason,
+      error_message: params.errorMessage.slice(0, 1000),
+      last_error: params.errorMessage.slice(0, 1000),
+      transient: params.transient,
+      attempts: params.attempts,
+      status: 'pending',
+      next_retry_at: deadLetterNextRetryAt(0),
+    },
+    { onConflict: 'idempotency_key' },
+  )
+  if (error) {
+    console.error('email_dead_letters write failed', { code: error.code, message: error.message })
+  }
+}
+
+/** Closes any dead letter for this logical send once it finally delivers. */
+async function resolveDeadLetter(idempotencyKey: string): Promise<void> {
+  const client = db()
+  if (!client) return
+  await client
+    .from('email_dead_letters')
+    .update({ status: 'resolved', resolved_at: new Date().toISOString(), last_error: null })
+    .eq('idempotency_key', idempotencyKey)
+    .neq('status', 'resolved')
+}
+
+
 function isRateLimited(error: unknown): error is EmailAPIError {
   return error instanceof EmailAPIError && error.status === 429
 }
