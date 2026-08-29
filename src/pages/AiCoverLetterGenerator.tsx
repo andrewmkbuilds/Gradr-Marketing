@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { PublicShell } from "@/components/PublicShell";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { Button, Text } from "@/design-system/gradr-9b9b95";
 import { trackEvent, withUtm } from "@/lib/analytics";
 import {
   SITE_NAME,
@@ -328,22 +329,27 @@ export default function AiCoverLetterGenerator() {
         </div>
       </section>
 
-      <section className="section-gap rounded-2xl border border-primary/25 bg-primary/5 p-8 text-center">
-        <h2 className="text-2xl font-semibold tracking-tight text-foreground">
+      <section className="section-gap rounded-card border border-primary/25 bg-primary/5 p-8 text-center">
+        <Text variant="h2" as="h2">
           Stop rewriting the same letter
-        </h2>
-        <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground">
+        </Text>
+        <Text variant="body" className="mx-auto mt-3 max-w-xl">
           Paste a job description, pick your resume, and get a tailored draft you can send today.
           Free to start — no credit card.
-        </p>
-        <a
-          href={ctaHref(appSignupHref(), "footer_cta")}
-          onClick={trackCta("footer_cta", "/auth")}
-          className="mt-6 inline-flex h-11 items-center gap-2 rounded-xl bg-primary px-6 text-sm font-medium text-primary-foreground transition-transform hover:scale-[1.02] motion-reduce:transform-none"
+        </Text>
+        <Button
+          asChild
+          size="lg"
+          className="mt-6 transition-transform hover:scale-[1.02] motion-reduce:transform-none"
         >
-          Generate my cover letter
-          <ArrowRight className="h-4 w-4" aria-hidden="true" />
-        </a>
+          <a
+            href={ctaHref(appSignupHref(), "footer_cta")}
+            onClick={trackCta("footer_cta", "/auth")}
+          >
+            Generate my cover letter
+            <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
+          </a>
+        </Button>
       </section>
     </PublicShell>
   );
