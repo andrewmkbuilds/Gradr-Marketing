@@ -156,14 +156,23 @@ try {
       href.startsWith(`${APP_ORIGIN}/auth`),
       `signup CTA points at ${href}, expected ${APP_ORIGIN}/auth…`,
     );
-    await cta.click();
-    await page.waitForTimeout(800);
+    // The CTA may open the product in a new tab; follow whichever it does.
+    const opensNewTab = (await cta.getAttribute("target")) === "_blank";
+    let landing = page;
+    if (opensNewTab) {
+      const [popup] = await Promise.all([context.waitForEvent("page"), cta.click()]);
+      landing = popup;
+      await popup.waitForLoadState("domcontentloaded");
+    } else {
+      await Promise.all([page.waitForURL(/app\.gradr\.me/, { timeout: 10_000 }), cta.click()]);
+    }
     assert(
-      page.url().startsWith(APP_ORIGIN),
-      `signup CTA stayed on ${page.url()}`,
+      landing.url().startsWith(APP_ORIGIN),
+      `signup CTA stayed on ${landing.url()}`,
     );
-    const marker = await page.locator(`[data-${APP_STUB_MARKER}]`).count();
+    const marker = await landing.locator(`[data-${APP_STUB_MARKER}]`).count();
     assert(marker === 1, "signup CTA did not reach the product origin");
+    if (landing !== page) await landing.close();
     await page.close();
   });
 
