@@ -177,6 +177,12 @@ async function run() {
   }
 
   console.log(`\n${checks - failures.length}/${checks} auth hero viewport checks passed`);
+  // Every engine skipping (missing browser binaries) previously exited 0, so
+  // the job reported success without asserting anything. Treat it as a failure.
+  if (checks === 0) {
+    console.error("Auth hero visual regression ran zero checks — no browser engine was available.");
+    process.exit(1);
+  }
   if (failures.length) {
     console.error("Auth hero visual regression failed:\n - " + failures.join("\n - "));
     process.exit(1);
