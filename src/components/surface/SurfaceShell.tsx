@@ -206,10 +206,21 @@ export function SurfaceShell({ nav = [], eyebrow, children }: SurfaceShellProps)
               href={INSTAGRAM_URL}
               target="_blank"
               rel="noopener noreferrer"
+              aria-label="Gradr on Instagram"
               className="link-tap inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
             >
               <Instagram className="h-3.5 w-3.5" aria-hidden="true" />
               Instagram
+            </a>
+            <a
+              href={DISCORD_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Gradr on Discord"
+              className="link-tap inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+            >
+              <DiscordIcon className="h-3.5 w-3.5" />
+              Discord
             </a>
             <span className="text-xs text-muted-foreground">
               © {new Date().getFullYear()} Gradr
