@@ -174,6 +174,15 @@ export async function checkRoute(url) {
   const server = res.headers.get("server");
   if (server && SERVER_VERSION_RE.test(server)) failures.push(`Server header discloses a version: ${server}`);
 
+  // Cookie flags — Secure / SameSite / HttpOnly, per {@link evaluateCookies}.
+  const setCookies =
+    typeof res.headers.getSetCookie === "function"
+      ? res.headers.getSetCookie()
+      : [res.headers.get("set-cookie")].filter(Boolean);
+  const cookieReport = evaluateCookies(setCookies);
+  passes.push(...cookieReport.passes);
+  failures.push(...cookieReport.failures);
+
   const contentType = res.headers.get("content-type") || "";
   if (contentType.includes("text/html")) {
     const html = await res.text();
