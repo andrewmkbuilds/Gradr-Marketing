@@ -131,7 +131,7 @@ export function PublicShell({ children, source }: PublicShellProps) {
               onClick={toggleMenu}
               aria-expanded={menuOpen}
               aria-label={menuOpen ? "Close menu" : "Open menu"}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-border text-foreground md:hidden"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-border text-foreground lg:hidden"
             >
               {menuOpen ? <X className="h-4 w-4" aria-hidden="true" /> : <Menu className="h-4 w-4" aria-hidden="true" />}
             </button>
@@ -139,7 +139,7 @@ export function PublicShell({ children, source }: PublicShellProps) {
         </div>
 
         {menuOpen && (
-          <nav aria-label="Mobile" className="border-t border-border/60 bg-background md:hidden">
+          <nav aria-label="Mobile" className="border-t border-border/60 bg-background lg:hidden">
             <ul className="page-shell py-2">
               {NAV.map((item) => (
                 <li key={item.to}>
