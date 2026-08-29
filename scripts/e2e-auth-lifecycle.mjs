@@ -92,21 +92,43 @@ try {
   const context = await browser.newContext({ viewport: { width: 1280, height: 1200 } });
   await serveUnderProductionHosts(context, BASE, [MARKETING_ORIGIN]);
 
+  /**
+   * A hand-off is a navigation, so Playwright frequently reports the goto as
+   * "interrupted by another navigation" — that is the behaviour under test,
+   * not an error. Swallow only that case; everything else still throws.
+   */
+  async function gotoTolerant(page, url) {
+    try {
+      await page.goto(url, { waitUntil: "domcontentloaded" });
+    } catch (error) {
+      if (!/interrupted by another navigation|Execution context was destroyed/.test(error.message)) {
+        throw error;
+      }
+    }
+  }
+
+  /**
+   * Seed a session on the marketing origin. Seeding happens on an editorial
+   * path because the root hands authenticated visitors straight to the product,
+   * which would tear down the page before localStorage could be written.
+   */
+  async function seedSession(page, session) {
+    await gotoTolerant(page, `${MARKETING_ORIGIN}/privacy`);
+    await page.evaluate(
+      ([key, value]) => window.localStorage.setItem(key, value),
+      [STORAGE_KEY, JSON.stringify(session)],
+    );
+  }
+
   /** Open a marketing URL and report every navigation hop. */
   async function land(path, { session = null } = {}) {
     const page = await context.newPage();
+    if (session) await seedSession(page, session);
     const hops = [];
     page.on("framenavigated", (frame) => {
       if (frame === page.mainFrame()) hops.push(frame.url());
     });
-    if (session) {
-      await page.goto(`${MARKETING_ORIGIN}/`, { waitUntil: "domcontentloaded" });
-      await page.evaluate(
-        ([key, value]) => window.localStorage.setItem(key, value),
-        [STORAGE_KEY, JSON.stringify(session)],
-      );
-    }
-    await page.goto(`${MARKETING_ORIGIN}${path}`, { waitUntil: "domcontentloaded" });
+    await gotoTolerant(page, `${MARKETING_ORIGIN}${path}`);
     await page.waitForTimeout(1400);
     return { page, hops, url: page.url() };
   }
