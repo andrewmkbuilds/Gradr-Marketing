@@ -5,8 +5,9 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { cn } from "@/lib/utils";
 import { type Surface, urlFor } from "@/config/domains";
 import { appLoginHref, appSignupHref } from "@/lib/appLinks";
-import { DISCORD_URL, INSTAGRAM_URL } from "@/config/social";
+import { DISCORD_URL, FACEBOOK_URL, INSTAGRAM_URL } from "@/config/social";
 import { DiscordIcon } from "@/components/icons/DiscordIcon";
+import { FacebookIcon } from "@/components/icons/FacebookIcon";
 import { CrossLink, SLink, useSurface, useSurfacePath } from "@/components/surface/SurfaceLink";
 import { useMobileMenu } from "@/hooks/useMobileMenu";
 
@@ -211,6 +212,16 @@ export function SurfaceShell({ nav = [], eyebrow, children }: SurfaceShellProps)
             >
               <Instagram className="h-3.5 w-3.5" aria-hidden="true" />
               Instagram
+            </a>
+            <a
+              href={FACEBOOK_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Gradr on Facebook"
+              className="link-tap inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+            >
+              <FacebookIcon className="h-3.5 w-3.5" />
+              Facebook
             </a>
             <a
               href={DISCORD_URL}

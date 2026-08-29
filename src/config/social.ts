@@ -4,8 +4,10 @@
  */
 export const INSTAGRAM_URL = "https://www.instagram.com/gradr.me";
 export const DISCORD_URL = "https://discord.gg/uujhVW5f";
+export const FACEBOOK_URL = "https://www.facebook.com/gradr.me/";
 
 export const SOCIAL_PROFILES = [
   { label: "Instagram", href: INSTAGRAM_URL },
+  { label: "Facebook", href: FACEBOOK_URL },
   { label: "Discord", href: DISCORD_URL },
 ] as const;
