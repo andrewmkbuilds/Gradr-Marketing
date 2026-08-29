@@ -8,6 +8,7 @@
  * ops console immediately rather than being buried in function logs.
  */
 import { createClient } from 'npm:@supabase/supabase-js@2'
+import { reportEdgeError } from './sentryEdge.ts'
 
 export type LogLevel = 'debug' | 'info' | 'warn' | 'error'
 export type AlertSeverity = 'warn' | 'error' | 'critical'
