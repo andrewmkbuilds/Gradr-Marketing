@@ -4,12 +4,40 @@ import path from "path";
 import { componentTagger } from "lovable-tagger";
 import { mcpPlugin } from "@lovable.dev/mcp-js/stacks/supabase/vite";
 import { sentryVitePlugin } from "@sentry/vite-plugin";
+import { readdirSync, rmSync, statSync } from "node:fs";
 
 // Source maps are uploaded to Sentry (so production stack traces are readable)
 // and then deleted from the build, so the maps themselves are never served.
 // Uploading is opt-in: without SENTRY_AUTH_TOKEN the build is untouched.
-const sentryUpload =
-  process.env.SENTRY_AUTH_TOKEN && process.env.SENTRY_ORG && process.env.SENTRY_PROJECT;
+const sentryUpload = Boolean(
+  process.env.SENTRY_AUTH_TOKEN && process.env.SENTRY_ORG && process.env.SENTRY_PROJECT,
+);
+
+/**
+ * Safety net: when no upload happened, the generated .map files still exist in
+ * dist. Publishing them would hand the full source tree to anyone who guesses a
+ * filename, so they are removed after the bundle is written.
+ */
+function dropSourcemaps(outDir: string) {
+  return {
+    name: "gradr-drop-sourcemaps",
+    apply: "build" as const,
+    closeBundle() {
+      const walk = (dir: string) => {
+        for (const entry of readdirSync(dir)) {
+          const full = path.join(dir, entry);
+          if (statSync(full).isDirectory()) walk(full);
+          else if (full.endsWith(".map")) rmSync(full);
+        }
+      };
+      try {
+        walk(outDir);
+      } catch {
+        /* nothing built — nothing to clean */
+      }
+    },
+  };
+}
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
