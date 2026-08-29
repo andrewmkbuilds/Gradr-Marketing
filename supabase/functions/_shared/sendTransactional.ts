@@ -307,8 +307,36 @@ export async function sendTransactionalEmailDetailed(params: {
   }
 
   // Managed sending owns the unsubscribe footer — a payload that sets the
-  // token itself is rejected upstream (400 missing_unsubscribe).
-  assertManagedSendPayload(sendPayload, { templateName, messageId })
+  // token itself is rejected upstream (400 missing_unsubscribe). Fail fast and
+  // loudly rather than letting the provider reject it as a delivery failure.
+  try {
+    assertManagedSendPayload(sendPayload, { templateName, messageId })
+  } catch (err) {
+    if (err instanceof ManagedSendGuardError) {
+      await log.alert({
+        event: 'unsubscribe_token_forbidden',
+        severity: 'critical',
+        message: err.message,
+        context: { templateName, messageId, offendingKeys: err.offendingKeys },
+      })
+      await logSend({
+        messageId,
+        templateName,
+        recipientEmail: recipient,
+        status: 'failed',
+        errorMessage: err.message.slice(0, 1000),
+      })
+      return {
+        ok: false,
+        reason: 'unsubscribe_token_forbidden',
+        error: err.message,
+        attempts: 0,
+        messageId,
+      }
+    }
+    throw err
+  }
+
 
   const send = () =>
     sendLovableEmail(
