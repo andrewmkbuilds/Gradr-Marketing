@@ -2,14 +2,16 @@ name: Auth hand-off
 
 # Every landing CTA must leave the marketing bundle for https://app.gradr.me/auth.
 # A CTA that navigates in-router lands on the NotFound hand-off instead — this
-# workflow blocks that regression in both preview (local production build) and
-# production modes, plus the unit rules for `?next=` validation.
+# workflow blocks that regression against the locally built bundle, plus the
+# unit rules for `?next=` validation.
+#
+# The equivalent assertions against the deployed site live in domain-health.yml:
+# a pull request cannot fix (or break) what is already published, so hitting
+# production here only produced failures unrelated to the change under review.
 on:
   pull_request:
   push:
     branches: [main]
-  schedule:
-    - cron: "37 6 * * *"
   workflow_dispatch:
 
 jobs:
@@ -43,23 +45,14 @@ jobs:
           bunx vite preview --port 8080 --strictPort &
           for i in $(seq 1 60); do curl -sf -o /dev/null http://localhost:8080/ && break; sleep 1; done
 
-      - name: CTA hand-off check — preview
+      - name: CTA hand-off check
         run: node scripts/check-cta-handoff.mjs http://localhost:8080
 
-      - name: next= validation check — preview
+      - name: next= validation check
         run: node scripts/check-next-validation.mjs http://localhost:8080
 
-      - name: Marketing separation check — preview
+      - name: Marketing separation check
         run: node scripts/check-marketing-separation.mjs http://localhost:8080
 
-      - name: Auth + OAuth hand-off e2e — preview
+      - name: Auth + OAuth hand-off e2e
         run: node scripts/e2e-auth-handoff.mjs http://localhost:8080
-
-      - name: CTA hand-off check — production
-        run: node scripts/check-cta-handoff.mjs https://gradr.me
-
-      - name: next= validation check — production
-        run: node scripts/check-next-validation.mjs https://gradr.me
-
-      - name: Marketing separation check — production
-        run: node scripts/check-marketing-separation.mjs https://gradr.me

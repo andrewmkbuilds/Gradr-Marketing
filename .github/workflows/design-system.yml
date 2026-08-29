@@ -28,9 +28,12 @@ jobs:
       - name: Legacy design surface check
         run: bun run check:design
 
-  visual:
-    name: Mobile + tablet visual regression and interaction checks
+  interactions:
+    name: Interaction regression (forms, preferences, auth hand-off, gallery)
     runs-on: ubuntu-latest
+    # Pixel comparison across breakpoints and colour schemes is owned by the
+    # visual-regression step in marketing-integrity.yml; duplicating it here
+    # doubled CI time and produced two failures for every one real diff.
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
@@ -50,16 +53,5 @@ jobs:
           bunx vite preview --port 8080 &
           for i in $(seq 1 30); do curl -sf -o /dev/null http://localhost:8080/ && break; sleep 1; done
 
-      - name: Visual regression (mobile + tablet)
-        run: bun run test:visual:breakpoints
-
-      - name: Interaction regression (forms, preferences, auth hand-off, gallery)
+      - name: Interaction regression
         run: bun run test:interactions
-
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: breakpoint-screenshots
-          path: |
-            tests/visual/current
-            tests/visual/baseline

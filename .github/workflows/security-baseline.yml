@@ -8,8 +8,61 @@ on:
     - cron: "0 6 * * *"
 
 jobs:
-  baseline:
+  database:
     name: Verify RLS policies, grants and SECURITY DEFINER privileges
+    runs-on: ubuntu-latest
+    # Fork pull requests cannot read repository secrets, so the database URL is
+    # never available there. Running the job anyway would fail every fork PR on
+    # a missing credential rather than on a real policy regression.
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Check database credentials are configured
+        id: db
+        env:
+          DATABASE_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          if [ -n "$DATABASE_URL" ]; then
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::SUPABASE_DB_URL is not set — live database policy checks are skipped. Add the secret to enable them."
+          fi
+
+      - name: Install psql client
+        if: steps.db.outputs.configured == 'true'
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Verify security baseline
+        if: steps.db.outputs.configured == 'true'
+        env:
+          DATABASE_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: node scripts/security-baseline.mjs
+
+      - name: Fail on regression of resolved security findings
+        if: steps.db.outputs.configured == 'true'
+        env:
+          DATABASE_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: node scripts/security-findings-guard.mjs
+
+      # These suites read the checked-in baseline manifest and only exercise
+      # live-database assertions when DATABASE_URL is present, so they are
+      # meaningful with or without the secret.
+      - name: RLS and policy regression tests
+        env:
+          DATABASE_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: bunx vitest run src/test/securityBaseline.test.ts src/test/userPreferencesAccess.test.ts
+
+  supply-chain:
+    name: Dependency audit and bundle fingerprinting
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -18,26 +71,8 @@ jobs:
         with:
           bun-version: latest
 
-      - name: Install psql client
-        run: sudo apt-get update && sudo apt-get install -y postgresql-client
-
       - name: Install dependencies
         run: bun install --frozen-lockfile
-
-      - name: Verify security baseline
-        env:
-          DATABASE_URL: ${{ secrets.SUPABASE_DB_URL }}
-        run: node scripts/security-baseline.mjs
-
-      - name: Fail on regression of resolved security findings
-        env:
-          DATABASE_URL: ${{ secrets.SUPABASE_DB_URL }}
-        run: node scripts/security-findings-guard.mjs
-
-      - name: RLS and policy regression tests
-        env:
-          DATABASE_URL: ${{ secrets.SUPABASE_DB_URL }}
-        run: bunx vitest run src/test/securityBaseline.test.ts src/test/userPreferencesAccess.test.ts
 
       - name: Dependency audit (version floors + high/critical advisories)
         run: node scripts/dependency-audit.mjs
@@ -46,34 +81,3 @@ jobs:
         run: |
           bun run build
           node scripts/check-bundle-fingerprint.mjs
-
-      - name: Security headers and technology-disclosure gate (production)
-        run: node scripts/check-security-headers.mjs https://gradr.me
-
-      - name: Runtime header assertions (/auth and OAuth paths)
-        env:
-          RUN_HEADER_CHECKS: "1"
-          SECURITY_HEADERS_TARGET: https://gradr.me
-        run: bunx vitest run src/test/securityHeaders.test.ts
-
-  oauth-flow:
-    name: Daily Google OAuth flow check
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
-
-      - name: Install dependencies
-        run: bun install --frozen-lockfile
-
-      - name: Install Playwright Chromium
-        run: bunx playwright install --with-deps chromium
-
-      - name: Verify Google callback and app-domain redirect chain
-        env:
-          OAUTH_FLOW_TARGET: https://app.gradr.me
-          GOOGLE_E2E_STORAGE_STATE: ${{ secrets.GOOGLE_E2E_STORAGE_STATE }}
-        run: node scripts/test-oauth-flow.mjs

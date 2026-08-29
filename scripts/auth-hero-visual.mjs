@@ -3,7 +3,7 @@
  * Auth hero visual regression + clipping assertions.
  *
  * For each viewport (and each installed browser engine) this script:
- *   1. loads /auth,
+ *   1. loads the route that renders AuthLayout,
  *   2. asserts the full headline text is present and not visually clipped
  *      (no overflow past its container, no zero-height/hidden lines),
  *   3. writes a screenshot of the hero for review / diffing.
@@ -23,6 +23,13 @@ import { join } from "path";
 const BASE = (process.argv[2] ?? process.env.SMOKE_BASE_URL ?? "http://localhost:8080").replace(/\/$/, "");
 const OUT_DIR = process.env.AUTH_HERO_OUT ?? "artifacts/auth-hero";
 const HEADLINE = "Your AI career command center.";
+/**
+ * The marketing surface no longer hosts a sign-in form — `/auth` hands off to
+ * app.gradr.me. The OAuth consent screen is the route that still renders
+ * `AuthLayout` (and therefore the hero) in this bundle, so that is what the
+ * clipping assertions must load. Override with AUTH_HERO_ROUTE if that moves.
+ */
+const HERO_ROUTE = process.env.AUTH_HERO_ROUTE ?? "/.lovable/oauth/consent";
 
 /** Widths that historically triggered clipping, plus the common breakpoints. */
 const VIEWPORTS = [
@@ -129,7 +136,7 @@ async function run() {
       const label = `${engineName}/${vp.name}`;
       checks++;
       try {
-        await page.goto(`${BASE}/auth`, { waitUntil: "domcontentloaded", timeout: 45000 });
+        await page.goto(`${BASE}${HERO_ROUTE}`, { waitUntil: "domcontentloaded", timeout: 45000 });
         await page.waitForSelector("[data-auth-hero]:visible", { timeout: 20000 });
         // Let the letter-reveal + framer transitions settle before measuring.
         await page.waitForTimeout(1600);
