@@ -2,6 +2,8 @@ import * as React from 'npm:react@18.3.1'
 import { renderAsync } from 'npm:@react-email/components@0.0.22'
 import { EmailAPIError, sendLovableEmail } from 'npm:@lovable.dev/email-js@0.1.0'
 import { TEMPLATES } from './registry.ts'
+import { assertManagedSendPayload } from '../managedSendGuard.ts'
+
 
 // Server-only: reads LOVABLE_API_KEY. Import from edge functions only — never
 // expose sending to the browser.
@@ -66,22 +68,26 @@ export async function sendTemplateEmail(
       ? template.subject(templateData)
       : template.subject
 
+  const payload = {
+    to: recipient,
+    from: `${SITE_NAME} <noreply@${FROM_DOMAIN}>`,
+    sender_domain: SENDER_DOMAIN,
+    subject,
+    html,
+    text,
+    purpose: 'transactional' as const,
+    label: templateName,
+    idempotency_key: options.idempotencyKey || crypto.randomUUID(),
+    reply_to: options.replyTo,
+  }
+
+  // Managed sending appends the unsubscribe footer itself and rejects a
+  // payload that sets the token manually — fail fast instead.
+  assertManagedSendPayload(payload, { templateName })
+
   try {
-    await sendLovableEmail(
-      {
-        to: recipient,
-        from: `${SITE_NAME} <noreply@${FROM_DOMAIN}>`,
-        sender_domain: SENDER_DOMAIN,
-        subject,
-        html,
-        text,
-        purpose: 'transactional',
-        label: templateName,
-        idempotency_key: options.idempotencyKey || crypto.randomUUID(),
-        reply_to: options.replyTo,
-      },
-      { apiKey, sendUrl: Deno.env.get('LOVABLE_SEND_URL') }
-    )
+    await sendLovableEmail(payload, { apiKey, sendUrl: Deno.env.get('LOVABLE_SEND_URL') })
+
   } catch (error) {
     if (error instanceof EmailAPIError && error.code === 'recipient_suppressed') {
       return { sent: false, reason: 'recipient_suppressed' }

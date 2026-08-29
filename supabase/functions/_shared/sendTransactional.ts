@@ -23,6 +23,8 @@ import {
 } from './transactional-email-templates/registry.ts'
 import { withEngagementTracking } from './emailTracking.ts'
 import { createLogger } from './opsLog.ts'
+import { assertManagedSendPayload, ManagedSendGuardError } from './managedSendGuard.ts'
+
 
 
 // Display name shown in the inbox "From" column.
@@ -67,6 +69,67 @@ async function logSend(params: {
     })
   }
 }
+
+/** Backoff schedule for dead-letter retries: 5m, 15m, 1h, 6h, 24h. */
+const DEAD_LETTER_BACKOFF_MINUTES = [5, 15, 60, 360, 1440]
+
+export function deadLetterNextRetryAt(retryCount: number): string {
+  const minutes =
+    DEAD_LETTER_BACKOFF_MINUTES[Math.min(retryCount, DEAD_LETTER_BACKOFF_MINUTES.length - 1)]
+  return new Date(Date.now() + minutes * 60_000).toISOString()
+}
+
+/**
+ * Parks a permanently-failed send in `email_dead_letters` so it can be
+ * inspected in the ops console and retried automatically by the
+ * `email-dead-letter-retry` dispatcher. Never throws.
+ */
+async function recordDeadLetter(params: {
+  templateName: string
+  recipientEmail: string
+  idempotencyKey: string
+  templateData?: Record<string, unknown>
+  messageId?: string
+  failureReason: string
+  errorMessage: string
+  transient: boolean
+  attempts: number
+}): Promise<void> {
+  const client = db()
+  if (!client) return
+  const { error } = await client.from('email_dead_letters').upsert(
+    {
+      template_name: params.templateName,
+      recipient_email: params.recipientEmail,
+      idempotency_key: params.idempotencyKey,
+      template_data: params.templateData ?? {},
+      message_id: params.messageId ?? null,
+      failure_reason: params.failureReason,
+      error_message: params.errorMessage.slice(0, 1000),
+      last_error: params.errorMessage.slice(0, 1000),
+      transient: params.transient,
+      attempts: params.attempts,
+      status: 'pending',
+      next_retry_at: deadLetterNextRetryAt(0),
+    },
+    { onConflict: 'idempotency_key' },
+  )
+  if (error) {
+    console.error('email_dead_letters write failed', { code: error.code, message: error.message })
+  }
+}
+
+/** Closes any dead letter for this logical send once it finally delivers. */
+async function resolveDeadLetter(idempotencyKey: string): Promise<void> {
+  const client = db()
+  if (!client) return
+  await client
+    .from('email_dead_letters')
+    .update({ status: 'resolved', resolved_at: new Date().toISOString(), last_error: null })
+    .eq('idempotency_key', idempotencyKey)
+    .neq('status', 'resolved')
+}
+
 
 function isRateLimited(error: unknown): error is EmailAPIError {
   return error instanceof EmailAPIError && error.status === 429
@@ -134,13 +197,17 @@ export interface SendOutcome {
     | 'no_recipient'
     | 'render_failed'
     | 'recipient_suppressed'
+    | 'unsubscribe_token_forbidden'
     | 'send_failed'
   error?: string
   attempts: number
   messageId?: string
   /** True when the failure looked retryable (5xx/timeout/network). */
   transient?: boolean
+  /** True when the failure was parked in `email_dead_letters` for retry. */
+  deadLettered?: boolean
 }
+
 
 const DEFAULT_MAX_ATTEMPTS = 3
 const BASE_BACKOFF_MS = 600
@@ -153,6 +220,9 @@ export async function sendTransactionalEmailDetailed(params: {
   templateData?: Record<string, unknown>
   /** Total attempts for transient failures (default 3, retried with backoff). */
   maxAttempts?: number
+  /** Set by the dead-letter dispatcher so a retry does not re-park itself. */
+  skipDeadLetter?: boolean
+
 }): Promise<SendOutcome> {
   const { templateName, idempotencyKey } = params
   const log = createLogger('send-transactional-email')
@@ -226,24 +296,59 @@ export async function sendTransactionalEmailDetailed(params: {
   const subject =
     typeof template.subject === 'function' ? template.subject(templateData) : template.subject
 
+  const sendPayload = {
+    to: recipient,
+    from: `${FROM_NAME} <noreply@${FROM_DOMAIN}>`,
+    sender_domain: SENDER_DOMAIN,
+    subject,
+    html: trackedHtml,
+    text,
+    purpose: 'transactional' as const,
+    label: templateName,
+    idempotency_key: idempotencyKey,
+    message_id: messageId,
+  }
+
+  // Managed sending owns the unsubscribe footer — a payload that sets the
+  // token itself is rejected upstream (400 missing_unsubscribe). Fail fast and
+  // loudly rather than letting the provider reject it as a delivery failure.
+  try {
+    assertManagedSendPayload(sendPayload, { templateName, messageId })
+  } catch (err) {
+    if (err instanceof ManagedSendGuardError) {
+      await log.alert({
+        event: 'unsubscribe_token_forbidden',
+        severity: 'critical',
+        message: err.message,
+        context: { templateName, messageId, offendingKeys: err.offendingKeys },
+      })
+      await logSend({
+        messageId,
+        templateName,
+        recipientEmail: recipient,
+        status: 'failed',
+        errorMessage: err.message.slice(0, 1000),
+      })
+      return {
+        ok: false,
+        reason: 'unsubscribe_token_forbidden',
+        error: err.message,
+        attempts: 0,
+        messageId,
+      }
+    }
+    throw err
+  }
+
+
   const send = () =>
     sendLovableEmail(
-      {
-        to: recipient,
-        from: `${FROM_NAME} <noreply@${FROM_DOMAIN}>`,
-        sender_domain: SENDER_DOMAIN,
-        subject,
-        html: trackedHtml,
-        text,
-        purpose: 'transactional',
-        label: templateName,
-        idempotency_key: idempotencyKey,
-        message_id: messageId,
-      },
+      sendPayload,
       // sendUrl is optional — when LOVABLE_SEND_URL is not set the library
       // falls back to the default Lovable API endpoint.
       { apiKey, sendUrl: Deno.env.get('LOVABLE_SEND_URL') },
     )
+
 
   let attempts = 0
   let lastError: unknown = null
@@ -316,7 +421,31 @@ export async function sendTransactionalEmailDetailed(params: {
       errorMessage: errorMsg.slice(0, 1000),
       metadata: { attempts, transient },
     })
-    return { ok: false, reason: 'send_failed', error: errorMsg, attempts, messageId, transient }
+    // Park the send so it is visible in the ops console and picked up by the
+    // dead-letter dispatcher instead of being lost after the last attempt.
+    if (!params.skipDeadLetter) {
+      await recordDeadLetter({
+        templateName,
+        recipientEmail: recipient,
+        idempotencyKey,
+        templateData,
+        messageId,
+        failureReason: 'send_failed',
+        errorMessage: errorMsg,
+        transient,
+        attempts,
+      })
+    }
+    return {
+      ok: false,
+      reason: 'send_failed',
+      error: errorMsg,
+      attempts,
+      messageId,
+      transient,
+      deadLettered: !params.skipDeadLetter,
+    }
+
   }
 
 
@@ -333,8 +462,12 @@ export async function sendTransactionalEmailDetailed(params: {
     },
   })
 
+  // A previously parked failure for this same logical send is now settled.
+  await resolveDeadLetter(idempotencyKey)
+
   log.info({ event: 'email_sent', templateName, recipientEmail: recipient, attempts, messageId })
   return { ok: true, attempts, messageId }
+
 }
 
 /** Boolean-returning wrapper kept for existing callers. */
