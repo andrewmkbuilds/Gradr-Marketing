@@ -122,6 +122,9 @@ async function run() {
       try {
         await page.goto(`${BASE}${HERO_ROUTE}`, { waitUntil: "domcontentloaded", timeout: 45000 });
         await page.waitForSelector("[data-auth-hero]:visible", { timeout: 20000 });
+        // Measure against the final typeface: a webfont swapping in after the
+        // measurement re-wraps the headline and reads as a phantom clip.
+        await page.evaluate(() => document.fonts?.ready).catch(() => undefined);
         // Let the letter-reveal + framer transitions settle before measuring.
         await page.waitForTimeout(1600);
 
