@@ -23,6 +23,8 @@ import {
 } from './transactional-email-templates/registry.ts'
 import { withEngagementTracking } from './emailTracking.ts'
 import { createLogger } from './opsLog.ts'
+import { assertManagedSendPayload, ManagedSendGuardError } from './managedSendGuard.ts'
+
 
 
 // Display name shown in the inbox "From" column.
