@@ -1784,6 +1784,69 @@ export type Database = {
         }
         Relationships: []
       }
+      email_dead_letters: {
+        Row: {
+          attempts: number
+          created_at: string
+          error_message: string | null
+          failure_reason: string | null
+          id: string
+          idempotency_key: string
+          last_error: string | null
+          max_retries: number
+          message_id: string | null
+          next_retry_at: string
+          recipient_email: string
+          resolved_at: string | null
+          retry_count: number
+          status: string
+          template_data: Json | null
+          template_name: string
+          transient: boolean
+          updated_at: string
+        }
+        Insert: {
+          attempts?: number
+          created_at?: string
+          error_message?: string | null
+          failure_reason?: string | null
+          id?: string
+          idempotency_key: string
+          last_error?: string | null
+          max_retries?: number
+          message_id?: string | null
+          next_retry_at?: string
+          recipient_email: string
+          resolved_at?: string | null
+          retry_count?: number
+          status?: string
+          template_data?: Json | null
+          template_name: string
+          transient?: boolean
+          updated_at?: string
+        }
+        Update: {
+          attempts?: number
+          created_at?: string
+          error_message?: string | null
+          failure_reason?: string | null
+          id?: string
+          idempotency_key?: string
+          last_error?: string | null
+          max_retries?: number
+          message_id?: string | null
+          next_retry_at?: string
+          recipient_email?: string
+          resolved_at?: string | null
+          retry_count?: number
+          status?: string
+          template_data?: Json | null
+          template_name?: string
+          transient?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
       email_engagement_events: {
         Row: {
           client_hash: string | null
@@ -4490,7 +4553,17 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      email_delivery_metrics: {
+        Row: {
+          bucket: string | null
+          failed_count: number | null
+          sent_count: number | null
+          suppressed_count: number | null
+          template_name: string | null
+          total_count: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       academic_domain_status: { Args: { _email: string }; Returns: Json }
