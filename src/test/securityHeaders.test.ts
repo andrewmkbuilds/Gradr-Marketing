@@ -1,6 +1,35 @@
 import { describe, expect, it } from "vitest";
 // Plain ESM helper shared with the CI script.
-import { ROUTES, checkRoute } from "../../scripts/lib/securityHeaders.mjs";
+import { ROUTES, checkRoute, evaluateCookies } from "../../scripts/lib/securityHeaders.mjs";
+
+/**
+ * Cookie hardening rules — offline, so they gate every run rather than only the
+ * production header sweep.
+ */
+describe("cookie flags", () => {
+  const fail = (cookie: string) => evaluateCookies([cookie]).failures;
+
+  it("accepts a hardened session cookie", () => {
+    expect(fail("sb-access-token=x; Path=/; Secure; HttpOnly; SameSite=Lax")).toEqual([]);
+  });
+
+  it("rejects a session cookie without HttpOnly", () => {
+    expect(fail("sb-access-token=x; Path=/; Secure; SameSite=Lax").join()).toMatch(/HttpOnly/);
+  });
+
+  it("rejects cookies without Secure or an explicit SameSite", () => {
+    expect(fail("session=x; Path=/; HttpOnly; SameSite=Lax").join()).toMatch(/Secure/);
+    expect(fail("session=x; Path=/; Secure; HttpOnly").join()).toMatch(/SameSite/);
+  });
+
+  it("allows the preference cookies the client reads by design", () => {
+    expect(fail("gradr-theme=dark; Path=/; Secure; SameSite=Lax")).toEqual([]);
+  });
+
+  it("passes when a route sets no cookies at all", () => {
+    expect(evaluateCookies([]).failures).toEqual([]);
+  });
+});
 
 /**
  * Runtime security-header assertions.

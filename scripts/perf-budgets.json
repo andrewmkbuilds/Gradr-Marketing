@@ -1,0 +1,18 @@
+{
+  "$comment": "Performance budgets enforced in CI. Raise a number only with a deliberate, reviewed reason — these exist to catch slowdowns, not to be rewritten when one is found.",
+  "bundle": {
+    "$comment": "Gzipped bytes of the production build in dist/. entryJs is a ratchet set from the measured baseline (390 kB) with ~3% headroom, not a target — the critical path is genuinely too heavy and should come down, so lower this number as chunks are lazy-loaded.",
+    "entryJs": 402000,
+    "totalJs": 1250000,
+    "totalCss": 120000,
+    "largestChunk": 420000,
+    "totalAssets": 3800000
+  },
+  "vitals": {
+    "$comment": "Lab thresholds measured on the built bundle under CPU/network throttling. lcpMs and cls are real targets. tbtMs is a ratchet from the measured baseline: the landing route currently blocks the main thread for ~3s while the 390 kB entry chunk parses and the hero animates — that is a known regression to fix by code-splitting, and this number should come down with it, never up.",
+    "lcpMs": 3200,
+    "cls": 0.1,
+    "tbtMs": 3500,
+    "routes": ["/", "/landing", "/pricing", "/ats-resume-checker", "/career-advice"]
+  }
+}

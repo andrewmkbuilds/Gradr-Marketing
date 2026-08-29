@@ -8,6 +8,7 @@
  * ops console immediately rather than being buried in function logs.
  */
 import { createClient } from 'npm:@supabase/supabase-js@2'
+import { reportEdgeError } from './sentryEdge.ts'
 
 export type LogLevel = 'debug' | 'info' | 'warn' | 'error'
 export type AlertSeverity = 'warn' | 'error' | 'critical'
@@ -79,6 +80,16 @@ export function createLogger(fn: string) {
         severity,
         message: params.message,
         ...context,
+      })
+      // Page-able signal: the same incident, in the same Sentry project as the
+      // frontend errors, fingerprinted by function + event.
+      await reportEdgeError({
+        fn,
+        event: params.event,
+        message: params.message,
+        level: severity === 'warn' ? 'warning' : severity === 'critical' ? 'fatal' : 'error',
+        tags: { severity },
+        context,
       })
       try {
         const url = Deno.env.get('SUPABASE_URL')

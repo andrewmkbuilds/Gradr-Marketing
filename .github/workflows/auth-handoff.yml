@@ -56,3 +56,6 @@ jobs:
 
       - name: Auth + OAuth hand-off e2e
         run: node scripts/e2e-auth-handoff.mjs http://localhost:8080
+
+      - name: Auth lifecycle e2e (signup, login, logout, protected access)
+        run: node scripts/e2e-auth-lifecycle.mjs http://localhost:8080

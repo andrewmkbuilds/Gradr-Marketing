@@ -1,0 +1,41 @@
+name: Performance budgets
+
+# Catches slowdowns before they ship: the download size of the production
+# bundle and the Core Web Vitals of the key marketing routes are both budgeted
+# in scripts/perf-budgets.json. A failure here means the page got slower, not
+# that the check is wrong — shrink the payload instead of raising the number.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  budgets:
+    name: Bundle size and Core Web Vitals
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build
+        run: bun run build
+
+      - name: Bundle size budgets (gzipped)
+        run: node scripts/check-bundle-budget.mjs
+
+      - name: Install Playwright browsers
+        run: bunx playwright install --with-deps chromium
+
+      - name: Serve build
+        run: |
+          bunx vite preview --port 8080 &
+          for i in $(seq 1 30); do curl -sf -o /dev/null http://localhost:8080/ && break; sleep 1; done
+
+      - name: Core Web Vitals (LCP / CLS / TBT, throttled)
+        run: node scripts/check-web-vitals.mjs http://localhost:8080

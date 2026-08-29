@@ -61,6 +61,13 @@ jobs:
           DATABASE_URL: ${{ secrets.SUPABASE_DB_URL }}
         run: bunx vitest run src/test/securityBaseline.test.ts src/test/userPreferencesAccess.test.ts
 
+      # Request/response shapes of the endpoints and webhooks this surface uses.
+      - name: API contract tests (schemas + negative cases)
+        run: bunx vitest run src/test/apiContracts.test.ts
+
+      - name: Live API contract replay against the deployed functions
+        run: node scripts/check-api-contracts.mjs
+
   supply-chain:
     name: Dependency audit and bundle fingerprinting
     runs-on: ubuntu-latest

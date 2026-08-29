@@ -99,6 +99,50 @@ export const REQUIRED_HEADERS = [
 ];
 
 /**
+ * Cookie hardening. Anything the site sets over HTTPS must be Secure and carry
+ * an explicit SameSite; anything that is not a client-readable preference must
+ * also be HttpOnly. Session-shaped names are held to the strictest bar because
+ * a session cookie readable from JavaScript is an XSS-to-account-takeover step.
+ */
+const SESSION_COOKIE_RE = /(auth|session|token|sb-)/i;
+
+/** Cookies the app intentionally reads from client script. */
+export const CLIENT_READABLE_COOKIES = [/^gradr-(theme|consent|motion)/i, /^ph_/i, /^tolt/i];
+
+/** @param {string[]} setCookies raw Set-Cookie header values */
+export function evaluateCookies(setCookies) {
+  const passes = [];
+  const failures = [];
+
+  for (const raw of setCookies) {
+    const name = raw.split("=")[0].trim();
+    const attrs = raw.toLowerCase();
+    const clientReadable = CLIENT_READABLE_COOKIES.some((re) => re.test(name));
+    const sessionShaped = SESSION_COOKIE_RE.test(name);
+
+    if (!attrs.includes("secure")) failures.push(`cookie "${name}" is missing Secure`);
+    if (!/samesite=(lax|strict|none)/.test(attrs)) {
+      failures.push(`cookie "${name}" is missing an explicit SameSite`);
+    }
+    if (/samesite=none/.test(attrs) && !attrs.includes("secure")) {
+      failures.push(`cookie "${name}" uses SameSite=None without Secure`);
+    }
+    if (sessionShaped && !attrs.includes("httponly")) {
+      failures.push(`session cookie "${name}" is readable from JavaScript (missing HttpOnly)`);
+    }
+    if (!sessionShaped && !clientReadable && !attrs.includes("httponly")) {
+      failures.push(`cookie "${name}" is not client-readable by design but is missing HttpOnly`);
+    }
+    if (!failures.some((f) => f.includes(`"${name}"`))) {
+      passes.push(`cookie "${name}": Secure + SameSite${attrs.includes("httponly") ? " + HttpOnly" : ""}`);
+    }
+  }
+
+  if (setCookies.length === 0) passes.push("no cookies set on this route");
+  return { passes, failures };
+}
+
+/**
  * Fetches one route and evaluates every expectation.
  * @param {string} url absolute URL
  */
@@ -129,6 +173,15 @@ export async function checkRoute(url) {
 
   const server = res.headers.get("server");
   if (server && SERVER_VERSION_RE.test(server)) failures.push(`Server header discloses a version: ${server}`);
+
+  // Cookie flags — Secure / SameSite / HttpOnly, per {@link evaluateCookies}.
+  const setCookies =
+    typeof res.headers.getSetCookie === "function"
+      ? res.headers.getSetCookie()
+      : [res.headers.get("set-cookie")].filter(Boolean);
+  const cookieReport = evaluateCookies(setCookies);
+  passes.push(...cookieReport.passes);
+  failures.push(...cookieReport.failures);
 
   const contentType = res.headers.get("content-type") || "";
   if (contentType.includes("text/html")) {
