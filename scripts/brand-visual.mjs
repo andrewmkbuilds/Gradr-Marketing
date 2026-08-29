@@ -74,6 +74,23 @@ try {
       colorScheme: theme,
       reducedMotion: "reduce",
     });
+    // The cookie banner is a fixed overlay that floats over the footer, and it
+    // settles at a different offset run to run — it diffed as brand drift.
+    // Record a decided consent so the banner never renders during capture.
+    await context.addInitScript(() => {
+      try {
+        window.localStorage.setItem(
+          "gradr-cookie-consent",
+          JSON.stringify({
+            version: 1,
+            decidedAt: new Date().toISOString(),
+            choices: { analytics: false, marketing: false, functional: false },
+          }),
+        );
+      } catch {
+        /* storage unavailable — the diff will simply include the banner */
+      }
+    });
     const page = await context.newPage();
 
     for (const [routeName, path] of ROUTES) {
