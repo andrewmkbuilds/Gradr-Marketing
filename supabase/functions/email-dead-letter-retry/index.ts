@@ -33,10 +33,21 @@ const json = (body: unknown, status = 200) =>
     headers: { ...corsHeaders, 'Content-Type': 'application/json' },
   })
 
-function isAuthorized(req: Request): boolean {
-  const cronSecret = Deno.env.get('EMAIL_CRON_SECRET')
+async function isAuthorized(
+  req: Request,
+  db: ReturnType<typeof createClient>,
+): Promise<boolean> {
+  // The scheduler authenticates with a shared secret held in an internal,
+  // service-role-only table.
   const provided = req.headers.get('x-cron-secret')
-  if (cronSecret && provided && provided === cronSecret) return true
+  if (provided) {
+    const { data } = await db
+      .from('internal_job_secrets')
+      .select('secret')
+      .eq('name', 'email_dead_letter_retry')
+      .maybeSingle()
+    if (data?.secret && data.secret === provided) return true
+  }
 
   const token = (req.headers.get('Authorization') ?? '').replace(/^Bearer\s+/i, '')
   try {
@@ -93,12 +104,12 @@ async function queueMetrics(
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders })
   if (req.method !== 'POST' && req.method !== 'GET') return json({ error: 'Method not allowed' }, 405)
-  if (!isAuthorized(req)) return json({ error: 'Forbidden' }, 403)
-
   const url = Deno.env.get('SUPABASE_URL')
   const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
   if (!url || !serviceKey) return json({ error: 'Server configuration error' }, 500)
   const db = createClient(url, serviceKey, { auth: { persistSession: false } })
+
+  if (!(await isAuthorized(req, db))) return json({ error: 'Forbidden' }, 403)
 
   // GET is a metrics-only probe for the ops console.
   if (req.method === 'GET') {
