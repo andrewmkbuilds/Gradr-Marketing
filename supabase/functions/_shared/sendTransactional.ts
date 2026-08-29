@@ -197,13 +197,17 @@ export interface SendOutcome {
     | 'no_recipient'
     | 'render_failed'
     | 'recipient_suppressed'
+    | 'unsubscribe_token_forbidden'
     | 'send_failed'
   error?: string
   attempts: number
   messageId?: string
   /** True when the failure looked retryable (5xx/timeout/network). */
   transient?: boolean
+  /** True when the failure was parked in `email_dead_letters` for retry. */
+  deadLettered?: boolean
 }
+
 
 const DEFAULT_MAX_ATTEMPTS = 3
 const BASE_BACKOFF_MS = 600
