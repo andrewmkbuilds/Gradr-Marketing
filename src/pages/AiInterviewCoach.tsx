@@ -252,17 +252,14 @@ export default function AiInterviewCoach() {
       </section>
 
       <section className="section-gap" aria-labelledby="how-it-works">
-        <h2 id="how-it-works" className="text-2xl font-semibold tracking-tight text-foreground">
+        <Text as="h2" variant="h3" id="how-it-works" className="tracking-tight">
           How the AI interview coach works
-        </h2>
+        </Text>
         <ol className="mt-6 grid gap-4 sm:grid-cols-2">
           {STEPS.map((step, i) => (
-            <li
-              key={step.name}
-              className={cn(cardVariants(), "transition-colors hover:border-primary/40")}
-            >
+            <li key={step.name} className={cardVariants({ variant: "raised" })}>
               <div className="flex items-center gap-3">
-                <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <span className="flex h-9 w-9 items-center justify-center rounded-control bg-primary/10 text-primary">
                   <step.icon className="h-4.5 w-4.5" aria-hidden="true" />
                 </span>
                 <h3 className="font-medium text-foreground">
