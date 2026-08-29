@@ -15,7 +15,10 @@ export function findChromium() {
   for (const root of ["/opt/ms-playwright", join(process.env.HOME ?? "", ".cache/ms-playwright")]) {
     if (!existsSync(root)) continue;
     for (const dir of readdirSync(root).filter((d) => d.startsWith("chromium"))) {
+      // Playwright renamed the Linux payload directory to `chrome-linux64`
+      // in recent builds; keep the older names for pinned CI images.
       for (const rel of [
+        "chrome-linux64/chrome",
         "chrome-linux/chrome",
         "chrome-linux/headless_shell",
         "chrome-linux64/chrome-headless-shell",
