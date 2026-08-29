@@ -222,6 +222,13 @@ export async function sendTransactionalEmailDetailed(params: {
   maxAttempts?: number
   /** Set by the dead-letter dispatcher so a retry does not re-park itself. */
   skipDeadLetter?: boolean
+  /**
+   * Dead-letter retry generation. A failed managed-send run permanently owns
+   * its idempotency key (`409 run_failed`), so each redelivery attempt must
+   * present a fresh derived key while keeping the same logical identity.
+   */
+  retryEpoch?: number
+
 
 }): Promise<SendOutcome> {
   const { templateName, idempotencyKey } = params
