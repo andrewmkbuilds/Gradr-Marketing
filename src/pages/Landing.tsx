@@ -1380,7 +1380,7 @@ export default function Landing() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Gradr on Instagram"
-                className="link-tap inline-flex text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
+                className="link-tap inline-flex text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-control"
               >
                 <Instagram className="h-4 w-4" aria-hidden="true" />
               </a>
@@ -1389,7 +1389,7 @@ export default function Landing() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Gradr on Facebook"
-                className="link-tap inline-flex text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
+                className="link-tap inline-flex text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-control"
               >
                 <FacebookIcon className="h-4 w-4" />
               </a>
@@ -1398,7 +1398,7 @@ export default function Landing() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Gradr on X"
-                className="link-tap inline-flex text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
+                className="link-tap inline-flex text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-control"
               >
                 <XIcon className="h-4 w-4" />
               </a>
@@ -1407,7 +1407,7 @@ export default function Landing() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Gradr on YouTube"
-                className="link-tap inline-flex text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
+                className="link-tap inline-flex text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-control"
               >
                 <YouTubeIcon className="h-4 w-4" />
               </a>
@@ -1416,7 +1416,7 @@ export default function Landing() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Gradr on Discord"
-                className="link-tap inline-flex text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
+                className="link-tap inline-flex text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-control"
               >
                 <DiscordIcon className="h-4 w-4" />
               </a>
