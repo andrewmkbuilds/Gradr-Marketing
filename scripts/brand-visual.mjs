@@ -22,9 +22,11 @@ const BASELINE_DIR = join(ROOT, "tests/visual/brand/baseline");
 const CURRENT_DIR = join(ROOT, "tests/visual/brand/current");
 const TOLERANCE = Number(process.env.BRAND_VISUAL_TOLERANCE ?? 0.01); // 1% of pixels
 
+// `/pricing` is deliberately absent: the marketing surface hands that route
+// off to app.gradr.me, so the page navigates away mid-capture (destroying the
+// execution context) and never renders marketing chrome to diff.
 const ROUTES = [
   ["home", "/"],
-  ["pricing", "/pricing"],
   ["ats", "/ats-resume-checker"],
   ["career-advice", "/career-advice"],
   ["terms", "/terms"],
