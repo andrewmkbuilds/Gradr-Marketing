@@ -11,7 +11,7 @@
  *    homepage view of a consenting visitor is not lost.
  *  - Identity is the Gradr (Supabase) user id — never the email address.
  */
-import posthog from "posthog-js";
+import type posthogJs from "posthog-js";
 import { consentFor } from "@/lib/cookieConsent";
 
 const TOKEN = import.meta.env.VITE_LOVABLE_CONNECTOR_POSTHOG_API_KEY as string | undefined;
@@ -20,6 +20,12 @@ const API_HOST = REGION === "us" ? "https://us.i.posthog.com" : "https://eu.i.po
 
 const BUFFER_LIMIT = 30;
 
+/**
+ * posthog-js is ~50 kB gzipped and never needed for the first paint, so it is
+ * pulled in dynamically after init. Everything below degrades to buffering
+ * until the module has landed.
+ */
+let posthog: typeof posthogJs | null = null;
 let started = false;
 let optedIn = false;
 let buffer: { event: string; props?: Record<string, unknown> }[] = [];
@@ -30,6 +36,14 @@ export function initPostHog() {
   if (started || !TOKEN || typeof window === "undefined") return;
   started = true;
 
+  void import("posthog-js").then((mod) => {
+    posthog = mod.default;
+    bootstrap(TOKEN);
+  });
+}
+
+function bootstrap(TOKEN: string) {
+  if (!posthog) return;
   posthog.init(TOKEN, {
     api_host: API_HOST,
     person_profiles: "identified_only",
@@ -45,6 +59,11 @@ export function initPostHog() {
     request_batching: true,
   });
 
+  if (pendingRegistrations) {
+    posthog.register(pendingRegistrations);
+    pendingRegistrations = null;
+  }
+
   applyConsent();
   window.addEventListener("gradr:consent", applyConsent);
 
@@ -59,7 +78,7 @@ export function initPostHog() {
 }
 
 function applyConsent() {
-  if (!started) return;
+  if (!started || !posthog) return;
   const allowed = consentFor("analytics");
   if (allowed && !optedIn) {
     optedIn = true;
@@ -90,7 +109,7 @@ export function posthogCapturing() {
 
 export function phIdentify(userId: string, props?: Record<string, unknown>) {
   if (!started) return;
-  if (!optedIn) {
+  if (!optedIn || !posthog) {
     pendingIdentity = { id: userId, props };
     return;
   }
@@ -101,24 +120,32 @@ export function phIdentify(userId: string, props?: Record<string, unknown>) {
 
 /** Person properties that should not overwrite a value already set. */
 export function phSetPersonOnce(props: Record<string, unknown>) {
-  if (!posthogCapturing()) return;
+  if (!posthogCapturing() || !posthog) return;
   posthog.setPersonProperties(undefined, props);
 }
 
 export function phSetPerson(props: Record<string, unknown>) {
-  if (!posthogCapturing()) return;
+  if (!posthogCapturing() || !posthog) return;
   posthog.setPersonProperties(props);
 }
 
 /** Properties attached to every subsequent event (device, app surface, plan). */
+/** Super-properties registered before posthog-js finished loading. */
+let pendingRegistrations: Record<string, unknown> | null = null;
+
 export function phRegister(props: Record<string, unknown>) {
   if (!started) return;
+  if (!posthog) {
+    pendingRegistrations = { ...(pendingRegistrations ?? {}), ...props };
+    return;
+  }
   posthog.register(props);
 }
 
 export function phReset() {
   if (!started) return;
   pendingIdentity = null;
+  if (!posthog) return;
   posthog.reset();
 }
 
@@ -129,7 +156,7 @@ export function phCapture(event: string, props?: Record<string, unknown>) {
   if (!started) return;
   recentEvents.push({ event, props });
   if (recentEvents.length > 100) recentEvents.shift();
-  if (!optedIn) {
+  if (!optedIn || !posthog) {
     if (buffer.length < BUFFER_LIMIT) buffer.push({ event, props });
     return;
   }
@@ -146,4 +173,6 @@ export function __resetPostHogForTests() {
   optedIn = false;
   buffer = [];
   pendingIdentity = null;
+  pendingRegistrations = null;
+  posthog = null;
 }

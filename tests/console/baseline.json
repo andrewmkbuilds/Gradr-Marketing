@@ -183,7 +183,7 @@
     {
       "key": "console.error: Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s Check the render method of `App`. at AppRoutes (<url>) at Suspense at AuthProvider (<u",
       "kind": "console.error",
-      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `App`. \n    at AppRoutes (https://gradr.me/src/App.tsx?t=1788032755434:296:22)\n    at Suspense\n    at AuthProvider (https://gradr.me/src/",
+      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `App`. \n    at AppRoutes (https://gradr.me/src/App.tsx?t=1788034158662:296:22)\n    at Suspense\n    at AuthProvider (https://gradr.me/src/",
       "pages": [
         "/",
         "/ (interactions)",
@@ -493,7 +493,7 @@
     {
       "key": "console.error: Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s Check the render method of `App`. at ReferralCapture (<url>) at Router (<url>) at Brow",
       "kind": "console.error",
-      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `App`. \n    at ReferralCapture (https://gradr.me/src/App.tsx?t=1788032755434:1043:5)\n    at Router (https://gradr.me/node_modules/.vite/d",
+      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `App`. \n    at ReferralCapture (https://gradr.me/src/App.tsx?t=1788034158662:1043:5)\n    at Router (https://gradr.me/node_modules/.vite/d",
       "pages": [
         "/",
         "/ (interactions)",
@@ -524,7 +524,7 @@
     {
       "key": "console.error: Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s Check the render method of `App`. at RouteFallback (<url>) at Suspense at AuthProvider",
       "kind": "console.error",
-      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `App`. \n    at RouteFallback (https://gradr.me/src/App.tsx?t=1788032755434:130:22)\n    at Suspense\n    at AuthProvider (https://gradr.me/",
+      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `App`. \n    at RouteFallback (https://gradr.me/src/App.tsx?t=1788034158662:130:22)\n    at Suspense\n    at AuthProvider (https://gradr.me/",
       "pages": [
         "/acceptable-use",
         "/affiliate-disclosure",
@@ -613,7 +613,7 @@
     {
       "key": "console.error: Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s Check the render method of `App`. at TelemetryRouteTracker (<url>) at AuthProvider (<u",
       "kind": "console.error",
-      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `App`. \n    at TelemetryRouteTracker (https://gradr.me/src/App.tsx?t=1788032755434:1057:22)\n    at AuthProvider (https://gradr.me/src/hoo",
+      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `App`. \n    at TelemetryRouteTracker (https://gradr.me/src/App.tsx?t=1788034158662:1057:22)\n    at AuthProvider (https://gradr.me/src/hoo",
       "pages": [
         "/",
         "/ (interactions)",
@@ -737,7 +737,7 @@
     {
       "key": "console.error: Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s Check the render method of `App`. at WwwRedirect (<url>) at Router (<url>) at BrowserR",
       "kind": "console.error",
-      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `App`. \n    at WwwRedirect (https://gradr.me/src/App.tsx?t=1788032755434:1029:5)\n    at Router (https://gradr.me/node_modules/.vite/deps/",
+      "sample": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `App`. \n    at WwwRedirect (https://gradr.me/src/App.tsx?t=1788034158662:1029:5)\n    at Router (https://gradr.me/node_modules/.vite/deps/",
       "pages": [
         "/",
         "/ (interactions)",
@@ -2715,24 +2715,26 @@
       ]
     },
     {
-      "key": "console.error: WebSocket connection to '<url>' failed: Error in connection establishment: net::ERR_NAME_NOT_RESOLVED",
+      "key": "console.error: WebSocket connection to '<url>' failed: Error during WebSocket handshake: Unexpected response code: <n>",
       "kind": "console.error",
-      "sample": "WebSocket connection to 'wss://gradr.me/?token=gaeGFFrlIFnJ' failed: Error in connection establishment: net::ERR_NAME_NOT_RESOLVED",
+      "sample": "WebSocket connection to 'wss://gradr.me/?token=gaeGFFrlIFnJ' failed: Error during WebSocket handshake: Unexpected response code: 200",
       "pages": [
         "/",
         "/ (interactions)",
+        "/affiliate-disclosure",
         "/ai-cover-letter-generator",
         "/ai-disclaimer",
         "/ai-interview-coach",
         "/ats-resume-checker",
         "/blog/ai-resume-optimization",
         "/career-advice",
-        "/cookie-policy",
+        "/childrens-privacy",
         "/job-application-tracker",
         "/job-search",
         "/landing",
-        "/newsletter/confirm",
-        "/terms"
+        "/privacy",
+        "/this-route-does-not-exist",
+        "/unsubscribe"
       ]
     },
     {
@@ -2747,7 +2749,6 @@
         "/ats-resume-checker",
         "/career-advice",
         "/job-application-tracker",
-        "/job-search",
         "/landing"
       ]
     },
