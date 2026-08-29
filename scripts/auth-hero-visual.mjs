@@ -45,25 +45,8 @@ const VIEWPORTS = [
 
 const ENGINES = { chromium, firefox, webkit };
 
-function findChromium() {
-  for (const envPath of [process.env.PLAYWRIGHT_CHROMIUM_PATH, process.env.CHROME_PATH]) {
-    if (envPath && existsSync(envPath)) return envPath;
-  }
-  for (const root of ["/opt/ms-playwright", join(process.env.HOME ?? "", ".cache/ms-playwright")]) {
-    if (!existsSync(root)) continue;
-    for (const dir of readdirSync(root).filter((d) => d.startsWith("chromium"))) {
-      for (const rel of [
-        "chrome-linux/chrome",
-        "chrome-linux/headless_shell",
-        "chrome-linux64/chrome-headless-shell",
-      ]) {
-        const candidate = join(root, dir, rel);
-        if (existsSync(candidate)) return candidate;
-      }
-    }
-  }
-  return undefined;
-}
+// Chromium resolution is shared with the other browser gates so all of them
+// agree on which build to use (see scripts/lib/browser.mjs).
 
 async function launch(name) {
   const engine = ENGINES[name];
