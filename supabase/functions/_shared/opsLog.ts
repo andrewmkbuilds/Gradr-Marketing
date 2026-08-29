@@ -81,6 +81,16 @@ export function createLogger(fn: string) {
         message: params.message,
         ...context,
       })
+      // Page-able signal: the same incident, in the same Sentry project as the
+      // frontend errors, fingerprinted by function + event.
+      await reportEdgeError({
+        fn,
+        event: params.event,
+        message: params.message,
+        level: severity === 'warn' ? 'warning' : severity === 'critical' ? 'fatal' : 'error',
+        tags: { severity },
+        context,
+      })
       try {
         const url = Deno.env.get('SUPABASE_URL')
         const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
