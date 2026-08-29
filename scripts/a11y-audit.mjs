@@ -11,7 +11,8 @@
  *   node scripts/a11y-audit.mjs https://gradr.me
  */
 import { chromium } from "playwright";
-import { existsSync, readdirSync, readFileSync } from "fs";
+import { findChromium } from "./lib/browser.mjs";
+import { readFileSync } from "fs";
 import { createRequire } from "module";
 import { join } from "path";
 
@@ -39,26 +40,6 @@ const VIEWPORTS = [
 ];
 
 const THEMES = ["light", "dark"];
-
-function findChromium() {
-  for (const envPath of [process.env.PLAYWRIGHT_CHROMIUM_PATH, process.env.CHROME_PATH]) {
-    if (envPath && existsSync(envPath)) return envPath;
-  }
-  for (const root of ["/opt/ms-playwright", join(process.env.HOME ?? "", ".cache/ms-playwright")]) {
-    if (!existsSync(root)) continue;
-    for (const dir of readdirSync(root).filter((d) => d.startsWith("chromium"))) {
-      for (const rel of [
-        "chrome-linux/chrome",
-        "chrome-linux/headless_shell",
-        "chrome-linux64/chrome-headless-shell",
-      ]) {
-        const candidate = join(root, dir, rel);
-        if (existsSync(candidate)) return candidate;
-      }
-    }
-  }
-  return undefined;
-}
 
 async function launch() {
   try {

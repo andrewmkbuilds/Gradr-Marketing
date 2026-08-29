@@ -13,7 +13,8 @@
  * Exit code 0 = all checks passed, 1 = at least one failure.
  */
 import { chromium } from "playwright";
-import { existsSync, readdirSync, readFileSync } from "fs";
+import { findChromium } from "./lib/browser.mjs";
+import { readFileSync } from "fs";
 import { join } from "path";
 
 /**
@@ -22,21 +23,6 @@ import { join } from "path";
  * browser) we fall back to any Chromium in the shared browser cache or to
  * PLAYWRIGHT_CHROMIUM_PATH / CHROME_PATH.
  */
-function findChromium() {
-  for (const envPath of [process.env.PLAYWRIGHT_CHROMIUM_PATH, process.env.CHROME_PATH]) {
-    if (envPath && existsSync(envPath)) return envPath;
-  }
-  for (const root of ["/opt/ms-playwright", join(process.env.HOME ?? "", ".cache/ms-playwright")]) {
-    if (!existsSync(root)) continue;
-    for (const dir of readdirSync(root).filter((d) => d.startsWith("chromium"))) {
-      for (const rel of ["chrome-linux/chrome", "chrome-linux/headless_shell", "chrome-linux64/chrome-headless-shell"]) {
-        const candidate = join(root, dir, rel);
-        if (existsSync(candidate)) return candidate;
-      }
-    }
-  }
-  return undefined;
-}
 
 async function launchBrowser() {
   try {

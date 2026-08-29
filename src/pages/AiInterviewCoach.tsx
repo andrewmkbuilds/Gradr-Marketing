@@ -252,38 +252,37 @@ export default function AiInterviewCoach() {
       </section>
 
       <section className="section-gap" aria-labelledby="how-it-works">
-        <h2 id="how-it-works" className="text-2xl font-semibold tracking-tight text-foreground">
+        <Text as="h2" variant="h3" id="how-it-works" className="tracking-tight">
           How the AI interview coach works
-        </h2>
+        </Text>
         <ol className="mt-6 grid gap-4 sm:grid-cols-2">
           {STEPS.map((step, i) => (
-            <li
-              key={step.name}
-              className={cn(cardVariants(), "transition-colors hover:border-primary/40")}
-            >
+            <li key={step.name} className={cardVariants({ variant: "raised" })}>
               <div className="flex items-center gap-3">
-                <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <span className="flex h-9 w-9 items-center justify-center rounded-control bg-primary/10 text-primary">
                   <step.icon className="h-4.5 w-4.5" aria-hidden="true" />
                 </span>
-                <h3 className="font-medium text-foreground">
+                <Text as="h3" variant="h6">
                   <span className="text-muted-foreground">{i + 1}.</span> {step.name}
-                </h3>
+                </Text>
               </div>
-              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{step.text}</p>
+              <Text variant="body-sm" tone="muted" className="mt-3">
+                {step.text}
+              </Text>
             </li>
           ))}
         </ol>
       </section>
 
       <section className="section-gap" aria-labelledby="scoring">
-        <h2 id="scoring" className="flex items-center gap-2 text-2xl font-semibold tracking-tight text-foreground">
+        <Text as="h2" variant="h3" id="scoring" className="flex items-center gap-2 tracking-tight">
           <Bot className="h-5 w-5 text-primary" aria-hidden="true" />
           How answers are scored
-        </h2>
-        <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
+        </Text>
+        <Text variant="body-sm" tone="muted" className="mt-2 max-w-2xl">
           Nothing is a black box. Each dimension is weighted, reported separately, and traced
           back to the signals that produced it.
-        </p>
+        </Text>
         <div className="mt-6 overflow-x-auto">
           <table className="w-full min-w-[640px] text-sm">
             <caption className="sr-only">

@@ -3,7 +3,7 @@
  * Auth hero visual regression + clipping assertions.
  *
  * For each viewport (and each installed browser engine) this script:
- *   1. loads /auth,
+ *   1. loads the route that renders AuthLayout,
  *   2. asserts the full headline text is present and not visually clipped
  *      (no overflow past its container, no zero-height/hidden lines),
  *   3. writes a screenshot of the hero for review / diffing.
@@ -17,12 +17,20 @@
  * Exit code 0 = all viewports pass, 1 = clipping or missing text detected.
  */
 import { chromium, firefox, webkit } from "playwright";
-import { mkdirSync, existsSync, readdirSync } from "fs";
+import { mkdirSync } from "fs";
 import { join } from "path";
+import { findChromium } from "./lib/browser.mjs";
 
 const BASE = (process.argv[2] ?? process.env.SMOKE_BASE_URL ?? "http://localhost:8080").replace(/\/$/, "");
 const OUT_DIR = process.env.AUTH_HERO_OUT ?? "artifacts/auth-hero";
 const HEADLINE = "Your AI career command center.";
+/**
+ * The marketing surface no longer hosts a sign-in form — `/auth` hands off to
+ * app.gradr.me. The OAuth consent screen is the route that still renders
+ * `AuthLayout` (and therefore the hero) in this bundle, so that is what the
+ * clipping assertions must load. Override with AUTH_HERO_ROUTE if that moves.
+ */
+const HERO_ROUTE = process.env.AUTH_HERO_ROUTE ?? "/.lovable/oauth/consent";
 
 /** Widths that historically triggered clipping, plus the common breakpoints. */
 const VIEWPORTS = [
@@ -38,25 +46,8 @@ const VIEWPORTS = [
 
 const ENGINES = { chromium, firefox, webkit };
 
-function findChromium() {
-  for (const envPath of [process.env.PLAYWRIGHT_CHROMIUM_PATH, process.env.CHROME_PATH]) {
-    if (envPath && existsSync(envPath)) return envPath;
-  }
-  for (const root of ["/opt/ms-playwright", join(process.env.HOME ?? "", ".cache/ms-playwright")]) {
-    if (!existsSync(root)) continue;
-    for (const dir of readdirSync(root).filter((d) => d.startsWith("chromium"))) {
-      for (const rel of [
-        "chrome-linux/chrome",
-        "chrome-linux/headless_shell",
-        "chrome-linux64/chrome-headless-shell",
-      ]) {
-        const candidate = join(root, dir, rel);
-        if (existsSync(candidate)) return candidate;
-      }
-    }
-  }
-  return undefined;
-}
+// Chromium resolution is shared with the other browser gates so all of them
+// agree on which build to use (see scripts/lib/browser.mjs).
 
 async function launch(name) {
   const engine = ENGINES[name];
@@ -129,8 +120,11 @@ async function run() {
       const label = `${engineName}/${vp.name}`;
       checks++;
       try {
-        await page.goto(`${BASE}/auth`, { waitUntil: "domcontentloaded", timeout: 45000 });
+        await page.goto(`${BASE}${HERO_ROUTE}`, { waitUntil: "domcontentloaded", timeout: 45000 });
         await page.waitForSelector("[data-auth-hero]:visible", { timeout: 20000 });
+        // Measure against the final typeface: a webfont swapping in after the
+        // measurement re-wraps the headline and reads as a phantom clip.
+        await page.evaluate(() => document.fonts?.ready).catch(() => undefined);
         // Let the letter-reveal + framer transitions settle before measuring.
         await page.waitForTimeout(1600);
 
@@ -170,6 +164,12 @@ async function run() {
   }
 
   console.log(`\n${checks - failures.length}/${checks} auth hero viewport checks passed`);
+  // Every engine skipping (missing browser binaries) previously exited 0, so
+  // the job reported success without asserting anything. Treat it as a failure.
+  if (checks === 0) {
+    console.error("Auth hero visual regression ran zero checks — no browser engine was available.");
+    process.exit(1);
+  }
   if (failures.length) {
     console.error("Auth hero visual regression failed:\n - " + failures.join("\n - "));
     process.exit(1);

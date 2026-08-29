@@ -22,9 +22,11 @@ const BASELINE_DIR = join(ROOT, "tests/visual/brand/baseline");
 const CURRENT_DIR = join(ROOT, "tests/visual/brand/current");
 const TOLERANCE = Number(process.env.BRAND_VISUAL_TOLERANCE ?? 0.01); // 1% of pixels
 
+// `/pricing` is deliberately absent: the marketing surface hands that route
+// off to app.gradr.me, so the page navigates away mid-capture (destroying the
+// execution context) and never renders marketing chrome to diff.
 const ROUTES = [
   ["home", "/"],
-  ["pricing", "/pricing"],
   ["ats", "/ats-resume-checker"],
   ["career-advice", "/career-advice"],
   ["terms", "/terms"],
@@ -72,21 +74,54 @@ try {
       colorScheme: theme,
       reducedMotion: "reduce",
     });
+    // The cookie banner is a fixed overlay that floats over the footer, and it
+    // settles at a different offset run to run — it diffed as brand drift.
+    // Record a decided consent so the banner never renders during capture.
+    await context.addInitScript(() => {
+      try {
+        window.localStorage.setItem(
+          "gradr-cookie-consent",
+          JSON.stringify({
+            version: 1,
+            decidedAt: new Date().toISOString(),
+            choices: { analytics: false, marketing: false, functional: false },
+          }),
+        );
+      } catch {
+        /* storage unavailable — the diff will simply include the banner */
+      }
+    });
     const page = await context.newPage();
 
     for (const [routeName, path] of ROUTES) {
       await page.goto(`${BASE}${path}`, { waitUntil: "load" });
-      // Brand marks swap asset per theme after hydration and headers animate in,
-      // so settle the page (fonts, images decoded, animations finished) before
-      // capturing — otherwise the diff measures timing, not the brand.
-      await page.evaluate(() => document.fonts?.ready);
-      await page.evaluate(() =>
-        Promise.all(
-          Array.from(document.images)
-            .filter((img) => !img.complete)
-            .map((img) => img.decode().catch(() => undefined)),
-        ),
-      );
+      // Hydration can replace the document (route guards, surface hand-offs),
+      // which destroys the execution context mid-evaluate. That is a timing
+      // artefact, not brand drift, so settle again and retry rather than
+      // crashing the whole run.
+      const settle = async () => {
+        // Brand marks swap asset per theme after hydration and headers animate
+        // in, so settle the page (fonts, images decoded, animations finished)
+        // before capturing — otherwise the diff measures timing, not the brand.
+        await page.evaluate(() => document.fonts?.ready);
+        await page.evaluate(() =>
+          Promise.all(
+            Array.from(document.images)
+              .filter((img) => !img.complete)
+              .map((img) => img.decode().catch(() => undefined)),
+          ),
+        );
+      };
+      try {
+        await settle();
+      } catch {
+        await page.waitForLoadState("load");
+        await settle();
+      }
+      // The brand mark swaps to its dark-theme asset after hydration; that
+      // second image load must finish or the capture races the swap.
+      await page.waitForLoadState("networkidle").catch(() => undefined);
+      await settle().catch(() => undefined);
       await page.waitForTimeout(2500);
 
       // Only the chrome regions are captured. Marks inside animated hero art

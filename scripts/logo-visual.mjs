@@ -18,7 +18,8 @@
  *   node scripts/logo-visual.mjs https://gradr.me   # deployed build
  */
 import { chromium } from "playwright";
-import { mkdirSync, existsSync, readdirSync } from "fs";
+import { findChromium } from "./lib/browser.mjs";
+import { mkdirSync } from "fs";
 import { join } from "path";
 
 const BASE = (process.argv[2] ?? process.env.SMOKE_BASE_URL ?? "http://localhost:8080").replace(/\/$/, "");
@@ -33,26 +34,6 @@ const VIEWPORTS = [
   { name: "desktop-1920", width: 1920, height: 1080 },
 ];
 const THEMES = ["light", "dark"];
-
-function findChromium() {
-  for (const envPath of [process.env.PLAYWRIGHT_CHROMIUM_PATH, process.env.CHROME_PATH]) {
-    if (envPath && existsSync(envPath)) return envPath;
-  }
-  for (const root of ["/opt/ms-playwright", join(process.env.HOME ?? "", ".cache/ms-playwright")]) {
-    if (!existsSync(root)) continue;
-    for (const dir of readdirSync(root).filter((d) => d.startsWith("chromium"))) {
-      for (const rel of [
-        "chrome-linux/chrome",
-        "chrome-linux/headless_shell",
-        "chrome-linux64/chrome-headless-shell",
-      ]) {
-        const candidate = join(root, dir, rel);
-        if (existsSync(candidate)) return candidate;
-      }
-    }
-  }
-  return undefined;
-}
 
 async function launch() {
   try {
