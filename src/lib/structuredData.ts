@@ -29,7 +29,7 @@ const publisher = {
   name: SITE_NAME,
   url: SITE_ORIGIN,
   logo: { "@type": "ImageObject", url: `${SITE_ORIGIN}/gradr-logo.png` },
-  sameAs: [INSTAGRAM_URL, FACEBOOK_URL, DISCORD_URL],
+  sameAs: [INSTAGRAM_URL, X_URL, FACEBOOK_URL, YOUTUBE_URL, DISCORD_URL],
 };
 
 export function absoluteUrl(path: string): string {
