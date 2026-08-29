@@ -5,9 +5,17 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { cn } from "@/lib/utils";
 import { type Surface, urlFor } from "@/config/domains";
 import { appLoginHref, appSignupHref } from "@/lib/appLinks";
-import { DISCORD_URL, FACEBOOK_URL, INSTAGRAM_URL } from "@/config/social";
+import {
+  DISCORD_URL,
+  FACEBOOK_URL,
+  INSTAGRAM_URL,
+  X_URL,
+  YOUTUBE_URL,
+} from "@/config/social";
 import { DiscordIcon } from "@/components/icons/DiscordIcon";
 import { FacebookIcon } from "@/components/icons/FacebookIcon";
+import { XIcon } from "@/components/icons/XIcon";
+import { YouTubeIcon } from "@/components/icons/YouTubeIcon";
 import { CrossLink, SLink, useSurface, useSurfacePath } from "@/components/surface/SurfaceLink";
 import { useMobileMenu } from "@/hooks/useMobileMenu";
 
@@ -222,6 +230,26 @@ export function SurfaceShell({ nav = [], eyebrow, children }: SurfaceShellProps)
             >
               <FacebookIcon className="h-3.5 w-3.5" />
               Facebook
+            </a>
+            <a
+              href={X_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Gradr on X"
+              className="link-tap inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+            >
+              <XIcon className="h-3.5 w-3.5" />
+              X
+            </a>
+            <a
+              href={YOUTUBE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Gradr on YouTube"
+              className="link-tap inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+            >
+              <YouTubeIcon className="h-3.5 w-3.5" />
+              YouTube
             </a>
             <a
               href={DISCORD_URL}

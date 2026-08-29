@@ -27,6 +27,18 @@ import { useMobileMenu } from "@/hooks/useMobileMenu";
 import { useAuth } from "@/hooks/useAuth";
 import { NewsletterSignup } from "@/components/marketing/NewsletterSignup";
 import { BrandLogo } from "@/components/BrandLogo";
+import { Instagram } from "lucide-react";
+import { FacebookIcon } from "@/components/icons/FacebookIcon";
+import { XIcon } from "@/components/icons/XIcon";
+import { YouTubeIcon } from "@/components/icons/YouTubeIcon";
+import { DiscordIcon } from "@/components/icons/DiscordIcon";
+import {
+  INSTAGRAM_URL,
+  X_URL,
+  FACEBOOK_URL,
+  YOUTUBE_URL,
+  DISCORD_URL,
+} from "@/config/social";
 import { Reveal } from "@/components/landing/Reveal";
 import { LandingScrollProgress } from "@/components/landing/LandingScrollProgress";
 import { motion, useScroll, useTransform } from "motion/react";
@@ -1362,6 +1374,53 @@ export default function Landing() {
               An AI career operating system for the whole path from resume to offer.
             </p>
             <NewsletterSignup source="landing-footer" topic="career guides" />
+            <div className="flex items-center gap-4">
+              <a
+                href={INSTAGRAM_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Gradr on Instagram"
+                className="link-tap inline-flex text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-control"
+              >
+                <Instagram className="h-4 w-4" aria-hidden="true" />
+              </a>
+              <a
+                href={FACEBOOK_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Gradr on Facebook"
+                className="link-tap inline-flex text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-control"
+              >
+                <FacebookIcon className="h-4 w-4" />
+              </a>
+              <a
+                href={X_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Gradr on X"
+                className="link-tap inline-flex text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-control"
+              >
+                <XIcon className="h-4 w-4" />
+              </a>
+              <a
+                href={YOUTUBE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Gradr on YouTube"
+                className="link-tap inline-flex text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-control"
+              >
+                <YouTubeIcon className="h-4 w-4" />
+              </a>
+              <a
+                href={DISCORD_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Gradr on Discord"
+                className="link-tap inline-flex text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-control"
+              >
+                <DiscordIcon className="h-4 w-4" />
+              </a>
+            </div>
           </div>
 
           {FOOTER.map((col) => (

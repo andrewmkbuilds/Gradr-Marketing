@@ -4,11 +4,19 @@ import { useMobileMenu } from "@/hooks/useMobileMenu";
 import { ArrowRight, Instagram, Menu, X } from "lucide-react";
 import { DiscordIcon } from "@/components/icons/DiscordIcon";
 import { FacebookIcon } from "@/components/icons/FacebookIcon";
+import { XIcon } from "@/components/icons/XIcon";
+import { YouTubeIcon } from "@/components/icons/YouTubeIcon";
 import { BrandLogo } from "@/components/BrandLogo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { trackSignupCta } from "@/lib/telemetry/events";
 import { LEGAL_PAGES } from "@/content/legal";
-import { DISCORD_URL, FACEBOOK_URL, INSTAGRAM_URL } from "@/config/social";
+import {
+  DISCORD_URL,
+  FACEBOOK_URL,
+  INSTAGRAM_URL,
+  X_URL,
+  YOUTUBE_URL,
+} from "@/config/social";
 import { urlFor } from "@/config/domains";
 import { buttonVariants } from "@/design-system/gradr-9b9b95/gradr/components/button";
 import { cn } from "@/lib/utils";
@@ -208,6 +216,26 @@ export function PublicShell({ children, source }: PublicShellProps) {
             >
               <FacebookIcon className="h-4 w-4" />
               Facebook
+            </a>
+            <a
+              href={X_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Gradr on X"
+              className="link-tap inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
+            >
+              <XIcon className="h-4 w-4" />
+              X
+            </a>
+            <a
+              href={YOUTUBE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Gradr on YouTube"
+              className="link-tap inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
+            >
+              <YouTubeIcon className="h-4 w-4" />
+              YouTube
             </a>
             <a
               href={DISCORD_URL}
