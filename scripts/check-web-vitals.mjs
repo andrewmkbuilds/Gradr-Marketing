@@ -45,19 +45,22 @@ try {
     const samples = { lcp: [], cls: [], tbt: [] };
 
     for (let run = 0; run < RUNS; run += 1) {
-      const context = await browser.newContext({
-        viewport: { width: 1280, height: 900 },
-        // Consent is pre-seeded: the cookie banner is a layout shift users only
-        // ever see once, and it would otherwise dominate CLS on every run.
-        storageState: {
-          cookies: [],
-          origins: [
-            {
-              origin: BASE,
-              localStorage: [{ name: "gradr-cookie-consent", value: "accepted" }],
-            },
-          ],
-        },
+      const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+      // Consent is pre-seeded: the cookie banner is a fixed overlay users only
+      // ever see once, and it would otherwise dominate CLS on every run.
+      await context.addInitScript(() => {
+        try {
+          window.localStorage.setItem(
+            "gradr-cookie-consent",
+            JSON.stringify({
+              version: 1,
+              decidedAt: new Date().toISOString(),
+              choices: { analytics: false, marketing: false, functional: false },
+            }),
+          );
+        } catch {
+          /* storage unavailable — the banner shift will be included */
+        }
       });
       const page = await context.newPage();
       await page.addInitScript(collector);
