@@ -17,24 +17,10 @@
  *   VOICE_E2E_EMAIL=... VOICE_E2E_PASSWORD=... node scripts/voice-e2e.mjs [baseUrl]
  */
 import { chromium } from "playwright";
+import { findChromium } from "./lib/browser.mjs";
 import { existsSync, readdirSync } from "fs";
 import { join } from "path";
 
-function findChromium() {
-  for (const envPath of [process.env.PLAYWRIGHT_CHROMIUM_PATH, process.env.CHROME_PATH]) {
-    if (envPath && existsSync(envPath)) return envPath;
-  }
-  for (const root of ["/opt/ms-playwright", join(process.env.HOME ?? "", ".cache/ms-playwright")]) {
-    if (!existsSync(root)) continue;
-    for (const dir of readdirSync(root).filter((d) => d.startsWith("chromium"))) {
-      for (const rel of ["chrome-linux/chrome", "chrome-linux/headless_shell", "chrome-linux64/chrome-headless-shell"]) {
-        const candidate = join(root, dir, rel);
-        if (existsSync(candidate)) return candidate;
-      }
-    }
-  }
-  return undefined;
-}
 
 async function launchBrowser() {
   const args = ["--autoplay-policy=no-user-gesture-required", "--use-fake-ui-for-media-stream"];
