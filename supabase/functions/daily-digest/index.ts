@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import type { SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -66,7 +67,7 @@ function buildPreview(jobs: DigestJob[], reminders: DigestReminder[]) {
   };
 }
 
-async function buildDigestForUser(supabase: any, userId: string) {
+async function buildDigestForUser(supabase: SupabaseClient, userId: string) {
   const now = new Date().toISOString();
   const [jobsRes, remindersRes] = await Promise.all([
     supabase

@@ -111,8 +111,13 @@ try {
 
     // --- 2. Retired product paths -------------------------------------------
     for (const path of RETIRED_PRODUCT_PATHS) {
-      await page.goto(`${origin}${path}`, { waitUntil: "domcontentloaded" });
-      await page.waitForTimeout(700);
+      // A retired path may hand the visitor off mid-navigation, which surfaces
+      // as ERR_ABORTED: that is the behaviour under test, not a failure.
+      await page.goto(`${origin}${path}`, { waitUntil: "domcontentloaded" }).catch((err) => {
+        if (!/ERR_ABORTED/.test(String(err))) throw err;
+      });
+      await page.waitForLoadState("load").catch(() => {});
+      await page.waitForTimeout(1200);
       const url = page.url();
       const handedOff =
         url.startsWith(APP_ORIGIN) || (await page.locator(`[data-${APP_STUB_MARKER}]`).count()) > 0;

@@ -60,7 +60,8 @@ export function useScheduledInterviews() {
       if (error) {
         let detail = error.message;
         try {
-          const parsed = await (error as any)?.context?.json?.();
+          const parsed = await (error as { context?: { json?: () => Promise<{ error?: string }> } })
+            ?.context?.json?.();
           detail = parsed?.error ?? detail;
         } catch {
           /* body unavailable */

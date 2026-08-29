@@ -275,7 +275,7 @@ export function createParticleScroll(
         sourceCtx!.drawElementImage!(content, 0, 0);
         contentDirty = true;
         wake();
-      } catch {}
+      } catch { /* non-fatal */ }
     };
   }
 

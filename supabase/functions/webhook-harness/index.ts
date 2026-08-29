@@ -177,8 +177,7 @@ Deno.serve(async (req) => {
       const ageSeconds = Math.abs(Math.floor(Date.now() / 1000) - Number(suppliedTs));
       const fresh = Number.isFinite(ageSeconds) && ageSeconds <= 300;
 
-      // deno-lint-ignore no-explicit-any
-      const parsed: any = JSON.parse(raw || "{}");
+      const parsed: Record<string, unknown> = JSON.parse(raw || "{}");
       await logWebhookDelivery({
         provider,
         environment: env,

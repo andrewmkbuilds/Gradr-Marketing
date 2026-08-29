@@ -46,8 +46,7 @@ Deno.serve(async (req) => {
   try {
     const body = await req.json().catch(() => ({}));
     // Accept both the browser `report-uri` shape and our client summary shape.
-    // deno-lint-ignore no-explicit-any
-    const list: any[] = Array.isArray(body)
+    const list: Record<string, unknown>[] = Array.isArray(body)
       ? body.map((r) => r.body ?? r)
       : [body["csp-report"] ?? body];
 

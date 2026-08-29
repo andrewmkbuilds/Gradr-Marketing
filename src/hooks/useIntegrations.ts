@@ -77,7 +77,7 @@ export function integrationCatalog(): IntegrationMeta[] {
   ];
 }
 
-const table = () => (supabase as any).from("user_integrations");
+const table = () => supabase.from("user_integrations");
 
 export function useIntegrations() {
   const { user } = useAuth();
@@ -101,10 +101,11 @@ export function useIntegrations() {
     setPermissionDenied(false);
     const next: Record<string, IntegrationState> = {};
     for (const row of data || []) {
-      next[row.provider] = {
-        provider: row.provider,
+      const provider = row.provider as IntegrationId;
+      next[provider] = {
+        provider,
         enabled: row.enabled,
-        status: row.status,
+        status: row.status as IntegrationState["status"],
         lastSyncedAt: row.last_synced_at,
         lastError: row.last_error,
       };

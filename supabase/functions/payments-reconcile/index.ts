@@ -42,8 +42,21 @@ function isEntitled(status: string, periodEnd: string | null): boolean {
   return false;
 }
 
-// deno-lint-ignore no-explicit-any
-function externalPriceId(sub: any): string | undefined {
+/** Subset of the Paddle subscriptions API response this job reconciles against. */
+type PaddleRemoteSubscription = {
+  id?: string;
+  status?: string;
+  current_billing_period?: { ends_at?: string } | null;
+  scheduled_change?: { action?: string; effective_at?: string } | null;
+  items?: {
+    price?: {
+      import_meta?: { external_id?: string } | null;
+      importMeta?: { externalId?: string } | null;
+    } | null;
+  }[];
+};
+
+function externalPriceId(sub: PaddleRemoteSubscription): string | undefined {
   const item = sub?.items?.[0];
   return item?.price?.import_meta?.external_id ?? item?.price?.importMeta?.externalId ?? undefined;
 }
@@ -82,8 +95,7 @@ Deno.serve(async (req) => {
       return json({ error: `Paddle API error ${res.status}` }, 502);
     }
     const payload = await res.json();
-    // deno-lint-ignore no-explicit-any
-    const remote: any[] = payload?.data ?? [];
+    const remote: PaddleRemoteSubscription[] = payload?.data ?? [];
 
     const repaired: { subscription_id: string; field: string; from: unknown; to: unknown }[] = [];
 

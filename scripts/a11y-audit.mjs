@@ -91,7 +91,16 @@ try {
       }, theme);
 
       for (const route of ROUTES) {
-        await page.goto(`${BASE}${route}`, { waitUntil: "domcontentloaded" });
+        try {
+          await page.goto(`${BASE}${route}`, { waitUntil: "domcontentloaded" });
+        } catch (error) {
+          // A hand-off route can interrupt its own navigation; that is not an
+          // accessibility failure, so skip it instead of crashing the audit.
+          if (!/interrupted by another navigation|ERR_ABORTED/.test(String(error))) throw error;
+          console.log(`· skipped ${route} (${"" + theme}) — handed off during load`);
+          continue;
+        }
+        await page.waitForLoadState("load").catch(() => {});
         await page.waitForTimeout(1800);
         // Routes that hand off to the app surface navigate away mid-scan,
         // destroying the execution context — retry once, then skip the route

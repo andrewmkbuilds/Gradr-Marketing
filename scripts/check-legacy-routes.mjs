@@ -151,7 +151,8 @@ try {
       const label = `[${mode}] ${path}`;
       await page.goto(`${origin}${path}`, { waitUntil: "domcontentloaded" });
       // The hand-off is a client-side location.replace on first paint.
-      await page.waitForTimeout(900);
+      await page.waitForLoadState("load").catch(() => {});
+      await page.waitForTimeout(1200);
       const landed = page.url();
 
       if (production) {

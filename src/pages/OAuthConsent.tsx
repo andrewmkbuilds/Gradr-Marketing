@@ -6,17 +6,33 @@ import { AuthLayout } from "@/components/AuthLayout";
 import { Shield, CheckCircle2 } from "lucide-react";
 
 // Beta namespace typing shim
+type OAuthClient = {
+  name?: string;
+  client_name?: string;
+  logo_uri?: string;
+  client_uri?: string;
+  redirect_uris?: string[];
+};
+type OAuthAuthorization = {
+  client?: OAuthClient;
+  scopes?: string[];
+  redirect_url?: string;
+  redirect_to?: string;
+  redirect_uri?: string;
+};
+type OAuthError = { message?: string } | null;
+type OAuthResult = Promise<{ data: OAuthAuthorization | null; error: OAuthError }>;
 type OAuthApi = {
-  getAuthorizationDetails: (id: string) => Promise<{ data: any; error: any }>;
-  approveAuthorization: (id: string) => Promise<{ data: any; error: any }>;
-  denyAuthorization: (id: string) => Promise<{ data: any; error: any }>;
+  getAuthorizationDetails: (id: string) => OAuthResult;
+  approveAuthorization: (id: string) => OAuthResult;
+  denyAuthorization: (id: string) => OAuthResult;
 };
 const oauth = (supabase.auth as unknown as { oauth: OAuthApi }).oauth;
 
 export default function OAuthConsent() {
   const [params] = useSearchParams();
   const authorizationId = params.get("authorization_id") ?? "";
-  const [details, setDetails] = useState<any>(null);
+  const [details, setDetails] = useState<OAuthAuthorization | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 

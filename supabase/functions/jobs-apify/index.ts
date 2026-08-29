@@ -83,7 +83,7 @@ function dedupeKey(title: string, company: string | null, location: string | nul
     .trim();
 }
 
-function normalize(source: string, item: Record<string, any>): NormalizedJob | null {
+function normalize(source: string, item: Record<string, unknown>): NormalizedJob | null {
   const title = clean(item.title || item.positionName || item.jobTitle, 200);
   const url = clean(item.url || item.jobUrl || item.link || item.externalApplyLink, 800);
   if (!title || !url) return null;
@@ -168,7 +168,7 @@ serve(async (req) => {
 
     const results = await Promise.allSettled(
       sources.map(async (source) => {
-        const items = await gatewayJson<Record<string, any>[]>(
+        const items = await gatewayJson<Record<string, unknown>[]>(
           "apify",
           KEY,
           `/acts/${ACTORS[source]}/run-sync-get-dataset-items?timeout=120&limit=${limit}`,

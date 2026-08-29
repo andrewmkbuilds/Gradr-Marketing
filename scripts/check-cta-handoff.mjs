@@ -62,6 +62,11 @@ async function run() {
       route.fulfill({ status: 200, contentType: "text/html", body: "<html><body>app</body></html>" }),
     );
     await page.goto(BASE + "/", { waitUntil: "domcontentloaded" });
+    // Reveal/animation wrappers mount their children after hydration, so a
+    // locator resolved at domcontentloaded can detach mid-action. Let the
+    // landing page settle before touching a CTA.
+    await page.waitForLoadState("load").catch(() => {});
+    await page.waitForTimeout(1500);
     // Auth CTAs are anchors (so they can be opened in a new tab); feature CTAs
     // are still buttons. Accept either role.
     const link = page.getByRole("link", { name: cta.name, exact: true }).first();
@@ -73,8 +78,25 @@ async function run() {
       await page.close();
       continue;
     }
-    await button.scrollIntoViewIfNeeded();
-    await button.click();
+    // One retry absorbs a re-render that detaches the node between actions.
+    let clicked = false;
+    for (let attempt = 0; attempt < 2 && !clicked; attempt += 1) {
+      try {
+        await button.scrollIntoViewIfNeeded({ timeout: 5000 });
+        await button.click({ timeout: 5000 });
+        clicked = true;
+      } catch (err) {
+        if (attempt === 1) {
+          failures.push(`"${cta.name}" could not be clicked: ${String(err).split("\n")[0]}`);
+        } else {
+          await page.waitForTimeout(1000);
+        }
+      }
+    }
+    if (!clicked) {
+      await page.close();
+      continue;
+    }
     await page.waitForURL(/app\.gradr\.me/, { timeout: 8000 }).catch(() => {});
     const url = page.url();
     if (!url.startsWith(APP_AUTH)) {

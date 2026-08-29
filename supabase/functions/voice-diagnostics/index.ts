@@ -262,8 +262,8 @@ serve(async (req) => {
   return json({
     credential: "present",
     synthesis: subscription.ok ? "ok" : "failing",
-    code: subscription.ok ? null : (subscription as any).code ?? "VOICE_UNAVAILABLE",
-    reason: subscription.ok ? null : (subscription as any).reason ?? "PROVIDER_UNKNOWN",
+    code: subscription.ok ? null : (subscription as { code?: string }).code ?? "VOICE_UNAVAILABLE",
+    reason: subscription.ok ? null : (subscription as { reason?: string }).reason ?? "PROVIDER_UNKNOWN",
     subscription: subscription.ok ? subscription : null,
     config,
     personas: Object.entries(VOICE_PROFILES).map(([id, p]) => ({ id, defaultVoiceId: p.voiceId })),

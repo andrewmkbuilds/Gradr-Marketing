@@ -8,7 +8,8 @@
  *
  * Checks per run:
  *  1. The hero stage and every DepthStage render with a resolved depth level.
- *  2. Spatial cards exist on the pricing page and carry a depth level.
+ *  2. Spatial cards exist on the landing page and carry a depth level.
+ *     (/pricing is a hand-off to app.gradr.me on this surface, so it has none.)
  *  3. Reduced motion resolves `html[data-depth]` to "off" and removes all
  *     pointer 3D transforms.
  *  4. Client-side navigation between routes never leaves a blank viewport
@@ -21,7 +22,7 @@ import { launchBrowser } from "./lib/browser.mjs";
 const BASE = (process.argv[2] ?? process.env.SMOKE_BASE_URL ?? "http://localhost:8080").replace(/\/$/, "");
 const IGNORED_CONSOLE =
   /favicon|net::ERR_|Failed to load resource|^Warning:|React Router Future Flag|Download the React DevTools/i;
-const ROUTES = ["/landing", "/pricing", "/ats-resume-checker", "/career-advice", "/job-search", "/auth"];
+const ROUTES = ["/landing", "/ats-resume-checker", "/career-advice", "/job-search", "/auth"];
 
 const results = [];
 function record(name, ok, detail = "") {
@@ -56,7 +57,10 @@ async function main() {
   });
 
   await page.goto(`${BASE}/landing`, { waitUntil: "domcontentloaded" });
-  await page.waitForTimeout(1500);
+  // The homepage may canonicalise /landing → /; let that settle so the
+  // evaluations below do not race a destroyed execution context.
+  await page.waitForLoadState("load").catch(() => {});
+  await page.waitForTimeout(2000);
 
   const depthAttr = await page.evaluate(() => document.documentElement.dataset.depth ?? "");
   record("depth manager resolves a level", ["off", "lite", "full"].includes(depthAttr), `data-depth="${depthAttr}"`);
@@ -76,10 +80,8 @@ async function main() {
   }
   record("hero survives pointer parallax", (await visibleText(page)) > 400 && errors.length === 0, errors[0] ?? "");
 
-  await page.goto(`${BASE}/pricing`, { waitUntil: "domcontentloaded" });
-  await page.waitForTimeout(1200);
   const cards = await page.locator('[data-spatial="card"]').count();
-  record("pricing cards use depth primitives", cards >= 3, `${cards} spatial card(s)`);
+  record("landing cards use depth primitives", cards >= 3, `${cards} spatial card(s)`);
 
   /* ------------------- 2. route transitions never go blank ------------------- */
   for (const route of ROUTES) {
