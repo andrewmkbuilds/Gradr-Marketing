@@ -17,8 +17,9 @@
  * Exit code 0 = all viewports pass, 1 = clipping or missing text detected.
  */
 import { chromium, firefox, webkit } from "playwright";
-import { mkdirSync, existsSync, readdirSync } from "fs";
+import { mkdirSync } from "fs";
 import { join } from "path";
+import { findChromium } from "./lib/browser.mjs";
 
 const BASE = (process.argv[2] ?? process.env.SMOKE_BASE_URL ?? "http://localhost:8080").replace(/\/$/, "");
 const OUT_DIR = process.env.AUTH_HERO_OUT ?? "artifacts/auth-hero";
