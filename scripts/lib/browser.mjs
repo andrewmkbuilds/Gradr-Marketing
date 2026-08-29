@@ -12,6 +12,15 @@ export function findChromium() {
   for (const envPath of [process.env.PLAYWRIGHT_CHROMIUM_PATH, process.env.CHROME_PATH]) {
     if (envPath && existsSync(envPath)) return envPath;
   }
+  // Nix-based dev sandboxes ship a self-contained Chromium; prefer it, because
+  // the downloaded build there fails on missing system libraries. CI images
+  // have no /nix/store, so this is a no-op for GitHub Actions.
+  if (existsSync("/nix/store")) {
+    for (const dir of readdirSync("/nix/store").filter((d) => d.endsWith("-playwright-chromium"))) {
+      const candidate = join("/nix/store", dir, "chrome-linux/chrome");
+      if (existsSync(candidate)) return candidate;
+    }
+  }
   for (const root of ["/opt/ms-playwright", join(process.env.HOME ?? "", ".cache/ms-playwright")]) {
     if (!existsSync(root)) continue;
     for (const dir of readdirSync(root).filter((d) => d.startsWith("chromium"))) {
