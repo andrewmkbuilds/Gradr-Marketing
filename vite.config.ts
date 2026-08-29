@@ -64,6 +64,7 @@ export default defineConfig(({ mode }) => ({
         },
         telemetry: false,
       }),
+    dropSourcemaps(path.resolve(__dirname, "dist")),
   ].filter(Boolean),
   build: {
     // "hidden" emits maps without a sourceMappingURL comment: Sentry can
