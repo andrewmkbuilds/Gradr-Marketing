@@ -1,11 +1,12 @@
 import { appHref, appLoginHref, appSignupHref } from "@/lib/appLinks";
 import { Link, useLocation } from "react-router-dom";
 import { useMobileMenu } from "@/hooks/useMobileMenu";
-import { ArrowRight, Menu, X } from "lucide-react";
+import { ArrowRight, Instagram, Menu, X } from "lucide-react";
 import { BrandLogo } from "@/components/BrandLogo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { trackSignupCta } from "@/lib/telemetry/events";
 import { LEGAL_PAGES } from "@/content/legal";
+import { INSTAGRAM_URL } from "@/config/social";
 import { buttonVariants } from "@/design-system/gradr-9b9b95/gradr/components/button";
 import { cn } from "@/lib/utils";
 
@@ -155,6 +156,16 @@ export function PublicShell({ children, source }: PublicShellProps) {
               The AI career command center — resumes, matching, applications and interview practice
               in one workflow.
             </p>
+            <a
+              href={INSTAGRAM_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Gradr on Instagram"
+              className="link-tap inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
+            >
+              <Instagram className="h-4 w-4" aria-hidden="true" />
+              Instagram
+            </a>
           </div>
 
           <nav aria-label="Explore" className="space-y-3 text-sm">
