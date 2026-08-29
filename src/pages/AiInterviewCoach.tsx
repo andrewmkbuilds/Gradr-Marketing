@@ -275,14 +275,14 @@ export default function AiInterviewCoach() {
       </section>
 
       <section className="section-gap" aria-labelledby="scoring">
-        <h2 id="scoring" className="flex items-center gap-2 text-2xl font-semibold tracking-tight text-foreground">
+        <Text as="h2" variant="h3" id="scoring" className="flex items-center gap-2 tracking-tight">
           <Bot className="h-5 w-5 text-primary" aria-hidden="true" />
           How answers are scored
-        </h2>
-        <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
+        </Text>
+        <Text variant="body-sm" tone="muted" className="mt-2 max-w-2xl">
           Nothing is a black box. Each dimension is weighted, reported separately, and traced
           back to the signals that produced it.
-        </p>
+        </Text>
         <div className="mt-6 overflow-x-auto">
           <table className="w-full min-w-[640px] text-sm">
             <caption className="sr-only">
