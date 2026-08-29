@@ -118,6 +118,10 @@ try {
         await page.waitForLoadState("load");
         await settle();
       }
+      // The brand mark swaps to its dark-theme asset after hydration; that
+      // second image load must finish or the capture races the swap.
+      await page.waitForLoadState("networkidle").catch(() => undefined);
+      await settle().catch(() => undefined);
       await page.waitForTimeout(2500);
 
       // Only the chrome regions are captured. Marks inside animated hero art
