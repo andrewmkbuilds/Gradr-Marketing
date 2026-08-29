@@ -251,6 +251,16 @@ export function SurfaceShell({ nav = [], eyebrow, children }: SurfaceShellProps)
               <YouTubeIcon className="h-3.5 w-3.5" />
               YouTube
             </a>
+            <a
+              href={DISCORD_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Gradr on Discord"
+              className="link-tap inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+            >
+              <DiscordIcon className="h-3.5 w-3.5" />
+              Discord
+            </a>
             <span className="text-xs text-muted-foreground">
               © {new Date().getFullYear()} Gradr
             </span>
