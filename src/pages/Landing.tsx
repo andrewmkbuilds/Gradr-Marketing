@@ -27,6 +27,18 @@ import { useMobileMenu } from "@/hooks/useMobileMenu";
 import { useAuth } from "@/hooks/useAuth";
 import { NewsletterSignup } from "@/components/marketing/NewsletterSignup";
 import { BrandLogo } from "@/components/BrandLogo";
+import { Instagram } from "lucide-react";
+import { FacebookIcon } from "@/components/icons/FacebookIcon";
+import { XIcon } from "@/components/icons/XIcon";
+import { YouTubeIcon } from "@/components/icons/YouTubeIcon";
+import { DiscordIcon } from "@/components/icons/DiscordIcon";
+import {
+  INSTAGRAM_URL,
+  X_URL,
+  FACEBOOK_URL,
+  YOUTUBE_URL,
+  DISCORD_URL,
+} from "@/config/social";
 import { Reveal } from "@/components/landing/Reveal";
 import { LandingScrollProgress } from "@/components/landing/LandingScrollProgress";
 import { motion, useScroll, useTransform } from "motion/react";
