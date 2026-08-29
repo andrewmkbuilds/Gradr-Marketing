@@ -213,7 +213,7 @@ export default function AtsResumeChecker() {
                 </h3>
               </div>
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{step.body}</p>
-            </div>
+            </Card>
           ))}
         </div>
       </section>
