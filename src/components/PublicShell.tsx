@@ -74,7 +74,7 @@ export function PublicShell({ children, source }: PublicShellProps) {
             Gradr
           </Link>
 
-          <nav aria-label="Primary" className="hidden items-center gap-1 md:flex">
+          <nav aria-label="Primary" className="hidden items-center gap-1 lg:flex">
             {NAV.map((item) => (
               <Link
                 key={item.to}
