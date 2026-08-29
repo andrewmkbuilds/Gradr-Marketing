@@ -163,14 +163,14 @@ export default function AtsResumeChecker() {
         <p className="text-xs font-medium uppercase tracking-wider text-primary">
           Free tool · Resume Intelligence
         </p>
-        <h1 className="mt-3 text-balance text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
+        <Text variant="h1" as="h1" className="mt-3">
           ATS Resume Checker
-        </h1>
-        <p className="mt-5 text-pretty text-lg leading-relaxed text-muted-foreground">
+        </Text>
+        <Text variant="lead" className="mt-5">
           Score your resume against any job description in under a minute. Gradr reads your
           file the way an Applicant Tracking System does, shows the keywords you're missing,
           and rewrites the weak lines — so a parser never buries your application again.
-        </p>
+        </Text>
         <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <a
             href={ctaHref(appSignupHref(), "hero_primary")}
@@ -200,9 +200,9 @@ export default function AtsResumeChecker() {
         </h2>
         <div className="mt-6 grid gap-4 sm:grid-cols-2">
           {STEPS.map((step, i) => (
-            <div
+            <Card
               key={step.title}
-              className="rounded-2xl border border-border/70 bg-card/60 p-5 backdrop-blur transition-colors hover:border-primary/40"
+              className="bg-card/60 backdrop-blur transition-colors hover:border-primary/40"
             >
               <div className="flex items-center gap-3">
                 <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
