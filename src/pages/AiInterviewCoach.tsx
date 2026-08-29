@@ -220,7 +220,7 @@ export default function AiInterviewCoach() {
         <Text variant="overline" tone="primary">
           Live voice practice · Interview Engine
         </Text>
-        <Text as="h1" variant="h1" className="mt-3 text-balance">
+        <Text as="h1" variant="h1" className="mt-3">
           AI Interview Coach
         </Text>
         <p className="mt-5 text-pretty text-lg leading-relaxed text-muted-foreground">
@@ -252,7 +252,7 @@ export default function AiInterviewCoach() {
       </section>
 
       <section className="section-gap" aria-labelledby="how-it-works">
-        <Text as="h2" variant="h3" id="how-it-works" className="tracking-tight">
+        <Text as="h2" variant="h3" id="how-it-works">
           How the AI interview coach works
         </Text>
         <ol className="mt-6 grid gap-4 sm:grid-cols-2">
@@ -275,7 +275,7 @@ export default function AiInterviewCoach() {
       </section>
 
       <section className="section-gap" aria-labelledby="scoring">
-        <Text as="h2" variant="h3" id="scoring" className="flex items-center gap-2 tracking-tight">
+        <Text as="h2" variant="h3" id="scoring" className="flex items-center gap-2">
           <Bot className="h-5 w-5 text-primary" aria-hidden="true" />
           How answers are scored
         </Text>
