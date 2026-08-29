@@ -374,7 +374,7 @@ export async function sendTransactionalEmailDetailed(params: {
   while (attempts < maxAttempts) {
     attempts++
     try {
-      await send()
+      await send(attempts)
       lastError = null
       break
     } catch (error) {
