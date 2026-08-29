@@ -262,11 +262,13 @@ export default function AiInterviewCoach() {
                 <span className="flex h-9 w-9 items-center justify-center rounded-control bg-primary/10 text-primary">
                   <step.icon className="h-4.5 w-4.5" aria-hidden="true" />
                 </span>
-                <h3 className="font-medium text-foreground">
+                <Text as="h3" variant="h6">
                   <span className="text-muted-foreground">{i + 1}.</span> {step.name}
-                </h3>
+                </Text>
               </div>
-              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{step.text}</p>
+              <Text variant="body-sm" tone="muted" className="mt-3">
+                {step.text}
+              </Text>
             </li>
           ))}
         </ol>
