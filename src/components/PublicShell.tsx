@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { useMobileMenu } from "@/hooks/useMobileMenu";
 import { ArrowRight, Instagram, Menu, X } from "lucide-react";
 import { DiscordIcon } from "@/components/icons/DiscordIcon";
+import { FacebookIcon } from "@/components/icons/FacebookIcon";
 import { BrandLogo } from "@/components/BrandLogo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { trackSignupCta } from "@/lib/telemetry/events";

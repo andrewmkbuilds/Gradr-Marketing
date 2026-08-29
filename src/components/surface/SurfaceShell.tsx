@@ -7,6 +7,7 @@ import { type Surface, urlFor } from "@/config/domains";
 import { appLoginHref, appSignupHref } from "@/lib/appLinks";
 import { DISCORD_URL, INSTAGRAM_URL } from "@/config/social";
 import { DiscordIcon } from "@/components/icons/DiscordIcon";
+import { FacebookIcon } from "@/components/icons/FacebookIcon";
 import { CrossLink, SLink, useSurface, useSurfacePath } from "@/components/surface/SurfaceLink";
 import { useMobileMenu } from "@/hooks/useMobileMenu";
 
