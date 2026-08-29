@@ -213,6 +213,16 @@ export function SurfaceShell({ nav = [], eyebrow, children }: SurfaceShellProps)
               Instagram
             </a>
             <a
+              href={FACEBOOK_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Gradr on Facebook"
+              className="link-tap inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+            >
+              <FacebookIcon className="h-3.5 w-3.5" />
+              Facebook
+            </a>
+            <a
               href={DISCORD_URL}
               target="_blank"
               rel="noopener noreferrer"

@@ -199,6 +199,16 @@ export function PublicShell({ children, source }: PublicShellProps) {
               Instagram
             </a>
             <a
+              href={FACEBOOK_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Gradr on Facebook"
+              className="link-tap inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
+            >
+              <FacebookIcon className="h-4 w-4" />
+              Facebook
+            </a>
+            <a
               href={DISCORD_URL}
               target="_blank"
               rel="noopener noreferrer"
