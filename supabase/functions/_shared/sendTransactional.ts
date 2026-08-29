@@ -226,24 +226,31 @@ export async function sendTransactionalEmailDetailed(params: {
   const subject =
     typeof template.subject === 'function' ? template.subject(templateData) : template.subject
 
+  const sendPayload = {
+    to: recipient,
+    from: `${FROM_NAME} <noreply@${FROM_DOMAIN}>`,
+    sender_domain: SENDER_DOMAIN,
+    subject,
+    html: trackedHtml,
+    text,
+    purpose: 'transactional' as const,
+    label: templateName,
+    idempotency_key: idempotencyKey,
+    message_id: messageId,
+  }
+
+  // Managed sending owns the unsubscribe footer — a payload that sets the
+  // token itself is rejected upstream (400 missing_unsubscribe).
+  assertManagedSendPayload(sendPayload, { templateName, messageId })
+
   const send = () =>
     sendLovableEmail(
-      {
-        to: recipient,
-        from: `${FROM_NAME} <noreply@${FROM_DOMAIN}>`,
-        sender_domain: SENDER_DOMAIN,
-        subject,
-        html: trackedHtml,
-        text,
-        purpose: 'transactional',
-        label: templateName,
-        idempotency_key: idempotencyKey,
-        message_id: messageId,
-      },
+      sendPayload,
       // sendUrl is optional — when LOVABLE_SEND_URL is not set the library
       // falls back to the default Lovable API endpoint.
       { apiKey, sendUrl: Deno.env.get('LOVABLE_SEND_URL') },
     )
+
 
   let attempts = 0
   let lastError: unknown = null
