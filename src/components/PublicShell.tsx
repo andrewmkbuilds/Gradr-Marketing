@@ -2,11 +2,12 @@ import { appHref, appLoginHref, appSignupHref } from "@/lib/appLinks";
 import { Link, useLocation } from "react-router-dom";
 import { useMobileMenu } from "@/hooks/useMobileMenu";
 import { ArrowRight, Instagram, Menu, X } from "lucide-react";
+import { DiscordIcon } from "@/components/icons/DiscordIcon";
 import { BrandLogo } from "@/components/BrandLogo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { trackSignupCta } from "@/lib/telemetry/events";
 import { LEGAL_PAGES } from "@/content/legal";
-import { INSTAGRAM_URL } from "@/config/social";
+import { DISCORD_URL, INSTAGRAM_URL } from "@/config/social";
 import { urlFor } from "@/config/domains";
 import { buttonVariants } from "@/design-system/gradr-9b9b95/gradr/components/button";
 import { cn } from "@/lib/utils";
@@ -196,6 +197,16 @@ export function PublicShell({ children, source }: PublicShellProps) {
             >
               <Instagram className="h-4 w-4" aria-hidden="true" />
               Instagram
+            </a>
+            <a
+              href={DISCORD_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Gradr on Discord"
+              className="link-tap inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
+            >
+              <DiscordIcon className="h-4 w-4" />
+              Discord
             </a>
           </div>
 

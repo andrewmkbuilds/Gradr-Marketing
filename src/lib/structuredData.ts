@@ -16,14 +16,14 @@ export const OG_IMAGE = `${SITE_ORIGIN}/og.png`;
 
 export type JsonLd = Record<string, unknown>;
 
-import { INSTAGRAM_URL } from "@/config/social";
+import { DISCORD_URL, INSTAGRAM_URL } from "@/config/social";
 
 const publisher = {
   "@type": "Organization",
   name: SITE_NAME,
   url: SITE_ORIGIN,
   logo: { "@type": "ImageObject", url: `${SITE_ORIGIN}/gradr-logo.png` },
-  sameAs: [INSTAGRAM_URL],
+  sameAs: [INSTAGRAM_URL, DISCORD_URL],
 };
 
 export function absoluteUrl(path: string): string {
