@@ -1,7 +1,7 @@
 import { useReducedMotionPref } from "@/hooks/useMotionPreference";
 import { useDepthCapability } from "@/hooks/useDepthCapability";
 import { motion, useMotionTemplate, useMotionValue, useSpring, useTransform } from "motion/react";
-import { useRef } from "react";
+import { forwardRef, useRef } from "react";
 import { Activity, Bot, Check, FileText, Mic, Sparkles, Target } from "lucide-react";
 import { CountUp } from "@/components/motion";
 import { springPointer, springSoft, easeOut } from "@/lib/motion/tokens";
@@ -102,7 +102,7 @@ const MATCHES = [
   { role: "Strategy Intern", company: "Meridian", score: 81 },
 ];
 
-function MatchPanel() {
+const MatchPanel = forwardRef<HTMLDivElement>(function MatchPanel(_props, ref) {
   const reduced = useReducedMotionPref();
   const entrance = (i: number) =>
     reduced
@@ -113,7 +113,7 @@ function MatchPanel() {
           transition: { ...springSoft, delay: 0.8 + i * 0.14 },
         };
   return (
-    <div className={`${cardBase} w-full`}>
+    <div ref={ref} className={`${cardBase} w-full`}>
       <span className="flex items-center gap-2 text-[11px] font-medium text-muted-foreground">
         <Target className="h-3.5 w-3.5 text-primary" aria-hidden />
         Live job matches
@@ -137,12 +137,12 @@ function MatchPanel() {
       </ul>
     </div>
   );
-}
+});
 
-function InterviewPanel() {
+const InterviewPanel = forwardRef<HTMLDivElement>(function InterviewPanel(_props, ref) {
   const caption = useEntrance({ opacity: 0, y: 6 }, { opacity: 1, y: 0 }, { delay: 1.2, duration: 0.6, ease: easeOut });
   return (
-    <div className={`${cardBase} w-full`}>
+    <div ref={ref} className={`${cardBase} w-full`}>
       <div className="flex items-center justify-between">
         <span className="flex items-center gap-2 text-[11px] font-medium text-muted-foreground">
           <Mic className="h-3.5 w-3.5 text-brand-secondary" aria-hidden />
@@ -168,7 +168,7 @@ function InterviewPanel() {
       </motion.p>
     </div>
   );
-}
+});
 
 function InsightChip() {
   return (
