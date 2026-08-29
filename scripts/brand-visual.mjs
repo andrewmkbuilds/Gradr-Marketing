@@ -95,17 +95,29 @@ try {
 
     for (const [routeName, path] of ROUTES) {
       await page.goto(`${BASE}${path}`, { waitUntil: "load" });
-      // Brand marks swap asset per theme after hydration and headers animate in,
-      // so settle the page (fonts, images decoded, animations finished) before
-      // capturing — otherwise the diff measures timing, not the brand.
-      await page.evaluate(() => document.fonts?.ready);
-      await page.evaluate(() =>
-        Promise.all(
-          Array.from(document.images)
-            .filter((img) => !img.complete)
-            .map((img) => img.decode().catch(() => undefined)),
-        ),
-      );
+      // Hydration can replace the document (route guards, surface hand-offs),
+      // which destroys the execution context mid-evaluate. That is a timing
+      // artefact, not brand drift, so settle again and retry rather than
+      // crashing the whole run.
+      const settle = async () => {
+        // Brand marks swap asset per theme after hydration and headers animate
+        // in, so settle the page (fonts, images decoded, animations finished)
+        // before capturing — otherwise the diff measures timing, not the brand.
+        await page.evaluate(() => document.fonts?.ready);
+        await page.evaluate(() =>
+          Promise.all(
+            Array.from(document.images)
+              .filter((img) => !img.complete)
+              .map((img) => img.decode().catch(() => undefined)),
+          ),
+        );
+      };
+      try {
+        await settle();
+      } catch {
+        await page.waitForLoadState("load");
+        await settle();
+      }
       await page.waitForTimeout(2500);
 
       // Only the chrome regions are captured. Marks inside animated hero art
