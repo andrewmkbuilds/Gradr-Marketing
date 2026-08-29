@@ -277,9 +277,9 @@ export function surfaceOrigin(surface: Surface, host: string = currentHost()): s
   if (pinned && surface === pinned && typeof window !== "undefined") {
     return window.location.origin;
   }
-  // In production the product and Earn surfaces always resolve to their own
-  // canonical origin, whatever host this bundle happens to be answering on.
-  if (isProduction(host) && isDedicatedSurface(surface)) return PRODUCTION_ORIGIN[surface];
+  // The product and Earn surfaces are never rendered by this bundle, on any
+  // host — they always resolve to their own canonical origin.
+  if (isDedicatedSurface(surface)) return PRODUCTION_ORIGIN[surface];
   if (!isMultiSurfaceHost(host)) return PRODUCTION_ORIGIN[surface];
   if (typeof window === "undefined") return PRODUCTION_ORIGIN[surface];
   return window.location.origin;
