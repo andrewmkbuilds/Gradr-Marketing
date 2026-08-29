@@ -386,7 +386,31 @@ export async function sendTransactionalEmailDetailed(params: {
       errorMessage: errorMsg.slice(0, 1000),
       metadata: { attempts, transient },
     })
-    return { ok: false, reason: 'send_failed', error: errorMsg, attempts, messageId, transient }
+    // Park the send so it is visible in the ops console and picked up by the
+    // dead-letter dispatcher instead of being lost after the last attempt.
+    if (!params.skipDeadLetter) {
+      await recordDeadLetter({
+        templateName,
+        recipientEmail: recipient,
+        idempotencyKey,
+        templateData,
+        messageId,
+        failureReason: 'send_failed',
+        errorMessage: errorMsg,
+        transient,
+        attempts,
+      })
+    }
+    return {
+      ok: false,
+      reason: 'send_failed',
+      error: errorMsg,
+      attempts,
+      messageId,
+      transient,
+      deadLettered: !params.skipDeadLetter,
+    }
+
   }
 
 
