@@ -12,7 +12,8 @@ import {
 } from "lucide-react";
 import { PublicShell } from "@/components/PublicShell";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { Button, Text } from "@/design-system/gradr-9b9b95";
+import { Text } from "@/design-system/gradr-9b9b95";
+import { buttonVariants } from "@/design-system/gradr-9b9b95/gradr/components/button";
 import { trackEvent, withUtm } from "@/lib/analytics";
 import {
   SITE_NAME,
@@ -337,19 +338,14 @@ export default function AiCoverLetterGenerator() {
           Paste a job description, pick your resume, and get a tailored draft you can send today.
           Free to start — no credit card.
         </Text>
-        <Button
-          asChild
-          size="lg"
-          className="mt-6 transition-transform hover:scale-[1.02] motion-reduce:transform-none"
+        <a
+          href={ctaHref(appSignupHref(), "footer_cta")}
+          onClick={trackCta("footer_cta", "/auth")}
+          className={`${buttonVariants({ size: "lg" })} mt-6 transition-transform hover:scale-[1.02] motion-reduce:transform-none`}
         >
-          <a
-            href={ctaHref(appSignupHref(), "footer_cta")}
-            onClick={trackCta("footer_cta", "/auth")}
-          >
-            Generate my cover letter
-            <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
-          </a>
-        </Button>
+          Generate my cover letter
+          <ArrowRight className="h-4 w-4" aria-hidden="true" />
+        </a>
       </section>
     </PublicShell>
   );
