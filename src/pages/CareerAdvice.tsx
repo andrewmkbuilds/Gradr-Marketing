@@ -6,7 +6,7 @@ import { MarketingHero } from "@/components/marketing/MarketingHero";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { FaqBlock } from "@/components/seo/FaqBlock";
 import { GUIDES, guidePath } from "@/content/guides";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/design-system/gradr-9b9b95";
 import { trackEvent } from "@/lib/analytics";
 import {
   buildBreadcrumbLd,

@@ -156,6 +156,9 @@ Deno.serve(async (req) => {
       templateData: (row.template_data as Record<string, unknown>) ?? {},
       maxAttempts: 2,
       skipDeadLetter: true,
+      // A failed run owns its idempotency key upstream (409 run_failed), so
+      // each redelivery generation presents a fresh derived key.
+      retryEpoch: (row.retry_count ?? 0) + 1,
     })
 
     if (result.ok || result.reason === 'recipient_suppressed') {
