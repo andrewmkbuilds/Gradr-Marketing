@@ -13,7 +13,8 @@
  *
  * It also returns queue metrics so the ops console can chart backlog health.
  *
- * Auth: service-role only.
+ * Auth: service-role JWT, or the shared `x-cron-secret` header used by the
+ * scheduler.
  */
 import { createClient } from 'npm:@supabase/supabase-js@2'
 import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors'
@@ -32,7 +33,11 @@ const json = (body: unknown, status = 200) =>
     headers: { ...corsHeaders, 'Content-Type': 'application/json' },
   })
 
-function isServiceRole(req: Request): boolean {
+function isAuthorized(req: Request): boolean {
+  const cronSecret = Deno.env.get('EMAIL_CRON_SECRET')
+  const provided = req.headers.get('x-cron-secret')
+  if (cronSecret && provided && provided === cronSecret) return true
+
   const token = (req.headers.get('Authorization') ?? '').replace(/^Bearer\s+/i, '')
   try {
     const claims = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')))
@@ -88,7 +93,7 @@ async function queueMetrics(
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders })
   if (req.method !== 'POST' && req.method !== 'GET') return json({ error: 'Method not allowed' }, 405)
-  if (!isServiceRole(req)) return json({ error: 'Forbidden' }, 403)
+  if (!isAuthorized(req)) return json({ error: 'Forbidden' }, 403)
 
   const url = Deno.env.get('SUPABASE_URL')
   const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')

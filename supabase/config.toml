@@ -14,7 +14,7 @@ project_id = "xaeyjrekewnwjujnrqgu"
   [functions.newsletter-followups]
     verify_jwt = true
   [functions.email-dead-letter-retry]
-    verify_jwt = true
+    verify_jwt = false
 
   [functions.newsletter-subscribe]
     verify_jwt = false
