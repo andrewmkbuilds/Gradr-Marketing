@@ -109,16 +109,22 @@ function ExternalSurfaceRedirect({ surface, strip }: { surface: Surface; strip: 
   const isSelf =
     typeof window !== "undefined" &&
     target === `${window.location.origin}${location.pathname}${location.search}`;
+  // Dedicated surfaces live on their own production hostname. On dev and
+  // preview hosts there is nothing to hand off to, so bouncing the visitor to
+  // production (or worse, back to this same URL) is never right — render the
+  // 404 instead. This is what previously produced the /earn reload loop.
+  const canHandOff = isProduction() && !isSelf;
   useEffect(() => {
-    if (isSelf) return;
+    if (!canHandOff) return;
     redirectToSurface(target, {
       reason: surface === "earn" ? "earn_portal" : "satellite_surface",
       from: location.pathname,
     });
-  }, [isSelf, target, surface, location.pathname]);
-  if (isSelf) return <AnimatedPage><NotFound /></AnimatedPage>;
+  }, [canHandOff, target, surface, location.pathname]);
+  if (!canHandOff) return <AnimatedPage><NotFound /></AnimatedPage>;
   return null;
 }
+
 
 /**
  * Anything product-shaped belongs to the app project. In production we always
