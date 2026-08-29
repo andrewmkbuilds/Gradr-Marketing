@@ -16,7 +16,7 @@ export const OG_IMAGE = `${SITE_ORIGIN}/og.png`;
 
 export type JsonLd = Record<string, unknown>;
 
-import { DISCORD_URL, INSTAGRAM_URL } from "@/config/social";
+import { DISCORD_URL, FACEBOOK_URL, INSTAGRAM_URL } from "@/config/social";
 
 const publisher = {
   "@type": "Organization",

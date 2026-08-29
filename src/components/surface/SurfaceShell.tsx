@@ -5,7 +5,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { cn } from "@/lib/utils";
 import { type Surface, urlFor } from "@/config/domains";
 import { appLoginHref, appSignupHref } from "@/lib/appLinks";
-import { DISCORD_URL, INSTAGRAM_URL } from "@/config/social";
+import { DISCORD_URL, FACEBOOK_URL, INSTAGRAM_URL } from "@/config/social";
 import { DiscordIcon } from "@/components/icons/DiscordIcon";
 import { FacebookIcon } from "@/components/icons/FacebookIcon";
 import { CrossLink, SLink, useSurface, useSurfacePath } from "@/components/surface/SurfaceLink";
