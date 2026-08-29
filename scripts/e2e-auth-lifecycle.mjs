@@ -238,18 +238,14 @@ try {
   // ── logout ───────────────────────────────────────────────────────────────
   await step("after sign-out the public site renders without redirecting", async () => {
     const page = await context.newPage();
-    await page.goto(`${MARKETING_ORIGIN}/`, { waitUntil: "domcontentloaded" });
-    await page.evaluate(
-      ([key, value]) => window.localStorage.setItem(key, value),
-      [STORAGE_KEY, JSON.stringify(fakeSession())],
-    );
+    await seedSession(page, fakeSession());
     // Sign-out clears the Supabase storage entry; the public site must settle.
     await page.evaluate((key) => window.localStorage.removeItem(key), STORAGE_KEY);
     const hops = [];
     page.on("framenavigated", (frame) => {
       if (frame === page.mainFrame()) hops.push(frame.url());
     });
-    await page.goto(`${MARKETING_ORIGIN}/`, { waitUntil: "domcontentloaded" });
+    await gotoTolerant(page, `${MARKETING_ORIGIN}/`);
     await page.waitForTimeout(1400);
     assert(
       !page.url().startsWith(APP_ORIGIN),
