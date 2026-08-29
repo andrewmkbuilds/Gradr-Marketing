@@ -7,8 +7,9 @@ import { Link, useNavigate } from "react-router-dom";
 import {
   ArrowRight, Check, FileText, Target, Mic, LineChart, Briefcase, Users,
   GraduationCap, Rocket, Compass, Award, Menu, X, Sparkles, ShieldCheck,
-  Layers, Bot, Search, Send, RefreshCw, BarChart3, Minus,
+  Layers, Bot, Search, Send, RefreshCw, BarChart3, Minus, Coins, Handshake,
 } from "lucide-react";
+import { urlFor } from "@/config/domains";
 import {
   ANNUAL_SAVINGS_MESSAGE,
   annualListPrice,
@@ -254,6 +255,14 @@ const FOOTER = [
     ],
   },
   {
+    title: "Earn",
+    links: [
+      // External destinations — resolved per-host via urlFor("earn", …) at render.
+      ["Earn with Gradr", "earn:/"],
+      ["Partner with Gradr", "earn:/partner"],
+    ],
+  },
+  {
     title: "Resources",
     links: [
       ["Help Center", "#faq"],
@@ -366,6 +375,10 @@ export default function Landing() {
   const login = () => goToAppAuth({ location: "navbar", authenticated: Boolean(user) }, navigate);
   const openApp = () => goToAppAuth({ location: "navbar", next: "/", authenticated: Boolean(user) }, navigate);
 
+  /** External Earn destinations — always the Earn surface, never the app. */
+  const earnHome = urlFor("earn", "/");
+  const earnPartner = urlFor("earn", "/partner");
+
 
 
 
@@ -405,7 +418,7 @@ export default function Landing() {
                     href={n.href}
                     onClick={onNavClick(n.href)}
                     aria-current={active ? "true" : undefined}
-                    className={`relative z-10 inline-flex min-h-9 items-center rounded-full px-3 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                    className={`relative z-10 inline-flex min-h-9 items-center whitespace-nowrap rounded-full px-3 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                       active ? "text-foreground" : "text-muted-foreground hover:text-foreground"
                     }`}
                   >
@@ -422,6 +435,22 @@ export default function Landing() {
                 </li>
               );
             })}
+            <li>
+              <a
+                href={earnHome}
+                className="relative z-10 inline-flex min-h-9 items-center whitespace-nowrap rounded-full px-3 text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                Earn
+              </a>
+            </li>
+            <li>
+              <a
+                href={earnPartner}
+                className="relative z-10 inline-flex min-h-9 items-center whitespace-nowrap rounded-full px-3 text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                Partner with Gradr
+              </a>
+            </li>
           </ul>
 
           <div className="hidden shrink-0 items-center gap-2 md:flex">
@@ -475,6 +504,24 @@ export default function Landing() {
                     className={`flex min-h-11 items-center rounded-lg px-2 text-sm transition-colors hover:bg-secondary/50 hover:text-foreground ${
                       activeHash === n.href ? "bg-primary/10 text-foreground" : "text-muted-foreground"
                     }`}
+                  >
+                    {n.label}
+                  </a>
+                </motion.li>
+              ))}
+              {[
+                { label: "Earn", href: earnHome },
+                { label: "Partner with Gradr", href: earnPartner },
+              ].map((n) => (
+                <motion.li
+                  key={n.label}
+                  variants={{ hidden: { opacity: 0, x: -10 }, show: { opacity: 1, x: 0 } }}
+                  transition={{ duration: 0.3, ease: easeOut }}
+                >
+                  <a
+                    href={n.href}
+                    onClick={() => setMenuOpen(false)}
+                    className="flex min-h-11 items-center rounded-lg px-2 text-sm text-muted-foreground transition-colors hover:bg-secondary/50 hover:text-foreground"
                   >
                     {n.label}
                   </a>
@@ -1128,7 +1175,7 @@ export default function Landing() {
                   tilt
                   className={`flex h-full flex-col p-6 ${
                     p.highlight
-                      ? "border-primary/40 bg-primary/[0.05] shadow-[0_20px_60px_-30px_hsl(var(--primary)/0.6)]"
+                      ? "border-primary/40 bg-primary/[0.05] shadow-float"
                       : ""
                   }`}
                 >
@@ -1219,6 +1266,60 @@ export default function Landing() {
           </div>
         </Section>
 
+        {/* --------------------------- earn & partner --------------------------- */}
+        <Section id="earn" className="border-t border-border/60">
+          <Reveal className="mx-auto max-w-2xl space-y-5 text-center">
+            <Eyebrow>Earn &amp; Partner</Eyebrow>
+            <Heading>More ways to get more from Gradr</Heading>
+            <Text variant="lead">
+              Beyond the product, Gradr runs an earning ecosystem and a partner program —
+              two distinct ways to benefit from the platform.
+            </Text>
+          </Reveal>
+
+          <div className="mx-auto mt-12 grid max-w-4xl gap-6 md:grid-cols-2">
+            <Reveal>
+              <SpotlightCard className="flex h-full flex-col rounded-card border border-border bg-card p-6 sm:p-8">
+                <div className="flex h-11 w-11 items-center justify-center rounded-card bg-primary/10 text-primary">
+                  <Coins className="h-5 w-5" aria-hidden />
+                </div>
+                <Text variant="h5" as="h3" className="mt-5">Earn with Gradr</Text>
+                <Text variant="body-sm" className="mt-2 flex-1">
+                  Gradr Earn lets you earn reward credits through Trust, Bounties and other
+                  verified opportunities — a broader ecosystem built around real career activity.
+                </Text>
+                <a
+                  href={earnHome}
+                  className={`${buttonVariants({ variant: "outline", size: "md" })} mt-6 w-full sm:w-auto`}
+                >
+                  Explore Gradr Earn
+                  <ArrowRight className="h-3.5 w-3.5" aria-hidden />
+                </a>
+              </SpotlightCard>
+            </Reveal>
+
+            <Reveal delay={80}>
+              <SpotlightCard className="flex h-full flex-col rounded-card border border-border bg-card p-6 sm:p-8">
+                <div className="flex h-11 w-11 items-center justify-center rounded-card bg-primary/10 text-primary">
+                  <Handshake className="h-5 w-5" aria-hidden />
+                </div>
+                <Text variant="h5" as="h3" className="mt-5">Partner with Gradr</Text>
+                <Text variant="body-sm" className="mt-2 flex-1">
+                  Share Gradr with your audience and potentially earn affiliate commissions from
+                  eligible referrals — with clear attribution, qualification and payout rules.
+                </Text>
+                <a
+                  href={earnPartner}
+                  className={`${buttonVariants({ variant: "outline", size: "md" })} mt-6 w-full sm:w-auto`}
+                >
+                  Become a Partner
+                  <ArrowRight className="h-3.5 w-3.5" aria-hidden />
+                </a>
+              </SpotlightCard>
+            </Reveal>
+          </div>
+        </Section>
+
         {/* -------------------------------- final CTA --------------------------- */}
         <Section className="border-t border-border/60">
           <ScrollFloat distance={56}>
@@ -1251,7 +1352,7 @@ export default function Landing() {
 
       {/* --------------------------------- footer ------------------------------ */}
       <footer className="border-t border-border bg-card/40 py-10">
-        <div className="page-shell grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_repeat(3,1fr)]">
+        <div className="page-shell grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_repeat(4,1fr)]">
           <div className="space-y-5">
             <div className="flex items-center gap-2">
               <BrandLogo size={28} />
@@ -1271,7 +1372,9 @@ export default function Landing() {
                   const linkClass =
                     "link-tap rounded text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
                   // In-app routes stay client-side; hashes and mailto links do not.
+                  // "earn:<path>" resolves to the Earn surface for the current host.
                   const internal = href.startsWith("/");
+                  const resolved = href.startsWith("earn:") ? urlFor("earn", href.slice(5)) : href;
                   return (
                     <li key={label}>
                       {internal ? (
@@ -1279,7 +1382,7 @@ export default function Landing() {
                           {label}
                         </Link>
                       ) : (
-                        <a href={href} className={linkClass}>
+                        <a href={resolved} className={linkClass}>
                           {label}
                         </a>
                       )}

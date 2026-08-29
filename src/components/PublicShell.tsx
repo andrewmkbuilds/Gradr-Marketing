@@ -7,6 +7,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { trackSignupCta } from "@/lib/telemetry/events";
 import { LEGAL_PAGES } from "@/content/legal";
 import { INSTAGRAM_URL } from "@/config/social";
+import { urlFor } from "@/config/domains";
 import { buttonVariants } from "@/design-system/gradr-9b9b95/gradr/components/button";
 import { cn } from "@/lib/utils";
 
@@ -94,6 +95,18 @@ export function PublicShell({ children, source }: PublicShellProps) {
                 )}
               </Link>
             ))}
+            <a
+              href={urlFor("earn", "/")}
+              className="rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+            >
+              Earn
+            </a>
+            <a
+              href={urlFor("earn", "/partner")}
+              className="rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+            >
+              Partner with Gradr
+            </a>
           </nav>
 
           <div className="flex items-center gap-2">
@@ -138,6 +151,24 @@ export function PublicShell({ children, source }: PublicShellProps) {
                   </Link>
                 </li>
               ))}
+              <li>
+                <a
+                  href={urlFor("earn", "/")}
+                  onClick={() => setMenuOpen(false)}
+                  className="block rounded-lg px-2 py-3 text-sm text-foreground hover:bg-muted"
+                >
+                  Earn
+                </a>
+              </li>
+              <li>
+                <a
+                  href={urlFor("earn", "/partner")}
+                  onClick={() => setMenuOpen(false)}
+                  className="block rounded-lg px-2 py-3 text-sm text-foreground hover:bg-muted"
+                >
+                  Partner with Gradr
+                </a>
+              </li>
             </ul>
           </nav>
         )}
@@ -146,7 +177,7 @@ export function PublicShell({ children, source }: PublicShellProps) {
       <main className="page-shell section-y-sm">{children}</main>
 
       <footer className="border-t border-border/60 py-10">
-        <div className="page-shell grid gap-8 sm:grid-cols-2 lg:grid-cols-5">
+        <div className="page-shell grid gap-8 sm:grid-cols-2 lg:grid-cols-6">
           <div className="space-y-3">
             <Link to="/" className="flex items-center gap-2 font-semibold text-foreground">
               <BrandLogo size={22} />
@@ -211,6 +242,28 @@ export function PublicShell({ children, source }: PublicShellProps) {
           </nav>
 
 
+
+          <nav aria-label="Earn" className="space-y-3 text-sm">
+            <p className="type-overline text-muted-foreground">Earn</p>
+            <ul className="space-y-2">
+              <li>
+                <a
+                  href={urlFor("earn", "/")}
+                  className="link-tap text-muted-foreground hover:text-foreground"
+                >
+                  Earn with Gradr
+                </a>
+              </li>
+              <li>
+                <a
+                  href={urlFor("earn", "/partner")}
+                  className="link-tap text-muted-foreground hover:text-foreground"
+                >
+                  Partner with Gradr
+                </a>
+              </li>
+            </ul>
+          </nav>
 
           <nav aria-label="Legal" className="space-y-3 text-sm">
             <p className="type-overline text-muted-foreground">Legal</p>
