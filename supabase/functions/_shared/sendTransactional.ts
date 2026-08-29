@@ -462,8 +462,12 @@ export async function sendTransactionalEmailDetailed(params: {
     },
   })
 
+  // A previously parked failure for this same logical send is now settled.
+  await resolveDeadLetter(idempotencyKey)
+
   log.info({ event: 'email_sent', templateName, recipientEmail: recipient, attempts, messageId })
   return { ok: true, attempts, messageId }
+
 }
 
 /** Boolean-returning wrapper kept for existing callers. */
