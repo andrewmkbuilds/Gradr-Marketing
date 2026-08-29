@@ -296,7 +296,17 @@ export async function sendTransactionalEmailDetailed(params: {
   const subject =
     typeof template.subject === 'function' ? template.subject(templateData) : template.subject
 
-  const sendPayload = {
+  // A managed send run that already failed is terminal for its idempotency
+  // key: re-posting the same key returns `409 run_failed` forever. Every
+  // attempt after the first therefore carries a derived key, while the base
+  // key stays the logical identity used for dead-letter bookkeeping.
+  const sendKeyFor = (attempt: number) => {
+    const epoch = params.retryEpoch ? `:r${params.retryEpoch}` : ''
+    const suffix = attempt > 1 ? `:a${attempt}` : ''
+    return `${idempotencyKey}${epoch}${suffix}`
+  }
+
+  const payloadFor = (attempt: number) => ({
     to: recipient,
     from: `${FROM_NAME} <noreply@${FROM_DOMAIN}>`,
     sender_domain: SENDER_DOMAIN,
@@ -305,15 +315,15 @@ export async function sendTransactionalEmailDetailed(params: {
     text,
     purpose: 'transactional' as const,
     label: templateName,
-    idempotency_key: idempotencyKey,
+    idempotency_key: sendKeyFor(attempt),
     message_id: messageId,
-  }
+  })
 
   // Managed sending owns the unsubscribe footer — a payload that sets the
   // token itself is rejected upstream (400 missing_unsubscribe). Fail fast and
   // loudly rather than letting the provider reject it as a delivery failure.
   try {
-    assertManagedSendPayload(sendPayload, { templateName, messageId })
+    assertManagedSendPayload(payloadFor(1), { templateName, messageId })
   } catch (err) {
     if (err instanceof ManagedSendGuardError) {
       await log.alert({
@@ -341,13 +351,14 @@ export async function sendTransactionalEmailDetailed(params: {
   }
 
 
-  const send = () =>
+  const send = (attempt: number) =>
     sendLovableEmail(
-      sendPayload,
+      payloadFor(attempt),
       // sendUrl is optional — when LOVABLE_SEND_URL is not set the library
       // falls back to the default Lovable API endpoint.
       { apiKey, sendUrl: Deno.env.get('LOVABLE_SEND_URL') },
     )
+
 
 
   let attempts = 0
