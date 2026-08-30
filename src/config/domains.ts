@@ -246,7 +246,10 @@ export function surfaceBase(surface: Surface, host: string = currentHost()): str
   // would resolve to this very URL and turn a hand-off into a reload loop.
   // On dev/preview hosts there is no separate deployment to hand off to, so the
   // usual path prefixes apply and links stay on the current origin.
-  if (isDedicatedSurface(surface) && pinnedSurface() !== surface && isProduction(host)) {
+  if (
+    pinnedSurface() !== surface &&
+    (isAlwaysExternalSurface(surface) || (isDedicatedSurface(surface) && isProduction(host)))
+  ) {
     return "";
   }
   return isMultiSurfaceHost(host) ? SURFACE_PATH_PREFIX[surface] : "";
@@ -268,6 +271,18 @@ export function isDedicatedSurface(surface: Surface): boolean {
 }
 
 /**
+ * Surfaces this bundle never renders on *any* host — not even dev or preview.
+ * The Earn portal is its own deployment at earn.gradr.me, so a "/earn" path on
+ * a preview host is a dead end; those links must always be absolute.
+ */
+export const ALWAYS_EXTERNAL_SURFACES: Surface[] = ["earn"];
+
+/** True when links to `surface` must always point at its own production origin. */
+export function isAlwaysExternalSurface(surface: Surface): boolean {
+  return ALWAYS_EXTERNAL_SURFACES.includes(surface);
+}
+
+/**
  * Origin a surface is served from on the current host.
  * Returns the real subdomain only when hosting actually serves it; otherwise
  * (dev, preview, or production-with-redirecting-subdomains) the current origin.
@@ -282,7 +297,9 @@ export function surfaceOrigin(surface: Surface, host: string = currentHost()): s
   }
   // The product and Earn surfaces are never rendered by this bundle in
   // production — they always resolve to their own canonical origin, even while
-  // the primary domain still answers for everything else.
+  // the primary domain still answers for everything else. Earn additionally has
+  // no local stand-in on dev/preview, so it resolves absolutely everywhere.
+  if (isAlwaysExternalSurface(surface)) return PRODUCTION_ORIGIN[surface];
   if (isDedicatedSurface(surface) && isProduction(host)) return PRODUCTION_ORIGIN[surface];
   if (!isMultiSurfaceHost(host)) return PRODUCTION_ORIGIN[surface];
   if (typeof window === "undefined") return PRODUCTION_ORIGIN[surface];
