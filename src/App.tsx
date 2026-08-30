@@ -109,11 +109,11 @@ function ExternalSurfaceRedirect({ surface, strip }: { surface: Surface; strip: 
   const isSelf =
     typeof window !== "undefined" &&
     target === `${window.location.origin}${location.pathname}${location.search}`;
-  // Hand off whenever the target really is another origin. Surfaces that have
-  // no separate deployment resolve back to this very URL on dev/preview hosts
+  // Hand off whenever the target really is another origin. Surfaces with no
+  // separate deployment resolve back to this very URL on dev/preview hosts
   // (isSelf), and bouncing there would reload forever — render the 404 instead.
   // This is what previously produced the /earn reload loop.
-  const canHandOff = !isSelf && (isProduction() || target.startsWith("http"));
+  const canHandOff = !isSelf;
   useEffect(() => {
     if (!canHandOff) return;
     redirectToSurface(target, {
