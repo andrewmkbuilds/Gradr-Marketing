@@ -297,7 +297,9 @@ export function surfaceOrigin(surface: Surface, host: string = currentHost()): s
   }
   // The product and Earn surfaces are never rendered by this bundle in
   // production — they always resolve to their own canonical origin, even while
-  // the primary domain still answers for everything else.
+  // the primary domain still answers for everything else. Earn additionally has
+  // no local stand-in on dev/preview, so it resolves absolutely everywhere.
+  if (isAlwaysExternalSurface(surface)) return PRODUCTION_ORIGIN[surface];
   if (isDedicatedSurface(surface) && isProduction(host)) return PRODUCTION_ORIGIN[surface];
   if (!isMultiSurfaceHost(host)) return PRODUCTION_ORIGIN[surface];
   if (typeof window === "undefined") return PRODUCTION_ORIGIN[surface];
