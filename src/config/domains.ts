@@ -246,7 +246,10 @@ export function surfaceBase(surface: Surface, host: string = currentHost()): str
   // would resolve to this very URL and turn a hand-off into a reload loop.
   // On dev/preview hosts there is no separate deployment to hand off to, so the
   // usual path prefixes apply and links stay on the current origin.
-  if (isDedicatedSurface(surface) && pinnedSurface() !== surface && isProduction(host)) {
+  if (
+    pinnedSurface() !== surface &&
+    (isAlwaysExternalSurface(surface) || (isDedicatedSurface(surface) && isProduction(host)))
+  ) {
     return "";
   }
   return isMultiSurfaceHost(host) ? SURFACE_PATH_PREFIX[surface] : "";
