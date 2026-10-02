@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /**
  * Marketing host isolation gate.
+ * Link audits use locator.evaluateAll so navigation-safe snapshots always collect all anchors.
  *
  * For every hostname this bundle serves publicly, two invariants must hold:
  *
