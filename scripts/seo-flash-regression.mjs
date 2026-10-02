@@ -63,7 +63,7 @@ async function main() {
         try {
           await page.reload({ waitUntil: "commit", timeout: 30_000 });
         } catch (error) {
-          if (!/detached|closed|interrupted|ERR_ABORTED|Target page/i.test(String(error))) throw error;
+          if (!/detached|Not attached|Protocol error.*Page\.reload|closed|interrupted|ERR_ABORTED|Target page/i.test(String(error))) throw error;
           await page.goto(url, { waitUntil: "commit", timeout: 30_000 });
         }
       });
