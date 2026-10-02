@@ -17,7 +17,7 @@ import {
   formatUsd,
   planPriceLabel,
 } from "@/config/pricing";
-import { Button, Card, Text } from "@/design-system/gradr-9b9b95";
+import { Button, Text } from "@/design-system/gradr-9b9b95";
 import { buttonVariants } from "@/design-system/gradr-9b9b95/gradr/components/button";
 
 import {
@@ -1035,14 +1035,14 @@ export default function Landing() {
               </Reveal>
             ))}
             <Reveal delay={250}>
-              <Card variant="outline" padding="lg" className="flex h-full flex-col justify-center">
+              <SpotlightCard className="flex h-full flex-col justify-center p-lg">
               <Text variant="body-sm" tone="muted">
                 Not sure where you fit? Start free — Gradr adapts to the stage you're actually at.
               </Text>
               <Button variant="outline" className="mt-4 w-full sm:w-auto" onClick={start("pricing", "Get started free")}>
                 Get started free
               </Button>
-              </Card>
+              </SpotlightCard>
             </Reveal>
           </div>
         </Section>
@@ -1083,7 +1083,7 @@ export default function Landing() {
 
           <div className="mt-10 grid gap-4 lg:grid-cols-2">
             <Reveal>
-              <Card variant="outline" padding="lg" className="h-full">
+              <SpotlightCard tilt className="h-full p-lg">
               <Text variant="overline" as="h3">The usual setup</Text>
               <ul className="mt-5 space-y-3">
                 {OLD_WAY.map((t) => (
@@ -1094,11 +1094,11 @@ export default function Landing() {
                 ))}
               </ul>
               <Text variant="caption" className="mt-5">Five tools that never talk to each other.</Text>
-              </Card>
+              </SpotlightCard>
             </Reveal>
 
             <Reveal delay={100}>
-              <Card variant="raised" padding="lg" className="border-gradient-hover shadow-3d-md h-full">
+              <SpotlightCard tilt className="h-full p-lg">
               <Text variant="overline" as="h3" tone="primary">Gradr</Text>
               <ul className="mt-5 space-y-3">
                 {NEW_WAY.map((t) => (
@@ -1109,7 +1109,7 @@ export default function Landing() {
                 ))}
               </ul>
               <Text variant="caption" className="mt-5">One connected career system.</Text>
-              </Card>
+              </SpotlightCard>
             </Reveal>
           </div>
         </Section>

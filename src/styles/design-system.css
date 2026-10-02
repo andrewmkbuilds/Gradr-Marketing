@@ -33,6 +33,10 @@
   /* Typography — mirrors the library's v4 @theme font tokens. */
   --font-display: "Bricolage Grotesque", "Geist", system-ui, sans-serif;
   --font-sans: "Geist", "Inter var", Inter, system-ui, sans-serif;
+  --text-h1: 3.5rem;
+  --text-h1--line-height: 1.05;
+  --text-h1--letter-spacing: -0.02em;
+  --text-h1--font-weight: 600;
 
   /* Shape */
   --radius-card: 1rem;
