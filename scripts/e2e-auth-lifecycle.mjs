@@ -162,9 +162,13 @@ try {
     if (opensNewTab) {
       const [popup] = await Promise.all([context.waitForEvent("page"), cta.click()]);
       landing = popup;
-      await popup.waitForLoadState("domcontentloaded");
+      await popup.waitForLoadState("domcontentloaded").catch(() => {});
     } else {
-      await Promise.all([page.waitForURL(/app\.gradr\.me/, { timeout: 10_000 }), cta.click()]);
+      // Cross-origin hand-offs can abort Playwright's navigation waiter even
+      // though the browser completed the redirect. Click without coupling the
+      // assertion to a particular navigation event, then inspect the settled URL.
+      await cta.click({ noWaitAfter: true });
+      await page.waitForTimeout(1500);
     }
     assert(
       landing.url().startsWith(APP_ORIGIN),
