@@ -53,9 +53,10 @@ async function main() {
       viewport: { width: 1280, height: 900 },
       colorScheme: scheme,
     });
-    const page = await context.newPage();
-
     for (const route of ROUTES) {
+      // Use a fresh page per route. Cross-origin hand-offs and service-worker
+      // teardown can leave a reused page in a detached navigation state.
+      const page = await context.newPage();
       const url = `${BASE}${route}`;
       await checkLoad(page, `${scheme} ${route} first load`, () =>
         page.goto(url, { waitUntil: "commit", timeout: 30_000 }));
@@ -91,6 +92,7 @@ async function main() {
         !settled.includes("not a grading, marking or test-score tool"),
         "post-boot check",
       );
+      await page.close().catch(() => {});
     }
 
     await context.close();
