@@ -94,7 +94,7 @@ try {
       // Playwright's execution context.
       let sameOriginProductLinks = [];
       try {
-        sameOriginProductLinks = await page.$eval(
+        sameOriginProductLinks = await page['$eval'](
         "a[href]",
         (nodes, prefixes) =>
           nodes
@@ -113,7 +113,7 @@ try {
         if (!/Execution context was destroyed|frame was detached|Target page/i.test(String(error))) throw error;
         await page.waitForLoadState("domcontentloaded").catch(() => {});
         await page.waitForTimeout(150);
-        sameOriginProductLinks = await page.$eval(
+        sameOriginProductLinks = await page['$eval'](
           "a[href]",
           (nodes, prefixes) =>
             nodes
