@@ -44,7 +44,15 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 8080,
-    allowedHosts: true,
+    // Keep Vite host-header validation bounded to the preview proxy when provided.
+    ...(process.env.__VITE_ADDITIONAL_SERVER_ALLOWED_HOSTS
+      ? {
+          allowedHosts: process.env.__VITE_ADDITIONAL_SERVER_ALLOWED_HOSTS
+            .split(",")
+            .map((h) => h.trim())
+            .filter(Boolean),
+        }
+      : {}),
     hmr: {
       overlay: false,
     },
