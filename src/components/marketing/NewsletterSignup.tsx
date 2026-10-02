@@ -1,9 +1,12 @@
 import { Link } from "react-router-dom";
 import { useState, type FormEvent } from "react";
 import { AlertTriangle, CheckCircle2, Loader2, Mail } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import { Button, FormField, Input, Text } from "@/design-system/gradr-9b9b95";
 import { supabase } from "@/integrations/supabase/client";
 import { surfaceOrigin } from "@/config/domains";
+import { useReducedMotionPref } from "@/hooks/useMotionPreference";
+import { springSnappy, easeOut, duration } from "@/lib/motion/tokens";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
@@ -24,6 +27,7 @@ export function NewsletterSignup({ source = "landing", topic, className }: Newsl
   const [email, setEmail] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [status, setStatus] = useState<"idle" | "submitting" | "sent" | "saved-not-sent">("idle");
+  const reduced = useReducedMotionPref();
 
   const submit = async (event: FormEvent) => {
     event.preventDefault();
@@ -54,7 +58,12 @@ export function NewsletterSignup({ source = "landing", topic, className }: Newsl
   if (status === "saved-not-sent") {
     return (
       <div className={className} role="status">
-        <div className="flex items-start gap-3 rounded-card border border-border bg-surface-muted p-6">
+        <motion.div
+          initial={reduced ? { opacity: 0 } : { opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={reduced ? { duration: duration.micro } : springSnappy}
+          className="flex items-start gap-3 rounded-card border border-border bg-surface-muted p-6"
+        >
           <AlertTriangle className="mt-1 size-5 shrink-0 text-accent" aria-hidden />
           <div className="space-y-1">
             <Text as="p" variant="h6">
@@ -72,7 +81,7 @@ export function NewsletterSignup({ source = "landing", topic, className }: Newsl
               .
             </Text>
           </div>
-        </div>
+        </motion.div>
       </div>
     );
   }
@@ -80,7 +89,12 @@ export function NewsletterSignup({ source = "landing", topic, className }: Newsl
   if (status === "sent") {
     return (
       <div className={className} role="status">
-        <div className="flex items-start gap-3 rounded-card border border-border bg-surface p-6">
+        <motion.div
+          initial={reduced ? { opacity: 0 } : { opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={reduced ? { duration: duration.micro } : springSnappy}
+          className="flex items-start gap-3 rounded-card border border-border bg-surface p-6"
+        >
           <CheckCircle2 className="mt-1 size-5 shrink-0 text-primary" aria-hidden />
           <div className="space-y-1">
             <Text as="p" variant="h6">
@@ -91,7 +105,7 @@ export function NewsletterSignup({ source = "landing", topic, className }: Newsl
               confirmed addresses to the list.
             </Text>
           </div>
-        </div>
+        </motion.div>
       </div>
     );
   }
@@ -117,13 +131,24 @@ export function NewsletterSignup({ source = "landing", topic, className }: Newsl
             />
           )}
         </FormField>
-        <Button type="submit" disabled={status === "submitting"}>
-          {status === "submitting" ? (
-            <Loader2 className="size-4 animate-spin" aria-hidden />
-          ) : (
-            <Mail className="size-4" aria-hidden />
-          )}
-          {status === "submitting" ? "Subscribing…" : "Subscribe"}
+        <Button type="submit" className="btn-glow interactive press-scale" disabled={status === "submitting"}>
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.span
+              key={status === "submitting" ? "loading" : "idle"}
+              initial={reduced ? { opacity: 0 } : { opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={reduced ? { opacity: 0 } : { opacity: 0, y: 4 }}
+              transition={reduced ? { duration: duration.micro } : { duration: duration.fast, ease: easeOut }}
+              className="inline-flex items-center gap-2"
+            >
+              {status === "submitting" ? (
+                <Loader2 className="size-4 animate-spin" aria-hidden />
+              ) : (
+                <Mail className="size-4" aria-hidden />
+              )}
+              {status === "submitting" ? "Subscribing…" : "Subscribe"}
+            </motion.span>
+          </AnimatePresence>
         </Button>
       </div>
       <Text as="p" variant="caption" tone="muted" className="mt-3">

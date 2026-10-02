@@ -182,8 +182,8 @@ export default {
         },
       },
       animation: {
-        "accordion-down": "accordion-down 0.2s ease-out",
-        "accordion-up": "accordion-up 0.2s ease-out",
+        "accordion-down": "accordion-down 0.3s cubic-bezier(0.34, 1.4, 0.64, 1)",
+        "accordion-up": "accordion-up 0.25s cubic-bezier(0.65, 0, 0.35, 1)",
         "pulse-glow": "pulse-glow 2s ease-in-out infinite",
         "slide-up": "slide-up 0.4s ease-out",
       },

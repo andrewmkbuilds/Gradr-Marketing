@@ -1154,7 +1154,7 @@ export default function Landing() {
             <div
               role="group"
               aria-label="Billing interval"
-              className="inline-flex rounded-xl border border-border bg-secondary/40 p-1"
+              className="interactive inline-flex rounded-xl border border-border bg-secondary/40 p-1"
             >
               {(["monthly", "annual"] as const).map((k) => (
                 <button
@@ -1162,11 +1162,19 @@ export default function Landing() {
                   type="button"
                   aria-pressed={billing === k}
                   onClick={() => setBilling(k)}
-                  className={`min-h-10 rounded-lg px-4 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
-                    billing === k ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+                  className={`relative min-h-10 rounded-lg px-4 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                    billing === k ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
-                  {k === "monthly" ? "Monthly" : "Yearly"}
+                  {billing === k && (
+                    <motion.span
+                      layoutId="billing-pill"
+                      aria-hidden
+                      className="absolute inset-0 rounded-lg bg-primary"
+                      transition={springSnappy}
+                    />
+                  )}
+                  <span className="relative z-10">{k === "monthly" ? "Monthly" : "Yearly"}</span>
                 </button>
               ))}
             </div>
