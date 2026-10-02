@@ -14,6 +14,7 @@ import { useReadTracking } from "@/hooks/useReadTracking";
 import NotFound from "@/pages/NotFound";
 import { Reveal } from "@/components/landing/Reveal";
 import { cn } from "@/lib/utils";
+import { TiltCard, DimensionalText, Glass3D } from "@/components/three-d";
 
 export default function GuideArticle() {
   const { slug = "" } = useParams();
@@ -75,7 +76,8 @@ export default function GuideArticle() {
         />
 
         <Reveal>
-          <nav aria-label="On this page" className="card-conic rounded-2xl p-4">
+          <Glass3D shadow="sm" className="rounded-2xl p-4">
+            <nav aria-label="On this page">
             <p className="type-overline text-muted-foreground">On this page</p>
             <ol className="mt-2 space-y-1.5 text-sm">
               {guide.sections.map((section, i) => (
@@ -91,14 +93,15 @@ export default function GuideArticle() {
                 </a>
               </li>
             </ol>
-          </nav>
+            </nav>
+          </Glass3D>
         </Reveal>
 
         <div className="space-y-8">
           {guide.sections.map((section, i) => (
             <Reveal key={section.heading} delay={i * 40}>
               <section id={`section-${i}`} className="space-y-3 scroll-mt-20">
-                <h2 className="type-h2">{section.heading}</h2>
+                <DimensionalText as="h2" depth="subtle" className="type-h2">{section.heading}</DimensionalText>
                 {section.body.map((paragraph) => (
                   <p key={paragraph} className="text-body leading-relaxed text-muted-foreground">
                     {paragraph}
@@ -119,37 +122,39 @@ export default function GuideArticle() {
         </div>
 
         <Reveal>
-          <section className="cta-glow relative overflow-hidden rounded-3xl border border-primary/25 bg-primary/[0.04] p-6 sm:p-8">
-            <div
-              aria-hidden
-              className="pointer-events-none absolute inset-0 opacity-30"
-              style={{
-                background:
-                  "radial-gradient(40rem 20rem at 50% -20%, hsl(var(--primary) / 0.12), transparent 70%)",
-              }}
-            />
-            <div className="relative">
-              <h2 className="type-h2">{guide.cta.label}</h2>
-              <p className="mt-1 text-body-sm text-muted-foreground">{guide.cta.blurb}</p>
-              {/* Guide CTAs that point at a product engine must leave this
-                  marketing bundle for app.gradr.me, not hit the redirect handler. */}
-              <CtaLink
-                href={ctaHref}
-                product={isProductPath(guide.cta.href)}
-                onClick={() =>
-                  trackEvent("guide_cta_click", {
-                    article: guide.slug,
-                    location: "inline-cta",
-                    destination: guide.cta.href,
-                  })
-                }
-                className="mt-4 inline-flex h-10 items-center gap-1.5 rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground btn-glow"
-              >
-                {guide.cta.label}
-                <ArrowRight className="h-4 w-4" aria-hidden="true" />
-              </CtaLink>
-            </div>
-          </section>
+          <TiltCard maxTilt={4} shadow="lg" glass className="rounded-3xl border border-primary/25 p-6 sm:p-8">
+            <section className="relative overflow-hidden">
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-0 opacity-30"
+                style={{
+                  background:
+                    "radial-gradient(40rem 20rem at 50% -20%, hsl(var(--primary) / 0.12), transparent 70%)",
+                }}
+              />
+              <div className="relative">
+                <DimensionalText as="h2" depth="subtle" className="type-h2">{guide.cta.label}</DimensionalText>
+                <p className="mt-1 text-body-sm text-muted-foreground">{guide.cta.blurb}</p>
+                {/* Guide CTAs that point at a product engine must leave this
+                    marketing bundle for app.gradr.me, not hit the redirect handler. */}
+                <CtaLink
+                  href={ctaHref}
+                  product={isProductPath(guide.cta.href)}
+                  onClick={() =>
+                    trackEvent("guide_cta_click", {
+                      article: guide.slug,
+                      location: "inline-cta",
+                      destination: guide.cta.href,
+                    })
+                  }
+                  className="mt-4 inline-flex h-10 items-center gap-1.5 rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground btn-glow"
+                >
+                  {guide.cta.label}
+                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                </CtaLink>
+              </div>
+            </section>
+          </TiltCard>
         </Reveal>
 
         <FaqBlock items={guide.faqs} source={guide.slug} />

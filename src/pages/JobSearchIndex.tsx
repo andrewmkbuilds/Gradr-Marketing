@@ -22,6 +22,7 @@ import {
 import { Reveal } from "@/components/landing/Reveal";
 import { motion } from "motion/react";
 import { easeOut, viewportOnce } from "@/lib/motion/tokens";
+import { TiltCard, DimensionalText, Glass3D } from "@/components/three-d";
 
 const INDEX_FAQS = [
   {
@@ -105,7 +106,7 @@ export default function JobSearchIndex() {
 
         {/* Premium filter section */}
         <Reveal>
-          <section aria-label="Filters" className="card-conic space-y-4 rounded-2xl p-5">
+          <Glass3D shadow="sm" className="space-y-4 rounded-2xl p-5">
             <div className="flex items-center gap-2">
               <span className="icon-premium h-9 w-9 rounded-lg">
                 <Search className="h-4 w-4 shrink-0" aria-hidden="true" />
@@ -177,62 +178,64 @@ export default function JobSearchIndex() {
             >
               <span className="font-semibold text-foreground">{results.length}</span> page{results.length === 1 ? "" : "s"} match your filters
             </motion.p>
-          </section>
+          </Glass3D>
         </Reveal>
 
         {/* Job cards grid */}
         <section aria-label="Job search pages" className="grid gap-3 sm:grid-cols-2">
           {results.map((landing, i) => (
             <Reveal key={landing.slug} delay={i * 40}>
-              <Link
-                to={jobLandingPath(landing.slug)}
-                onClick={() =>
-                  trackEvent("job_landing_click", {
-                    source: "job-search-index",
-                    destination: jobLandingPath(landing.slug),
-                    article: landing.slug,
-                  })
-                }
-                className="border-gradient-hover group block h-full rounded-2xl border border-border bg-card p-5"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <p className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
-                    {landing.location.remote ? (
-                      <Wifi className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
-                    ) : (
-                      <MapPin className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
-                    )}
-                    {landing.location.name}
-                  </p>
-                  <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground transition-all duration-200 group-hover:translate-x-0.5 group-hover:text-primary" aria-hidden="true" />
-                </div>
-                <div className="mt-2">
-                  <Text variant="h6" as="h2">{landing.title}</Text>
-                </div>
-
-                {/* Skills preview */}
-                {landing.role.skills.length > 0 && (
-                  <div className="mt-3 flex flex-wrap gap-1.5">
-                    {landing.role.skills.slice(0, 3).map((skill) => (
-                      <span
-                        key={skill}
-                        className="badge-premium"
-                      >
-                        {skill}
-                      </span>
-                    ))}
-                    {landing.role.skills.length > 3 && (
-                      <span className="text-xs text-muted-foreground">
-                        +{landing.role.skills.length - 3} more
-                      </span>
-                    )}
+              <TiltCard maxTilt={6} shadow="md" className="h-full p-5">
+                <Link
+                  to={jobLandingPath(landing.slug)}
+                  onClick={() =>
+                    trackEvent("job_landing_click", {
+                      source: "job-search-index",
+                      destination: jobLandingPath(landing.slug),
+                      article: landing.slug,
+                    })
+                  }
+                  className="group block h-full"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <p className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+                      {landing.location.remote ? (
+                        <Wifi className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
+                      ) : (
+                        <MapPin className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
+                      )}
+                      {landing.location.name}
+                    </p>
+                    <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground transition-all duration-200 group-hover:translate-x-0.5 group-hover:text-primary" aria-hidden="true" />
                   </div>
-                )}
+                  <div className="mt-2">
+                    <Text variant="h6" as="h2">{landing.title}</Text>
+                  </div>
 
-                <span className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-primary">
-                  View page
-                </span>
-              </Link>
+                  {/* Skills preview */}
+                  {landing.role.skills.length > 0 && (
+                    <div className="mt-3 flex flex-wrap gap-1.5">
+                      {landing.role.skills.slice(0, 3).map((skill) => (
+                        <span
+                          key={skill}
+                          className="badge-premium"
+                        >
+                          {skill}
+                        </span>
+                      ))}
+                      {landing.role.skills.length > 3 && (
+                        <span className="text-xs text-muted-foreground">
+                          +{landing.role.skills.length - 3} more
+                        </span>
+                      )}
+                    </div>
+                  )}
+
+                  <span className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-primary">
+                    View page
+                  </span>
+                </Link>
+              </TiltCard>
             </Reveal>
           ))}
           {results.length === 0 && (
@@ -267,7 +270,7 @@ export default function JobSearchIndex() {
                 <Sparkles className="h-5 w-5" aria-hidden="true" />
               </span>
               <div>
-                <Text variant="h5" as="h2">Not sure how to present your experience?</Text>
+                <DimensionalText as="h2" depth="subtle" className="font-display text-lg font-semibold text-foreground">Not sure how to present your experience?</DimensionalText>
                 <p className="mt-1 text-sm text-muted-foreground">
                   Read the resume, cover letter, and interview guides before you apply.
                 </p>

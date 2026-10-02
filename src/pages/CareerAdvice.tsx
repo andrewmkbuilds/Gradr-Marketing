@@ -17,6 +17,7 @@ import {
 import { Reveal } from "@/components/landing/Reveal";
 import { motion } from "motion/react";
 import { easeOut } from "@/lib/motion/tokens";
+import { TiltCard, DimensionalText, Glass3D } from "@/components/three-d";
 
 const INDEX_FAQS = [
   {
@@ -96,7 +97,7 @@ export default function CareerAdvice() {
 
         {/* Premium search bar */}
         <Reveal>
-          <div className="card-conic relative max-w-md rounded-2xl p-1.5">
+          <Glass3D shadow="sm" className="relative max-w-md rounded-2xl p-1.5">
             <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
             <Input
               type="search"
@@ -106,36 +107,38 @@ export default function CareerAdvice() {
               aria-label="Search career advice guides"
               className="h-11 border-0 bg-transparent pl-10 focus-visible:ring-0"
             />
-          </div>
+          </Glass3D>
         </Reveal>
 
         {/* Guide cards grid */}
         <section aria-label="Guides" className="grid gap-4 sm:grid-cols-2">
           {results.map((guide, i) => (
             <Reveal key={guide.slug} delay={i * 50}>
-              <Link
-                to={guidePath(guide.slug)}
-                onClick={() =>
-                  trackEvent("guide_card_click", {
-                    source: "career-advice-index",
-                    destination: guidePath(guide.slug),
-                    article: guide.slug,
-                  })
-                }
-                className="border-gradient-hover group block h-full rounded-2xl border border-border bg-card p-5"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <p className="text-xs uppercase tracking-wide text-muted-foreground">
-                    {guide.category} · {guide.readMinutes} min read
-                  </p>
-                  <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground transition-all duration-200 group-hover:translate-x-0.5 group-hover:text-primary" aria-hidden="true" />
-                </div>
-                <h2 className="mt-2 font-display text-lg font-semibold text-foreground">{guide.title}</h2>
-                <p className="mt-1 text-sm text-muted-foreground">{guide.description}</p>
-                <span className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-primary">
-                  Read guide
-                </span>
-              </Link>
+              <TiltCard maxTilt={6} shadow="md" className="h-full p-5">
+                <Link
+                  to={guidePath(guide.slug)}
+                  onClick={() =>
+                    trackEvent("guide_card_click", {
+                      source: "career-advice-index",
+                      destination: guidePath(guide.slug),
+                      article: guide.slug,
+                    })
+                  }
+                  className="group block h-full"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                      {guide.category} · {guide.readMinutes} min read
+                    </p>
+                    <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground transition-all duration-200 group-hover:translate-x-0.5 group-hover:text-primary" aria-hidden="true" />
+                  </div>
+                  <h2 className="mt-2 font-display text-lg font-semibold text-foreground">{guide.title}</h2>
+                  <p className="mt-1 text-sm text-muted-foreground">{guide.description}</p>
+                  <span className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-primary">
+                    Read guide
+                  </span>
+                </Link>
+              </TiltCard>
             </Reveal>
           ))}
           {results.length === 0 && (
@@ -167,7 +170,7 @@ export default function CareerAdvice() {
                 <Sparkles className="h-5 w-5" aria-hidden="true" />
               </span>
               <div className="flex-1">
-                <h2 className="font-display text-lg font-semibold text-foreground">Free tools that do the work</h2>
+                <DimensionalText as="h2" depth="subtle" className="font-display text-lg font-semibold text-foreground">Free tools that do the work</DimensionalText>
                 <p className="mt-1 text-sm text-muted-foreground">
                   Guides tell you what to change. These run it on your own documents and applications.
                 </p>
@@ -220,7 +223,7 @@ export default function CareerAdvice() {
         {/* Job search CTA */}
         <Reveal>
           <section className="card-conic rounded-2xl p-6">
-            <h2 className="font-display text-lg font-semibold text-foreground">Looking for roles instead?</h2>
+            <DimensionalText as="h2" depth="subtle" className="font-display text-lg font-semibold text-foreground">Looking for roles instead?</DimensionalText>
             <p className="mt-1 text-sm text-muted-foreground">
               Browse job search pages by role, location, and remote preference.
             </p>
