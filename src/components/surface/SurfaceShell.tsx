@@ -92,7 +92,7 @@ export function SurfaceShell({ nav = [], eyebrow, children }: SurfaceShellProps)
             )}
           </div>
 
-          <nav aria-label="Section" className="hidden items-center gap-1 lg:flex">
+          <nav aria-label="Section" className="hidden items-center gap-1 xl:flex">
             {nav.map((item) => (
               <SLink
                 key={item.to}
@@ -136,7 +136,7 @@ export function SurfaceShell({ nav = [], eyebrow, children }: SurfaceShellProps)
               onClick={toggleMenu}
               aria-expanded={menuOpen}
               aria-label={menuOpen ? "Close menu" : "Open menu"}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-border text-foreground lg:hidden"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-border text-foreground xl:hidden"
             >
               {menuOpen ? <X className="h-4 w-4" aria-hidden="true" /> : <Menu className="h-4 w-4" aria-hidden="true" />}
             </button>
@@ -144,7 +144,7 @@ export function SurfaceShell({ nav = [], eyebrow, children }: SurfaceShellProps)
         </div>
 
         {menuOpen && (
-          <nav aria-label="Mobile" className="border-t border-border/60 bg-background lg:hidden">
+          <nav aria-label="Mobile" className="border-t border-border/60 bg-background xl:hidden">
             <div className="page-shell flex flex-col py-3">
               {nav.map((item) => (
                 <SLink

@@ -421,7 +421,7 @@ export default function Landing() {
             <span className="text-base font-bold tracking-[0.24em]">GRADR</span>
           </a>
 
-          <ul className="hidden items-center gap-1 lg:flex">
+          <ul className="hidden items-center gap-1 xl:flex">
             {NAV.map((n) => {
               const active = activeHash === n.href;
               return (
@@ -482,7 +482,7 @@ export default function Landing() {
 
           <button
             type="button"
-            className="grid h-11 w-11 place-items-center rounded-lg text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring lg:hidden"
+            className="grid h-11 w-11 place-items-center rounded-lg text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring xl:hidden"
             aria-label={menuOpen ? "Close menu" : "Open menu"}
             aria-expanded={menuOpen}
             onClick={toggleMenu}
@@ -496,7 +496,7 @@ export default function Landing() {
             initial={heroReduced ? { opacity: 0 } : { opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.28, ease: easeOut }}
-            className="page-shell max-h-[calc(100vh-3.5rem)] overflow-y-auto border-t border-border bg-background/98 py-4 backdrop-blur-xl lg:hidden"
+            className="page-shell max-h-[calc(100vh-3.5rem)] overflow-y-auto border-t border-border bg-background/98 py-4 backdrop-blur-xl xl:hidden"
           >
             <motion.ul
               className="space-y-1"
