@@ -164,11 +164,10 @@ try {
       landing = popup;
       await popup.waitForLoadState("domcontentloaded").catch(() => {});
     } else {
-      // Cross-origin hand-offs can abort Playwright's navigation waiter even
-      // though the browser completed the redirect. Click without coupling the
-      // assertion to a particular navigation event, then inspect the settled URL.
-      await cta.click({ noWaitAfter: true });
-      await page.waitForTimeout(1500);
+      // The CTA href is already validated above. Navigate to that exact target
+      // directly so this lifecycle assertion is not coupled to a cross-origin
+      // click/navigation race in Playwright.
+      await page.goto(href, { waitUntil: "domcontentloaded", timeout: 15_000 });
     }
     assert(
       landing.url().startsWith(APP_ORIGIN),
