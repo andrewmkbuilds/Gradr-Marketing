@@ -59,6 +59,8 @@ async function run() {
       await page.close();
       continue;
     }
+    // Observe popups before clicking; auth links may open a new tab.
+    const popupPromise = page.waitForEvent("popup", { timeout: 1500 }).catch(() => null);
     // One retry absorbs a re-render that detaches the node between actions.
     let clicked = false;
     for (let attempt = 0; attempt < 2 && !clicked; attempt += 1) {
@@ -78,15 +80,18 @@ async function run() {
       await page.close();
       continue;
     }
-    await page.waitForURL(/app\.gradr\.me/, { timeout: 8000 }).catch(() => {});
-    const url = page.url();
+    const popup = await popupPromise;
+    const destination = popup ?? page;
+    if (!popup) await destination.waitForURL(/app\.gradr\.me/, { timeout: 8000 }).catch(() => {});
+    const url = destination.url();
     if (!url.startsWith(APP_AUTH)) {
       failures.push(`"${cta.name}" went to ${url} instead of ${APP_AUTH}`);
     } else if (cta.next && !url.includes(`next=${encodeURIComponent(cta.next)}`)) {
       failures.push(`"${cta.name}" lost its deep link (${cta.next}): ${url}`);
     }
-    const notFound = await page.getByText("Page not found").count();
+    const notFound = await destination.getByText("Page not found").count();
     if (notFound > 0) failures.push(`"${cta.name}" rendered the NotFound hand-off`);
+    if (popup) await popup.close();
     await page.close();
   }
 
