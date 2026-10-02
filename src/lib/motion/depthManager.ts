@@ -30,6 +30,8 @@ const LITE_MIN_FPS = 24;
 const SAMPLE_MS = 1600;
 /** How many consecutive bad windows before we downgrade. */
 const BAD_WINDOWS = 2;
+/** How many consecutive good windows before we upgrade the ceiling back. */
+const GOOD_WINDOWS = 4;
 
 export function detectDeviceLevel(): DepthLevel {
   if (typeof window === "undefined") return "lite";
@@ -75,6 +77,7 @@ class DepthManager {
   private started = false;
   private rafId: number | null = null;
   private badWindows = 0;
+  private goodWindows = 0;
 
   getLevel(): DepthLevel {
     return this.level;
@@ -170,7 +173,7 @@ class DepthManager {
         frames = 0;
         windowStart = now;
       }
-      if (this.started && this.ceiling !== "off" && this.level !== "off") {
+      if (this.started) {
         this.rafId = requestAnimationFrame(tick);
       } else {
         this.rafId = null;
@@ -183,8 +186,18 @@ class DepthManager {
     const floor = this.ceiling === "full" ? FULL_MIN_FPS : LITE_MIN_FPS;
     if (fps >= floor) {
       this.badWindows = 0;
+      this.goodWindows += 1;
+      // Recover: upgrade the ceiling after sustained good frame rate so a
+      // temporary dip during page load doesn't permanently disable all spatial
+      // effects for the rest of the session.
+      if (this.goodWindows >= GOOD_WINDOWS && this.ceiling !== "full") {
+        this.goodWindows = 0;
+        this.ceiling = this.ceiling === "off" ? "lite" : "full";
+        this.recompute();
+      }
       return;
     }
+    this.goodWindows = 0;
     this.badWindows += 1;
     if (this.badWindows < BAD_WINDOWS) return;
     this.badWindows = 0;
@@ -201,6 +214,7 @@ class DepthManager {
     this.override = null;
     this.level = "lite";
     this.badWindows = 0;
+    this.goodWindows = 0;
     this.listeners.clear();
   }
 }
