@@ -105,9 +105,8 @@ await check("cookie preferences persist across reload", async () => {
     // real page before asserting on anything it renders.
     await page.locator("main").waitFor({ state: "attached", timeout: 15000 }).catch(() => {});
   };
+  await page.addInitScript(() => localStorage.clear());
   await openHome();
-  await page.evaluate(() => localStorage.clear());
-  await page.reload({ waitUntil: "domcontentloaded" });
   await page.waitForLoadState("load").catch(() => {});
   await page.locator("main").waitFor({ state: "attached", timeout: 15000 }).catch(() => {});
 
