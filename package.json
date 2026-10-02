@@ -105,7 +105,7 @@
     "@hono/node-server": "^2.1.0",
     "@modelcontextprotocol/sdk": "1.30.0",
     "esbuild": "^0.25.12",
-    "fast-uri": "^4.1.4",
+    "fast-uri": "^4.1.2",
     "hono": "^4.13.1",
     "ip-address": "^10.5.0",
     "@xmldom/xmldom": "^0.8.15",
