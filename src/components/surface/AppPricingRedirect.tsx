@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { appPricingHref, isCrossOrigin } from "@/lib/appLinks";
 import { isProduction } from "@/config/domains";
-import { Loader2 } from "lucide-react";
+import { SpatialLoader } from "@/components/three-d";
 
 /**
  * Marketing surfaces do not run checkout. `/pricing` on gradr.me and
@@ -27,7 +27,7 @@ export function AppPricingRedirect() {
 
   return (
     <div className="page-shell flex flex-col items-center gap-4 py-24 text-center">
-      <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" aria-hidden />
+      <SpatialLoader size={28} />
       <p className="text-sm text-muted-foreground">
         Taking you to Gradr pricing…{" "}
         <a className="text-brand-secondary underline underline-offset-4" href={href}>

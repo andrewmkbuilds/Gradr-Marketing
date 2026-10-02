@@ -8,6 +8,7 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { useReadTracking } from "@/hooks/useReadTracking";
 import { getBlogPost } from "@/content/blogPosts";
 import { blogPostJsonLd } from "@/lib/structuredData";
+import { TiltCard, DimensionalText } from "@/components/three-d";
 
 const UTM = {
   source: "blog",
@@ -72,9 +73,9 @@ export default function AiResumeOptimization() {
       <main id="content">
       <article className="max-w-3xl mx-auto px-6 py-12">
         <p className="text-xs uppercase tracking-wider text-primary font-medium mb-3">Guide · Resume Intelligence</p>
-        <h1 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight leading-tight">
+        <DimensionalText as="h1" depth="strong" className="text-3xl md:text-4xl font-bold text-foreground tracking-tight leading-tight">
           {TITLE}
-        </h1>
+        </DimensionalText>
         <p className="mt-4 text-lg text-muted-foreground leading-relaxed">
           Applicant Tracking Systems (ATS) reject up to 75% of resumes before a human ever
           reads them. An AI resume builder isn't a gimmick — it's the fastest way to make
@@ -84,7 +85,7 @@ export default function AiResumeOptimization() {
 
         <div className="prose prose-invert max-w-none mt-10 space-y-8 text-foreground">
           <section>
-            <h2 className="text-2xl font-semibold tracking-tight">What is an AI resume builder?</h2>
+            <DimensionalText as="h2" depth="subtle" className="text-2xl font-semibold tracking-tight">What is an AI resume builder?</DimensionalText>
             <p className="mt-3 text-muted-foreground leading-relaxed">
               An AI resume builder is software that uses large language models and job-market
               data to write, restructure, and optimize a resume for a specific role. The best
@@ -96,7 +97,7 @@ export default function AiResumeOptimization() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold tracking-tight">How an ATS actually reads your resume</h2>
+            <DimensionalText as="h2" depth="subtle" className="text-2xl font-semibold tracking-tight">How an ATS actually reads your resume</DimensionalText>
             <p className="mt-3 text-muted-foreground leading-relaxed">
               Modern ATS platforms (Workday, Greenhouse, Lever, Taleo, iCIMS) all follow the
               same three-stage pipeline:
@@ -124,7 +125,7 @@ export default function AiResumeOptimization() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold tracking-tight">Where AI outperforms a template</h2>
+            <DimensionalText as="h2" depth="subtle" className="text-2xl font-semibold tracking-tight">Where AI outperforms a template</DimensionalText>
             <div className="mt-4 grid gap-3">
               {[
                 {
@@ -148,19 +149,19 @@ export default function AiResumeOptimization() {
                   d: "Instead of guessing, you see the match score — usually 0–100 — and specific gaps to close before the recruiter ever sees the file.",
                 },
               ].map((row) => (
-                <div key={row.t} className="elev-2 rounded-xl p-4 flex gap-3">
+                <TiltCard key={row.t} maxTilt={5} shadow="sm" className="flex gap-3 p-4">
                   <CheckCircle2 className="h-4 w-4 text-primary mt-1 shrink-0" />
                   <div>
                     <div className="font-medium text-foreground">{row.t}</div>
                     <div className="text-sm text-muted-foreground mt-1 leading-relaxed">{row.d}</div>
                   </div>
-                </div>
+                </TiltCard>
               ))}
             </div>
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold tracking-tight">The 7-step AI resume optimization workflow</h2>
+            <DimensionalText as="h2" depth="subtle" className="text-2xl font-semibold tracking-tight">The 7-step AI resume optimization workflow</DimensionalText>
             <ol className="mt-4 space-y-4 text-muted-foreground list-decimal pl-5">
               <li>
                 <strong className="text-foreground">Upload your current resume.</strong> Any
@@ -196,7 +197,7 @@ export default function AiResumeOptimization() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold tracking-tight">ATS formatting rules the AI enforces for you</h2>
+            <DimensionalText as="h2" depth="subtle" className="text-2xl font-semibold tracking-tight">ATS formatting rules the AI enforces for you</DimensionalText>
             <div className="mt-4 overflow-x-auto">
               <table className="w-full text-sm border-collapse">
                 <thead>
@@ -226,7 +227,7 @@ export default function AiResumeOptimization() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold tracking-tight">What AI can't (and shouldn't) do</h2>
+            <DimensionalText as="h2" depth="subtle" className="text-2xl font-semibold tracking-tight">What AI can't (and shouldn't) do</DimensionalText>
             <p className="mt-3 text-muted-foreground leading-relaxed">
               A good AI resume builder never invents jobs, titles, or metrics. It rewrites what
               you actually did in the language the ATS is scoring against. If a tool is padding
@@ -237,7 +238,7 @@ export default function AiResumeOptimization() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold tracking-tight">Frequently asked questions</h2>
+            <DimensionalText as="h2" depth="subtle" className="text-2xl font-semibold tracking-tight">Frequently asked questions</DimensionalText>
             <div className="mt-4 space-y-4">
               {[
                 {
@@ -286,9 +287,9 @@ export default function AiResumeOptimization() {
           </section>
 
           <section className="mt-10">
-            <h2 className="text-2xl font-semibold tracking-tight flex items-center gap-2">
+            <DimensionalText as="h2" depth="subtle" className="text-2xl font-semibold tracking-tight flex items-center gap-2">
               <BookOpen className="h-5 w-5 text-primary" /> Related guides
-            </h2>
+            </DimensionalText>
             <p className="mt-2 text-sm text-muted-foreground">
               Keep going with the Gradr Resume Intelligence and ATS optimization stack.
             </p>
@@ -337,14 +338,14 @@ export default function AiResumeOptimization() {
                   location: "related_jobs_feed",
                 },
               ].map((g) => (
-                // Product engines live on app.gradr.me: link there directly
-                // instead of routing through this bundle's redirect handler.
-                isProductPath(g.to) ? (
+                <TiltCard key={g.to} maxTilt={5} shadow="sm" className="p-4">
+                {/* Product engines live on app.gradr.me: link there directly
+                    instead of routing through this bundle's redirect handler. */}
+                {isProductPath(g.to) ? (
                   <a
-                    key={g.to}
                     href={ctaHref(appProductHref(g.to), g.location)}
                     onClick={trackCta(g.location, g.to)}
-                    className="elev-2 rounded-xl p-4 hover:border-primary/40 transition group"
+                    className="group block h-full"
                   >
                     <div className="font-medium text-foreground group-hover:text-primary transition">
                       {g.title}
@@ -355,10 +356,9 @@ export default function AiResumeOptimization() {
                   </a>
                 ) : (
                 <Link
-                  key={g.to}
                   to={ctaHref(g.to, g.location)}
                   onClick={trackCta(g.location, g.to)}
-                  className="elev-2 rounded-xl p-4 hover:border-primary/40 transition group"
+                  className="group block h-full"
                 >
                   <div className="font-medium text-foreground group-hover:text-primary transition">
                     {g.title}
@@ -367,15 +367,16 @@ export default function AiResumeOptimization() {
                     {g.desc}
                   </div>
                 </Link>
-                )
+                )}
+                </TiltCard>
               ))}
             </div>
           </section>
 
-          <section className="elev-2 rounded-xl p-6 mt-10">
-            <h2 className="type-h2 text-foreground">
+          <TiltCard maxTilt={4} shadow="lg" className="mt-10 p-6">
+            <DimensionalText as="h2" depth="subtle" className="type-h2 text-foreground">
               Try the Gradr Resume Engine
-            </h2>
+            </DimensionalText>
             <p className="mt-2 text-muted-foreground leading-relaxed">
               Upload your resume, paste any job description, and see your ATS match score,
               missing keywords, and AI rewrite suggestions in seconds. Free to start.
@@ -403,7 +404,7 @@ export default function AiResumeOptimization() {
                 See pricing
               </Link>
             </div>
-          </section>
+          </TiltCard>
 
         </div>
       </article>

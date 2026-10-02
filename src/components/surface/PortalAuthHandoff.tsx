@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { Loader2 } from "lucide-react";
+import { SpatialLoader } from "@/components/three-d";
 import { appLoginHref, appResetHref, appSignupHref } from "@/lib/appLinks";
 import { handoffToApp } from "@/lib/authHandoff";
 
@@ -26,7 +26,7 @@ export function PortalAuthHandoff({ mode = "login" }: { mode?: Mode }) {
 
   return (
     <div className="page-shell section-y flex flex-col items-center gap-4 text-center">
-      <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" aria-hidden />
+      <SpatialLoader size={28} />
       <p className="text-sm text-muted-foreground">
         Taking you to Gradr sign-in…{" "}
         <a className="underline underline-offset-4" href={href}>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { AlertTriangle, ArrowRight, CheckCircle2, Loader2 } from "lucide-react";
+import { SpatialLoader } from "@/components/three-d";
 import { Button, Card, Text } from "@/design-system/gradr-9b9b95";
 import { buttonVariants } from "@/design-system/gradr-9b9b95/gradr/components/button";
 import { cn } from "@/lib/utils";
@@ -74,7 +75,7 @@ export default function Unsubscribe() {
       <Card padding="lg" variant="raised" className="space-y-6 text-center">
         {state === "loading" ? (
           <>
-            <Loader2 className="mx-auto size-8 animate-spin text-muted-foreground" aria-hidden />
+            <SpatialLoader size={40} className="mx-auto" />
             <Text as="h1" variant="h4">
               Checking your link…
             </Text>

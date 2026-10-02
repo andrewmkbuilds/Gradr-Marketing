@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, ArrowRight, CheckCircle2, MapPin, Wifi } from "lucide-react";
-import { Badge, Text } from "@/design-system/gradr-9b9b95";
 import { buttonVariants } from "@/design-system/gradr-9b9b95/gradr/components/button";
 import { PublicShell } from "@/components/PublicShell";
 import { MarketingHero } from "@/components/marketing/MarketingHero";
@@ -21,6 +20,7 @@ import { useReadTracking } from "@/hooks/useReadTracking";
 import NotFound from "@/pages/NotFound";
 import { Reveal } from "@/components/landing/Reveal";
 import { cn } from "@/lib/utils";
+import { TiltCard, DimensionalText, Glass3D } from "@/components/three-d";
 
 export default function JobLanding() {
   const { slug = "" } = useParams();
@@ -98,9 +98,9 @@ export default function JobLanding() {
 
         <Reveal>
           <section className="space-y-3">
-            <Text variant="h2">
+            <DimensionalText as="h2" depth="subtle" className="font-display text-xl font-semibold text-foreground">
               Skills employers look for in {role.plural}
-            </Text>
+            </DimensionalText>
             <div className="flex flex-wrap gap-2">
               {role.skills.map((skill) => (
                 <span key={skill} className="badge-premium">
@@ -118,9 +118,9 @@ export default function JobLanding() {
 
         <Reveal delay={60}>
           <section className="space-y-3">
-            <Text variant="h2">
+            <DimensionalText as="h2" depth="subtle" className="font-display text-xl font-semibold text-foreground">
               What the role involves day to day
-            </Text>
+            </DimensionalText>
             <ul className="space-y-2">
               {role.responsibilities.map((item) => (
                 <li key={item} className="flex gap-2.5 text-muted-foreground">
@@ -134,9 +134,9 @@ export default function JobLanding() {
 
         <Reveal delay={120}>
           <section className="space-y-3">
-            <Text variant="h2">
+            <DimensionalText as="h2" depth="subtle" className="font-display text-xl font-semibold text-foreground">
               Searching {location.remote ? "remote roles" : `in ${location.name}`}
-            </Text>
+            </DimensionalText>
             <p className="text-muted-foreground">{location.blurb}</p>
             <p className="text-muted-foreground">
               Gradr pulls live listings that fit your profile, scores each one against your resume, and
@@ -152,9 +152,9 @@ export default function JobLanding() {
 
         {siblings.length > 0 && (
           <section className="space-y-3" aria-labelledby="other-locations">
-            <Text id="other-locations" variant="h2">
+            <DimensionalText as="h2" depth="subtle" id="other-locations" className="font-display text-xl font-semibold text-foreground">
               {role.name} jobs elsewhere
-            </Text>
+            </DimensionalText>
             <div className="flex flex-wrap gap-2">
               {siblings.map((sib) => (
                 <Link
