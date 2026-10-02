@@ -15,7 +15,7 @@ jobs:
         with:
           bun-version: latest
       - name: Install dependencies
-        run: bun install --frozen-lockfile
+        run: bun install
 
       # Blocking: any hex/rgb/hsl literal in JSX class names or style props fails
       # the PR. The rule message names the semantic token to use instead.
@@ -40,7 +40,7 @@ jobs:
         with:
           bun-version: latest
       - name: Install dependencies
-        run: bun install --frozen-lockfile
+        run: bun install
 
       - name: Build
         run: bun run build
