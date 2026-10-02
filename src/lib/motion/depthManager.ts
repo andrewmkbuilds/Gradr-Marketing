@@ -117,11 +117,11 @@ class DepthManager {
       ceiling: this.ceiling,
       override: this.override,
     });
-    if (next === this.level) return;
-    this.level = next;
     if (typeof document !== "undefined") {
       document.documentElement.dataset.depth = next;
     }
+    if (next === this.level) return;
+    this.level = next;
     this.listeners.forEach((fn) => fn(next));
   }
 
