@@ -1052,7 +1052,7 @@ export default function Landing() {
 
           <ol className="mt-10 space-y-px overflow-hidden rounded-2xl border border-border bg-border">
             {HOW.map((step, i) => (
-              <Reveal as="li" key={step} delay={i * 40} className="flex items-center gap-4 bg-card px-5 py-4 sm:px-6">
+              <Reveal as="li" key={step} delay={i * 40} className="step-connector flex items-center gap-4 bg-card px-5 py-4 sm:px-6">
                 <span className="w-8 shrink-0 text-sm font-semibold tabular-nums text-primary">
                   {String(i + 1).padStart(2, "0")}
                 </span>
@@ -1093,7 +1093,7 @@ export default function Landing() {
             </Reveal>
 
             <Reveal delay={100}>
-              <Card variant="raised" padding="lg" className="h-full">
+              <Card variant="raised" padding="lg" className="border-gradient-hover h-full">
               <Text variant="overline" as="h3" tone="primary">Gradr</Text>
               <ul className="mt-5 space-y-3">
                 {NEW_WAY.map((t) => (
@@ -1185,7 +1185,7 @@ export default function Landing() {
                 <Reveal key={p.name} delay={i * 70} className="h-full">
                 <SpotlightCard
                   tilt
-                  className={`card-glow flex h-full flex-col rounded-card p-6 ${
+                  className={`card-conic flex h-full flex-col rounded-card p-6 ${
                     p.highlight
                       ? "border-primary/40 bg-primary/[0.05] shadow-float ring-1 ring-primary/20"
                       : ""
@@ -1262,7 +1262,7 @@ export default function Landing() {
             </Reveal>
 
             <Reveal delay={80}>
-              <Accordion type="single" collapsible className="flex w-full flex-col gap-3">
+              <Accordion type="single" collapsible className="accordion-premium flex w-full flex-col gap-3">
                 {FAQS.map(([q, a], i) => (
                   <AccordionItem key={q} value={`faq-${i}`} className="overflow-hidden rounded-card border border-border transition-colors hover:border-primary/20 data-[state=open]:border-primary/25 data-[state=open]:bg-primary/[0.02]">
                     <AccordionTrigger className="px-5 py-4 text-left text-sm font-medium hover:no-underline sm:text-base">

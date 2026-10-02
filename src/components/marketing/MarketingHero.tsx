@@ -33,7 +33,7 @@ export function MarketingHero({
   const reduced = useReducedMotionPref();
 
   return (
-    <header className={cn("relative isolate overflow-hidden pb-2", className)}>
+    <header className={cn("cta-glow relative isolate overflow-hidden pb-2", className)}>
       <div
         aria-hidden="true"
         className="pointer-events-none absolute -left-32 -top-40 h-72 w-[42rem] rounded-full opacity-[0.18] blur-3xl"

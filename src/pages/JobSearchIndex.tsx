@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, MapPin, Search, Wifi } from "lucide-react";
+import { ArrowRight, MapPin, Search, Wifi, Sparkles } from "lucide-react";
 import { PublicShell } from "@/components/PublicShell";
 import { MarketingHero } from "@/components/marketing/MarketingHero";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -20,6 +20,8 @@ import {
   buildItemListLd,
 } from "@/lib/structuredData";
 import { Reveal } from "@/components/landing/Reveal";
+import { motion } from "motion/react";
+import { easeOut, viewportOnce } from "@/lib/motion/tokens";
 
 const INDEX_FAQS = [
   {
@@ -101,16 +103,20 @@ export default function JobSearchIndex() {
           description="Start from the role you want. Each page covers the skills that recur in those postings, how to tailor a resume for them, and what to prepare for the interview."
         />
 
+        {/* Premium filter section */}
         <Reveal>
-          <section aria-label="Filters" className="card-glow space-y-4 rounded-2xl p-4">
+          <section aria-label="Filters" className="card-conic space-y-4 rounded-2xl p-5">
             <div className="flex items-center gap-2">
-              <Search className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+              <span className="icon-premium h-9 w-9 rounded-lg">
+                <Search className="h-4 w-4 shrink-0" aria-hidden="true" />
+              </span>
               <Input
                 type="search"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search role, city, or skill"
                 aria-label="Search job pages by role, city, or skill"
+                className="flex-1"
               />
             </div>
 
@@ -162,12 +168,19 @@ export default function JobSearchIndex() {
               Remote only
             </Button>
 
-            <p className="text-xs text-muted-foreground" aria-live="polite">
-              {results.length} page{results.length === 1 ? "" : "s"} match your filters
-            </p>
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3, ease: easeOut }}
+              className="text-xs text-muted-foreground"
+              aria-live="polite"
+            >
+              <span className="font-semibold text-foreground">{results.length}</span> page{results.length === 1 ? "" : "s"} match your filters
+            </motion.p>
           </section>
         </Reveal>
 
+        {/* Job cards grid */}
         <section aria-label="Job search pages" className="grid gap-3 sm:grid-cols-2">
           {results.map((landing, i) => (
             <Reveal key={landing.slug} delay={i * 40}>
@@ -180,49 +193,93 @@ export default function JobSearchIndex() {
                     article: landing.slug,
                   })
                 }
-                className="card-glow group block h-full rounded-2xl p-4"
+                className="border-gradient-hover group block h-full rounded-2xl border border-border bg-card p-5"
               >
-                <p className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
-                  {landing.location.remote ? (
-                    <Wifi className="h-3.5 w-3.5" aria-hidden="true" />
-                  ) : (
-                    <MapPin className="h-3.5 w-3.5" aria-hidden="true" />
-                  )}
-                  {landing.location.name}
-                </p>
-                <div className="mt-1">
+                <div className="flex items-start justify-between gap-3">
+                  <p className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+                    {landing.location.remote ? (
+                      <Wifi className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
+                    ) : (
+                      <MapPin className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
+                    )}
+                    {landing.location.name}
+                  </p>
+                  <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground transition-all duration-200 group-hover:translate-x-0.5 group-hover:text-primary" aria-hidden="true" />
+                </div>
+                <div className="mt-2">
                   <Text variant="h6" as="h2">{landing.title}</Text>
                 </div>
 
-                <span className="mt-2 inline-flex items-center gap-1 text-sm text-primary">
+                {/* Skills preview */}
+                {landing.role.skills.length > 0 && (
+                  <div className="mt-3 flex flex-wrap gap-1.5">
+                    {landing.role.skills.slice(0, 3).map((skill) => (
+                      <span
+                        key={skill}
+                        className="badge-premium"
+                      >
+                        {skill}
+                      </span>
+                    ))}
+                    {landing.role.skills.length > 3 && (
+                      <span className="text-xs text-muted-foreground">
+                        +{landing.role.skills.length - 3} more
+                      </span>
+                    )}
+                  </div>
+                )}
+
+                <span className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-primary">
                   View page
-                  <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 motion-reduce:transition-none" />
                 </span>
               </Link>
             </Reveal>
           ))}
           {results.length === 0 && (
-            <p className="text-sm text-muted-foreground">
-              Nothing matches those filters yet. Clear the search to see every role.
-            </p>
+            <div className="col-span-full">
+              <div className="cta-glow rounded-2xl border border-border bg-card p-8 text-center">
+                <div className="icon-premium mx-auto mb-4 h-12 w-12 rounded-xl">
+                  <Search className="h-6 w-6" aria-hidden="true" />
+                </div>
+                <Text variant="h5" as="h3">No matches yet</Text>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Nothing matches those filters yet. Clear the search to see every role.
+                </p>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="mt-4"
+                  onClick={() => { setQuery(""); setRole("all"); setRemoteOnly(false); }}
+                >
+                  Clear all filters
+                </Button>
+              </div>
+            </div>
           )}
         </section>
 
         <FaqBlock items={INDEX_FAQS} source="job-search-index" />
 
         <Reveal>
-          <section className="card-glow rounded-2xl p-6">
-            <Text variant="h5" as="h2">Not sure how to present your experience?</Text>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Read the resume, cover letter, and interview guides before you apply.
-            </p>
-            <Link
-              to="/career-advice"
-              className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-primary"
-            >
-              Browse career advice
-              <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
-            </Link>
+          <section className="cta-glow rounded-2xl border border-border bg-card p-6">
+            <div className="flex items-start gap-4">
+              <span className="icon-premium">
+                <Sparkles className="h-5 w-5" aria-hidden="true" />
+              </span>
+              <div>
+                <Text variant="h5" as="h2">Not sure how to present your experience?</Text>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Read the resume, cover letter, and interview guides before you apply.
+                </p>
+                <Link
+                  to="/career-advice"
+                  className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-primary transition-colors hover:text-primary-hover"
+                >
+                  Browse career advice
+                  <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+                </Link>
+              </div>
+            </div>
           </section>
         </Reveal>
       </div>

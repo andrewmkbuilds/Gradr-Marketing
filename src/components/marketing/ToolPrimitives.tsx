@@ -30,7 +30,7 @@ export function ToolHero({
   children: React.ReactNode;
 }) {
   return (
-    <section className="relative overflow-hidden pt-12 sm:pt-16">
+    <section className="cta-glow relative overflow-hidden pt-12 sm:pt-16">
       <SceneBackground variant="rays" intensity={0.4} fadeBottom />
       <div className="relative mx-auto max-w-3xl text-center">
         <motion.span
@@ -162,9 +162,9 @@ export function ToolStepCard({
 }) {
   return (
     <Reveal delay={delay}>
-      <SpotlightCard className="card-glow h-full rounded-2xl p-5">
+      <SpotlightCard className="card-conic step-connector h-full rounded-2xl p-5">
         <div className="flex items-center gap-3">
-          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary depth-press">
+          <span className="icon-premium depth-press">
             <Icon className="h-5 w-5" aria-hidden />
           </span>
           <h3 className="font-display text-base font-semibold text-foreground">
@@ -192,9 +192,9 @@ export function ToolFeatureCard({
 }) {
   return (
     <Reveal delay={delay}>
-      <div className="card-glow h-full rounded-2xl p-5">
+      <div className="card-conic h-full rounded-2xl p-5">
         {Icon && (
-          <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary depth-press">
+          <div className="icon-premium mb-3 depth-press">
             <Icon className="h-5 w-5" aria-hidden />
           </div>
         )}
@@ -218,13 +218,21 @@ export function ToolCtaSection({
 }) {
   return (
     <Reveal>
-      <section className="section-gap relative overflow-hidden rounded-3xl border border-primary/25 bg-primary/[0.04] p-8 text-center sm:p-12">
+      <section className="cta-glow section-gap relative overflow-hidden rounded-3xl border border-primary/25 bg-primary/[0.04] p-8 text-center sm:p-12">
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 opacity-30"
           style={{
             background:
               "radial-gradient(40rem 20rem at 50% -20%, hsl(var(--primary) / 0.12), transparent 70%)",
+          }}
+        />
+        {/* Top accent line */}
+        <div
+          aria-hidden
+          className="absolute inset-x-0 top-0 h-px"
+          style={{
+            background: "linear-gradient(90deg, transparent, hsl(var(--primary) / 0.4) 50%, transparent)",
           }}
         />
         <div className="relative">
@@ -258,10 +266,10 @@ export function ToolTable({
         role="group"
         aria-label={caption}
       >
-        <table className="w-full min-w-[420px] text-sm">
+        <table className="table-premium w-full min-w-[420px] text-sm">
           <caption className="sr-only">{caption}</caption>
           <thead>
-            <tr className="border-b border-border text-left text-xs uppercase tracking-wide text-muted-foreground">
+            <tr className="text-left text-xs uppercase tracking-wide text-muted-foreground">
               {headers.map((h, i) => (
                 <th key={i} scope="col" className={cn("py-3 font-medium", i < headers.length - 1 ? "pr-4" : "")}>
                   {h}
@@ -271,7 +279,7 @@ export function ToolTable({
           </thead>
           <tbody>
             {rows.map((row, i) => (
-              <tr key={i} className="border-b border-border/50 transition-colors hover:bg-muted/30">
+              <tr key={i} className="border-b border-border/50 transition-colors hover:bg-primary/[0.04]">
                 {row.cells.map((cell, j) =>
                   j === 0 ? (
                     <th
@@ -320,7 +328,7 @@ export function ToolRelatedLinks({
             <a
               href={link.to}
               onClick={link.onClick}
-              className="card-glow group block h-full rounded-2xl p-5"
+              className="border-gradient-hover group block h-full rounded-2xl border border-border bg-card p-5"
             >
               <p className="flex items-center gap-1 font-medium text-foreground">
                 {link.title}

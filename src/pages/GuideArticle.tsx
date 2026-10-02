@@ -75,7 +75,7 @@ export default function GuideArticle() {
         />
 
         <Reveal>
-          <nav aria-label="On this page" className="card-glow rounded-2xl p-4">
+          <nav aria-label="On this page" className="card-conic rounded-2xl p-4">
             <p className="type-overline text-muted-foreground">On this page</p>
             <ol className="mt-2 space-y-1.5 text-sm">
               {guide.sections.map((section, i) => (
@@ -119,7 +119,7 @@ export default function GuideArticle() {
         </div>
 
         <Reveal>
-          <section className="relative overflow-hidden rounded-3xl border border-primary/25 bg-primary/[0.04] p-6 sm:p-8">
+          <section className="cta-glow relative overflow-hidden rounded-3xl border border-primary/25 bg-primary/[0.04] p-6 sm:p-8">
             <div
               aria-hidden
               className="pointer-events-none absolute inset-0 opacity-30"

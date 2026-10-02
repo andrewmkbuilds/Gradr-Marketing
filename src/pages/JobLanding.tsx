@@ -103,9 +103,9 @@ export default function JobLanding() {
             </Text>
             <div className="flex flex-wrap gap-2">
               {role.skills.map((skill) => (
-                <Badge key={skill} variant="outline">
+                <span key={skill} className="badge-premium">
                   {skill}
-                </Badge>
+                </span>
               ))}
             </div>
             <p className="text-muted-foreground">
@@ -167,7 +167,7 @@ export default function JobLanding() {
                       article: sib.slug,
                     })
                   }
-                  className="rounded-full border border-border px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground"
+                  className="border-gradient-hover rounded-full border border-border bg-card px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground"
                 >
                   {sib.title}
                 </Link>

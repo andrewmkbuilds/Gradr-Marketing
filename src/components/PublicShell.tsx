@@ -20,6 +20,9 @@ import {
 import { urlFor } from "@/config/domains";
 import { buttonVariants } from "@/design-system/gradr-9b9b95/gradr/components/button";
 import { cn } from "@/lib/utils";
+import { motion, AnimatePresence } from "motion/react";
+import { useEffect, useState } from "react";
+import { easeOut, springSnappy } from "@/lib/motion/tokens";
 
 interface PublicShellProps {
   children: React.ReactNode;
@@ -58,8 +61,16 @@ const TOOL_LINKS = [
 export function PublicShell({ children, source }: PublicShellProps) {
   const { pathname } = useLocation();
   const { open: menuOpen, setOpen: setMenuOpen, toggle: toggleMenu } = useMobileMenu();
+  const [scrolled, setScrolled] = useState(false);
 
   const isActive = (to: string) => pathname === to || pathname.startsWith(`${to}/`);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 12);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
     <div className="relative min-h-dvh bg-background">
@@ -73,14 +84,35 @@ export function PublicShell({ children, source }: PublicShellProps) {
         }}
       />
 
-      <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur-xl">
-        <div className="page-shell flex h-16 items-center justify-between gap-4">
+      <header
+        className={cn(
+          "sticky top-0 z-40 transition-all duration-300",
+          scrolled
+            ? "depth-lit border-b border-border/60 bg-background/85 backdrop-blur-xl"
+            : "border-b border-transparent bg-background/60 backdrop-blur-md",
+        )}
+      >
+        <div className={cn(
+          "page-shell flex items-center justify-between gap-4 transition-all duration-300",
+          scrolled ? "h-14" : "h-16",
+        )}>
           <Link
             to="/"
             className="flex items-center gap-2 rounded-lg font-semibold tracking-tight text-foreground transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
-            <BrandLogo size={24} />
-            Gradr
+            <motion.span
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.4, ease: easeOut }}
+            >
+              <BrandLogo size={scrolled ? 22 : 24} />
+            </motion.span>
+            <span className={cn(
+              "font-bold tracking-[0.2em] transition-all duration-300",
+              scrolled ? "text-sm" : "text-base",
+            )}>
+              GRADR
+            </span>
           </Link>
 
           <nav aria-label="Primary" className="hidden items-center gap-0.5 xl:flex">
@@ -90,25 +122,32 @@ export function PublicShell({ children, source }: PublicShellProps) {
                 to={item.to}
                 aria-current={isActive(item.to) ? "page" : undefined}
                 className={cn(
-                  "nav-underline relative rounded-lg px-3 py-2 text-sm transition-colors",
+                  "relative z-10 rounded-lg px-3 py-2 text-sm transition-colors",
                   isActive(item.to)
                     ? "text-foreground"
                     : "text-muted-foreground hover:text-foreground",
                 )}
-                data-active={isActive(item.to) || undefined}
               >
                 {item.label}
+                {isActive(item.to) && (
+                  <motion.span
+                    layoutId="public-shell-nav-pill"
+                    aria-hidden
+                    className="absolute inset-0 -z-10 rounded-lg border border-primary/25 bg-primary/10"
+                    transition={springSnappy}
+                  />
+                )}
               </Link>
             ))}
             <a
               href={urlFor("earn", "/")}
-              className="rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+              className="relative z-10 rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
             >
               Earn
             </a>
             <a
               href={urlFor("earn", "/partner")}
-              className="rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+              className="relative z-10 rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
             >
               Partner with Gradr
             </a>
@@ -125,7 +164,7 @@ export function PublicShell({ children, source }: PublicShellProps) {
             <a
               href={appSignupHref()}
               onClick={() => trackSignupCta({ location: "navbar", text: "Get started", authenticated: false, destination: appSignupHref() })}
-              className={cn(buttonVariants({ size: "md" }), "btn-glow")}
+              className={cn(buttonVariants({ size: "md" }), "btn-glow group")}
             >
               Get started
               <ArrowRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden="true" />
@@ -137,54 +176,108 @@ export function PublicShell({ children, source }: PublicShellProps) {
               aria-label={menuOpen ? "Close menu" : "Open menu"}
               className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-border text-foreground transition-colors hover:bg-muted xl:hidden"
             >
-              {menuOpen ? <X className="h-4 w-4" aria-hidden="true" /> : <Menu className="h-4 w-4" aria-hidden="true" />}
+              <AnimatePresence mode="wait" initial={false}>
+                {menuOpen ? (
+                  <motion.span
+                    key="close"
+                    initial={{ rotate: -90, opacity: 0 }}
+                    animate={{ rotate: 0, opacity: 1 }}
+                    exit={{ rotate: 90, opacity: 0 }}
+                    transition={{ duration: 0.15 }}
+                  >
+                    <X className="h-4 w-4" aria-hidden="true" />
+                  </motion.span>
+                ) : (
+                  <motion.span
+                    key="open"
+                    initial={{ rotate: 90, opacity: 0 }}
+                    animate={{ rotate: 0, opacity: 1 }}
+                    exit={{ rotate: -90, opacity: 0 }}
+                    transition={{ duration: 0.15 }}
+                  >
+                    <Menu className="h-4 w-4" aria-hidden="true" />
+                  </motion.span>
+                )}
+              </AnimatePresence>
             </button>
           </div>
         </div>
 
-        {menuOpen && (
-          <nav aria-label="Mobile" className="border-t border-border/60 bg-background/95 backdrop-blur-xl xl:hidden">
-            <ul className="page-shell stagger-children py-3">
-              {NAV.map((item) => (
-                <li key={item.to}>
-                  <Link
-                    to={item.to}
-                    onClick={() => setMenuOpen(false)}
-                    className={cn(
-                      "flex min-h-11 items-center rounded-lg px-3 py-2.5 text-sm transition-colors hover:bg-muted",
-                      isActive(item.to) ? "text-foreground bg-primary/5" : "text-muted-foreground hover:text-foreground",
-                    )}
+        <AnimatePresence>
+          {menuOpen && (
+            <motion.nav
+              aria-label="Mobile"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.25, ease: easeOut }}
+              className="overflow-hidden border-t border-border/60 bg-background/95 backdrop-blur-xl xl:hidden"
+            >
+              <motion.ul
+                className="page-shell py-3"
+                initial="hidden"
+                animate="show"
+                variants={{ hidden: {}, show: { transition: { staggerChildren: 0.04 } } }}
+              >
+                {NAV.map((item) => (
+                  <motion.li
+                    key={item.to}
+                    variants={{ hidden: { opacity: 0, x: -10 }, show: { opacity: 1, x: 0 } }}
+                    transition={{ duration: 0.25, ease: easeOut }}
                   >
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-              <li>
-                <a
-                  href={urlFor("earn", "/")}
-                  onClick={() => setMenuOpen(false)}
-                  className="flex min-h-11 items-center rounded-lg px-3 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                    <Link
+                      to={item.to}
+                      onClick={() => setMenuOpen(false)}
+                      className={cn(
+                        "flex min-h-11 items-center rounded-lg px-3 py-2.5 text-sm transition-colors hover:bg-muted",
+                        isActive(item.to) ? "text-foreground bg-primary/5" : "text-muted-foreground hover:text-foreground",
+                      )}
+                    >
+                      {item.label}
+                    </Link>
+                  </motion.li>
+                ))}
+                <motion.li
+                  variants={{ hidden: { opacity: 0, x: -10 }, show: { opacity: 1, x: 0 } }}
+                  transition={{ duration: 0.25, ease: easeOut }}
                 >
-                  Earn
-                </a>
-              </li>
-              <li>
-                <a
-                  href={urlFor("earn", "/partner")}
-                  onClick={() => setMenuOpen(false)}
-                  className="flex min-h-11 items-center rounded-lg px-3 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                  <a
+                    href={urlFor("earn", "/")}
+                    onClick={() => setMenuOpen(false)}
+                    className="flex min-h-11 items-center rounded-lg px-3 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                  >
+                    Earn
+                  </a>
+                </motion.li>
+                <motion.li
+                  variants={{ hidden: { opacity: 0, x: -10 }, show: { opacity: 1, x: 0 } }}
+                  transition={{ duration: 0.25, ease: easeOut }}
                 >
-                  Partner with Gradr
-                </a>
-              </li>
-            </ul>
-          </nav>
-        )}
+                  <a
+                    href={urlFor("earn", "/partner")}
+                    onClick={() => setMenuOpen(false)}
+                    className="flex min-h-11 items-center rounded-lg px-3 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                  >
+                    Partner with Gradr
+                  </a>
+                </motion.li>
+              </motion.ul>
+            </motion.nav>
+          )}
+        </AnimatePresence>
       </header>
 
-      <main className="page-shell section-y-sm">{children}</main>
+      <main className="page-shell section-y-sm page-enter">{children}</main>
 
       <footer className="relative mt-16 border-t border-border/60 bg-card/30 py-12">
+        {/* Top accent line */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-x-0 top-0 h-px"
+          style={{
+            background: "linear-gradient(90deg, transparent, hsl(var(--primary) / 0.3) 50%, transparent)",
+          }}
+        />
         <div className="page-shell grid gap-8 sm:grid-cols-2 lg:grid-cols-6">
           <div className="space-y-3">
             <Link to="/" className="flex items-center gap-2 font-semibold text-foreground">
@@ -195,56 +288,58 @@ export function PublicShell({ children, source }: PublicShellProps) {
               The AI career command center — resumes, matching, applications and interview practice
               in one workflow.
             </p>
-            <a
-              href={INSTAGRAM_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Gradr on Instagram"
-              className="link-tap inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
-            >
-              <Instagram className="h-4 w-4" aria-hidden="true" />
-              Instagram
-            </a>
-            <a
-              href={FACEBOOK_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Gradr on Facebook"
-              className="link-tap inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
-            >
-              <FacebookIcon className="h-4 w-4" />
-              Facebook
-            </a>
-            <a
-              href={X_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Gradr on X"
-              className="link-tap inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
-            >
-              <XIcon className="h-4 w-4" />
-              X
-            </a>
-            <a
-              href={YOUTUBE_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Gradr on YouTube"
-              className="link-tap inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
-            >
-              <YouTubeIcon className="h-4 w-4" />
-              YouTube
-            </a>
-            <a
-              href={DISCORD_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Gradr on Discord"
-              className="link-tap inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
-            >
-              <DiscordIcon className="h-4 w-4" />
-              Discord
-            </a>
+            <div className="flex flex-wrap gap-3 pt-1">
+              <a
+                href={INSTAGRAM_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Gradr on Instagram"
+                className="link-tap inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+              >
+                <Instagram className="h-4 w-4" aria-hidden="true" />
+                Instagram
+              </a>
+              <a
+                href={FACEBOOK_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Gradr on Facebook"
+                className="link-tap inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+              >
+                <FacebookIcon className="h-4 w-4" />
+                Facebook
+              </a>
+              <a
+                href={X_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Gradr on X"
+                className="link-tap inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+              >
+                <XIcon className="h-4 w-4" />
+                X
+              </a>
+              <a
+                href={YOUTUBE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Gradr on YouTube"
+                className="link-tap inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+              >
+                <YouTubeIcon className="h-4 w-4" />
+                YouTube
+              </a>
+              <a
+                href={DISCORD_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Gradr on Discord"
+                className="link-tap inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+              >
+                <DiscordIcon className="h-4 w-4" />
+                Discord
+              </a>
+            </div>
           </div>
 
           <nav aria-label="Explore" className="space-y-3 text-sm">
@@ -252,7 +347,7 @@ export function PublicShell({ children, source }: PublicShellProps) {
             <ul className="space-y-2">
               {NAV.map((item) => (
                 <li key={item.to}>
-                  <Link to={item.to} className="link-tap text-muted-foreground hover:text-foreground">
+                  <Link to={item.to} className="link-tap text-muted-foreground transition-colors hover:text-primary">
                     {item.label}
                   </Link>
                 </li>
@@ -267,7 +362,7 @@ export function PublicShell({ children, source }: PublicShellProps) {
                 <li key={item.path}>
                   <a
                     href={appHref(item.path)}
-                    className="link-tap text-muted-foreground hover:text-foreground"
+                    className="link-tap text-muted-foreground transition-colors hover:text-primary"
                   >
                     {item.label}
                   </a>
@@ -281,7 +376,7 @@ export function PublicShell({ children, source }: PublicShellProps) {
             <ul className="space-y-2">
               {TOOL_LINKS.map((item) => (
                 <li key={item.to}>
-                  <Link to={item.to} className="link-tap text-muted-foreground hover:text-foreground">
+                  <Link to={item.to} className="link-tap text-muted-foreground transition-colors hover:text-primary">
                     {item.label}
                   </Link>
                 </li>
@@ -297,7 +392,7 @@ export function PublicShell({ children, source }: PublicShellProps) {
               <li>
                 <a
                   href={urlFor("earn", "/")}
-                  className="link-tap text-muted-foreground hover:text-foreground"
+                  className="link-tap text-muted-foreground transition-colors hover:text-primary"
                 >
                   Earn with Gradr
                 </a>
@@ -305,7 +400,7 @@ export function PublicShell({ children, source }: PublicShellProps) {
               <li>
                 <a
                   href={urlFor("earn", "/partner")}
-                  className="link-tap text-muted-foreground hover:text-foreground"
+                  className="link-tap text-muted-foreground transition-colors hover:text-primary"
                 >
                   Partner with Gradr
                 </a>
@@ -318,23 +413,23 @@ export function PublicShell({ children, source }: PublicShellProps) {
             <ul className="space-y-2">
               {LEGAL_PAGES.map((page) => (
                 <li key={page.path}>
-                  <Link to={page.path} className="link-tap text-muted-foreground hover:text-foreground">
+                  <Link to={page.path} className="link-tap text-muted-foreground transition-colors hover:text-primary">
                     {page.label}
                   </Link>
                 </li>
               ))}
               <li>
-                <Link to="/legal" className="link-tap text-muted-foreground hover:text-foreground">
+                <Link to="/legal" className="link-tap text-muted-foreground transition-colors hover:text-primary">
                   Legal &amp; contact
                 </Link>
               </li>
               <li>
-                <Link to="/connect" className="link-tap text-muted-foreground hover:text-foreground">
+                <Link to="/connect" className="link-tap text-muted-foreground transition-colors hover:text-primary">
                   Connect an AI assistant
                 </Link>
               </li>
               <li>
-                <a href={appLoginHref()} className="link-tap text-muted-foreground hover:text-foreground">
+                <a href={appLoginHref()} className="link-tap text-muted-foreground transition-colors hover:text-primary">
                   Sign in
                 </a>
               </li>
@@ -343,7 +438,6 @@ export function PublicShell({ children, source }: PublicShellProps) {
             </ul>
           </nav>
         </div>
-
         <div className="page-shell mt-10 border-t border-border/60 pt-6">
           <div className="flex flex-col items-center justify-between gap-3 text-sm text-muted-foreground sm:flex-row">
             <p>© {new Date().getFullYear()} Gradr. All rights reserved.</p>
