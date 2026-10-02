@@ -1,0 +1,19 @@
+services:
+  web:
+    image: oven/bun:1
+    working_dir: /app
+    volumes:
+      - ./:/app
+    ports:
+      - "3000:8080"
+    environment:
+      # Platform sets this; Vite appends it to its dev-server allowedHosts list.
+      - __VITE_ADDITIONAL_SERVER_ALLOWED_HOSTS
+    command: ["sh", "-ec", "bun install --frozen-lockfile && exec bun run dev"]
+    restart: on-failure
+    healthcheck:
+      test: ["CMD", "bun", "-e", "fetch('http://127.0.0.1:8080/').then(()=>process.exit(0)).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 120s
