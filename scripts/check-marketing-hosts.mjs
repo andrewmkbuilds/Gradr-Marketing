@@ -109,6 +109,10 @@ try {
       }
     }
 
+    // The Partner portal owns its own credential and legacy-route flow.
+    // Its paths are not subject to the marketing-host hand-off rule.
+    if (host.allowCredentialForm) continue;
+
     // --- 2. Retired product paths -------------------------------------------
     for (const path of RETIRED_PRODUCT_PATHS) {
       // A retired path may hand the visitor off mid-navigation, which surfaces
