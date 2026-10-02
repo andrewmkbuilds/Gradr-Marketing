@@ -14,6 +14,7 @@ import {
   buildFaqLd,
   buildItemListLd,
 } from "@/lib/structuredData";
+import { Reveal } from "@/components/landing/Reveal";
 
 const INDEX_FAQS = [
   {
@@ -104,29 +105,30 @@ export default function CareerAdvice() {
         </div>
 
         <section aria-label="Guides" className="grid gap-4 sm:grid-cols-2">
-          {results.map((guide) => (
-            <Link
-              key={guide.slug}
-              to={guidePath(guide.slug)}
-              onClick={() =>
-                trackEvent("guide_card_click", {
-                  source: "career-advice-index",
-                  destination: guidePath(guide.slug),
-                  article: guide.slug,
-                })
-              }
-              className="group rounded-xl border border-border bg-card p-5 transition-colors hover:border-primary/50"
-            >
-              <p className="text-xs uppercase tracking-wide text-muted-foreground">
-                {guide.category} · {guide.readMinutes} min read
-              </p>
-              <h2 className="mt-2 text-lg font-semibold text-foreground">{guide.title}</h2>
-              <p className="mt-1 text-sm text-muted-foreground">{guide.description}</p>
-              <span className="mt-3 inline-flex items-center gap-1 text-sm text-primary">
-                Read guide
-                <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 motion-reduce:transition-none" />
-              </span>
-            </Link>
+          {results.map((guide, i) => (
+            <Reveal key={guide.slug} delay={i * 50}>
+              <Link
+                to={guidePath(guide.slug)}
+                onClick={() =>
+                  trackEvent("guide_card_click", {
+                    source: "career-advice-index",
+                    destination: guidePath(guide.slug),
+                    article: guide.slug,
+                  })
+                }
+                className="card-glow group block h-full rounded-2xl p-5"
+              >
+                <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                  {guide.category} · {guide.readMinutes} min read
+                </p>
+                <h2 className="mt-2 font-display text-lg font-semibold text-foreground">{guide.title}</h2>
+                <p className="mt-1 text-sm text-muted-foreground">{guide.description}</p>
+                <span className="mt-3 inline-flex items-center gap-1 text-sm text-primary">
+                  Read guide
+                  <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 motion-reduce:transition-none" />
+                </span>
+              </Link>
+            </Reveal>
           ))}
           {results.length === 0 && (
             <p className="text-sm text-muted-foreground">No guides match “{query}”.</p>
@@ -135,67 +137,71 @@ export default function CareerAdvice() {
 
         <FaqBlock items={INDEX_FAQS} source="career-advice-index" />
 
-        <section className="rounded-xl border border-border bg-card p-6">
-          <h2 className="text-lg font-semibold text-foreground">Free tools that do the work</h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Guides tell you what to change. These run it on your own documents and applications.
-          </p>
-          <ul className="mt-4 grid gap-3 sm:grid-cols-3">
-            {[
-              {
-                to: "/job-application-tracker",
-                label: "Job application tracker",
-                note: "One AI pipeline for every role, follow-up and interview",
-              },
-              {
-                to: "/ats-resume-checker",
-                label: "ATS resume checker",
-                note: "Score your resume against any job description",
-              },
-              {
-                to: "/ai-interview-coach",
-                label: "AI interview coach",
-                note: "Voice mock interviews with scored feedback",
-              },
-            ].map((tool) => (
-              <li key={tool.to}>
-                <Link
-                  to={tool.to}
-                  onClick={() =>
-                    trackEvent("tool_card_click", {
-                      source: "career-advice-index",
-                      destination: tool.to,
-                    })
-                  }
-                  className="group block h-full rounded-lg border border-border/70 p-4 transition-colors hover:border-primary/50"
-                >
-                  <span className="flex items-center gap-1 text-sm font-medium text-foreground">
-                    {tool.label}
-                    <ArrowRight
-                      className="h-3.5 w-3.5 text-primary transition-transform group-hover:translate-x-0.5 motion-reduce:transition-none"
-                      aria-hidden="true"
-                    />
-                  </span>
-                  <span className="mt-1 block text-sm text-muted-foreground">{tool.note}</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </section>
+        <Reveal>
+          <section className="card-glow rounded-2xl p-6">
+            <h2 className="font-display text-lg font-semibold text-foreground">Free tools that do the work</h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Guides tell you what to change. These run it on your own documents and applications.
+            </p>
+            <ul className="mt-4 grid gap-3 sm:grid-cols-3">
+              {[
+                {
+                  to: "/job-application-tracker",
+                  label: "Job application tracker",
+                  note: "One AI pipeline for every role, follow-up and interview",
+                },
+                {
+                  to: "/ats-resume-checker",
+                  label: "ATS resume checker",
+                  note: "Score your resume against any job description",
+                },
+                {
+                  to: "/ai-interview-coach",
+                  label: "AI interview coach",
+                  note: "Voice mock interviews with scored feedback",
+                },
+              ].map((tool) => (
+                <li key={tool.to}>
+                  <Link
+                    to={tool.to}
+                    onClick={() =>
+                      trackEvent("tool_card_click", {
+                        source: "career-advice-index",
+                        destination: tool.to,
+                      })
+                    }
+                    className="group block h-full rounded-xl border border-border/70 p-4 transition-colors hover:border-primary/50"
+                  >
+                    <span className="flex items-center gap-1 text-sm font-medium text-foreground">
+                      {tool.label}
+                      <ArrowRight
+                        className="h-3.5 w-3.5 text-primary transition-transform group-hover:translate-x-0.5 motion-reduce:transition-none"
+                        aria-hidden="true"
+                      />
+                    </span>
+                    <span className="mt-1 block text-sm text-muted-foreground">{tool.note}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+        </Reveal>
 
-        <section className="rounded-xl border border-border bg-card p-6">
-          <h2 className="text-lg font-semibold text-foreground">Looking for roles instead?</h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Browse job search pages by role, location, and remote preference.
-          </p>
-          <Link
-            to="/job-search"
-            className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-primary"
-          >
-            Explore job search pages
-            <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
-          </Link>
-        </section>
+        <Reveal>
+          <section className="card-glow rounded-2xl p-6">
+            <h2 className="font-display text-lg font-semibold text-foreground">Looking for roles instead?</h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Browse job search pages by role, location, and remote preference.
+            </p>
+            <Link
+              to="/job-search"
+              className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-primary"
+            >
+              Explore job search pages
+              <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+            </Link>
+          </section>
+        </Reveal>
 
       </div>
     </PublicShell>

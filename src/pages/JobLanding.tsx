@@ -19,6 +19,8 @@ import { trackEvent, withUtm } from "@/lib/analytics";
 import { appSignupHref } from "@/lib/appLinks";
 import { useReadTracking } from "@/hooks/useReadTracking";
 import NotFound from "@/pages/NotFound";
+import { Reveal } from "@/components/landing/Reveal";
+import { cn } from "@/lib/utils";
 
 export default function JobLanding() {
   const { slug = "" } = useParams();
@@ -86,7 +88,7 @@ export default function JobLanding() {
                   destination: "/auth",
                 })
               }
-              className={buttonVariants({ variant: "primary", size: "lg" })}
+              className={cn(buttonVariants({ variant: "primary", size: "lg" }), "btn-glow")}
             >
               Match my resume to these roles
               <ArrowRight className="h-4 w-4" aria-hidden="true" />
@@ -94,49 +96,55 @@ export default function JobLanding() {
           }
         />
 
-        <section className="space-y-3">
-          <Text variant="h2">
-            Skills employers look for in {role.plural}
-          </Text>
-          <div className="flex flex-wrap gap-2">
-            {role.skills.map((skill) => (
-              <Badge key={skill} variant="outline">
-                {skill}
-              </Badge>
-            ))}
-          </div>
-          <p className="text-muted-foreground">
-            Treat this as a starting checklist, not a requirement list. Read three or four live
-            postings for the exact title you want and keep the terms that repeat — those are the ones
-            worth mirroring in your resume.
-          </p>
-        </section>
+        <Reveal>
+          <section className="space-y-3">
+            <Text variant="h2">
+              Skills employers look for in {role.plural}
+            </Text>
+            <div className="flex flex-wrap gap-2">
+              {role.skills.map((skill) => (
+                <Badge key={skill} variant="outline">
+                  {skill}
+                </Badge>
+              ))}
+            </div>
+            <p className="text-muted-foreground">
+              Treat this as a starting checklist, not a requirement list. Read three or four live
+              postings for the exact title you want and keep the terms that repeat — those are the ones
+              worth mirroring in your resume.
+            </p>
+          </section>
+        </Reveal>
 
-        <section className="space-y-3">
-          <Text variant="h2">
-            What the role involves day to day
-          </Text>
-          <ul className="space-y-2">
-            {role.responsibilities.map((item) => (
-              <li key={item} className="flex gap-2.5 text-muted-foreground">
-                <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
-                <span>{item}</span>
-              </li>
-            ))}
-          </ul>
-        </section>
+        <Reveal delay={60}>
+          <section className="space-y-3">
+            <Text variant="h2">
+              What the role involves day to day
+            </Text>
+            <ul className="space-y-2">
+              {role.responsibilities.map((item) => (
+                <li key={item} className="flex gap-2.5 text-muted-foreground">
+                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        </Reveal>
 
-        <section className="space-y-3">
-          <Text variant="h2">
-            Searching {location.remote ? "remote roles" : `in ${location.name}`}
-          </Text>
-          <p className="text-muted-foreground">{location.blurb}</p>
-          <p className="text-muted-foreground">
-            Gradr pulls live listings that fit your profile, scores each one against your resume, and
-            shows the gaps to close before you apply — so you spend your effort on the applications
-            where you are genuinely competitive.
-          </p>
-        </section>
+        <Reveal delay={120}>
+          <section className="space-y-3">
+            <Text variant="h2">
+              Searching {location.remote ? "remote roles" : `in ${location.name}`}
+            </Text>
+            <p className="text-muted-foreground">{location.blurb}</p>
+            <p className="text-muted-foreground">
+              Gradr pulls live listings that fit your profile, scores each one against your resume, and
+              shows the gaps to close before you apply — so you spend your effort on the applications
+              where you are genuinely competitive.
+            </p>
+          </section>
+        </Reveal>
 
         <FaqBlock items={faqs} source={landing.slug} />
 

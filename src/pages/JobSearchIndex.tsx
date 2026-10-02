@@ -19,6 +19,7 @@ import {
   buildFaqLd,
   buildItemListLd,
 } from "@/lib/structuredData";
+import { Reveal } from "@/components/landing/Reveal";
 
 const INDEX_FAQS = [
   {
@@ -100,102 +101,105 @@ export default function JobSearchIndex() {
           description="Start from the role you want. Each page covers the skills that recur in those postings, how to tailor a resume for them, and what to prepare for the interview."
         />
 
-        <section aria-label="Filters" className="space-y-4 rounded-xl border border-border bg-card p-4">
-          <div className="flex items-center gap-2">
-            <Search className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
-            <Input
-              type="search"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search role, city, or skill"
-              aria-label="Search job pages by role, city, or skill"
-            />
-          </div>
+        <Reveal>
+          <section aria-label="Filters" className="card-glow space-y-4 rounded-2xl p-4">
+            <div className="flex items-center gap-2">
+              <Search className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+              <Input
+                type="search"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search role, city, or skill"
+                aria-label="Search job pages by role, city, or skill"
+              />
+            </div>
 
-          <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by role">
+            <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by role">
+              <Button
+                size="sm"
+                variant={role === "all" ? "primary" : "outline"}
+                aria-pressed={role === "all"}
+                onClick={() => setRole("all")}
+              >
+                All roles
+              </Button>
+              {JOB_ROLES.map((r) => (
+                <Button
+                  key={r.id}
+                  size="sm"
+                  variant={role === r.id ? "primary" : "outline"}
+                  aria-pressed={role === r.id}
+                  onClick={() => {
+                    setRole(r.id);
+                    trackEvent("job_filter_change", {
+                      source: "job-search-index",
+                      location: r.id,
+                      filter: "role",
+                    });
+                  }}
+                >
+                  {r.name}
+                </Button>
+              ))}
+            </div>
+
             <Button
               size="sm"
-              variant={role === "all" ? "primary" : "outline"}
-              aria-pressed={role === "all"}
-              onClick={() => setRole("all")}
+              variant={remoteOnly ? "primary" : "outline"}
+              aria-pressed={remoteOnly}
+              onClick={() => {
+                setRemoteOnly((v) => !v);
+                trackEvent("job_filter_change", {
+                  source: "job-search-index",
+                  location: "remote-toggle",
+                  filter: "remote",
+                  value: String(!remoteOnly),
+                });
+              }}
+              className="gap-1.5"
             >
-              All roles
+              <Wifi className="h-3.5 w-3.5" aria-hidden="true" />
+              Remote only
             </Button>
-            {JOB_ROLES.map((r) => (
-              <Button
-                key={r.id}
-                size="sm"
-                variant={role === r.id ? "primary" : "outline"}
-                aria-pressed={role === r.id}
-                onClick={() => {
-                  setRole(r.id);
-                  trackEvent("job_filter_change", {
-                    source: "job-search-index",
-                    location: r.id,
-                    filter: "role",
-                  });
-                }}
-              >
-                {r.name}
-              </Button>
-            ))}
-          </div>
 
-          <Button
-            size="sm"
-            variant={remoteOnly ? "primary" : "outline"}
-            aria-pressed={remoteOnly}
-            onClick={() => {
-              setRemoteOnly((v) => !v);
-              trackEvent("job_filter_change", {
-                source: "job-search-index",
-                location: "remote-toggle",
-                filter: "remote",
-                value: String(!remoteOnly),
-              });
-            }}
-            className="gap-1.5"
-          >
-            <Wifi className="h-3.5 w-3.5" aria-hidden="true" />
-            Remote only
-          </Button>
-
-          <p className="text-xs text-muted-foreground" aria-live="polite">
-            {results.length} page{results.length === 1 ? "" : "s"} match your filters
-          </p>
-        </section>
+            <p className="text-xs text-muted-foreground" aria-live="polite">
+              {results.length} page{results.length === 1 ? "" : "s"} match your filters
+            </p>
+          </section>
+        </Reveal>
 
         <section aria-label="Job search pages" className="grid gap-3 sm:grid-cols-2">
-          {results.map((landing) => (
-            <Link
-              key={landing.slug}
-              to={jobLandingPath(landing.slug)}
-              onClick={() =>
-                trackEvent("job_landing_click", {
-                  source: "job-search-index",
-                  destination: jobLandingPath(landing.slug),
-                  article: landing.slug,
-                })
-              }
-              className="group rounded-xl border border-border bg-card p-4 transition-colors hover:border-primary/50"
-            >
-              <p className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
-                {landing.location.remote ? (
-                  <Wifi className="h-3.5 w-3.5" aria-hidden="true" />
-                ) : (
-                  <MapPin className="h-3.5 w-3.5" aria-hidden="true" />
-                )}
-                {landing.location.name}
-              </p>
-              <div className="mt-1">
-                <Text variant="h6" as="h2">{landing.title}</Text>
-              </div>
+          {results.map((landing, i) => (
+            <Reveal key={landing.slug} delay={i * 40}>
+              <Link
+                to={jobLandingPath(landing.slug)}
+                onClick={() =>
+                  trackEvent("job_landing_click", {
+                    source: "job-search-index",
+                    destination: jobLandingPath(landing.slug),
+                    article: landing.slug,
+                  })
+                }
+                className="card-glow group block h-full rounded-2xl p-4"
+              >
+                <p className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+                  {landing.location.remote ? (
+                    <Wifi className="h-3.5 w-3.5" aria-hidden="true" />
+                  ) : (
+                    <MapPin className="h-3.5 w-3.5" aria-hidden="true" />
+                  )}
+                  {landing.location.name}
+                </p>
+                <div className="mt-1">
+                  <Text variant="h6" as="h2">{landing.title}</Text>
+                </div>
 
-              <span className="mt-2 inline-flex items-center gap-1 text-sm text-primary">
-                View page
-                <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 motion-reduce:transition-none" />
-              </span>
-            </Link>
+                <span className="mt-2 inline-flex items-center gap-1 text-sm text-primary">
+                  View page
+                  <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 motion-reduce:transition-none" />
+                </span>
+              </Link>
+            </Reveal>
           ))}
           {results.length === 0 && (
             <p className="text-sm text-muted-foreground">
@@ -206,19 +210,21 @@ export default function JobSearchIndex() {
 
         <FaqBlock items={INDEX_FAQS} source="job-search-index" />
 
-        <section className="rounded-xl border border-border bg-card p-6">
-          <Text variant="h5" as="h2">Not sure how to present your experience?</Text>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Read the resume, cover letter, and interview guides before you apply.
-          </p>
-          <Link
-            to="/career-advice"
-            className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-primary"
-          >
-            Browse career advice
-            <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
-          </Link>
-        </section>
+        <Reveal>
+          <section className="card-glow rounded-2xl p-6">
+            <Text variant="h5" as="h2">Not sure how to present your experience?</Text>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Read the resume, cover letter, and interview guides before you apply.
+            </p>
+            <Link
+              to="/career-advice"
+              className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-primary"
+            >
+              Browse career advice
+              <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+            </Link>
+          </section>
+        </Reveal>
       </div>
     </PublicShell>
   );
