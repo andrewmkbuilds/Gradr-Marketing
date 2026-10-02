@@ -94,8 +94,7 @@ try {
       // Playwright's execution context.
       let sameOriginProductLinks = [];
       try {
-        sameOriginProductLinks = await page['$eval'](
-        "a[href]",
+        sameOriginProductLinks = await page.locator("a[href]").evaluateAll(
         (nodes, prefixes) =>
           nodes
             .map((n) => n.getAttribute("href") ?? "")
@@ -113,8 +112,7 @@ try {
         if (!/Execution context was destroyed|frame was detached|Target page/i.test(String(error))) throw error;
         await page.waitForLoadState("domcontentloaded").catch(() => {});
         await page.waitForTimeout(150);
-        sameOriginProductLinks = await page['$eval'](
-          "a[href]",
+        sameOriginProductLinks = await page.locator("a[href]").evaluateAll(
           (nodes, prefixes) =>
             nodes
               .map((n) => n.getAttribute("href") ?? "")
