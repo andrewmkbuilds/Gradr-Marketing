@@ -81,7 +81,7 @@ function ScorePanel() {
       </div>
 
       <div className="mt-4 flex items-end gap-3">
-        <span className="type-hero !text-5xl leading-none text-foreground">
+        <span className="type-hero leading-none text-foreground">
           <CountUp to={92} duration={1.8} immediate />
         </span>
         <span className="pb-2 text-xs text-muted-foreground">ATS score</span>
