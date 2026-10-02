@@ -1,45 +1,115 @@
-import { AnimatePresence, motion, useMotionValue, useSpring } from "motion/react";
-import { useEffect, useState } from "react";
-import { useSpatialPointer } from "@/hooks/useDepthCapability";
-import { springPointer, springSnappy } from "@/lib/motion/tokens";
+import { motion, useMotionValue, useSpring } from "motion/react";
+import { useEffect, useRef, useState } from "react";
+import { useReducedMotionPref } from "@/hooks/useMotionPreference";
 import { cn } from "@/lib/utils";
 
-const INTERACTIVE = 'a, button, [role="button"], [role="link"], input, select, textarea, summary, [data-cursor="interactive"]';
+/**
+ * The custom cursor should appear on any device with a fine pointer (mouse or
+ * trackpad) that hasn't opted into reduced motion. Unlike the 3D depth system
+ * (which gates on CPU cores and memory), the cursor is lightweight enough to
+ * run everywhere a mouse exists.
+ */
+function useCursorEnabled(): boolean {
+  const reduced = useReducedMotionPref();
+  const [finePointer, setFinePointer] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return window.matchMedia?.("(pointer: fine)")?.matches ?? false;
+  });
+
+  useEffect(() => {
+    const mq = window.matchMedia?.("(pointer: fine)");
+    if (!mq) return;
+    const onChange = (e: MediaQueryListEvent) => setFinePointer(e.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+
+  return finePointer && !reduced;
+}
 
 /**
- * Pointer atmosphere for the marketing surface: a soft ambient halo that trails
- * the cursor, plus a precise ring that snaps to interactive elements.
+ * Selectors that trigger the "interactive" cursor state (ring expands, dot
+ * fades). Covers semantic elements plus the premium utility classes.
+ */
+const INTERACTIVE =
+  'a, button, [role="button"], [role="link"], summary, [data-cursor="interactive"], .card-glow, .btn-glow, .glow-ring, label[for], [tabindex]:not([tabindex="-1"])';
+
+/**
+ * Elements where the native text cursor should be restored and the custom
+ * cursor hidden entirely, so users get the expected I-beam for editing.
+ */
+const TEXT_FIELDS =
+  'input[type="text"], input[type="email"], input[type="password"], input[type="search"], input[type="url"], input[type="tel"], input[type="number"], input:not([type]), textarea, [contenteditable="true"], [contenteditable=""]';
+
+function isText(el: Element | null): boolean {
+  return Boolean(el?.closest?.(TEXT_FIELDS));
+}
+
+function isHot(el: Element | null): boolean {
+  return Boolean(el?.closest?.(INTERACTIVE));
+}
+
+/**
+ * Premium custom cursor: a precise dot that tracks the pointer exactly, plus
+ * an outer ring that lags behind with spring physics for an organic feel.
  *
- * Purely decorative — `pointer-events-none`, hidden from assistive tech, and
- * disabled entirely on touch devices and whenever motion is reduced (the
- * native cursor is never replaced, only accompanied).
+ * - **Hover** over interactive elements → ring expands, dot fades.
+ * - **Text fields** → custom cursor hides, native I-beam restored.
+ * - **Click** → ring compresses + a subtle ripple expands and fades.
+ * - **Touch / reduced motion** → disabled entirely; native cursor untouched.
+ *
+ * Purely decorative — `pointer-events-none`, `aria-hidden`, and never
+ * interferes with clicking, scrolling, selection, or drag-and-drop.
  */
 export function CursorEffects({ className }: { className?: string }) {
-  const active = useSpatialPointer();
+  const active = useCursorEnabled();
   const [visible, setVisible] = useState(false);
   const [hot, setHot] = useState(false);
+  const [textMode, setTextMode] = useState(false);
   const [pressed, setPressed] = useState(false);
+  const [ripples, setRipples] = useState<{ id: number; x: number; y: number }[]>([]);
+  const rippleId = useRef(0);
 
+  // Dot follows the pointer with zero lag; ring trails with spring physics.
   const x = useMotionValue(-100);
   const y = useMotionValue(-100);
-  const ringX = useSpring(x, springSnappy);
-  const ringY = useSpring(y, springSnappy);
-  const haloX = useSpring(x, springPointer);
-  const haloY = useSpring(y, springPointer);
+  const ringX = useSpring(x, { stiffness: 350, damping: 32, mass: 0.4 });
+  const ringY = useSpring(y, { stiffness: 350, damping: 32, mass: 0.4 });
+
+  // Toggle the CSS class that hides the native cursor.
+  useEffect(() => {
+    const html = document.documentElement;
+    if (active) html.classList.add("cc-active");
+    else html.classList.remove("cc-active", "cc-text");
+    return () => html.classList.remove("cc-active", "cc-text");
+  }, [active]);
+
+  // Toggle text mode to restore the native I-beam on form fields.
+  useEffect(() => {
+    document.documentElement.classList.toggle("cc-text", textMode);
+  }, [textMode]);
 
   useEffect(() => {
     if (!active) return;
 
-    const onMove = (event: PointerEvent) => {
-      if (event.pointerType !== "mouse") return;
-      x.set(event.clientX);
-      y.set(event.clientY);
+    const onMove = (e: PointerEvent) => {
+      if (e.pointerType !== "mouse") return;
+      x.set(e.clientX);
+      y.set(e.clientY);
       setVisible(true);
-      const target = event.target as Element | null;
-      setHot(Boolean(target?.closest?.(INTERACTIVE)));
+      const el = e.target as Element | null;
+      const text = isText(el);
+      setTextMode(text);
+      setHot(text ? false : isHot(el));
     };
     const onLeave = () => setVisible(false);
-    const onDown = () => setPressed(true);
+    const onDown = (e: PointerEvent) => {
+      if (e.pointerType !== "mouse") return;
+      setPressed(true);
+      const id = ++rippleId.current;
+      setRipples((prev) => [...prev, { id, x: e.clientX, y: e.clientY }]);
+      window.setTimeout(() => setRipples((prev) => prev.filter((r) => r.id !== id)), 500);
+    };
     const onUp = () => setPressed(false);
 
     window.addEventListener("pointermove", onMove, { passive: true });
@@ -59,63 +129,52 @@ export function CursorEffects({ className }: { className?: string }) {
 
   if (!active) return null;
 
-  return (
-    <div
-      aria-hidden
-      className={cn("pointer-events-none fixed inset-0 z-50 hidden md:block", className)}
-    >
-      {/* Each layer is its own AnimatePresence child — a Fragment cannot hold
-          the ref AnimatePresence attaches, which React warns about on every
-          pointer move. */}
-      <AnimatePresence>
-        {visible ? (
-          <motion.span
-            key="halo"
-            className="absolute left-0 top-0 block"
-            style={{ x: haloX, y: haloY }}
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: hot ? 0.9 : 0.55, scale: hot ? 1.15 : 1 }}
-            exit={{ opacity: 0, scale: 0.8 }}
-            transition={springPointer}
-          >
-            <span className="block size-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-3xl" />
-          </motion.span>
-        ) : null}
-      </AnimatePresence>
-      <AnimatePresence>
-        {visible ? (
-          <motion.span
-            key="ring"
-            className="absolute left-0 top-0 block"
-            style={{ x: ringX, y: ringY }}
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{
-              opacity: 1,
-              scale: pressed ? 0.7 : hot ? 1.35 : 0.85,
-            }}
-            exit={{ opacity: 0, scale: 0.5 }}
-            transition={springSnappy}
-          >
-            <span className="block size-10 -translate-x-1/2 -translate-y-1/2 rounded-full border border-primary/60" />
-          </motion.span>
-        ) : null}
-      </AnimatePresence>
-      <AnimatePresence>
-        {visible ? (
-          <motion.span
-            key="dot"
-            className="absolute left-0 top-0 block"
-            style={{ x, y }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: hot ? 0 : 1 }}
-            exit={{ opacity: 0 }}
-            transition={springSnappy}
-          >
-            <span className="block size-1 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary" />
-          </motion.span>
-        ) : null}
-      </AnimatePresence>
+  const showCursor = visible && !textMode;
 
+  return (
+    <div aria-hidden className={cn("pointer-events-none fixed inset-0 z-[10000]", className)}>
+      {/* Click ripples — thin ring expands and fades from the click point */}
+      {ripples.map((r) => (
+        <motion.span
+          key={r.id}
+          className="absolute left-0 top-0"
+          style={{ x: r.x, y: r.y }}
+          initial={{ opacity: 0.35, scale: 0 }}
+          animate={{ opacity: 0, scale: 4 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+        >
+          <span className="block h-8 w-8 -translate-x-1/2 -translate-y-1/2 rounded-full border border-primary/40" />
+        </motion.span>
+      ))}
+
+      {/* Outer ring — lags behind the dot with spring physics, subtle glow */}
+      <motion.span
+        className="absolute left-0 top-0"
+        style={{ x: ringX, y: ringY }}
+        animate={{
+          opacity: showCursor ? 1 : 0,
+          scale: pressed ? 0.7 : hot ? 1.4 : 1,
+        }}
+        transition={{ type: "spring", stiffness: 400, damping: 28 }}
+      >
+        <span
+          className="block h-8 w-8 -translate-x-1/2 -translate-y-1/2 rounded-full border border-primary/50"
+          style={{ boxShadow: "0 0 12px hsl(var(--primary) / 0.15)" }}
+        />
+      </motion.span>
+
+      {/* Inner dot — tracks the pointer exactly, hides on interactive hover */}
+      <motion.span
+        className="absolute left-0 top-0"
+        style={{ x, y }}
+        animate={{
+          opacity: showCursor ? (hot ? 0 : 1) : 0,
+          scale: pressed ? 0.5 : 1,
+        }}
+        transition={{ type: "spring", stiffness: 500, damping: 30 }}
+      >
+        <span className="block h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary" />
+      </motion.span>
     </div>
   );
 }

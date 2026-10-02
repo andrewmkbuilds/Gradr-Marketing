@@ -1527,6 +1527,24 @@ html[data-motion="full"] *::after {
   }
 }
 
+/* ============================================================
+   Custom cursor — hide the native cursor when the premium
+   pointer (CursorEffects) is active. The component toggles
+   `cc-active` on <html>; `cc-text` restores the native I-beam
+   on form fields so editing still feels right.
+   ============================================================ */
+html.cc-active,
+html.cc-active * {
+  cursor: none !important;
+}
+
+html.cc-active.cc-text input,
+html.cc-active.cc-text textarea,
+html.cc-active.cc-text [contenteditable="true"],
+html.cc-active.cc-text [contenteditable=""] {
+  cursor: text !important;
+}
+
 @media (max-width: 767px) {
   /* Nothing may push the page sideways on a phone. Wide children (tables,
      charts, code) scroll inside their own box instead of the document. */
