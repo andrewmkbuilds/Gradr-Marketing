@@ -270,7 +270,6 @@ export default function JobApplicationTracker() {
       <ToolSection bg="card">
         <Reveal className="space-y-4">
           <ToolEyebrow>FAQ</ToolEyebrow>
-          <ToolHeading>Frequently asked questions</ToolHeading>
         </Reveal>
         <div className="mt-8">
           <FaqBlock items={FAQS} source="job-application-tracker" />
