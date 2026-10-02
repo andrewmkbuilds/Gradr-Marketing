@@ -28,7 +28,7 @@ async function checkLoad(page, name, navigate) {
   } catch (error) {
     // Preview-server reloads can briefly detach the document; retry the URL
     // so the gate measures the rendered page instead of a navigation race.
-    if (!/detached|closed|interrupted|ERR_ABORTED|Target page/i.test(String(error))) throw error;
+    if (!/detached|Not attached|Protocol error.*Page\.reload|closed|interrupted|ERR_ABORTED|Target page/i.test(String(error))) throw error;
     await page.goto(page.url(), { waitUntil: "commit", timeout: 30_000 });
   }
   const flash = await sampleForFlash(page);
