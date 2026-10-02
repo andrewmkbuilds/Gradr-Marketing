@@ -25,7 +25,7 @@ services:
         bun install --frozen-lockfile
         exec bun run dev -- --host 0.0.0.0 --port 8080
     healthcheck:
-      test: ["CMD", "sh", "-c", "wget -qO- http://127.0.0.1:8080/ >/dev/null 2>&1 || curl -sf http://127.0.0.1:8080/ >/dev/null 2>&1 || exit 1"]
+      test: ["CMD", "bun", "-e", "fetch('http://127.0.0.1:8080/').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
       interval: 10s
       timeout: 5s
       retries: 6
