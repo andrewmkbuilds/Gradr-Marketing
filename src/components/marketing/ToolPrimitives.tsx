@@ -14,6 +14,7 @@ import { SpotlightCard } from "@/components/effects";
 import { GradientText } from "@/components/effects";
 import { AnimatedHeading } from "@/components/effects";
 import { easeOut, viewportOnce } from "@/components/motion";
+import { DimensionalText } from "@/components/three-d";
 import { cn } from "@/lib/utils";
 
 /* ------------------------------ Hero ------------------------------ */
@@ -42,14 +43,16 @@ export function ToolHero({
           <GradientText variant="shine">{eyebrow}</GradientText>
         </motion.span>
 
-        <AnimatedHeading
-          as="h1"
-          variant="mask"
-          text={title}
-          className="type-section mt-5 text-balance"
-          immediate
-          delay={0.08}
-        />
+        <DimensionalText as="h1" depth="strong" className="type-section mt-5 text-balance">
+          <AnimatedHeading
+            as="span"
+            variant="mask"
+            text={title}
+            className="block"
+            immediate
+            delay={0.08}
+          />
+        </DimensionalText>
 
         <motion.p
           initial={{ opacity: 0, y: 10 }}
@@ -138,11 +141,11 @@ export function ToolHeading({ children }: { children: React.ReactNode }) {
         as="h2"
         variant="mask"
         text={children}
-        className="type-h1 mt-4 text-balance"
+        className="type-h1 text-dimensional mt-4 text-balance"
       />
     );
   }
-  return <h2 className="type-h1 mt-4 text-balance">{children}</h2>;
+  return <h2 className="type-h1 text-dimensional mt-4 text-balance">{children}</h2>;
 }
 
 /* ------------------------------ Step Card ------------------------------ */
@@ -162,7 +165,7 @@ export function ToolStepCard({
 }) {
   return (
     <Reveal delay={delay}>
-      <SpotlightCard className="card-conic step-connector h-full rounded-2xl p-5">
+      <SpotlightCard className="card-conic shadow-3d-sm step-connector h-full rounded-2xl p-5">
         <div className="flex items-center gap-3">
           <span className="icon-premium depth-press">
             <Icon className="h-5 w-5" aria-hidden />
@@ -192,7 +195,7 @@ export function ToolFeatureCard({
 }) {
   return (
     <Reveal delay={delay}>
-      <div className="card-conic h-full rounded-2xl p-5">
+      <div className="card-conic shadow-3d-sm h-full rounded-2xl p-5">
         {Icon && (
           <div className="icon-premium mb-3 depth-press">
             <Icon className="h-5 w-5" aria-hidden />
@@ -218,7 +221,7 @@ export function ToolCtaSection({
 }) {
   return (
     <Reveal>
-      <section className="cta-glow section-gap relative overflow-hidden rounded-3xl border border-primary/25 bg-primary/[0.04] p-8 text-center sm:p-12">
+      <section className="cta-glow light-rim section-gap relative overflow-hidden rounded-3xl border border-primary/25 bg-primary/[0.04] p-8 text-center shadow-3d-lg sm:p-12">
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 opacity-30"

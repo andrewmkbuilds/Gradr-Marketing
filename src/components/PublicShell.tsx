@@ -88,7 +88,7 @@ export function PublicShell({ children, source }: PublicShellProps) {
         className={cn(
           "sticky top-0 z-40 transition-all duration-300",
           scrolled
-            ? "depth-lit border-b border-border/60 bg-background/85 backdrop-blur-xl"
+            ? "glass-3d light-rim border-b border-border/60"
             : "border-b border-transparent bg-background/60 backdrop-blur-md",
         )}
       >

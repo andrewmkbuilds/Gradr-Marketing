@@ -1525,13 +1525,537 @@
     pointer-events: none;
   }
 
+  /* ============================================================
+     3D DEPTH SYSTEM — multi-layer shadows, dimensional typography,
+     enhanced glass, perspective grids, depth fog, virtual lighting.
+     All GPU-only (transform/opacity/box-shadow); degrades under
+     reduced motion and on touch devices.
+     ============================================================ */
+
+  /* ---------- Multi-layer 3D shadow system ----------
+     Five elevation tiers that read as physical depth, not flat drop shadows.
+     Each combines a tight contact shadow + a soft ambient spread. */
+  .shadow-3d-sm {
+    box-shadow:
+      0 1px 2px hsl(var(--foreground) / 0.08),
+      0 4px 12px -4px hsl(var(--foreground) / 0.12);
+  }
+  .shadow-3d-md {
+    box-shadow:
+      0 2px 4px hsl(var(--foreground) / 0.06),
+      0 8px 20px -6px hsl(var(--foreground) / 0.18),
+      0 16px 36px -12px hsl(var(--foreground) / 0.12);
+  }
+  .shadow-3d-lg {
+    box-shadow:
+      0 4px 8px hsl(var(--foreground) / 0.08),
+      0 12px 28px -8px hsl(var(--foreground) / 0.22),
+      0 28px 56px -16px hsl(var(--foreground) / 0.18),
+      0 48px 96px -32px hsl(var(--foreground) / 0.12);
+  }
+  .shadow-3d-glass {
+    box-shadow:
+      0 2px 6px hsl(var(--foreground) / 0.06),
+      0 12px 32px -8px hsl(var(--foreground) / 0.16),
+      inset 0 1px 0 hsl(0 0% 100% / 0.12);
+  }
+  .shadow-3d-hero {
+    box-shadow:
+      0 8px 16px hsl(var(--foreground) / 0.1),
+      0 24px 48px -12px hsl(var(--foreground) / 0.28),
+      0 56px 112px -24px hsl(var(--foreground) / 0.22),
+      0 96px 160px -48px hsl(var(--foreground) / 0.16);
+  }
+  .dark .shadow-3d-sm {
+    box-shadow:
+      0 1px 2px hsl(0 0% 0% / 0.2),
+      0 4px 12px -4px hsl(0 0% 0% / 0.32);
+  }
+  .dark .shadow-3d-md {
+    box-shadow:
+      0 2px 4px hsl(0 0% 0% / 0.16),
+      0 8px 20px -6px hsl(0 0% 0% / 0.4),
+      0 16px 36px -12px hsl(0 0% 0% / 0.28);
+  }
+  .dark .shadow-3d-lg {
+    box-shadow:
+      0 4px 8px hsl(0 0% 0% / 0.2),
+      0 12px 28px -8px hsl(0 0% 0% / 0.5),
+      0 28px 56px -16px hsl(0 0% 0% / 0.4),
+      0 48px 96px -32px hsl(0 0% 0% / 0.28);
+  }
+  .dark .shadow-3d-glass {
+    box-shadow:
+      0 2px 6px hsl(0 0% 0% / 0.18),
+      0 12px 32px -8px hsl(0 0% 0% / 0.38),
+      inset 0 1px 0 hsl(0 0% 100% / 0.06);
+  }
+  .dark .shadow-3d-hero {
+    box-shadow:
+      0 8px 16px hsl(0 0% 0% / 0.24),
+      0 24px 48px -12px hsl(0 0% 0% / 0.6),
+      0 56px 112px -24px hsl(0 0% 0% / 0.5),
+      0 96px 160px -48px hsl(0 0% 0% / 0.36);
+  }
+
+  /* ---------- 3D Typography ----------
+     Dimensional text via layered text-shadows that simulate extrusion.
+     Reserved for hero headlines and major section headings — never body copy. */
+  .text-extrude {
+    text-shadow:
+      0 1px 0 hsl(var(--foreground) / 0.08),
+      0 2px 0 hsl(var(--foreground) / 0.06),
+      0 3px 0 hsl(var(--foreground) / 0.05),
+      0 4px 6px hsl(var(--foreground) / 0.12),
+      0 8px 16px hsl(var(--foreground) / 0.08);
+  }
+  .dark .text-extrude {
+    text-shadow:
+      0 1px 0 hsl(0 0% 0% / 0.2),
+      0 2px 0 hsl(0 0% 0% / 0.16),
+      0 3px 0 hsl(0 0% 0% / 0.12),
+      0 4px 6px hsl(0 0% 0% / 0.28),
+      0 8px 16px hsl(0 0% 0% / 0.2);
+  }
+  /* Subtle dimensional lift — for section headings. */
+  .text-dimensional {
+    text-shadow:
+      0 1px 2px hsl(var(--foreground) / 0.06),
+      0 3px 8px hsl(var(--foreground) / 0.08);
+  }
+  .dark .text-dimensional {
+    text-shadow:
+      0 1px 2px hsl(0 0% 0% / 0.16),
+      0 3px 8px hsl(0 0% 0% / 0.2);
+  }
+  /* 3D text with brand glow — for hero emphasis words. */
+  .text-3d-glow {
+    text-shadow:
+      0 1px 0 hsl(var(--foreground) / 0.06),
+      0 2px 4px hsl(var(--primary) / 0.2),
+      0 4px 12px hsl(var(--primary) / 0.15),
+      0 8px 24px hsl(var(--primary) / 0.1);
+  }
+
+  /* ---------- Enhanced 3D glass ----------
+     Multi-layer transparency with inner highlight, outer reflection,
+     and depth shadow. Sits inside the 3D environment. */
+  .glass-3d {
+    position: relative;
+    background: hsl(var(--surface) / 0.82);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    border: 1px solid hsl(var(--border) / 0.6);
+    box-shadow: var(--shadow-3d-glass, 0 2px 6px hsl(var(--foreground) / 0.06), 0 12px 32px -8px hsl(var(--foreground) / 0.16));
+  }
+  .glass-3d::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background: linear-gradient(
+      160deg,
+      hsl(0 0% 100% / 0.14) 0%,
+      hsl(0 0% 100% / 0.04) 30%,
+      transparent 50%
+    );
+    opacity: 0.8;
+  }
+  .glass-3d::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    box-shadow: inset 0 1px 0 hsl(0 0% 100% / 0.16);
+  }
+  .dark .glass-3d {
+    background: hsl(var(--surface) / 0.68);
+    border-color: hsl(var(--border) / 0.5);
+  }
+  .dark .glass-3d::before {
+    background: linear-gradient(
+      160deg,
+      hsl(0 0% 100% / 0.08) 0%,
+      hsl(0 0% 100% / 0.02) 30%,
+      transparent 50%
+    );
+  }
+  .dark .glass-3d::after {
+    box-shadow: inset 0 1px 0 hsl(0 0% 100% / 0.06);
+  }
+
+  /* ---------- Perspective grid ----------
+     A 3D floor grid that recedes into the distance. */
+  .perspective-grid {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .perspective-grid::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 200%;
+    height: 60%;
+    transform: translateX(-50%) perspective(400px) rotateX(60deg);
+    transform-origin: bottom center;
+    background-image:
+      linear-gradient(to right, hsl(var(--primary) / 0.12) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(var(--primary) / 0.08) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: linear-gradient(to top, #000 0%, transparent 80%);
+    -webkit-mask-image: linear-gradient(to top, #000 0%, transparent 80%);
+  }
+
+  /* ---------- Depth fog ----------
+     Atmospheric perspective: distant elements desaturate and lighten. */
+  .depth-fog {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      hsl(var(--background) / 0.4) 60%,
+      hsl(var(--background) / 0.85) 100%
+    );
+  }
+
+  /* ---------- Virtual lighting ----------
+     Consistent key light from top-left + ambient fill. */
+  .light-key {
+    position: relative;
+  }
+  .light-key::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background: radial-gradient(
+      ellipse 80% 60% at 25% 0%,
+      hsl(0 0% 100% / 0.08),
+      transparent 50%
+    );
+    z-index: 0;
+  }
+  .dark .light-key::before {
+    background: radial-gradient(
+      ellipse 80% 60% at 25% 0%,
+      hsl(var(--primary-glow) / 0.06),
+      transparent 50%
+    );
+  }
+  /* Rim light along the top edge. */
+  .light-rim {
+    position: relative;
+  }
+  .light-rim::after {
+    content: "";
+    position: absolute;
+    left: 1.5rem;
+    right: 1.5rem;
+    top: 0;
+    height: 1px;
+    border-radius: 9999px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      hsl(0 0% 100% / 0.22) 30%,
+      hsl(0 0% 100% / 0.22) 70%,
+      transparent
+    );
+    pointer-events: none;
+    z-index: 1;
+  }
+  .dark .light-rim::after {
+    background: linear-gradient(
+      90deg,
+      transparent,
+      hsl(var(--primary-glow) / 0.18) 30%,
+      hsl(var(--primary-glow) / 0.18) 70%,
+      transparent
+    );
+  }
+
+  /* ---------- Spatial entrance animations ---------- */
+  .spatial-in {
+    animation: spatial-in 600ms var(--ease-out-soft) both;
+  }
+  @keyframes spatial-in {
+    from {
+      opacity: 0;
+      transform: perspective(1000px) translateZ(-40px) translateY(20px) rotateX(8deg);
+    }
+    to {
+      opacity: 1;
+      transform: perspective(1000px) translateZ(0) translateY(0) rotateX(0);
+    }
+  }
+  .spatial-in-up {
+    animation: spatial-in-up 500ms var(--ease-out-soft) both;
+  }
+  @keyframes spatial-in-up {
+    from {
+      opacity: 0;
+      transform: perspective(800px) translateY(30px) scale(0.96);
+    }
+    to {
+      opacity: 1;
+      transform: perspective(800px) translateY(0) scale(1);
+    }
+  }
+
+  /* ---------- 3D card base ----------
+     Container with perspective for cursor-responsive tilt cards. */
+  .tilt-perspective {
+    perspective: 1000px;
+    perspective-origin: 50% 50%;
+  }
+  .tilt-inner {
+    transform-style: preserve-3d;
+    transition: transform 200ms var(--ease-out-soft), box-shadow 300ms var(--ease-out-soft);
+  }
+  .tilt-content {
+    transform: translateZ(30px);
+    transform-style: preserve-3d;
+  }
+  .tilt-content-sm {
+    transform: translateZ(16px);
+  }
+  .tilt-content-lg {
+    transform: translateZ(50px);
+  }
+
+  /* ---------- Cursor-tracking spotlight (CSS var driven) ----------
+     Cards set --mx and --my via JS; the highlight follows. */
+  .cursor-light {
+    position: relative;
+  }
+  .cursor-light::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background: radial-gradient(
+      300px circle at var(--mx, 50%) var(--my, 50%),
+      hsl(var(--primary) / 0.12),
+      transparent 60%
+    );
+    opacity: 0;
+    transition: opacity 300ms ease;
+  }
+  .cursor-light:hover::before {
+    opacity: 1;
+  }
+
+  /* ---------- Reflection sweep ----------
+     A diagonal light reflection that sweeps across glass surfaces. */
+  .reflection-sweep {
+    position: relative;
+    overflow: hidden;
+  }
+  .reflection-sweep::after {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -60%;
+    width: 50%;
+    height: 200%;
+    transform: rotate(25deg);
+    background: linear-gradient(
+      to right,
+      transparent,
+      hsl(0 0% 100% / 0.06),
+      transparent
+    );
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 400ms ease, left 800ms var(--ease-out-soft);
+  }
+  .reflection-sweep:hover::after {
+    opacity: 1;
+    left: 120%;
+  }
+
+  /* ---------- 3D floating animation (desynchronized) ---------- */
+  .float-3d-a { animation: float-3d-a 7s ease-in-out infinite; }
+  .float-3d-b { animation: float-3d-b 9s ease-in-out infinite; }
+  .float-3d-c { animation: float-3d-c 11s ease-in-out infinite; }
+  @keyframes float-3d-a {
+    0%, 100% { transform: translate3d(0, 0, 0) rotateX(0) rotateY(0); }
+    50% { transform: translate3d(0, -12px, 8px) rotateX(1deg) rotateY(-1deg); }
+  }
+  @keyframes float-3d-b {
+    0%, 100% { transform: translate3d(0, 0, 0) rotateX(0) rotateY(0); }
+    50% { transform: translate3d(6px, -8px, -6px) rotateX(-1deg) rotateY(1deg); }
+  }
+  @keyframes float-3d-c {
+    0%, 100% { transform: translate3d(0, 0, 0) rotateX(0) rotateY(0); }
+    50% { transform: translate3d(-4px, 10px, 4px) rotateX(1deg) rotateY(0.5deg); }
+  }
+
+  /* ---------- 3D morphing loader ---------- */
+  .loader-3d {
+    width: 2.5rem;
+    height: 2.5rem;
+    animation: loader-3d-spin 1.6s var(--ease-in-out-soft) infinite;
+  }
+  @keyframes loader-3d-spin {
+    0% { transform: rotateX(0) rotateY(0) rotateZ(0); }
+    50% { transform: rotateX(180deg) rotateY(180deg) rotateZ(90deg); }
+    100% { transform: rotateX(360deg) rotateY(360deg) rotateZ(180deg); }
+  }
+
+  /* ---------- 3D badge ----------
+     Dimensional pill with inner light. */
+  .badge-3d {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    border-radius: 9999px;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    border: 1px solid hsl(var(--primary) / 0.25);
+    background: linear-gradient(
+      160deg,
+      hsl(var(--primary) / 0.12),
+      hsl(var(--primary) / 0.04)
+    );
+    color: hsl(var(--primary));
+    box-shadow:
+      inset 0 1px 0 hsl(0 0% 100% / 0.12),
+      0 2px 8px -4px hsl(var(--primary) / 0.2);
+  }
+  .dark .badge-3d {
+    box-shadow:
+      inset 0 1px 0 hsl(0 0% 100% / 0.06),
+      0 2px 8px -4px hsl(var(--primary) / 0.3);
+  }
+
+  /* ---------- 3D input ----------
+     Physical input surface with depth, focus glow, and animated border. */
+  .input-3d {
+    position: relative;
+    transition:
+      transform 200ms var(--ease-out-soft),
+      box-shadow 200ms var(--ease-out-soft),
+      border-color 200ms ease;
+    box-shadow:
+      inset 0 1px 3px hsl(var(--foreground) / 0.06),
+      0 1px 0 hsl(0 0% 100% / 0.04);
+  }
+  .input-3d:focus-visible,
+  .input-3d:focus-within {
+    transform: translateY(-1px);
+    border-color: hsl(var(--primary) / 0.5);
+    box-shadow:
+      inset 0 1px 3px hsl(var(--primary) / 0.08),
+      0 0 0 3px hsl(var(--primary) / 0.12),
+      0 4px 12px -4px hsl(var(--primary) / 0.15);
+  }
+
+  /* ---------- 3D modal ----------
+     Floating object with perspective, scale, fade, depth shadow. */
+  .modal-3d-enter {
+    animation: modal-3d-enter 320ms var(--ease-spring) both;
+  }
+  @keyframes modal-3d-enter {
+    from {
+      opacity: 0;
+      transform: perspective(800px) translateZ(-60px) translateY(20px) scale(0.94);
+    }
+    to {
+      opacity: 1;
+      transform: perspective(800px) translateZ(0) translateY(0) scale(1);
+    }
+  }
+  .modal-3d-exit {
+    animation: modal-3d-exit 200ms var(--ease-out-soft) both;
+  }
+  @keyframes modal-3d-exit {
+    from {
+      opacity: 1;
+      transform: perspective(800px) translateZ(0) translateY(0) scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: perspective(800px) translateZ(-40px) translateY(10px) scale(0.96);
+    }
+  }
+
+  /* ---------- 3D drawer ----------
+     Slides forward from the side with depth. */
+  .drawer-3d-enter {
+    animation: drawer-3d-enter 360ms var(--ease-out-soft) both;
+  }
+  @keyframes drawer-3d-enter {
+    from {
+      opacity: 0;
+      transform: perspective(800px) translateX(100%) translateZ(-80px) rotateY(8deg);
+    }
+    to {
+      opacity: 1;
+      transform: perspective(800px) translateX(0) translateZ(0) rotateY(0);
+    }
+  }
+
+  /* ---------- 3D dropdown ----------
+     Emerges from its parent surface. */
+  .dropdown-3d-enter {
+    animation: dropdown-3d-enter 220ms var(--ease-spring) both;
+    transform-origin: top center;
+  }
+  @keyframes dropdown-3d-enter {
+    from {
+      opacity: 0;
+      transform: perspective(600px) translateY(-8px) translateZ(-30px) scale(0.96);
+    }
+    to {
+      opacity: 1;
+      transform: perspective(600px) translateY(0) translateZ(0) scale(1);
+    }
+  }
+
+  /* ---------- 3D empty state ----------
+     Dimensional illustration container with ambient motion. */
+  .empty-state-3d {
+    position: relative;
+    text-align: center;
+  }
+  .empty-state-3d::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(
+      ellipse 60% 40% at 50% 30%,
+      hsl(var(--primary) / 0.06),
+      transparent 70%
+    );
+    pointer-events: none;
+  }
+
 @media (prefers-reduced-motion: reduce) {
   .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
   .aurora-bg, .float-slow, .float-mid, .liquid-blob, .marquee, .conic-spin, .shimmer,
   .ambient-orb, .ambient-grid, .enter-up, .stagger-children > *, .skeleton-sheen::after,
-  .skeleton-premium::after, .pulse-dot, .fade-in-up, .scale-in, .page-enter {
+  .skeleton-premium::after, .pulse-dot, .fade-in-up, .scale-in, .page-enter,
+  .spatial-in, .spatial-in-up, .float-3d-a, .float-3d-b, .float-3d-c, .loader-3d,
+  .modal-3d-enter, .modal-3d-exit, .drawer-3d-enter, .dropdown-3d-enter {
     animation: none !important;
   }
+  .text-extrude, .text-dimensional, .text-3d-glow { text-shadow: none !important; }
+  .tilt-inner, .tilt-content, .tilt-content-sm, .tilt-content-lg { transform: none !important; }
+  .reflection-sweep::after { display: none !important; }
+  .perspective-grid::before { transform: none !important; }
   .interactive, .lift-card, .field-motion, .sheen::after, .nav-item::before, .nav-underline::after,
   .card-glow, .btn-glow, .glow-ring, .spotlight-hover::after, .card-conic, .btn-premium,
   .border-gradient-hover, .icon-premium, .stat-card {
@@ -1579,7 +2103,26 @@ html[data-motion="reduced"] .skeleton-premium::after,
 html[data-motion="reduced"] .pulse-dot,
 html[data-motion="reduced"] .fade-in-up,
 html[data-motion="reduced"] .scale-in,
-html[data-motion="reduced"] .page-enter { animation: none !important; }
+html[data-motion="reduced"] .page-enter,
+html[data-motion="reduced"] .spatial-in,
+html[data-motion="reduced"] .spatial-in-up,
+html[data-motion="reduced"] .float-3d-a,
+html[data-motion="reduced"] .float-3d-b,
+html[data-motion="reduced"] .float-3d-c,
+html[data-motion="reduced"] .loader-3d,
+html[data-motion="reduced"] .modal-3d-enter,
+html[data-motion="reduced"] .modal-3d-exit,
+html[data-motion="reduced"] .drawer-3d-enter,
+html[data-motion="reduced"] .dropdown-3d-enter { animation: none !important; }
+html[data-motion="reduced"] .text-extrude,
+html[data-motion="reduced"] .text-dimensional,
+html[data-motion="reduced"] .text-3d-glow { text-shadow: none !important; }
+html[data-motion="reduced"] .tilt-inner,
+html[data-motion="reduced"] .tilt-content,
+html[data-motion="reduced"] .tilt-content-sm,
+html[data-motion="reduced"] .tilt-content-lg { transform: none !important; }
+html[data-motion="reduced"] .reflection-sweep::after { display: none !important; }
+html[data-motion="reduced"] .perspective-grid::before { transform: none !important; }
 html[data-motion="reduced"] .interactive,
 html[data-motion="reduced"] .lift-card,
 html[data-motion="reduced"] .field-motion,
