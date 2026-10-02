@@ -126,7 +126,7 @@ const UNREACHABLE =
  */
 function runAdvisoryScan() {
   const tools = [
-    { tool: "bun audit", cmd: "bun", args: ["audit", "--audit-level=high"] },
+    { tool: "bun audit", cmd: "bun", args: ["audit", "--prod", "--audit-level=high"] },
     { tool: "npm audit", cmd: "npm", args: ["audit", "--audit-level=high"] },
   ];
 
