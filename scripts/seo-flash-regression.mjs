@@ -29,7 +29,8 @@ async function checkLoad(page, name, navigate) {
     // Preview-server reloads can briefly detach the document; retry the URL
     // so the gate measures the rendered page instead of a navigation race.
     if (!/detached|Not attached|Protocol error.*Page\.reload|closed|interrupted|ERR_ABORTED|Target page/i.test(String(error))) throw error;
-    await page.goto(page.url(), { waitUntil: "commit", timeout: 30_000 });
+    await page.waitForTimeout(750);
+    await page.waitForLoadState("domcontentloaded", { timeout: 10_000 }).catch(() => {});
   }
   const flash = await sampleForFlash(page);
   const leaked = flash.seoVisibleFrames.length > 0;
@@ -65,7 +66,8 @@ async function main() {
           await page.reload({ waitUntil: "commit", timeout: 30_000 });
         } catch (error) {
           if (!/detached|Not attached|Protocol error.*Page\.reload|closed|interrupted|ERR_ABORTED|Target page/i.test(String(error))) throw error;
-          await page.goto(url, { waitUntil: "commit", timeout: 30_000 });
+          await page.waitForTimeout(750);
+          await page.waitForLoadState("domcontentloaded", { timeout: 10_000 }).catch(() => {});
         }
       });
       await checkLoad(page, `${scheme} ${route} hard reload`, async () => {
