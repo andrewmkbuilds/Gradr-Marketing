@@ -62,6 +62,8 @@ async function main() {
   await page.waitForLoadState("load").catch(() => {});
   await page.waitForTimeout(2000);
 
+  // Wait until the first depth subscriber initializes the document attribute.
+  await page.waitForFunction(() => ["off", "lite", "full"].includes(document.documentElement.dataset.depth ?? ""), { timeout: 5000 }).catch(() => {});
   const depthAttr = await page.evaluate(() => document.documentElement.dataset.depth ?? "");
   record("depth manager resolves a level", ["off", "lite", "full"].includes(depthAttr), `data-depth="${depthAttr}"`);
 
