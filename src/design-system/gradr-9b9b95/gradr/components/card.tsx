@@ -2,17 +2,22 @@ import { forwardRef, type HTMLAttributes } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../lib/cn";
 
-const cardVariants = cva("rounded-card bg-surface text-foreground", {
-  variants: {
-    variant: {
-      outline: "border border-border",
-      raised: "border border-border shadow-raise",
-      float: "shadow-float",
+const cardVariants = cva(
+  "relative rounded-card bg-surface text-foreground transition-all duration-300",
+  {
+    variants: {
+      variant: {
+        outline: "border border-border",
+        raised: "border border-border shadow-raise hover:shadow-float hover:border-primary/20 hover:-translate-y-0.5",
+        float: "shadow-float hover:shadow-float hover:-translate-y-0.5",
+        premium:
+          "border border-border/80 shadow-raise hover:shadow-float hover:-translate-y-1 hover:border-primary/25",
+      },
+      padding: { none: "p-0", md: "p-5", lg: "p-8" },
     },
-    padding: { none: "p-0", md: "p-5", lg: "p-8" },
+    defaultVariants: { variant: "outline", padding: "md" },
   },
-  defaultVariants: { variant: "outline", padding: "md" },
-});
+);
 
 export interface CardProps
   extends HTMLAttributes<HTMLDivElement>,

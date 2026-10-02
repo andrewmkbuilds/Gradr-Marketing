@@ -53,11 +53,11 @@ function SupportHome() {
   return (
     <div className="page-shell py-12">
       <header className="max-w-2xl">
-        <p className="text-xs font-semibold uppercase tracking-wide text-brand-secondary">Support</p>
-        <h1 className="mt-2 font-display text-4xl font-semibold tracking-tight text-foreground">
+        <p className="section-eyebrow">Support</p>
+        <h1 className="mt-3 font-display text-4xl font-semibold tracking-tight text-foreground text-balance">
           How can we help?
         </h1>
-        <p className="mt-3 text-muted-foreground">
+        <p className="mt-3 text-muted-foreground text-balance">
           Answers to the questions we get most, plus a direct line to the team when you need one.
         </p>
       </header>
@@ -65,7 +65,7 @@ function SupportHome() {
       <div className="mt-10 grid gap-4 sm:grid-cols-3">
         <SLink
           to="/contact"
-          className="interactive group rounded-xl border border-border/60 bg-card p-5 elev-1"
+          className="card-glow group rounded-xl border border-border bg-card p-5"
         >
           <LifeBuoy className="h-5 w-5 text-brand-secondary" aria-hidden="true" />
           <h2 className="mt-3 text-sm font-semibold text-foreground">Contact support</h2>
@@ -75,7 +75,7 @@ function SupportHome() {
         </SLink>
         <CrossLink
           surface="docs"
-          className="interactive group rounded-xl border border-border/60 bg-card p-5 elev-1"
+          className="card-glow group rounded-xl border border-border bg-card p-5"
         >
           <BookOpen className="h-5 w-5 text-brand-secondary" aria-hidden="true" />
           <h2 className="mt-3 text-sm font-semibold text-foreground">Read the docs</h2>
@@ -85,7 +85,7 @@ function SupportHome() {
         </CrossLink>
         <CrossLink
           surface="status"
-          className="interactive group rounded-xl border border-border/60 bg-card p-5 elev-1"
+          className="card-glow group rounded-xl border border-border bg-card p-5"
         >
           <Activity className="h-5 w-5 text-brand-secondary" aria-hidden="true" />
           <h2 className="mt-3 text-sm font-semibold text-foreground">Check status</h2>
@@ -99,13 +99,13 @@ function SupportHome() {
         <h2 className="font-display text-2xl font-semibold tracking-tight text-foreground">
           Frequently asked questions
         </h2>
-        <Accordion type="single" collapsible className="mt-4">
+        <Accordion type="single" collapsible className="mt-4 flex flex-col gap-3">
           {FAQS.map((faq) => (
-            <AccordionItem key={faq.question} value={faq.question}>
-              <AccordionTrigger className="text-left text-sm font-medium">
+            <AccordionItem key={faq.question} value={faq.question} className="overflow-hidden rounded-card border border-border transition-colors hover:border-primary/20 data-[state=open]:border-primary/25 data-[state=open]:bg-primary/[0.02]">
+              <AccordionTrigger className="px-5 py-4 text-left text-sm font-medium hover:no-underline">
                 {faq.question}
               </AccordionTrigger>
-              <AccordionContent className="text-sm text-muted-foreground">
+              <AccordionContent className="px-5 text-sm text-muted-foreground">
                 {faq.answer}
               </AccordionContent>
             </AccordionItem>

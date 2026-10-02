@@ -6,6 +6,7 @@ import { CrossLink, SLink, SurfaceNotFound } from "@/components/surface/SurfaceL
 import { RouteSkeleton } from "@/components/states/PageSkeletons";
 import { Card, Text } from "@/design-system/gradr-9b9b95";
 import { buttonVariants } from "@/design-system/gradr-9b9b95/gradr/components/button";
+import { cn } from "@/lib/utils";
 import {
   ArrowRight,
   BarChart3,
@@ -117,26 +118,26 @@ const DEMOS = [
 
 function Hero() {
   return (
-    <section className="page-shell section-y">
+    <section className="cta-glow page-shell section-y">
       <p className="inline-flex items-center gap-2 rounded-full border border-brand-secondary/40 px-3 py-1 text-xs font-medium text-brand-secondary">
         <Sparkles className="h-3 w-3" aria-hidden="true" />
         The Gradr product
       </p>
-      <h1 className="mt-4 max-w-3xl text-5xl font-semibold tracking-tight text-foreground">
+      <h1 className="type-section mt-4 max-w-3xl text-balance text-foreground">
         One workspace from first resume to signed offer
       </h1>
-      <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
+      <p className="type-lede mt-4 max-w-2xl text-muted-foreground">
         Gradr replaces the spreadsheet, the resume templates, the cover letter blank page and the
         interview anxiety with a single AI career workspace.
       </p>
       <div className="mt-8 flex flex-wrap gap-3">
-        <a href={appSignupHref()} className={buttonVariants({ size: "lg" })}>
+        <a href={appSignupHref()} className={cn(buttonVariants({ size: "lg" }), "btn-glow")}>
           Start free
           <ArrowRight className="h-4 w-4" aria-hidden="true" />
         </a>
         <SLink
           to="/demos"
-          className="inline-flex h-11 items-center rounded-lg border border-border px-5 text-sm font-medium text-foreground"
+          className="inline-flex h-11 items-center rounded-lg border border-border px-5 text-sm font-medium text-foreground transition-colors hover:border-primary/50 hover:text-primary"
         >
           See it in action
         </SLink>
@@ -152,8 +153,10 @@ function Overview() {
       <section className="page-shell pb-16">
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {FEATURES.map((feature) => (
-            <Card key={feature.title} variant="raised" padding="md">
-              <feature.icon className="h-5 w-5 text-primary" aria-hidden="true" />
+            <Card key={feature.title} variant="raised" padding="md" className="card-conic">
+              <span className="icon-premium mb-3">
+                <feature.icon className="h-5 w-5" aria-hidden="true" />
+              </span>
               <Text variant="h6" as="h2" className="mt-3">{feature.title}</Text>
               <Text variant="body-sm" tone="muted" className="mt-1.5">{feature.body}</Text>
             </Card>
@@ -204,7 +207,7 @@ function UseCases() {
       </p>
       <div className="mt-10 grid gap-5 md:grid-cols-2">
         {USE_CASES.map((useCase) => (
-          <section key={useCase.audience} className="rounded-xl border border-border/60 bg-card p-6 elev-1">
+          <section key={useCase.audience} className="border-gradient-hover rounded-xl border border-border/60 bg-card p-6 elev-1">
             <h2 className="text-lg font-semibold text-foreground">{useCase.audience}</h2>
             <p className="mt-2 text-sm text-muted-foreground">{useCase.body}</p>
             <ul className="mt-4 flex flex-wrap gap-2">

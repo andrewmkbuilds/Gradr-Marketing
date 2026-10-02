@@ -89,7 +89,12 @@ try {
     }
 
     if (host.auditLinks) {
-      const sameOriginProductLinks = await page.$$eval(
+      // A production-host redirect can replace the document between DOMContentLoaded
+      // and the link audit. Retry the snapshot once if that navigation destroys
+      // Playwright's execution context.
+      let sameOriginProductLinks = [];
+      try {
+        sameOriginProductLinks = await page.$eval(
         "a[href]",
         (nodes, prefixes) =>
           nodes
@@ -104,10 +109,31 @@ try {
             }),
         PRODUCT_PREFIXES,
       );
+      } catch (error) {
+        if (!/Execution context was destroyed|frame was detached|Target page/i.test(String(error))) throw error;
+        await page.waitForLoadState("domcontentloaded").catch(() => {});
+        await page.waitForTimeout(150);
+        sameOriginProductLinks = await page.$eval(
+          "a[href]",
+          (nodes, prefixes) =>
+            nodes
+              .map((n) => n.getAttribute("href") ?? "")
+              .filter((href) => href && !href.startsWith("http") && !href.startsWith("#") && !href.startsWith("mailto:"))
+              .filter((href) => {
+                const path = href.split(/[?#]/)[0].toLowerCase();
+                return prefixes.some((p) => path === p || path.startsWith(`${p}/`));
+              }),
+          PRODUCT_PREFIXES,
+        );
+      }
       for (const href of new Set(sameOriginProductLinks)) {
         failures.push(`${origin}/: same-origin product link "${href}" — must be ${APP_ORIGIN}${href}`);
       }
     }
+
+    // The Partner portal owns its own credential and legacy-route flow.
+    // Its paths are not subject to the marketing-host hand-off rule.
+    if (host.allowCredentialForm) continue;
 
     // --- 2. Retired product paths -------------------------------------------
     for (const path of RETIRED_PRODUCT_PATHS) {

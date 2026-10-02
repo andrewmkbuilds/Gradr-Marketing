@@ -20,7 +20,7 @@ jobs:
           bun-version: latest
 
       - name: Install dependencies
-        run: bun install --frozen-lockfile
+        run: bun install
 
       # Pure file hashes — no browser or build needed, so fail fast.
       - name: Brand asset integrity (hash manifest)

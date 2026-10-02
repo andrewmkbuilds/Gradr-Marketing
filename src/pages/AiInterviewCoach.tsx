@@ -27,6 +27,11 @@ import {
   buildHowToLd,
   buildScoringTableLd,
 } from "@/lib/structuredData";
+import {
+  ToolHero, ToolSection, ToolEyebrow, ToolHeading,
+  ToolStepCard, ToolFeatureCard, ToolCtaSection, ToolTable, ToolRelatedLinks,
+} from "@/components/marketing/ToolPrimitives";
+import { Reveal } from "@/components/landing/Reveal";
 
 /**
  * Canonical path for the AI interview coach landing page. Every alias
@@ -216,23 +221,16 @@ export default function AiInterviewCoach() {
         label="ai-interview-coach-rubric"
       />
 
-      <section className="mx-auto max-w-3xl text-center">
-        <Text variant="overline" tone="primary">
-          Live voice practice · Interview Engine
-        </Text>
-        <Text as="h1" variant="h1" className="mt-3">
-          AI Interview Coach
-        </Text>
-        <p className="mt-5 text-pretty text-lg leading-relaxed text-muted-foreground">
-          Practice a real spoken interview for the exact role you are chasing. Gradr's AI
-          interviewer asks, listens, follows up on what you actually said, and hands back a
-          scored report showing precisely which answers cost you the offer.
-        </p>
-        <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+      <ToolHero
+        eyebrow="Live voice practice · Interview Engine"
+        title="AI Interview Coach"
+        lede="Practice a real spoken interview for the exact role you are chasing. Gradr's AI interviewer asks, listens, follows up on what you actually said, and hands back a scored report showing precisely which answers cost you the offer."
+      >
+        <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
           <a
             href={ctaHref(appSignupHref(), "hero_primary")}
             onClick={trackCta("hero_primary", "/auth")}
-            className={buttonVariants({ size: "lg" })}
+            className={cn(buttonVariants({ size: "lg" }), "btn-glow")}
           >
             <Mic className="h-4 w-4" aria-hidden="true" />
             Start a free mock interview
@@ -249,99 +247,67 @@ export default function AiInterviewCoach() {
         <p className="mt-4 text-xs text-muted-foreground">
           No credit card required · Runs in your browser · Sessions stay private to your account
         </p>
-      </section>
+      </ToolHero>
 
-      <section className="section-gap" aria-labelledby="how-it-works">
-        <Text as="h2" variant="h3" id="how-it-works">
-          How the AI interview coach works
-        </Text>
-        <ol className="mt-6 grid gap-4 sm:grid-cols-2">
+      <ToolSection id="how-it-works">
+        <Reveal className="space-y-4">
+          <ToolEyebrow>How it works</ToolEyebrow>
+          <ToolHeading>How the AI interview coach works</ToolHeading>
+        </Reveal>
+        <div className="mt-8 grid gap-4 sm:grid-cols-2">
           {STEPS.map((step, i) => (
-            <li key={step.name} className={cardVariants({ variant: "raised" })}>
-              <div className="flex items-center gap-3">
-                <span className="flex h-9 w-9 items-center justify-center rounded-control bg-primary/10 text-primary">
-                  <step.icon className="h-4.5 w-4.5" aria-hidden="true" />
-                </span>
-                <Text as="h3" variant="h6">
-                  <span className="text-muted-foreground">{i + 1}.</span> {step.name}
-                </Text>
-              </div>
-              <Text variant="body-sm" tone="muted" className="mt-3">
-                {step.text}
-              </Text>
-            </li>
+            <ToolStepCard
+              key={step.name}
+              icon={step.icon}
+              index={i + 1}
+              title={step.name}
+              delay={i * 60}
+            >
+              {step.text}
+            </ToolStepCard>
           ))}
-        </ol>
-      </section>
-
-      <section className="section-gap" aria-labelledby="scoring">
-        <Text as="h2" variant="h3" id="scoring" className="flex items-center gap-2">
-          <Bot className="h-5 w-5 text-primary" aria-hidden="true" />
-          How answers are scored
-        </Text>
-        <Text variant="body-sm" tone="muted" className="mt-2 max-w-2xl">
-          Nothing is a black box. Each dimension is weighted, reported separately, and traced
-          back to the signals that produced it.
-        </Text>
-        <div className="mt-6 overflow-x-auto">
-          <table className="w-full min-w-[640px] text-sm">
-            <caption className="sr-only">
-              AI mock interview scoring dimensions, weights, what each measures, and the data signals used
-            </caption>
-            <thead>
-              <tr className="border-b border-border text-left text-xs uppercase tracking-wide text-muted-foreground">
-                <th scope="col" className="py-2 pr-4 font-medium">Dimension</th>
-                <th scope="col" className="py-2 pr-4 font-medium">Weight</th>
-                <th scope="col" className="py-2 pr-4 font-medium">What it measures</th>
-                <th scope="col" className="py-2 font-medium">Signals used</th>
-              </tr>
-            </thead>
-            <tbody className="text-muted-foreground">
-              {SCORING.map((row) => (
-                <tr key={row.dimension} className="border-b border-border/50 align-top">
-                  <th scope="row" className="py-3 pr-4 text-left font-medium text-foreground">
-                    {row.dimension}
-                  </th>
-                  <td className="py-3 pr-4 tabular-nums text-foreground">{row.weight}</td>
-                  <td className="py-3 pr-4">{row.measures}</td>
-                  <td className="py-3">{row.signals}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
         </div>
+      </ToolSection>
 
-        <h3 className="mt-10 text-lg font-semibold tracking-tight text-foreground">
-          What your interview score means
-        </h3>
-        <div className="mt-4 overflow-x-auto">
-          <table className="w-full min-w-[420px] text-sm">
-            <caption className="sr-only">Interview score bands and what each range means</caption>
-            <thead>
-              <tr className="border-b border-border text-left text-xs uppercase tracking-wide text-muted-foreground">
-                <th scope="col" className="py-2 pr-4 font-medium">Score</th>
-                <th scope="col" className="py-2 font-medium">What it means</th>
-              </tr>
-            </thead>
-            <tbody className="text-muted-foreground">
-              {BANDS.map((row) => (
-                <tr key={row.band} className="border-b border-border/50">
-                  <th scope="row" className="py-3 pr-4 text-left font-medium text-foreground">
-                    {row.band}
-                  </th>
-                  <td className="py-3">{row.meaning}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      <ToolSection id="scoring" bg="card" sceneVariant="beams" sceneIntensity={0.35}>
+        <Reveal className="space-y-4">
+          <ToolEyebrow>Scoring</ToolEyebrow>
+          <ToolHeading>
+            <span className="inline-flex items-center gap-2">
+              <Bot className="h-6 w-6 text-primary" aria-hidden="true" />
+              How answers are scored
+            </span>
+          </ToolHeading>
+          <p className="max-w-2xl text-sm text-muted-foreground">
+            Nothing is a black box. Each dimension is weighted, reported separately, and traced
+            back to the signals that produced it.
+          </p>
+        </Reveal>
+        <div className="mt-8">
+          <ToolTable
+            caption="AI mock interview scoring dimensions, weights, what each measures, and the data signals used"
+            headers={["Dimension", "Weight", "What it measures", "Signals used"]}
+            rows={SCORING.map((row) => ({ cells: [row.dimension, row.weight, row.measures, row.signals] }))}
+          />
         </div>
-      </section>
+        <Reveal className="mt-10 space-y-4">
+          <h3 className="type-h2">What your interview score means</h3>
+        </Reveal>
+        <div className="mt-4">
+          <ToolTable
+            caption="Interview score bands and what each range means"
+            headers={["Score", "What it means"]}
+            rows={BANDS.map((row) => ({ cells: [row.band, row.meaning] }))}
+          />
+        </div>
+      </ToolSection>
 
-      <section className="section-gap" aria-labelledby="what-you-get">
-        <h2 id="what-you-get" className="text-2xl font-semibold tracking-tight text-foreground">
-          What you get after every session
-        </h2>
-        <div className="mt-6 grid gap-4 md:grid-cols-2">
+      <ToolSection id="what-you-get">
+        <Reveal className="space-y-4">
+          <ToolEyebrow>After every session</ToolEyebrow>
+          <ToolHeading>What you get after every session</ToolHeading>
+        </Reveal>
+        <div className="mt-8 grid gap-4 md:grid-cols-2">
           {[
             {
               title: "A scored report, not a vibe check",
@@ -359,100 +325,78 @@ export default function AiInterviewCoach() {
               title: "A practice plan for the next session",
               body: "A short, ordered list of questions to redo and stories to rebuild, carried into your next session automatically.",
             },
-          ].map((item) => (
-            <Card key={item.title}>
-              <h3 className="flex items-start gap-2 font-medium text-foreground">
-                <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
-                {item.title}
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.body}</p>
-            </Card>
+          ].map((item, i) => (
+            <ToolFeatureCard key={item.title} icon={CheckCircle2} title={item.title} delay={i * 50}>
+              {item.body}
+            </ToolFeatureCard>
           ))}
         </div>
-      </section>
+      </ToolSection>
 
-      <section className="section-gap" aria-labelledby="faq">
-        <h2 id="faq" className="flex items-center gap-2 text-2xl font-semibold tracking-tight text-foreground">
-          <MessageSquareQuote className="h-5 w-5 text-primary" aria-hidden="true" />
-          AI interview coach FAQ
-        </h2>
-        <dl className="mt-6 space-y-5">
-          {FAQS.map((faq) => (
-            <Card key={faq.question}>
-              <dt className="font-medium text-foreground">{faq.question}</dt>
-              <dd className="mt-2 text-sm leading-relaxed text-muted-foreground">{faq.answer}</dd>
-            </Card>
-          ))}
-        </dl>
-      </section>
-
-      <section className="section-gap" aria-labelledby="keep-reading">
-        <h2 id="keep-reading" className="text-2xl font-semibold tracking-tight text-foreground">
-          Keep reading
-        </h2>
-        <div className="mt-5 grid gap-3 sm:grid-cols-2">
-          {[
-            {
-              to: "/ats-resume-checker",
-              title: "ATS Resume Checker",
-              desc: "Get past the parser first — score your resume against the posting before you practice for the room.",
-              location: "related_ats",
-            },
-            {
-              to: "/blog/ai-resume-optimization",
-              title: "AI Resume Builder & ATS Guide",
-              desc: "How ATS parsing, scoring, and ranking actually work, and how to write for both machine and recruiter.",
-              location: "related_blog",
-            },
-            {
-              to: "/career-advice",
-              title: "Career Advice Guides",
-              desc: "Free guides on resumes, cover letters, outreach, and interview preparation.",
-              location: "related_advice",
-            },
-            {
-              to: "/job-search",
-              title: "Job Search by Role & Location",
-              desc: "See what each role asks for so your interview stories match the requirements.",
-              location: "related_job_search",
-            },
-          ].map((item) => (
-            <Link
-              key={item.to}
-              to={ctaHref(item.to, item.location)}
-              onClick={trackCta(item.location, item.to)}
-              className={cn(
-                cardVariants(),
-                "transition-colors hover:border-primary/50 hover:bg-surface-muted",
-              )}
-            >
-              <p className="font-medium text-foreground">{item.title}</p>
-              <p className="mt-1.5 text-sm text-muted-foreground">{item.desc}</p>
-            </Link>
+      <ToolSection id="faq" bg="card">
+        <Reveal className="space-y-4">
+          <ToolEyebrow>FAQ</ToolEyebrow>
+          <ToolHeading>
+            <span className="inline-flex items-center gap-2">
+              <MessageSquareQuote className="h-6 w-6 text-primary" aria-hidden="true" />
+              AI interview coach FAQ
+            </span>
+          </ToolHeading>
+        </Reveal>
+        <div className="mt-8 space-y-4">
+          {FAQS.map((faq, i) => (
+            <Reveal key={faq.question} delay={i * 40}>
+              <Card variant="outline" padding="lg" className="card-glow">
+                <Text variant="h6" as="dt">{faq.question}</Text>
+                <Text variant="body-sm" tone="muted" as="dd" className="mt-2">{faq.answer}</Text>
+              </Card>
+            </Reveal>
           ))}
         </div>
-      </section>
+      </ToolSection>
 
-      <section className="section-gap rounded-2xl border border-primary/25 bg-primary/5 p-8 text-center">
-        <h2 className="text-2xl font-semibold tracking-tight text-foreground">
-          Walk in already having had the conversation
-        </h2>
-        <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-foreground/80">
-          Run your first spoken mock interview in a few minutes and see exactly where your
-          answers hold up. Free to start — no credit card.
-        </p>
+      <ToolRelatedLinks
+        links={[
+          {
+            to: ctaHref("/ats-resume-checker", "related_ats"),
+            title: "ATS Resume Checker",
+            desc: "Get past the parser first — score your resume against the posting before you practice for the room.",
+            onClick: trackCta("related_ats", "/ats-resume-checker"),
+          },
+          {
+            to: ctaHref("/blog/ai-resume-optimization", "related_blog"),
+            title: "AI Resume Builder & ATS Guide",
+            desc: "How ATS parsing, scoring, and ranking actually work, and how to write for both machine and recruiter.",
+            onClick: trackCta("related_blog", "/blog/ai-resume-optimization"),
+          },
+          {
+            to: ctaHref("/career-advice", "related_advice"),
+            title: "Career Advice Guides",
+            desc: "Free guides on resumes, cover letters, outreach, and interview preparation.",
+            onClick: trackCta("related_advice", "/career-advice"),
+          },
+          {
+            to: ctaHref("/job-search", "related_job_search"),
+            title: "Job Search by Role & Location",
+            desc: "See what each role asks for so your interview stories match the requirements.",
+            onClick: trackCta("related_job_search", "/job-search"),
+          },
+        ]}
+      />
+
+      <ToolCtaSection
+        title="Walk in already having had the conversation"
+        lede="Run your first spoken mock interview in a few minutes and see exactly where your answers hold up. Free to start — no credit card."
+      >
         <a
           href={ctaHref(appSignupHref(), "footer_cta")}
           onClick={trackCta("footer_cta", "/auth")}
-          className={cn(
-            buttonVariants({ size: "lg" }),
-            "mt-6 gap-2 transition-transform hover:scale-[1.02] motion-reduce:transform-none",
-          )}
+          className={cn(buttonVariants({ size: "lg" }), "btn-glow")}
         >
           <Sparkles className="h-4 w-4" aria-hidden="true" />
           Start practicing free
         </a>
-      </section>
+      </ToolCtaSection>
     </PublicShell>
   );
 }

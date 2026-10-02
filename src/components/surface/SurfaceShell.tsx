@@ -92,26 +92,21 @@ export function SurfaceShell({ nav = [], eyebrow, children }: SurfaceShellProps)
             )}
           </div>
 
-          <nav aria-label="Section" className="hidden items-center gap-1 lg:flex">
+          <nav aria-label="Section" className="hidden items-center gap-0.5 xl:flex">
             {nav.map((item) => (
               <SLink
                 key={item.to}
                 to={item.to}
                 aria-current={isActive(item.to) ? "page" : undefined}
                 className={cn(
-                  "relative rounded-lg px-3 py-2 text-sm transition-colors",
+                  "nav-underline relative rounded-lg px-3 py-2 text-sm transition-colors",
                   isActive(item.to)
                     ? "text-foreground"
                     : "text-muted-foreground hover:text-foreground",
                 )}
+                data-active={isActive(item.to) || undefined}
               >
                 {item.label}
-                {isActive(item.to) && (
-                  <span
-                    aria-hidden="true"
-                    className="absolute inset-x-3 -bottom-px h-0.5 rounded-full bg-brand-secondary"
-                  />
-                )}
               </SLink>
             ))}
           </nav>
@@ -126,17 +121,17 @@ export function SurfaceShell({ nav = [], eyebrow, children }: SurfaceShellProps)
             </a>
             <a
               href={appSignupHref()}
-              className="inline-flex h-10 items-center gap-1.5 rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground shadow-sm transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transform-none"
+              className="btn-glow inline-flex h-10 items-center gap-1.5 rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               Get started
-              <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+              <ArrowRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden="true" />
             </a>
             <button
               type="button"
               onClick={toggleMenu}
               aria-expanded={menuOpen}
               aria-label={menuOpen ? "Close menu" : "Open menu"}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-border text-foreground lg:hidden"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-border text-foreground transition-colors hover:bg-muted xl:hidden"
             >
               {menuOpen ? <X className="h-4 w-4" aria-hidden="true" /> : <Menu className="h-4 w-4" aria-hidden="true" />}
             </button>
@@ -144,8 +139,8 @@ export function SurfaceShell({ nav = [], eyebrow, children }: SurfaceShellProps)
         </div>
 
         {menuOpen && (
-          <nav aria-label="Mobile" className="border-t border-border/60 bg-background lg:hidden">
-            <div className="page-shell flex flex-col py-3">
+          <nav aria-label="Mobile" className="border-t border-border/60 bg-background/95 backdrop-blur-xl xl:hidden">
+            <div className="page-shell stagger-children flex flex-col py-3">
               {nav.map((item) => (
                 <SLink
                   key={item.to}
@@ -174,8 +169,8 @@ export function SurfaceShell({ nav = [], eyebrow, children }: SurfaceShellProps)
 
       <main className="flex-1">{children}</main>
 
-      <footer className="mt-16 border-t border-border/60 bg-card/40">
-        <div className="page-shell flex flex-col gap-6 py-10">
+      <footer className="mt-16 border-t border-border/60 bg-card/30 py-12">
+        <div className="page-shell flex flex-col gap-6">
           <nav aria-label="Gradr ecosystem" className="flex flex-wrap items-center gap-x-6 gap-y-2">
             {ECOSYSTEM.map((item) => (
               <CrossLink

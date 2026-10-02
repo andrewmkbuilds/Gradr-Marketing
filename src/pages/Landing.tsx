@@ -65,6 +65,7 @@ import {
 import {
   ResumeIntelligenceDemo, JobMatchingDemo, InterviewCoachDemo, CareerIntelligenceDemo,
 } from "@/components/landing/demos";
+import { DimensionalText, TiltCard } from "@/components/three-d";
 
 /* ---------------------------------- data ---------------------------------- */
 
@@ -330,11 +331,11 @@ function Heading({
         as="h2"
         variant="mask"
         text={children}
-        className={`type-section text-balance ${className}`}
+        className={`type-section text-dimensional text-balance ${className}`}
       />
     );
   }
-  return <h2 className={`type-section text-balance ${className}`}>{children}</h2>;
+  return <h2 className={`type-section text-dimensional text-balance ${className}`}>{children}</h2>;
 }
 
 function Lede({ children }: { children: React.ReactNode }) {
@@ -409,7 +410,7 @@ export default function Landing() {
       {/* --------------------------------- nav -------------------------------- */}
       <header
         className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
-          scrolled ? "depth-lit border-b border-border bg-background/80 backdrop-blur-xl" : "border-b border-transparent"
+          scrolled ? "glass-3d light-rim border-b border-border/60" : "border-b border-transparent"
         }`}
       >
         <nav
@@ -421,7 +422,7 @@ export default function Landing() {
             <span className="text-base font-bold tracking-[0.24em]">GRADR</span>
           </a>
 
-          <ul className="hidden items-center gap-1 lg:flex">
+          <ul className="hidden items-center gap-1 xl:flex">
             {NAV.map((n) => {
               const active = activeHash === n.href;
               return (
@@ -482,7 +483,7 @@ export default function Landing() {
 
           <button
             type="button"
-            className="grid h-11 w-11 place-items-center rounded-lg text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring lg:hidden"
+            className="grid h-11 w-11 place-items-center rounded-lg text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring xl:hidden"
             aria-label={menuOpen ? "Close menu" : "Open menu"}
             aria-expanded={menuOpen}
             onClick={toggleMenu}
@@ -496,7 +497,7 @@ export default function Landing() {
             initial={heroReduced ? { opacity: 0 } : { opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.28, ease: easeOut }}
-            className="page-shell max-h-[calc(100vh-3.5rem)] overflow-y-auto border-t border-border bg-background/98 py-4 backdrop-blur-xl lg:hidden"
+            className="page-shell max-h-[calc(100vh-3.5rem)] overflow-y-auto border-t border-border bg-background/98 py-4 backdrop-blur-xl xl:hidden"
           >
             <motion.ul
               className="space-y-1"
@@ -581,15 +582,19 @@ export default function Landing() {
                 </motion.span>
 
                 <h1 className="type-hero text-balance">
-                  <AnimatedHeading as="span" variant="mask" text="Your AI career" className="block" immediate delay={0.08} />
-                  <AnimatedHeading
-                    as="span"
-                    variant="split"
-                    text="command center."
-                    className="block animated-gradient-text"
-                    immediate
-                    delay={0.26}
-                  />
+                  <DimensionalText as="span" depth="strong" perspective className="block">
+                    <AnimatedHeading as="span" variant="mask" text="Your AI career" className="block" immediate delay={0.08} />
+                  </DimensionalText>
+                  <DimensionalText as="span" depth="glow" perspective className="block animated-gradient-text">
+                    <AnimatedHeading
+                      as="span"
+                      variant="split"
+                      text="command center."
+                      className="block"
+                      immediate
+                      delay={0.26}
+                    />
+                  </DimensionalText>
                 </h1>
 
                 <motion.p
@@ -621,7 +626,7 @@ export default function Landing() {
                       href={appSignInHref()}
                       onActivate={start("hero", "Get started free")}
                       size="lg"
-                      className="group"
+                      className="btn-glow group"
                     >
                       Get started free
                       <ArrowRight
@@ -1052,7 +1057,7 @@ export default function Landing() {
 
           <ol className="mt-10 space-y-px overflow-hidden rounded-2xl border border-border bg-border">
             {HOW.map((step, i) => (
-              <Reveal as="li" key={step} delay={i * 40} className="flex items-center gap-4 bg-card px-5 py-4 sm:px-6">
+              <Reveal as="li" key={step} delay={i * 40} className="step-connector flex items-center gap-4 bg-card px-5 py-4 sm:px-6">
                 <span className="w-8 shrink-0 text-sm font-semibold tabular-nums text-primary">
                   {String(i + 1).padStart(2, "0")}
                 </span>
@@ -1154,7 +1159,7 @@ export default function Landing() {
             <div
               role="group"
               aria-label="Billing interval"
-              className="inline-flex rounded-xl border border-border bg-secondary/40 p-1"
+              className="interactive inline-flex rounded-xl border border-border bg-secondary/40 p-1"
             >
               {(["monthly", "annual"] as const).map((k) => (
                 <button
@@ -1162,11 +1167,19 @@ export default function Landing() {
                   type="button"
                   aria-pressed={billing === k}
                   onClick={() => setBilling(k)}
-                  className={`min-h-10 rounded-lg px-4 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
-                    billing === k ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+                  className={`relative min-h-10 rounded-lg px-4 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                    billing === k ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
-                  {k === "monthly" ? "Monthly" : "Yearly"}
+                  {billing === k && (
+                    <motion.span
+                      layoutId="billing-pill"
+                      aria-hidden
+                      className="absolute inset-0 rounded-lg bg-primary"
+                      transition={springSnappy}
+                    />
+                  )}
+                  <span className="relative z-10">{k === "monthly" ? "Monthly" : "Yearly"}</span>
                 </button>
               ))}
             </div>
@@ -1183,11 +1196,13 @@ export default function Landing() {
               const savings = billing === "annual" ? annualSavingsPercent(p.id) : 0;
               return (
                 <Reveal key={p.name} delay={i * 70} className="h-full">
-                <SpotlightCard
-                  tilt
-                  className={`flex h-full flex-col p-6 ${
+                <TiltCard
+                  maxTilt={6}
+                  shadow="md"
+                  glass={false}
+                  className={`flex h-full flex-col rounded-card p-6 ${
                     p.highlight
-                      ? "border-primary/40 bg-primary/[0.05] shadow-float"
+                      ? "border-primary/40 bg-primary/[0.05] shadow-float ring-1 ring-primary/20"
                       : ""
                   }`}
                 >
@@ -1244,7 +1259,7 @@ export default function Landing() {
                   >
                     {p.cta}
                   </Button>
-                </SpotlightCard>
+                </TiltCard>
                 </Reveal>
               );
             })}
@@ -1262,13 +1277,13 @@ export default function Landing() {
             </Reveal>
 
             <Reveal delay={80}>
-              <Accordion type="single" collapsible className="w-full">
+              <Accordion type="single" collapsible className="accordion-premium flex w-full flex-col gap-3">
                 {FAQS.map(([q, a], i) => (
-                  <AccordionItem key={q} value={`faq-${i}`} className="border-border">
-                    <AccordionTrigger className="py-4 text-left text-sm font-medium hover:no-underline sm:text-base">
+                  <AccordionItem key={q} value={`faq-${i}`} className="overflow-hidden rounded-card border border-border transition-colors hover:border-primary/20 data-[state=open]:border-primary/25 data-[state=open]:bg-primary/[0.02]">
+                    <AccordionTrigger className="px-5 py-4 text-left text-sm font-medium hover:no-underline sm:text-base">
                       {q}
                     </AccordionTrigger>
-                    <AccordionContent className="text-sm leading-relaxed text-muted-foreground">
+                    <AccordionContent className="px-5 text-sm leading-relaxed text-muted-foreground">
                       {a}
                     </AccordionContent>
                   </AccordionItem>
@@ -1291,7 +1306,7 @@ export default function Landing() {
 
           <div className="mx-auto mt-12 grid max-w-4xl gap-6 md:grid-cols-2">
             <Reveal>
-              <SpotlightCard tilt className="flex h-full flex-col rounded-card border border-border bg-card p-6 sm:p-8">
+              <TiltCard maxTilt={5} shadow="lg" className="flex h-full flex-col rounded-card border border-border bg-card p-6 sm:p-8">
                 <div className="flex h-11 w-11 items-center justify-center rounded-card bg-primary/10 text-primary">
                   <Coins className="h-5 w-5" aria-hidden />
                 </div>
@@ -1307,11 +1322,11 @@ export default function Landing() {
                   Explore Gradr Earn
                   <ArrowRight className="h-3.5 w-3.5" aria-hidden />
                 </a>
-              </SpotlightCard>
+              </TiltCard>
             </Reveal>
 
             <Reveal delay={80}>
-              <SpotlightCard tilt className="flex h-full flex-col rounded-card border border-border bg-card p-6 sm:p-8">
+              <TiltCard maxTilt={5} shadow="lg" className="flex h-full flex-col rounded-card border border-border bg-card p-6 sm:p-8">
                 <div className="flex h-11 w-11 items-center justify-center rounded-card bg-primary/10 text-primary">
                   <Handshake className="h-5 w-5" aria-hidden />
                 </div>
@@ -1327,7 +1342,7 @@ export default function Landing() {
                   Become a Partner
                   <ArrowRight className="h-3.5 w-3.5" aria-hidden />
                 </a>
-              </SpotlightCard>
+              </TiltCard>
             </Reveal>
           </div>
         </Section>
@@ -1335,8 +1350,10 @@ export default function Landing() {
         {/* -------------------------------- final CTA --------------------------- */}
         <Section className="border-t border-border/60">
           <ScrollFloat distance={56}>
-          <Reveal className="relative overflow-hidden rounded-3xl border border-primary/25 bg-card px-6 py-10 text-center sm:px-12 sm:py-14">
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-primary/10 to-transparent" aria-hidden />
+          <Reveal className="light-rim light-key relative overflow-hidden rounded-3xl border border-primary/25 bg-gradient-to-br from-primary/[0.06] via-card to-brand-secondary/[0.04] px-6 py-14 text-center shadow-3d-hero sm:px-12 sm:py-20">
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-primary/12 to-transparent" aria-hidden />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-brand-secondary/[0.04] to-transparent" aria-hidden />
+            <div className="pointer-events-none absolute -top-24 left-1/2 h-48 w-96 -translate-x-1/2 rounded-full bg-primary/10 blur-3xl" aria-hidden />
             <Text variant="h2" className="relative mx-auto max-w-3xl text-balance">
               Your next opportunity deserves more than another resume.
             </Text>
@@ -1344,9 +1361,9 @@ export default function Landing() {
               Build a smarter career system with Gradr.
             </Text>
             <div className="relative mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-              <AuthCta href={appSignInHref()} onActivate={start("final_cta", "Get started free")} size="lg">
+              <AuthCta href={appSignInHref()} onActivate={start("final_cta", "Get started free")} size="lg" className="btn-glow">
                 Get started free
-                <ArrowRight className="h-4 w-4" aria-hidden />
+                <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" aria-hidden />
               </AuthCta>
 
               <Button
@@ -1363,7 +1380,7 @@ export default function Landing() {
       </main>
 
       {/* --------------------------------- footer ------------------------------ */}
-      <footer className="border-t border-border bg-card/40 py-10">
+      <footer className="relative border-t border-border bg-card/30 py-14">
         <div className="page-shell grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_repeat(4,1fr)]">
           <div className="space-y-5">
             <div className="flex items-center gap-2">
@@ -1454,7 +1471,7 @@ export default function Landing() {
           ))}
         </div>
 
-        <div className="page-shell mt-12 flex flex-col gap-2 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
+        <div className="page-shell mt-12 flex flex-col gap-2 border-t border-border/60 pt-8 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} Gradr. All rights reserved.</p>
           <p className="text-xs text-muted-foreground">Built for people actively looking for their next role.</p>
         </div>

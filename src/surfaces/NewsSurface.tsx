@@ -17,13 +17,11 @@ function NewsIndex() {
   return (
     <div className="page-shell py-12">
       <header className="max-w-2xl">
-        <p className="text-xs font-semibold uppercase tracking-wide text-brand-secondary">
-          Gradr News
-        </p>
-        <h1 className="mt-2 text-4xl font-semibold tracking-tight text-foreground">
+        <p className="section-eyebrow">Gradr News</p>
+        <h1 className="mt-3 font-display text-4xl font-semibold tracking-tight text-foreground text-balance">
           Product updates, company news and job-market analysis
         </h1>
-        <p className="mt-3 text-muted-foreground">
+        <p className="mt-3 text-muted-foreground text-balance">
           What we are shipping, what we are learning, and what is actually changing in hiring.
         </p>
       </header>
@@ -50,7 +48,7 @@ function NewsIndex() {
       {lead && (
         <SLink
           to={`/${lead.slug}`}
-          className="mt-8 block rounded-xl border border-border/60 bg-card p-6 elev-2 transition-transform hover:-translate-y-0.5 motion-reduce:transform-none"
+          className="card-glow mt-8 block rounded-xl border border-border bg-card p-6 motion-reduce:transform-none"
         >
           <p className="text-xs font-semibold uppercase tracking-wide text-brand-secondary">
             {lead.category}
@@ -72,7 +70,7 @@ function NewsIndex() {
           <SLink
             key={item.slug}
             to={`/${item.slug}`}
-            className="flex flex-col rounded-xl border border-border/60 bg-card p-5 elev-1 transition-transform hover:-translate-y-0.5 motion-reduce:transform-none"
+            className="card-glow flex flex-col rounded-xl border border-border bg-card p-5 motion-reduce:transform-none"
           >
             <p className="text-xs font-semibold uppercase tracking-wide text-brand-secondary">
               {item.category}

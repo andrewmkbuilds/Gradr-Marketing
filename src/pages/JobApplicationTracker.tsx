@@ -27,6 +27,11 @@ import {
   buildFaqLd,
   buildHowToLd,
 } from "@/lib/structuredData";
+import {
+  ToolHero, ToolSection, ToolEyebrow, ToolHeading,
+  ToolStepCard, ToolFeatureCard, ToolCtaSection, ToolTable, ToolRelatedLinks,
+} from "@/components/marketing/ToolPrimitives";
+import { Reveal } from "@/components/landing/Reveal";
 
 const PATH = "/job-application-tracker";
 
@@ -176,23 +181,16 @@ export default function JobApplicationTracker() {
         label="job-application-tracker"
       />
 
-      <section className="mx-auto max-w-3xl text-center">
-        <p className="text-xs font-medium uppercase tracking-wider text-primary">
-          Free tool · Application Engine
-        </p>
-        <Text as="h1" variant="h1" className="mt-3 text-balance">
-          Job Application Tracker
-        </Text>
-        <p className="mt-5 text-pretty text-lg leading-relaxed text-muted-foreground">
-          Stop losing the job search in a spreadsheet. Gradr keeps every role, resume version,
-          follow-up and interview in one intelligent pipeline — and tells you which applications
-          are actually worth your afternoon.
-        </p>
-        <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+      <ToolHero
+        eyebrow="Free tool · Application Engine"
+        title="Job Application Tracker"
+        lede="Stop losing the job search in a spreadsheet. Gradr keeps every role, resume version, follow-up and interview in one intelligent pipeline — and tells you which applications are actually worth your afternoon."
+      >
+        <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
           <a
             href={ctaHref(appSignupHref(), "hero_primary")}
             onClick={trackCta("hero_primary", "/auth")}
-            className={cn(buttonVariants({ size: "lg" }), "transition-transform hover:scale-[1.02] motion-reduce:transform-none")}
+            className={cn(buttonVariants({ size: "lg" }), "btn-glow")}
           >
             <KanbanSquare className="h-4 w-4" aria-hidden="true" />
             Start tracking free
@@ -209,137 +207,111 @@ export default function JobApplicationTracker() {
         <p className="mt-4 text-xs text-muted-foreground">
           No credit card required · Unlimited saved roles on the free plan · Your documents stay private to your account
         </p>
-      </section>
+      </ToolHero>
 
-      <section className="section-gap" aria-labelledby="workflow">
-        <h2 id="workflow" className="text-2xl font-semibold tracking-tight text-foreground">
-          The AI job domination workflow
-        </h2>
-        <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-          Six moves, run in order, on every single role. The tracker is what keeps them connected —
-          the job description you saved on Monday is the same one scoring your resume, writing your
-          follow-up, and asking your interview questions on Friday.
-        </p>
-        <ol className="mt-6 grid gap-4 sm:grid-cols-2">
+      <ToolSection id="workflow">
+        <Reveal className="space-y-4">
+          <ToolEyebrow>The workflow</ToolEyebrow>
+          <ToolHeading>The AI job domination workflow</ToolHeading>
+          <p className="max-w-2xl text-sm text-muted-foreground">
+            Six moves, run in order, on every single role. The tracker is what keeps them connected —
+            the job description you saved on Monday is the same one scoring your resume, writing your
+            follow-up, and asking your interview questions on Friday.
+          </p>
+        </Reveal>
+        <div className="mt-8 grid gap-4 sm:grid-cols-2">
           {WORKFLOW.map((step, i) => (
-            <li
+            <ToolStepCard
               key={step.title}
-              id={`step-${i + 1}`}
-              className="rounded-2xl border border-border/70 bg-card/60 p-5 backdrop-blur transition-colors hover:border-primary/40"
+              icon={step.icon}
+              index={i + 1}
+              title={step.title}
+              delay={i * 60}
             >
-              <div className="flex items-center gap-3">
-                <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                  <step.icon className="h-4 w-4" aria-hidden="true" />
-                </span>
-                <h3 className="font-medium text-foreground">
-                  <span className="text-muted-foreground">{i + 1}.</span> {step.title}
-                </h3>
-              </div>
-              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{step.body}</p>
-            </li>
-          ))}
-        </ol>
-      </section>
-
-      <section className="section-gap" aria-labelledby="stages">
-        <h2 id="stages" className="text-2xl font-semibold tracking-tight text-foreground">
-          Every application, in a stage that means something
-        </h2>
-        <div
-          className="mt-6 overflow-x-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          tabIndex={0}
-          role="group"
-          aria-label="Application pipeline stages table, scrollable horizontally"
-        >
-          <table className="w-full min-w-[420px] text-sm">
-            <caption className="sr-only">Gradr job application pipeline stages and what each means</caption>
-            <thead>
-              <tr className="border-b border-border text-left text-xs uppercase tracking-wide text-muted-foreground">
-                <th scope="col" className="py-2 pr-4 font-medium">Stage</th>
-                <th scope="col" className="py-2 font-medium">What lives there</th>
-              </tr>
-            </thead>
-            <tbody>
-              {STAGES.map((row) => (
-                <tr key={row.stage} className="border-b border-border/60">
-                  <th scope="row" className="whitespace-nowrap py-3 pr-4 text-left font-medium text-foreground">
-                    {row.stage}
-                  </th>
-                  <td className="py-3 text-muted-foreground">{row.meaning}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <section className="section-gap" aria-labelledby="vs-spreadsheet">
-        <h2
-          id="vs-spreadsheet"
-          className="flex items-center gap-2 text-2xl font-semibold tracking-tight text-foreground"
-        >
-          <BellRing className="h-5 w-5 text-primary" aria-hidden="true" />
-          Why this beats a job search spreadsheet
-        </h2>
-        <div className="mt-6 grid gap-4 md:grid-cols-2">
-          {AGAINST_SPREADSHEETS.map((item) => (
-            <div key={item.title} className="rounded-xl border border-border/70 p-5">
-              <h3 className="font-medium text-foreground">{item.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.body}</p>
-            </div>
+              {step.body}
+            </ToolStepCard>
           ))}
         </div>
-      </section>
+      </ToolSection>
 
-      <section className="section-gap">
-        <FaqBlock items={FAQS} source="job-application-tracker" />
-      </section>
+      <ToolSection id="stages" bg="card" sceneVariant="gridscan" sceneIntensity={0.3}>
+        <Reveal className="space-y-4">
+          <ToolEyebrow>Pipeline stages</ToolEyebrow>
+          <ToolHeading>Every application, in a stage that means something</ToolHeading>
+        </Reveal>
+        <div className="mt-8">
+          <ToolTable
+            caption="Gradr job application pipeline stages and what each means"
+            headers={["Stage", "What lives there"]}
+            rows={STAGES.map((row) => ({ cells: [row.stage, row.meaning] }))}
+          />
+        </div>
+      </ToolSection>
 
-      <section className="section-gap rounded-2xl border border-border bg-card p-6 sm:p-8">
-        <h2 className="text-xl font-semibold text-foreground">Keep reading</h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          The tracker works best alongside the rest of the workflow.
-        </p>
-        <ul className="mt-4 grid gap-3 sm:grid-cols-3">
-          {[
-            { to: "/career-advice", label: "Career advice hub", note: "Guides for resumes, cover letters and interviews" },
-            { to: "/ats-resume-checker", label: "ATS resume checker", note: "Score your resume against any posting" },
-            { to: "/ai-interview-coach", label: "AI interview coach", note: "Voice mock interviews with scored feedback" },
-          ].map((link) => (
-            <li key={link.to}>
-              <Link
-                to={ctaHref(link.to, "related")}
-                onClick={trackCta("related", link.to)}
-                className="group block h-full rounded-xl border border-border/70 p-4 transition-colors hover:border-primary/50"
-              >
-                <span className="flex items-center gap-1 text-sm font-medium text-foreground">
-                  {link.label}
-                  <ArrowRight className="h-3.5 w-3.5 text-primary transition-transform group-hover:translate-x-0.5 motion-reduce:transition-none" aria-hidden="true" />
-                </span>
-                <span className="mt-1 block text-sm text-muted-foreground">{link.note}</span>
-              </Link>
-            </li>
+      <ToolSection id="vs-spreadsheet">
+        <Reveal className="space-y-4">
+          <ToolEyebrow>Why it's better</ToolEyebrow>
+          <ToolHeading>
+            <span className="inline-flex items-center gap-2">
+              <BellRing className="h-6 w-6 text-primary" aria-hidden="true" />
+              Why this beats a job search spreadsheet
+            </span>
+          </ToolHeading>
+        </Reveal>
+        <div className="mt-8 grid gap-4 md:grid-cols-2">
+          {AGAINST_SPREADSHEETS.map((item, i) => (
+            <ToolFeatureCard key={item.title} title={item.title} delay={i * 50}>
+              {item.body}
+            </ToolFeatureCard>
           ))}
-        </ul>
-      </section>
+        </div>
+      </ToolSection>
 
-      <section className="section-gap text-center">
-        <h2 className="text-2xl font-semibold tracking-tight text-foreground">
-          Run your next fifty applications properly
-        </h2>
-        <p className="mx-auto mt-2 max-w-xl text-sm text-muted-foreground">
-          Create a free account, save your first role, and let Gradr handle the scoring, the
-          tailoring, the follow-ups and the interview prep.
-        </p>
+      <ToolSection bg="card">
+        <Reveal className="space-y-4">
+          <ToolEyebrow>FAQ</ToolEyebrow>
+        </Reveal>
+        <div className="mt-8">
+          <FaqBlock items={FAQS} source="job-application-tracker" />
+        </div>
+      </ToolSection>
+
+      <ToolRelatedLinks
+        links={[
+          {
+            to: ctaHref("/career-advice", "related"),
+            title: "Career advice hub",
+            desc: "Guides for resumes, cover letters and interviews",
+            onClick: trackCta("related", "/career-advice"),
+          },
+          {
+            to: ctaHref("/ats-resume-checker", "related"),
+            title: "ATS resume checker",
+            desc: "Score your resume against any posting",
+            onClick: trackCta("related", "/ats-resume-checker"),
+          },
+          {
+            to: ctaHref("/ai-interview-coach", "related"),
+            title: "AI interview coach",
+            desc: "Voice mock interviews with scored feedback",
+            onClick: trackCta("related", "/ai-interview-coach"),
+          },
+        ]}
+      />
+
+      <ToolCtaSection
+        title="Run your next fifty applications properly"
+        lede="Create a free account, save your first role, and let Gradr handle the scoring, the tailoring, the follow-ups and the interview prep."
+      >
         <a
           href={ctaHref(appSignupHref(), "footer_cta")}
           onClick={trackCta("footer_cta", "/auth")}
-          className="mt-6 inline-flex h-11 items-center gap-2 rounded-xl bg-primary px-6 text-sm font-medium text-primary-foreground transition-transform hover:scale-[1.02] motion-reduce:transform-none"
+          className={cn(buttonVariants({ size: "lg" }), "btn-glow")}
         >
           Start tracking free
           <ArrowRight className="h-4 w-4" aria-hidden="true" />
         </a>
-      </section>
+      </ToolCtaSection>
     </PublicShell>
   );
 }

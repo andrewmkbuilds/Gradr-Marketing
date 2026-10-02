@@ -1,4 +1,5 @@
 import { Monitor, Moon, Sun } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import { Button } from "@/design-system/gradr-9b9b95";
 import {
   DropdownMenu,
@@ -10,6 +11,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useTheme, type ThemePreference } from "@/hooks/useTheme";
+import { useReducedMotionPref } from "@/hooks/useMotionPreference";
+import { springSnappy } from "@/lib/motion/tokens";
 import { cn } from "@/lib/utils";
 
 const OPTIONS: { value: ThemePreference; label: string; icon: typeof Sun }[] = [
@@ -24,6 +27,8 @@ const OPTIONS: { value: ThemePreference; label: string; icon: typeof Sun }[] = [
  */
 export function ThemeToggle({ className }: { className?: string }) {
   const { theme, resolvedTheme, setTheme } = useTheme();
+  const reduced = useReducedMotionPref();
+  const iconKey = resolvedTheme === "dark" ? "moon" : "sun";
   const Icon = resolvedTheme === "dark" ? Moon : Sun;
 
   return (
@@ -35,7 +40,18 @@ export function ThemeToggle({ className }: { className?: string }) {
           aria-label={`Theme: ${theme}. Change theme`}
           className={cn("interactive press-scale min-h-11 min-w-11", className)}
         >
-          <Icon className="size-5" aria-hidden="true" />
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.span
+              key={iconKey}
+              initial={reduced ? { opacity: 0 } : { opacity: 0, rotate: -90, scale: 0.5 }}
+              animate={{ opacity: 1, rotate: 0, scale: 1 }}
+              exit={reduced ? { opacity: 0 } : { opacity: 0, rotate: 90, scale: 0.5 }}
+              transition={reduced ? { duration: 0.14 } : springSnappy}
+              className="grid place-items-center"
+            >
+              <Icon className="size-5" aria-hidden="true" />
+            </motion.span>
+          </AnimatePresence>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-40">

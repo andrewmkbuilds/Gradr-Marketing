@@ -176,8 +176,11 @@ const NotFound = () => {
 
       <section className="page-shell section-y" data-page="not-found">
         <div className="mx-auto max-w-3xl text-center">
-          <Badge variant="outline">Error 404</Badge>
-          <Text variant="h1" className="mt-6">
+          <div className="relative inline-block">
+            <div className="pointer-events-none absolute inset-0 -z-10 rounded-full bg-primary/10 blur-2xl" aria-hidden />
+            <Badge variant="gradient" className="text-base">Error 404</Badge>
+          </div>
+          <Text variant="h1" className="mt-6 text-balance">
             We couldn&apos;t find that page
           </Text>
           <Text variant="lead" className="mx-auto mt-4 max-w-xl">

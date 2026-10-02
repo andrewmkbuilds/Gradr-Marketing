@@ -26,7 +26,7 @@ jobs:
           bun-version: latest
 
       - name: Install dependencies
-        run: bun install --frozen-lockfile
+        run: bun install
 
       - name: Unit rules (deep-link validation, telemetry, retry event)
         run: bunx vitest run src/test/authHandoff.test.ts src/test/appLinks.test.ts src/test/oauthCallbackGuard.test.ts

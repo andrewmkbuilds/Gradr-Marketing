@@ -63,22 +63,22 @@ function StatusHome() {
   return (
     <div className="page-shell py-12">
       <header className="max-w-2xl">
-        <p className="text-xs font-semibold uppercase tracking-wide text-brand-secondary">Status</p>
-        <h1 className="mt-2 font-display text-4xl font-semibold tracking-tight text-foreground">
+        <p className="section-eyebrow">Status</p>
+        <h1 className="mt-3 font-display text-4xl font-semibold tracking-tight text-foreground text-balance">
           Gradr system status
         </h1>
-        <p className="mt-3 text-muted-foreground">
+        <p className="mt-3 text-muted-foreground text-balance">
           Live health for every part of Gradr, plus a record of past incidents.
         </p>
       </header>
 
       <section
         className={cn(
-          "mt-10 flex items-center gap-4 rounded-xl border border-border/60 bg-card p-6 elev-1",
+          "mt-10 flex items-center gap-4 rounded-xl border border-border bg-card p-6 elev-2",
         )}
         aria-live="polite"
       >
-        <span className={cn("h-3 w-3 shrink-0 rounded-full", meta.dot)} aria-hidden="true" />
+        <span className={cn("pulse-dot shrink-0", meta.dot)} aria-hidden="true" />
         <div>
           <p className={cn("text-lg font-semibold", meta.text)}>
             {overall === "operational" ? "All systems operational" : meta.label}
@@ -94,7 +94,7 @@ function StatusHome() {
         <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
           Components
         </h2>
-        <ul className="mt-3 divide-y divide-border/60 overflow-hidden rounded-xl border border-border/60 bg-card elev-1">
+        <ul className="mt-3 divide-y divide-border/60 overflow-hidden rounded-xl border border-border bg-card elev-2">
           {SERVICES.map((service) => {
             const serviceMeta = HEALTH_META[service.health];
             return (

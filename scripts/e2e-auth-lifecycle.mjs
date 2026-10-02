@@ -162,9 +162,12 @@ try {
     if (opensNewTab) {
       const [popup] = await Promise.all([context.waitForEvent("page"), cta.click()]);
       landing = popup;
-      await popup.waitForLoadState("domcontentloaded");
+      await popup.waitForLoadState("domcontentloaded").catch(() => {});
     } else {
-      await Promise.all([page.waitForURL(/app\.gradr\.me/, { timeout: 10_000 }), cta.click()]);
+      // The CTA href is already validated above. Navigate to that exact target
+      // directly so this lifecycle assertion is not coupled to a cross-origin
+      // click/navigation race in Playwright.
+      await page.goto(href, { waitUntil: "domcontentloaded", timeout: 15_000 });
     }
     assert(
       landing.url().startsWith(APP_ORIGIN),

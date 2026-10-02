@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Download, Loader2, Mail, RefreshCw, Search, ShieldAlert } from "lucide-react";
+import { Download, Mail, RefreshCw, Search, ShieldAlert } from "lucide-react";
+import { SpatialLoader } from "@/components/three-d";
 import {
   Alert,
   Badge,
@@ -332,7 +333,7 @@ export default function MarketingEmailOps() {
   if (!sessionReady) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-background">
-        <Loader2 className="size-6 animate-spin text-muted-foreground" aria-hidden />
+        <SpatialLoader size={36} />
         <span className="sr-only">Loading</span>
       </main>
     );
@@ -506,7 +507,7 @@ export default function MarketingEmailOps() {
                 {loading ? (
                   <tr>
                     <td colSpan={5} className="px-5 py-10 text-center">
-                      <Loader2 className="mx-auto size-5 animate-spin" aria-hidden />
+                      <SpatialLoader size={24} className="w-full justify-center" />
                     </td>
                   </tr>
                 ) : log?.rows.length ? (
@@ -665,7 +666,7 @@ export default function MarketingEmailOps() {
                 {loading ? (
                   <tr>
                     <td colSpan={5} className="px-5 py-10 text-center">
-                      <Loader2 className="mx-auto size-5 animate-spin" aria-hidden />
+                      <SpatialLoader size={24} className="w-full justify-center" />
                     </td>
                   </tr>
                 ) : subscribers?.rows.length ? (
@@ -773,7 +774,7 @@ export default function MarketingEmailOps() {
                 {loading ? (
                   <tr>
                     <td colSpan={6} className="px-5 py-10 text-center">
-                      <Loader2 className="mx-auto size-5 animate-spin" aria-hidden />
+                      <SpatialLoader size={24} className="w-full justify-center" />
                     </td>
                   </tr>
                 ) : engagement?.templates.length ? (
@@ -893,7 +894,7 @@ export default function MarketingEmailOps() {
           <Card className="p-0 lg:col-span-3">
             {loading ? (
               <div className="flex h-96 items-center justify-center">
-                <Loader2 className="size-6 animate-spin text-muted-foreground" aria-hidden />
+                <SpatialLoader size={36} />
               </div>
             ) : active ? (
               active.status === "render_failed" ? (

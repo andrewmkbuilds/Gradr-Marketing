@@ -23,7 +23,14 @@ function record(name, ok, detail = "") {
 }
 
 async function checkLoad(page, name, navigate) {
-  await navigate();
+  try {
+    await navigate();
+  } catch (error) {
+    // Preview-server reloads can briefly detach the document; retry the URL
+    // so the gate measures the rendered page instead of a navigation race.
+    if (!/detached|Not attached|Protocol error.*Page\.reload|closed|interrupted|ERR_ABORTED|Target page/i.test(String(error))) throw error;
+    await page.goto(page.url(), { waitUntil: "commit", timeout: 30_000 });
+  }
   const flash = await sampleForFlash(page);
   const leaked = flash.seoVisibleFrames.length > 0;
   record(
@@ -46,14 +53,21 @@ async function main() {
       viewport: { width: 1280, height: 900 },
       colorScheme: scheme,
     });
-    const page = await context.newPage();
-
     for (const route of ROUTES) {
+      // Use a fresh page per route. Cross-origin hand-offs and service-worker
+      // teardown can leave a reused page in a detached navigation state.
+      const page = await context.newPage();
       const url = `${BASE}${route}`;
       await checkLoad(page, `${scheme} ${route} first load`, () =>
         page.goto(url, { waitUntil: "commit", timeout: 30_000 }));
-      await checkLoad(page, `${scheme} ${route} reload`, () =>
-        page.reload({ waitUntil: "commit", timeout: 30_000 }));
+      await checkLoad(page, `${scheme} ${route} reload`, async () => {
+        try {
+          await page.reload({ waitUntil: "commit", timeout: 30_000 });
+        } catch (error) {
+          if (!/detached|Not attached|Protocol error.*Page\.reload|closed|interrupted|ERR_ABORTED|Target page/i.test(String(error))) throw error;
+          await page.goto(url, { waitUntil: "commit", timeout: 30_000 });
+        }
+      });
       await checkLoad(page, `${scheme} ${route} hard reload`, async () => {
         // Bypass the HTTP cache and any service-worker cached shell.
         await page.evaluate(async () => {
@@ -78,6 +92,7 @@ async function main() {
         !settled.includes("not a grading, marking or test-score tool"),
         "post-boot check",
       );
+      await page.close().catch(() => {});
     }
 
     await context.close();

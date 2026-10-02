@@ -15,6 +15,15 @@ export default defineConfig({
     hookTimeout: 20000,
   },
   resolve: {
-    alias: { "@": path.resolve(__dirname, "./src") },
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+      // zod 3.25+ exposes a "@zod/source" export condition that points at the
+      // raw TypeScript source (./src/index.ts). Vite's default condition
+      // resolution picks that up and tries to transform .ts, which fails at
+      // runtime with "undefined is not an object (evaluating 'z.object')".
+      // Pin the alias to the pre-built JS bundle so tests import the same
+      // compiled module the browser does.
+      zod: path.resolve(__dirname, "./src/test/zod-shim.js"),
+    },
   },
 });

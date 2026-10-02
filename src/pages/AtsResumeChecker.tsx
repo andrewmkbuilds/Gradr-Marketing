@@ -22,6 +22,13 @@ import {
   buildBreadcrumbLd,
   buildFaqLd,
 } from "@/lib/structuredData";
+import {
+  ToolHero, ToolSection, ToolEyebrow, ToolHeading,
+  ToolStepCard, ToolFeatureCard, ToolCtaSection, ToolTable, ToolRelatedLinks,
+} from "@/components/marketing/ToolPrimitives";
+import { Reveal } from "@/components/landing/Reveal";
+import { buttonVariants } from "@/design-system/gradr-9b9b95/gradr/components/button";
+import { cn } from "@/lib/utils";
 
 const PATH = "/ats-resume-checker";
 
@@ -159,23 +166,16 @@ export default function AtsResumeChecker() {
         label="ats-resume-checker"
       />
 
-      <section className="mx-auto max-w-3xl text-center">
-        <p className="text-xs font-medium uppercase tracking-wider text-primary">
-          Free tool · Resume Intelligence
-        </p>
-        <Text variant="h1" as="h1" className="mt-3">
-          ATS Resume Checker
-        </Text>
-        <Text variant="lead" className="mt-5">
-          Score your resume against any job description in under a minute. Gradr reads your
-          file the way an Applicant Tracking System does, shows the keywords you're missing,
-          and rewrites the weak lines — so a parser never buries your application again.
-        </Text>
-        <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+      <ToolHero
+        eyebrow="Free tool · Resume Intelligence"
+        title="ATS Resume Checker"
+        lede="Score your resume against any job description in under a minute. Gradr reads your file the way an Applicant Tracking System does, shows the keywords you're missing, and rewrites the weak lines — so a parser never buries your application again."
+      >
+        <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
           <a
             href={ctaHref(appSignupHref(), "hero_primary")}
             onClick={trackCta("hero_primary", "/auth")}
-            className="inline-flex h-11 items-center gap-2 rounded-xl bg-primary px-5 text-sm font-medium text-primary-foreground transition-transform hover:scale-[1.02] motion-reduce:transform-none"
+            className={cn(buttonVariants({ size: "lg" }), "btn-glow")}
           >
             <Sparkles className="h-4 w-4" aria-hidden="true" />
             Check my resume free
@@ -183,7 +183,7 @@ export default function AtsResumeChecker() {
           <Link
             to={ctaHref("/blog/ai-resume-optimization", "hero_secondary")}
             onClick={trackCta("hero_secondary", "/blog/ai-resume-optimization")}
-            className="inline-flex h-11 items-center gap-2 rounded-xl border border-border px-5 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+            className={buttonVariants({ variant: "outline", size: "lg" })}
           >
             Read the ATS optimization guide
             <ArrowRight className="h-4 w-4" aria-hidden="true" />
@@ -192,161 +192,124 @@ export default function AtsResumeChecker() {
         <p className="mt-4 text-xs text-muted-foreground">
           No credit card required · PDF and DOCX supported · Your resume stays private to your account
         </p>
-      </section>
+      </ToolHero>
 
-      <section className="section-gap" aria-labelledby="how-it-works">
-        <h2 id="how-it-works" className="text-2xl font-semibold tracking-tight text-foreground">
-          How the ATS resume checker works
-        </h2>
-        <div className="mt-6 grid gap-4 sm:grid-cols-2">
+      <ToolSection id="how-it-works" aria-labelledby="how-it-works">
+        <Reveal className="space-y-4">
+          <ToolEyebrow>How it works</ToolEyebrow>
+          <ToolHeading>How the ATS resume checker works</ToolHeading>
+        </Reveal>
+        <div className="mt-8 grid gap-4 sm:grid-cols-2">
           {STEPS.map((step, i) => (
-            <Card
+            <ToolStepCard
               key={step.title}
-              className="bg-card/60 backdrop-blur transition-colors hover:border-primary/40"
+              icon={step.icon}
+              index={i + 1}
+              title={step.title}
+              delay={i * 60}
             >
-              <div className="flex items-center gap-3">
-                <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                  <step.icon className="h-4.5 w-4.5" aria-hidden="true" />
-                </span>
-                <h3 className="font-medium text-foreground">
-                  <span className="text-muted-foreground">{i + 1}.</span> {step.title}
-                </h3>
-              </div>
-              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{step.body}</p>
-            </Card>
+              {step.body}
+            </ToolStepCard>
           ))}
         </div>
-      </section>
+      </ToolSection>
 
-      <section className="section-gap" aria-labelledby="common-issues">
-        <h2 id="common-issues" className="flex items-center gap-2 text-2xl font-semibold tracking-tight text-foreground">
-          <ShieldAlert className="h-5 w-5 text-primary" aria-hidden="true" />
-          Common ATS issues Gradr catches
-        </h2>
-        <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-          Most rejections aren't about your experience — they're about what the parser could and
-          couldn't read. These are the failures the checker flags most often.
-        </p>
-        <div className="mt-6 grid gap-4 md:grid-cols-2">
-          {ISSUES.map((issue) => (
-            <div key={issue.title} className="rounded-xl border border-border/70 p-5">
-              <h3 className="flex items-start gap-2 font-medium text-foreground">
-                <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
-                {issue.title}
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{issue.body}</p>
-            </div>
+      <ToolSection id="common-issues" bg="card" sceneVariant="dots" sceneIntensity={0.3}>
+        <Reveal className="space-y-4">
+          <ToolEyebrow>Common issues</ToolEyebrow>
+          <ToolHeading>
+            <span className="inline-flex items-center gap-2">
+              <ShieldAlert className="h-6 w-6 text-primary" aria-hidden="true" />
+              Common ATS issues Gradr catches
+            </span>
+          </ToolHeading>
+          <p className="max-w-2xl text-sm text-muted-foreground">
+            Most rejections aren't about your experience — they're about what the parser could and
+            couldn't read. These are the failures the checker flags most often.
+          </p>
+        </Reveal>
+        <div className="mt-8 grid gap-4 md:grid-cols-2">
+          {ISSUES.map((issue, i) => (
+            <ToolFeatureCard key={issue.title} icon={CheckCircle2} title={issue.title} delay={i * 50}>
+              {issue.body}
+            </ToolFeatureCard>
           ))}
         </div>
-      </section>
+      </ToolSection>
 
-      <section className="section-gap" aria-labelledby="score-bands">
-        <h2 id="score-bands" className="text-2xl font-semibold tracking-tight text-foreground">
-          What your ATS score means
-        </h2>
-        <div
-          className="mt-6 overflow-x-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          tabIndex={0}
-          role="group"
-          aria-label="ATS score bands table, scrollable horizontally"
-        >
-          <table className="w-full min-w-[420px] text-sm">
-            <caption className="sr-only">ATS resume score bands and what each range means</caption>
-            <thead>
-              <tr className="border-b border-border text-left text-xs uppercase tracking-wide text-muted-foreground">
-                <th scope="col" className="py-2 pr-4 font-medium">Score</th>
-                <th scope="col" className="py-2 font-medium">What it means</th>
-              </tr>
-            </thead>
-            <tbody className="text-muted-foreground">
-              {SCORE_BANDS.map((row) => (
-                <tr key={row.band} className="border-b border-border/50">
-                  <th scope="row" className="py-3 pr-4 text-left font-medium text-foreground">
-                    {row.band}
-                  </th>
-                  <td className="py-3">{row.meaning}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      <ToolSection id="score-bands">
+        <Reveal className="space-y-4">
+          <ToolEyebrow>Score meaning</ToolEyebrow>
+          <ToolHeading>What your ATS score means</ToolHeading>
+        </Reveal>
+        <div className="mt-8">
+          <ToolTable
+            caption="ATS resume score bands and what each range means"
+            headers={["Score", "What it means"]}
+            rows={SCORE_BANDS.map((row) => ({ cells: [row.band, row.meaning] }))}
+          />
         </div>
-      </section>
+      </ToolSection>
 
-      <section className="section-gap" aria-labelledby="faq">
-        <h2 id="faq" className="text-2xl font-semibold tracking-tight text-foreground">
-          ATS resume checker FAQ
-        </h2>
-        <dl className="mt-6 space-y-5">
-          {FAQS.map((faq) => (
-            <Card key={faq.question} variant="outline" padding="md">
-              <Text variant="h6" as="dt">{faq.question}</Text>
-              <Text variant="body-sm" tone="muted" as="dd" className="mt-2">{faq.answer}</Text>
-            </Card>
-          ))}
-        </dl>
-      </section>
-
-      <section className="section-gap" aria-labelledby="keep-reading">
-        <h2 id="keep-reading" className="text-2xl font-semibold tracking-tight text-foreground">
-          Keep reading
-        </h2>
-        <div className="mt-5 grid gap-3 sm:grid-cols-2">
-          {[
-            {
-              to: "/blog/ai-resume-optimization",
-              title: "AI Resume Builder & ATS Guide",
-              desc: "The full technical breakdown of how ATS parsing, scoring, and ranking works.",
-              location: "related_blog",
-            },
-            {
-              to: "/career-advice/resume-optimization-checklist",
-              title: "Resume Optimization Checklist",
-              desc: "A step-by-step pass over formatting, keywords, and impact language before you apply.",
-              location: "related_checklist",
-            },
-            {
-              to: "/job-search",
-              title: "Job Search by Role & Location",
-              desc: "See what each role actually asks for and tailor your resume to it.",
-              location: "related_job_search",
-            },
-            {
-              to: "/career-advice",
-              title: "Career Advice Guides",
-              desc: "Free guides on resumes, cover letters, and interview preparation.",
-              location: "related_advice",
-            },
-          ].map((item) => (
-            <Link
-              key={item.to}
-              to={ctaHref(item.to, item.location)}
-              onClick={trackCta(item.location, item.to)}
-              className="rounded-xl border border-border/70 p-5 transition-colors hover:border-primary/50 hover:bg-muted/40"
-            >
-              <p className="font-medium text-foreground">{item.title}</p>
-              <p className="mt-1.5 text-sm text-muted-foreground">{item.desc}</p>
-            </Link>
+      <ToolSection id="faq" bg="card">
+        <Reveal className="space-y-4">
+          <ToolEyebrow>FAQ</ToolEyebrow>
+          <ToolHeading>ATS resume checker FAQ</ToolHeading>
+        </Reveal>
+        <div className="mt-8 space-y-4">
+          {FAQS.map((faq, i) => (
+            <Reveal key={faq.question} delay={i * 40}>
+              <Card variant="outline" padding="lg" className="card-glow">
+                <Text variant="h6" as="dt">{faq.question}</Text>
+                <Text variant="body-sm" tone="muted" as="dd" className="mt-2">{faq.answer}</Text>
+              </Card>
+            </Reveal>
           ))}
         </div>
-      </section>
+      </ToolSection>
 
-      <section className="section-gap rounded-2xl border border-primary/25 bg-primary/5 p-8 text-center">
-        <h2 className="text-2xl font-semibold tracking-tight text-foreground">
-          Find out what the ATS sees
-        </h2>
-        <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground">
-          Upload your resume, paste a job description, and get your score plus the exact fixes.
-          Free to start — no credit card.
-        </p>
+      <ToolRelatedLinks
+        links={[
+          {
+            to: ctaHref("/blog/ai-resume-optimization", "related_blog"),
+            title: "AI Resume Builder & ATS Guide",
+            desc: "The full technical breakdown of how ATS parsing, scoring, and ranking works.",
+            onClick: trackCta("related_blog", "/blog/ai-resume-optimization"),
+          },
+          {
+            to: ctaHref("/career-advice/resume-optimization-checklist", "related_checklist"),
+            title: "Resume Optimization Checklist",
+            desc: "A step-by-step pass over formatting, keywords, and impact language before you apply.",
+            onClick: trackCta("related_checklist", "/career-advice/resume-optimization-checklist"),
+          },
+          {
+            to: ctaHref("/job-search", "related_job_search"),
+            title: "Job Search by Role & Location",
+            desc: "See what each role actually asks for and tailor your resume to it.",
+            onClick: trackCta("related_job_search", "/job-search"),
+          },
+          {
+            to: ctaHref("/career-advice", "related_advice"),
+            title: "Career Advice Guides",
+            desc: "Free guides on resumes, cover letters, and interview preparation.",
+            onClick: trackCta("related_advice", "/career-advice"),
+          },
+        ]}
+      />
+
+      <ToolCtaSection
+        title="Find out what the ATS sees"
+        lede="Upload your resume, paste a job description, and get your score plus the exact fixes. Free to start — no credit card."
+      >
         <a
           href={ctaHref(appSignupHref(), "footer_cta")}
           onClick={trackCta("footer_cta", "/auth")}
-          className="mt-6 inline-flex h-11 items-center gap-2 rounded-xl bg-primary px-6 text-sm font-medium text-primary-foreground transition-transform hover:scale-[1.02] motion-reduce:transform-none"
+          className={cn(buttonVariants({ size: "lg" }), "btn-glow")}
         >
           Run my free ATS check
           <ArrowRight className="h-4 w-4" aria-hidden="true" />
         </a>
-      </section>
+      </ToolCtaSection>
     </PublicShell>
   );
 }

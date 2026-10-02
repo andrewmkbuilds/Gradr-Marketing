@@ -33,11 +33,16 @@ export function MarketingHero({
   const reduced = useReducedMotionPref();
 
   return (
-    <header className={cn("relative isolate overflow-hidden pb-2", className)}>
+    <header className={cn("cta-glow relative isolate overflow-hidden pb-2", className)}>
       <div
         aria-hidden="true"
         className="pointer-events-none absolute -left-32 -top-40 h-72 w-[42rem] rounded-full opacity-[0.18] blur-3xl"
         style={{ background: "radial-gradient(circle, hsl(var(--primary)) 0%, transparent 68%)" }}
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -right-32 -top-20 h-56 w-96 rounded-full opacity-[0.12] blur-3xl"
+        style={{ background: "radial-gradient(circle, hsl(var(--brand-secondary)) 0%, transparent 68%)" }}
       />
 
       <motion.div
@@ -47,8 +52,12 @@ export function MarketingHero({
         className="space-y-4"
       >
         {above}
-        {eyebrow && <p className={cn(typography.eyebrow, "tracking-[0.2em]")}>{eyebrow}</p>}
-        <h1 className={cn(typography.section, "text-foreground")}>{title}</h1>
+        {eyebrow && (
+          <p className={cn(typography.eyebrow, "section-eyebrow tracking-[0.2em]")}>
+            {eyebrow}
+          </p>
+        )}
+        <h1 className={cn(typography.section, "text-foreground text-balance")}>{title}</h1>
         {description && (
           <p className={cn(typography.lede, measure.default)}>{description}</p>
         )}
@@ -62,7 +71,7 @@ export function MarketingHero({
         animate={reduced ? { opacity: 1 } : { scaleX: 1 }}
         transition={{ duration: 0.7, ease: easeOut, delay: 0.1 }}
         style={{ transformOrigin: "left" }}
-        className="mt-8 h-px bg-gradient-to-r from-primary/40 via-border to-transparent"
+        className="section-divider mt-8"
       />
     </header>
   );
