@@ -39,7 +39,7 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y postgresql-client
 
       - name: Install dependencies
-        run: bun install --frozen-lockfile
+        run: bun install
 
       - name: Verify security baseline
         if: steps.db.outputs.configured == 'true'
@@ -80,7 +80,7 @@ jobs:
           bun-version: latest
 
       - name: Install dependencies
-        run: bun install --frozen-lockfile
+        run: bun install
 
       - name: Dependency audit (version floors + high/critical advisories)
         run: node scripts/dependency-audit.mjs
