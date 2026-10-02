@@ -621,7 +621,7 @@ export default function Landing() {
                       href={appSignInHref()}
                       onActivate={start("hero", "Get started free")}
                       size="lg"
-                      className="group"
+                      className="btn-glow group"
                     >
                       Get started free
                       <ArrowRight
@@ -1185,9 +1185,9 @@ export default function Landing() {
                 <Reveal key={p.name} delay={i * 70} className="h-full">
                 <SpotlightCard
                   tilt
-                  className={`flex h-full flex-col p-6 ${
+                  className={`card-glow flex h-full flex-col rounded-card p-6 ${
                     p.highlight
-                      ? "border-primary/40 bg-primary/[0.05] shadow-float"
+                      ? "border-primary/40 bg-primary/[0.05] shadow-float ring-1 ring-primary/20"
                       : ""
                   }`}
                 >
@@ -1262,13 +1262,13 @@ export default function Landing() {
             </Reveal>
 
             <Reveal delay={80}>
-              <Accordion type="single" collapsible className="w-full">
+              <Accordion type="single" collapsible className="flex w-full flex-col gap-3">
                 {FAQS.map(([q, a], i) => (
-                  <AccordionItem key={q} value={`faq-${i}`} className="border-border">
-                    <AccordionTrigger className="py-4 text-left text-sm font-medium hover:no-underline sm:text-base">
+                  <AccordionItem key={q} value={`faq-${i}`} className="overflow-hidden rounded-card border border-border transition-colors hover:border-primary/20 data-[state=open]:border-primary/25 data-[state=open]:bg-primary/[0.02]">
+                    <AccordionTrigger className="px-5 py-4 text-left text-sm font-medium hover:no-underline sm:text-base">
                       {q}
                     </AccordionTrigger>
-                    <AccordionContent className="text-sm leading-relaxed text-muted-foreground">
+                    <AccordionContent className="px-5 text-sm leading-relaxed text-muted-foreground">
                       {a}
                     </AccordionContent>
                   </AccordionItem>
@@ -1335,8 +1335,10 @@ export default function Landing() {
         {/* -------------------------------- final CTA --------------------------- */}
         <Section className="border-t border-border/60">
           <ScrollFloat distance={56}>
-          <Reveal className="relative overflow-hidden rounded-3xl border border-primary/25 bg-card px-6 py-10 text-center sm:px-12 sm:py-14">
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-primary/10 to-transparent" aria-hidden />
+          <Reveal className="relative overflow-hidden rounded-3xl border border-primary/25 bg-gradient-to-br from-primary/[0.06] via-card to-brand-secondary/[0.04] px-6 py-14 text-center shadow-float sm:px-12 sm:py-20">
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-primary/12 to-transparent" aria-hidden />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-brand-secondary/[0.04] to-transparent" aria-hidden />
+            <div className="pointer-events-none absolute -top-24 left-1/2 h-48 w-96 -translate-x-1/2 rounded-full bg-primary/10 blur-3xl" aria-hidden />
             <Text variant="h2" className="relative mx-auto max-w-3xl text-balance">
               Your next opportunity deserves more than another resume.
             </Text>
@@ -1344,9 +1346,9 @@ export default function Landing() {
               Build a smarter career system with Gradr.
             </Text>
             <div className="relative mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-              <AuthCta href={appSignInHref()} onActivate={start("final_cta", "Get started free")} size="lg">
+              <AuthCta href={appSignInHref()} onActivate={start("final_cta", "Get started free")} size="lg" className="btn-glow">
                 Get started free
-                <ArrowRight className="h-4 w-4" aria-hidden />
+                <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" aria-hidden />
               </AuthCta>
 
               <Button
@@ -1363,7 +1365,7 @@ export default function Landing() {
       </main>
 
       {/* --------------------------------- footer ------------------------------ */}
-      <footer className="border-t border-border bg-card/40 py-10">
+      <footer className="relative border-t border-border bg-card/30 py-14">
         <div className="page-shell grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_repeat(4,1fr)]">
           <div className="space-y-5">
             <div className="flex items-center gap-2">
@@ -1454,7 +1456,7 @@ export default function Landing() {
           ))}
         </div>
 
-        <div className="page-shell mt-12 flex flex-col gap-2 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
+        <div className="page-shell mt-12 flex flex-col gap-2 border-t border-border/60 pt-8 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} Gradr. All rights reserved.</p>
           <p className="text-xs text-muted-foreground">Built for people actively looking for their next role.</p>
         </div>

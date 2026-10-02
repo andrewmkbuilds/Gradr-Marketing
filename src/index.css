@@ -1094,16 +1094,195 @@
   @keyframes skeleton-sweep { to { transform: translateX(100%); } }
 }
 
+  /* ---------- Premium card: gradient border glow ---------- */
+  .card-glow {
+    position: relative;
+    border: 1px solid hsl(var(--border));
+    background: hsl(var(--card));
+    transition: transform 280ms var(--ease-out-soft), box-shadow 280ms var(--ease-out-soft), border-color 280ms ease;
+  }
+  .card-glow::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, hsl(var(--primary) / 0.4), transparent 40%, transparent 60%, hsl(var(--brand-secondary) / 0.3));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 280ms var(--ease-out-soft);
+    pointer-events: none;
+  }
+  .card-glow:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-hover), 0 0 24px -8px hsl(var(--primary) / 0.15);
+    border-color: transparent;
+  }
+  .card-glow:hover::before { opacity: 1; }
+
+  /* ---------- Premium section divider ---------- */
+  .section-divider {
+    height: 1px;
+    background-image: linear-gradient(
+      to right,
+      transparent 0%,
+      hsl(var(--border)) 15%,
+      hsl(var(--primary) / 0.3) 50%,
+      hsl(var(--border)) 85%,
+      transparent 100%
+    );
+  }
+
+  /* ---------- Glow ring for highlighted elements ---------- */
+  .glow-ring {
+    box-shadow: 0 0 0 1px hsl(var(--primary) / 0.2), 0 0 20px -4px hsl(var(--primary) / 0.15);
+  transition: box-shadow 280ms var(--ease-out-soft);
+  }
+  .glow-ring:hover {
+    box-shadow: 0 0 0 1px hsl(var(--primary) / 0.35), 0 0 32px -4px hsl(var(--primary) / 0.25);
+  }
+
+  /* ---------- Premium gradient text (static, for headings) ---------- */
+  .gradient-text {
+    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--brand-secondary)));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+
+  /* ---------- Premium button glow ---------- */
+  .btn-glow {
+    position: relative;
+    transition: transform 200ms var(--ease-spring), box-shadow 200ms var(--ease-out-soft), filter 200ms ease;
+  }
+  .btn-glow:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px -8px hsl(var(--primary) / 0.4), 0 0 0 1px hsl(var(--primary) / 0.15);
+    filter: brightness(1.08);
+  }
+  .btn-glow:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow: 0 2px 8px -4px hsl(var(--primary) / 0.3);
+  }
+
+  /* ---------- Scroll progress bar ---------- */
+  .scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 2px;
+    z-index: 100;
+    background: linear-gradient(90deg, hsl(var(--primary)), hsl(var(--brand-secondary)));
+    transform-origin: 0 0;
+    transition: transform 100ms linear;
+  }
+
+  /* ---------- Premium skeleton with pulse ---------- */
+  .skeleton-premium {
+    position: relative;
+    overflow: hidden;
+    background: hsl(var(--muted) / 0.5);
+    border-radius: var(--radius-control);
+  }
+  .skeleton-premium::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, hsl(var(--foreground) / 0.06), transparent);
+    animation: skeleton-sweep 1.8s var(--ease-in-out-soft) infinite;
+  }
+
+  /* ---------- Premium badge pulse ---------- */
+  .pulse-dot {
+    display: inline-block;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 9999px;
+    background: hsl(var(--success));
+    box-shadow: 0 0 0 0 hsl(var(--success) / 0.4);
+    animation: pulse-ring 2s var(--ease-out-soft) infinite;
+  }
+  @keyframes pulse-ring {
+    0% { box-shadow: 0 0 0 0 hsl(var(--success) / 0.4); }
+    70% { box-shadow: 0 0 0 6px hsl(var(--success) / 0); }
+    100% { box-shadow: 0 0 0 0 hsl(var(--success) / 0); }
+  }
+
+  /* ---------- Premium hover spotlight (for grids) ---------- */
+  .spotlight-hover {
+    position: relative;
+    overflow: hidden;
+  }
+  .spotlight-hover::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(400px circle at var(--mx, 50%) var(--my, 50%), hsl(var(--primary) / 0.08), transparent 40%);
+    opacity: 0;
+    transition: opacity 280ms ease;
+    pointer-events: none;
+  }
+  .spotlight-hover:hover::after { opacity: 1; }
+
+  /* ---------- Premium fade-in-up entrance ---------- */
+  .fade-in-up {
+    animation: fade-in-up 500ms var(--ease-out-soft) both;
+  }
+  @keyframes fade-in-up {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ---------- Premium scale-in entrance ---------- */
+  .scale-in {
+    animation: scale-in 400ms var(--ease-spring) both;
+  }
+  @keyframes scale-in {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  /* ---------- Premium backdrop for modals ---------- */
+  .modal-backdrop {
+    background: hsl(var(--overlay) / 0.6);
+    backdrop-filter: blur(8px) saturate(120%);
+    -webkit-backdrop-filter: blur(8px) saturate(120%);
+  }
+
+  /* ---------- Premium section eyebrow with line ---------- */
+  .section-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.24em;
+    color: hsl(var(--brand-secondary));
+  }
+  .section-eyebrow::before {
+    content: "";
+    width: 1.5rem;
+    height: 1px;
+    background: hsl(var(--brand-secondary) / 0.6);
+  }
+
 @media (prefers-reduced-motion: reduce) {
   .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
   .aurora-bg, .float-slow, .float-mid, .liquid-blob, .marquee, .conic-spin, .shimmer,
-  .ambient-orb, .ambient-grid, .enter-up, .stagger-children > *, .skeleton-sheen::after {
+  .ambient-orb, .ambient-grid, .enter-up, .stagger-children > *, .skeleton-sheen::after,
+  .skeleton-premium::after, .pulse-dot, .fade-in-up, .scale-in {
     animation: none !important;
   }
-  .interactive, .lift-card, .field-motion, .sheen::after, .nav-item::before, .nav-underline::after {
+  .interactive, .lift-card, .field-motion, .sheen::after, .nav-item::before, .nav-underline::after,
+  .card-glow, .btn-glow, .glow-ring, .spotlight-hover::after {
     transition: none !important;
   }
-  .lift-card:hover, .press-scale:active { transform: none !important; }
+  .lift-card:hover, .press-scale:active, .card-glow:hover, .btn-glow:hover, .btn-glow:active { transform: none !important; }
   html.theme-transition, html.theme-transition * { transition: none !important; }
 }
 
@@ -1138,13 +1317,21 @@ html[data-motion="reduced"] .ambient-orb,
 html[data-motion="reduced"] .ambient-grid,
 html[data-motion="reduced"] .enter-up,
 html[data-motion="reduced"] .stagger-children > *,
-html[data-motion="reduced"] .skeleton-sheen::after { animation: none !important; }
+html[data-motion="reduced"] .skeleton-sheen::after,
+html[data-motion="reduced"] .skeleton-premium::after,
+html[data-motion="reduced"] .pulse-dot,
+html[data-motion="reduced"] .fade-in-up,
+html[data-motion="reduced"] .scale-in { animation: none !important; }
 html[data-motion="reduced"] .interactive,
 html[data-motion="reduced"] .lift-card,
 html[data-motion="reduced"] .field-motion,
 html[data-motion="reduced"] .sheen::after,
 html[data-motion="reduced"] .nav-item::before,
-html[data-motion="reduced"] .nav-underline::after { transition: none !important; }
+html[data-motion="reduced"] .nav-underline::after,
+html[data-motion="reduced"] .card-glow,
+html[data-motion="reduced"] .btn-glow,
+html[data-motion="reduced"] .glow-ring,
+html[data-motion="reduced"] .spotlight-hover::after { transition: none !important; }
 html[data-motion="reduced"] .lift-card:hover,
 html[data-motion="reduced"] .elev-interactive:hover,
 html[data-motion="reduced"] .depth-hover:hover,
@@ -1153,7 +1340,10 @@ html[data-motion="reduced"] .depth-press:active,
 html[data-motion="reduced"] .depth-content,
 html[data-motion="reduced"] .depth-content-sm,
 html[data-motion="reduced"] .depth-content-lg,
-html[data-motion="reduced"] .press-scale:active { transform: none !important; }
+html[data-motion="reduced"] .press-scale:active,
+html[data-motion="reduced"] .card-glow:hover,
+html[data-motion="reduced"] .btn-glow:hover,
+html[data-motion="reduced"] .btn-glow:active { transform: none !important; }
 html[data-motion="reduced"] .depth-scene { perspective: none; }
 html[data-motion="reduced"].theme-transition,
 html[data-motion="reduced"].theme-transition * { transition: none !important; }

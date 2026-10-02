@@ -77,32 +77,27 @@ export function PublicShell({ children, source }: PublicShellProps) {
         <div className="page-shell flex h-16 items-center justify-between gap-4">
           <Link
             to="/"
-            className="flex items-center gap-2 rounded-lg font-semibold tracking-tight text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="flex items-center gap-2 rounded-lg font-semibold tracking-tight text-foreground transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <BrandLogo size={24} />
             Gradr
           </Link>
 
-          <nav aria-label="Primary" className="hidden items-center gap-1 xl:flex">
+          <nav aria-label="Primary" className="hidden items-center gap-0.5 xl:flex">
             {NAV.map((item) => (
               <Link
                 key={item.to}
                 to={item.to}
                 aria-current={isActive(item.to) ? "page" : undefined}
                 className={cn(
-                  "relative rounded-lg px-3 py-2 text-sm transition-colors",
+                  "nav-underline relative rounded-lg px-3 py-2 text-sm transition-colors",
                   isActive(item.to)
                     ? "text-foreground"
                     : "text-muted-foreground hover:text-foreground",
                 )}
+                data-active={isActive(item.to) || undefined}
               >
                 {item.label}
-                {isActive(item.to) && (
-                  <span
-                    aria-hidden="true"
-                    className="absolute inset-x-3 -bottom-px h-0.5 rounded-full bg-brand-secondary"
-                  />
-                )}
               </Link>
             ))}
             <a
@@ -130,17 +125,17 @@ export function PublicShell({ children, source }: PublicShellProps) {
             <a
               href={appSignupHref()}
               onClick={() => trackSignupCta({ location: "navbar", text: "Get started", authenticated: false, destination: appSignupHref() })}
-              className={buttonVariants({ size: "md" })}
+              className={cn(buttonVariants({ size: "md" }), "btn-glow")}
             >
               Get started
-              <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+              <ArrowRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden="true" />
             </a>
             <button
               type="button"
               onClick={toggleMenu}
               aria-expanded={menuOpen}
               aria-label={menuOpen ? "Close menu" : "Open menu"}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-border text-foreground xl:hidden"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-border text-foreground transition-colors hover:bg-muted xl:hidden"
             >
               {menuOpen ? <X className="h-4 w-4" aria-hidden="true" /> : <Menu className="h-4 w-4" aria-hidden="true" />}
             </button>
@@ -148,14 +143,17 @@ export function PublicShell({ children, source }: PublicShellProps) {
         </div>
 
         {menuOpen && (
-          <nav aria-label="Mobile" className="border-t border-border/60 bg-background xl:hidden">
-            <ul className="page-shell py-2">
+          <nav aria-label="Mobile" className="border-t border-border/60 bg-background/95 backdrop-blur-xl xl:hidden">
+            <ul className="page-shell stagger-children py-3">
               {NAV.map((item) => (
                 <li key={item.to}>
                   <Link
                     to={item.to}
                     onClick={() => setMenuOpen(false)}
-                    className="block rounded-lg px-2 py-3 text-sm text-foreground hover:bg-muted"
+                    className={cn(
+                      "flex min-h-11 items-center rounded-lg px-3 py-2.5 text-sm transition-colors hover:bg-muted",
+                      isActive(item.to) ? "text-foreground bg-primary/5" : "text-muted-foreground hover:text-foreground",
+                    )}
                   >
                     {item.label}
                   </Link>
@@ -165,7 +163,7 @@ export function PublicShell({ children, source }: PublicShellProps) {
                 <a
                   href={urlFor("earn", "/")}
                   onClick={() => setMenuOpen(false)}
-                  className="block rounded-lg px-2 py-3 text-sm text-foreground hover:bg-muted"
+                  className="flex min-h-11 items-center rounded-lg px-3 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                 >
                   Earn
                 </a>
@@ -174,7 +172,7 @@ export function PublicShell({ children, source }: PublicShellProps) {
                 <a
                   href={urlFor("earn", "/partner")}
                   onClick={() => setMenuOpen(false)}
-                  className="block rounded-lg px-2 py-3 text-sm text-foreground hover:bg-muted"
+                  className="flex min-h-11 items-center rounded-lg px-3 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                 >
                   Partner with Gradr
                 </a>
@@ -186,7 +184,7 @@ export function PublicShell({ children, source }: PublicShellProps) {
 
       <main className="page-shell section-y-sm">{children}</main>
 
-      <footer className="border-t border-border/60 py-10">
+      <footer className="relative mt-16 border-t border-border/60 bg-card/30 py-12">
         <div className="page-shell grid gap-8 sm:grid-cols-2 lg:grid-cols-6">
           <div className="space-y-3">
             <Link to="/" className="flex items-center gap-2 font-semibold text-foreground">
@@ -346,8 +344,11 @@ export function PublicShell({ children, source }: PublicShellProps) {
           </nav>
         </div>
 
-        <div className="page-shell mt-10 border-t border-border/60 pt-6 text-sm text-muted-foreground">
-          © {new Date().getFullYear()} Gradr. All rights reserved.
+        <div className="page-shell mt-10 border-t border-border/60 pt-6">
+          <div className="flex flex-col items-center justify-between gap-3 text-sm text-muted-foreground sm:flex-row">
+            <p>© {new Date().getFullYear()} Gradr. All rights reserved.</p>
+            <p className="text-xs">Designed for the modern job search.</p>
+          </div>
         </div>
       </footer>
     </div>
