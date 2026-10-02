@@ -152,7 +152,7 @@ export default function JobLanding() {
 
         {siblings.length > 0 && (
           <section className="space-y-3" aria-labelledby="other-locations">
-            <DimensionalText as="h2" depth="subtle" id="other-locations" className="font-display text-xl font-semibold text-foreground">
+            <DimensionalText as="h2" depth="subtle" className="font-display text-xl font-semibold text-foreground">
               {role.name} jobs elsewhere
             </DimensionalText>
             <div className="flex flex-wrap gap-2">
