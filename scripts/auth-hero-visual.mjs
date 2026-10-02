@@ -83,7 +83,7 @@ const inspectHero = () => {
       .replace(/\s+/g, " ")
       .trim(),
     // Scroll size larger than client size means content is being cut off.
-    clippedVertically: node.scrollHeight - node.clientHeight > 1,
+    clippedVertically: (style.overflowY === "hidden" || style.overflowY === "clip") && node.scrollHeight - node.clientHeight > 1,
     clippedHorizontally: node.scrollWidth - node.clientWidth > 1,
     overflowsParent:
       rect.bottom - parentRect.bottom > 1 || rect.right - parentRect.right > 1 || rect.left < parentRect.left - 1,
