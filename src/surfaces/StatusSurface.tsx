@@ -78,7 +78,7 @@ function StatusHome() {
         )}
         aria-live="polite"
       >
-        <span className={cn("pulse-dot shrink-0", meta.dot === "bg-success" && "!bg-success")} aria-hidden="true" />
+        <span className={cn("pulse-dot shrink-0", meta.dot)} aria-hidden="true" />
         <div>
           <p className={cn("text-lg font-semibold", meta.text)}>
             {overall === "operational" ? "All systems operational" : meta.label}
