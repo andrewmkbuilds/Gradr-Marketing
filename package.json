@@ -82,7 +82,6 @@
     "@types/node": "^22.16.5",
     "@types/react": "^18.3.23",
     "@types/react-dom": "^18.3.7",
-    "@typescript/native-preview": "^7.0.0-dev.20260707.2",
     "@vitejs/plugin-react-swc": "^3.11.0",
     "autoprefixer": "^10.4.21",
     "axe-core": "^4.13.0",
@@ -145,7 +144,7 @@
     "audit:a11y": "node scripts/a11y-audit.mjs",
     "audit:deps": "node scripts/dependency-audit.mjs",
     "brand:assets:update": "node scripts/check-brand-assets.mjs --update",
-    "build": "tsgo -p tsconfig.app.json && tsgo -p tsconfig.node.json && vite build",
+    "build": "tsc -p tsconfig.app.json && tsc -p tsconfig.node.json && vite build",
     "build:dev": "vite build --mode development",
     "check:api-contracts": "node scripts/check-api-contracts.mjs",
     "check:app-serving": "node scripts/check-app-serving.mjs",
@@ -218,7 +217,7 @@
     "test:visual:themes:update": "node scripts/visual-regression.mjs --viewports=mobile,desktop --update",
     "test:voice-e2e": "node scripts/voice-e2e.mjs",
     "test:watch": "vitest",
-    "typecheck": "tsgo -p tsconfig.app.json && tsgo -p tsconfig.node.json"
+    "typecheck": "tsc -p tsconfig.app.json && tsc -p tsconfig.node.json"
   },
   "type": "module",
   "version": "0.0.0"
