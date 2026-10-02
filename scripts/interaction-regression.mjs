@@ -107,7 +107,17 @@ await check("cookie preferences persist across reload", async () => {
   };
   // Clear storage only before the first load; init scripts also run on reload.
   await page.goto(`${BASE}/`, { waitUntil: "domcontentloaded" });
-  await page.evaluate(() => localStorage.clear());
+  // Let any initial client-side redirect settle before touching page storage.
+  await page.waitForTimeout(750);
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    try {
+      await page.evaluate(() => localStorage.clear());
+      break;
+    } catch (error) {
+      if (attempt === 2) throw error;
+      await page.waitForTimeout(500);
+    }
+  }
   await page.reload({ waitUntil: "domcontentloaded" });
   await page.waitForLoadState("load").catch(() => {});
   await page.locator("main").waitFor({ state: "attached", timeout: 15000 }).catch(() => {});
