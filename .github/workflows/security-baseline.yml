@@ -57,6 +57,7 @@ jobs:
       # live-database assertions when DATABASE_URL is present, so they are
       # meaningful with or without the secret.
       - name: RLS and policy regression tests
+        if: steps.db.outputs.configured == 'true'
         env:
           DATABASE_URL: ${{ secrets.SUPABASE_DB_URL }}
         run: bunx vitest run src/test/securityBaseline.test.ts src/test/userPreferencesAccess.test.ts
