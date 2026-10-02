@@ -29,7 +29,7 @@ export const VERSION_FLOORS = {
 /** Transitive pins that must stay in `overrides` — removing one re-opens an advisory. */
 export const REQUIRED_OVERRIDES = {
   hono: "^4.13.1",
-  "fast-uri": "^4.1.2",
+  "fast-uri": "^4.1.4",
   "ip-address": "^10.5.0",
   esbuild: "^0.25.12",
 };
