@@ -729,8 +729,8 @@
     @apply font-display;
     font-size: clamp(2.75rem, 7.2vw, 5.5rem);
     font-weight: 800;
-    line-height: 0.96;
-    letter-spacing: -0.04em;
+    line-height: var(--text-h1--line-height);
+    letter-spacing: var(--text-h1--letter-spacing);
   }
   .type-section {
     @apply font-display;
