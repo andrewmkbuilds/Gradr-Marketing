@@ -1,6 +1,6 @@
 import { AnimatePresence, motion, useMotionValue, useSpring } from "motion/react";
 import { useEffect, useState } from "react";
-import { useSpatialPointer } from "@/hooks/useDepthCapability";
+import { useReducedMotionPref } from "@/hooks/useMotionPreference";
 import { springPointer, springSnappy } from "@/lib/motion/tokens";
 import { cn } from "@/lib/utils";
 
@@ -15,7 +15,8 @@ const INTERACTIVE = 'a, button, [role="button"], [role="link"], input, select, t
  * native cursor is never replaced, only accompanied).
  */
 export function CursorEffects({ className }: { className?: string }) {
-  const active = useSpatialPointer();
+  const reducedMotion = useReducedMotionPref();
+  const active = !reducedMotion;
   const [visible, setVisible] = useState(false);
   const [hot, setHot] = useState(false);
   const [pressed, setPressed] = useState(false);

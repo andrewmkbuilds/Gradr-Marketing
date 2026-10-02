@@ -44,6 +44,18 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 8080,
+    // Vite 5.4 backported DNS-rebinding protection (server.allowedHosts) but,
+    // unlike 6.1+, does NOT read __VITE_ADDITIONAL_SERVER_ALLOWED_HOSTS itself.
+    // Wire the platform-provided suffix in manually so the preview proxy host
+    // is accepted; absent the env var (local / Lovable dev) this is a no-op.
+    ...(process.env.__VITE_ADDITIONAL_SERVER_ALLOWED_HOSTS
+      ? {
+          allowedHosts: process.env.__VITE_ADDITIONAL_SERVER_ALLOWED_HOSTS
+            .split(",")
+            .map((h) => h.trim())
+            .filter(Boolean),
+        }
+      : {}),
     hmr: {
       overlay: false,
     },
