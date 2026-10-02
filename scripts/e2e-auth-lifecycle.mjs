@@ -167,7 +167,12 @@ try {
       // The CTA href is already validated above. Navigate to that exact target
       // directly so this lifecycle assertion is not coupled to a cross-origin
       // click/navigation race in Playwright.
-      await page.goto(href, { waitUntil: "domcontentloaded", timeout: 15_000 });
+      try {
+        await page.goto(href, { waitUntil: "domcontentloaded", timeout: 15_000 });
+      } catch (error) {
+        if (!/ERR_ABORTED|interrupted by another navigation|Execution context was destroyed/i.test(String(error))) throw error;
+        await page.waitForTimeout(500);
+      }
     }
     assert(
       landing.url().startsWith(APP_ORIGIN),
