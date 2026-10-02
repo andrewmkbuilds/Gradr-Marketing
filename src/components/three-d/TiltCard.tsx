@@ -165,7 +165,7 @@ export const TiltCard = forwardRef<HTMLElement, TiltCardProps>(
             style={{
               background: edgeBg,
               WebkitMask:
-                "linear-gradient(#000,#000) content-box, linear-gradient(#000,#000)",
+                "linear-gradient(#000,#000) content-box, linear-gradient(#000,#000)", // theme-token-ok
               WebkitMaskComposite: "xor",
               maskComposite: "exclude",
               padding: 1,
