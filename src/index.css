@@ -727,10 +727,10 @@
   }
   .type-hero {
     @apply font-display;
-    font-size: clamp(2.75rem, 7.2vw, 5.5rem);
-    font-weight: 800;
-    line-height: 0.96;
-    letter-spacing: -0.04em;
+    font-size: var(--text-h1);
+    font-weight: var(--text-h1--font-weight);
+    line-height: var(--text-h1--line-height);
+    letter-spacing: var(--text-h1--letter-spacing);
   }
   .type-section {
     @apply font-display;
@@ -874,7 +874,6 @@
    from collapsing below the 44px accessibility floor. */
 @media (max-width: 640px) {
   @layer utilities {
-    .type-hero,
     .type-section {
       letter-spacing: -0.03em;
       text-wrap: balance;

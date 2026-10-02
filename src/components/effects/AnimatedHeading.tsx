@@ -130,7 +130,7 @@ export function AnimatedHeading({
       {...play}
     >
       {words.map((word, i) => (
-        <span key={`${word}-${i}`} className="inline-block overflow-hidden align-bottom" style={{ paddingBottom: "0.08em" }}>
+        <span key={`${word}-${i}`} className="inline-block align-baseline">
           <motion.span
             variants={wordVariants}
             className={cn("inline-block", accentWords.includes(i) && accentClassName)}
