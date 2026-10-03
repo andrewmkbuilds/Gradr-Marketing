@@ -70,7 +70,7 @@ try {
 
   for (const path of [...INDEXABLE_PAGES, ...NOINDEX_PAGES]) {
     currentPath = path;
-    await page.goto(`${MARKETING_ORIGIN}${path}`, { waitUntil: "domcontentloaded" });
+    await page.goto(`${BASE}${path}`, { waitUntil: "domcontentloaded", timeout: 30_000 });
     await page.waitForTimeout(700);
     await page
       .evaluate(async () => {
